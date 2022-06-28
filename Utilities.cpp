@@ -198,6 +198,14 @@ Vector2<float> Utilities::Lerp(Vector2<float> start, Vector2<float> dest, float 
 	return start + ((dest - start) * speed);
 }
 
+std::string* Utilities::ReadFile(const std::string& path)
+{
+	std::ifstream file(path, std::ios::in); // Create file pointer
+	std::string* out = new std::string((std::istreambuf_iterator<char>(file)), std::istreambuf_iterator<char>()); // Read all text and store on heap
+
+	return out; // Return pointer to text
+}
+
 void m_Log(const std::string& message, Utilities::ERROR error_type, const char* function, int line)
 {
 	std::string function_cleaned = function;

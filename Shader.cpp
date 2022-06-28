@@ -3,40 +3,40 @@
 std::string Shader::PATH = "";
 std::string Shader::EXTENSION = "";
 
-std::string* Shader::ReadFile(const std::string& path)
-{
-    std::ifstream file(path, std::ios::in); // Create file pointer
-    std::string* out = new std::string((std::istreambuf_iterator<char>(file)), std::istreambuf_iterator<char>()); // Read all text and store on heap
-
-    return out; // Return pointer to text
-}
-
 GLuint Shader::CompileShader(const std::string& source, unsigned int type)
 {
+    // Create shader
     GlCall(GLuint id = glCreateShader(type));
+    // Pass text into shader
     const char* src = source.c_str();
     GlCall(glShaderSource(id, 1, &src, nullptr));
+    // Compile shader
     GlCall(glCompileShader(id));
 
     GLint result;
     GlCall(glGetShaderiv(id, GL_COMPILE_STATUS, &result));
 
+    // Check for compilation errors
     if (result == GL_FALSE) {
         GLint length;
         GlCall(glGetShaderiv(id, GL_INFO_LOG_LENGTH, &length));
+        // Create buffer to store compilation error in
         char* message = new char[length];
 
         GlCall(glGetShaderInfoLog(id, length, &length, message));
 
-        const char* s_type;
-        s_type = (type == GL_VERTEX_SHADER) ? "Vertex" : "Fragment";
+        // Check on which shader the error occured
+        // TODO: use Log
+        const char* shader_type;
+        shader_type = (type == GL_VERTEX_SHADER) ? "Vertex" : "Fragment";
         std::cout
-            << s_type
+            << shader_type
             << "Shader compilation failed: "
             << message << std::endl;
 
         delete[] message;
 
+        // Delete shader since compilation failed
         GlCall(glDeleteShader(id));
 
         return 0;
@@ -48,21 +48,23 @@ GLuint Shader::CompileShader(const std::string& source, unsigned int type)
 GLuint Shader::CreateShader(const char* vertex_name, const char* frag_name) {
     GLuint program = glCreateProgram();
 
-    // Read files and return pointer to string (which is on heap)
-    std::string* vertexShader = ReadFile(vertex_name);
-    std::string* fragmentShader = ReadFile(frag_name);
+    // Read files and return pointer to string
+    std::string* vertex_shader = Utilities::ReadFile(vertex_name);
+    std::string* fragment_shader = Utilities::ReadFile(frag_name);
 
     // Compile the shaders
-    GLuint vs = CompileShader(*vertexShader, GL_VERTEX_SHADER);
-    GLuint fs = CompileShader(*fragmentShader, GL_FRAGMENT_SHADER);
+    GLuint vs = CompileShader(*vertex_shader, GL_VERTEX_SHADER);
+    GLuint fs = CompileShader(*fragment_shader, GL_FRAGMENT_SHADER);
 
     // Delete the text
-    delete vertexShader;
-    delete fragmentShader;
+    delete vertex_shader;
+    delete fragment_shader;
 
+    // Attach vertex and fragment shader to program
     GlCall(glAttachShader(program, vs));
     GlCall(glAttachShader(program, fs));
     GlCall(glLinkProgram(program));
+    // Compile program
     GlCall(glValidateProgram(program));
 
     return program;

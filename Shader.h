@@ -2,19 +2,15 @@
 
 #include <glm.hpp>
 #include <gtc/matrix_transform.hpp>
-#include <string>
-#include <fstream>
-#include <iostream>
 
 #include "Renderer.h"
 #include "Vector3.h"
 #include "Vector2.h"
 #include "ShaderManager.h"
+#include "Utilities.h"
 
 class Shader {
 private:
-    // Read all text of file and return pointer to string on heap which contains text
-    std::string* ReadFile(const std::string& path);
     // Registers shader with opengl
     GLuint CompileShader(const std::string& source, unsigned int type);
     // Compiles vertex and fragment shader

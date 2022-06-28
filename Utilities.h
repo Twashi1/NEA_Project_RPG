@@ -2,18 +2,12 @@
 #include <cmath>
 #include <string>
 #include <filesystem>
+#include <string>
+#include <fstream>
+#include <iostream>
 
 #include "Vector2.h"
 #include "Vector3.h"
-
-/*
-#define GlCall(x) GlClearError();\
-	x;\
-	GlLogCall(#x, __FILE__, __LINE__)
-
-void GlClearError();
-bool GlLogCall(const char* function, const char* file, int line);
-*/
 
 #define Log(msg, error_type) m_Log(msg, error_type, __FUNCSIG__, __LINE__);
 
@@ -81,7 +75,11 @@ namespace Utilities {
 	Vector2<float> Round(Vector2<float> val, int decimal_places);
 	Vector2<double> Round(Vector2<double> val, int decimal_places);
 
+	// Linearly interpolate between two points at speed
 	Vector2<float> Lerp(Vector2<float> start, Vector2<float> dest, float speed);
+
+	// Reads an entire file into one string on heap (NOTE: remember to delete the string once done with it)
+	std::string* ReadFile(const std::string& path);
 }
 
 void m_Log(const std::string& message, Utilities::ERROR error_type, const char* function, int line);
