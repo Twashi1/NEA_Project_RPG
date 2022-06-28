@@ -63,7 +63,8 @@ const int FPS = 144;
 // Checks all necessary diquadories exist
 void CheckDirectories() {
     if (!Utilities::CheckDirectoryExists("res"))         Log("Resources folder not found; app not properly installed?", Utilities::ERROR::FATAL);
-    if (!Utilities::CheckDirectoryExists("res/region"))  Log("Region folder not found; app not properly installed?",    Utilities::ERROR::FATAL);
+    if (!Utilities::CheckDirectoryExists("res/saves"))   Log("Saves folder not found; app not properly installed?",     Utilities::ERROR::FATAL);
+    if (!Utilities::CheckDirectoryExists("res/fonts"))   Log("Fonts folder not found; app not properly installed?",     Utilities::ERROR::FATAL);
     if (!Utilities::CheckDirectoryExists("res/shaders")) Log("Shaders folder not found; app not properly installed?",   Utilities::ERROR::FATAL);
 }
 
@@ -114,7 +115,7 @@ int main(void)
     game.drawcalls.push_back(&bg_render);
 
     // DEBUG: add to physics system
-    Body wallbody = Body(wall.GetRectPtr(), true, 0.0f, 999);
+    Body wallbody = Body(wall, true, 0.0f, 999);
     game.physics->layers[0].push_back(std::shared_ptr<Body>(&wallbody));
 
     // Loop until window is closed by user

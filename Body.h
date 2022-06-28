@@ -5,6 +5,8 @@
 
 // TODO: switch from using quads to rects
 
+struct Quad;
+
 struct Body {
 	Rect* rect;			// Pointer to rect which describes location and dimensions of Body
 	bool isImmovable;	// If an object is immovable, collisions will not change velocity/acceleration of this body (infinite mass)
@@ -18,7 +20,9 @@ struct Body {
 	float angular_vel;  // Current angular velocity of object
 	float angular_acc;  // Current angular acceleration of object
 
-	Body(Rect* quad, bool isImmovable, float restitution, float mass);
+	Body(Rect* rect, bool isImmovable, float restitution, float mass);
+	Body(Quad& quad, bool isImmovable, float restitution, float mass);
+	Body(Quad* quad, bool isImmovable, float restitution, float mass);
 	Body(const Body& other);
 
 	// Updates position and velocity, takes time since last update as parameter

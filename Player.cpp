@@ -41,7 +41,7 @@ Player::Player(glm::mat4& proj)
 {
     // Setup player quad and body
     quad = std::shared_ptr<Quad>(new Quad(0.0f, 0.0f, 100.0f, 100.0f, 0.0f));
-    body = std::shared_ptr<Body>(new Body(quad->GetRectPtr(), true, 0.0f, 1.0f));
+    body = std::shared_ptr<Body>(new Body(quad.get(), true, 0.0f, 1.0f));
 
     // Setup shader and uniforms
     shader = new Shader("colour_vertex", "colour_frag");

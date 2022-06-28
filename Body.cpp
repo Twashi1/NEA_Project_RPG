@@ -1,4 +1,5 @@
 #include "Body.h"
+#include "Quad.h"
 
 Body::Body(Rect* rect, bool isImmovable, float restitution, float mass)
 	: rect(rect),
@@ -7,6 +8,26 @@ Body::Body(Rect* rect, bool isImmovable, float restitution, float mass)
 	restitution(restitution),
 	mass(mass), imass(1.0f / mass),
 	angular_acc(0.0f), angular_vel(0.0f) {}
+
+Body::Body(Quad& quad, bool isImmovable, float restitution, float mass)
+	: isImmovable(isImmovable),
+	vel(Vector2<float>::ZERO), acc(Vector2<float>::ZERO),
+	restitution(restitution),
+	mass(mass), imass(1.0f / mass),
+	angular_acc(0.0f), angular_vel(0.0f)
+{
+	rect = &quad.m_Rect;
+}
+
+Body::Body(Quad* quad, bool isImmovable, float restitution, float mass)
+	: isImmovable(isImmovable),
+	vel(Vector2<float>::ZERO), acc(Vector2<float>::ZERO),
+	restitution(restitution),
+	mass(mass), imass(1.0f / mass),
+	angular_acc(0.0f), angular_vel(0.0f)
+{
+	rect = &quad->m_Rect;
+}
 
 Body::Body(const Body& other)
 	: rect(other.rect),

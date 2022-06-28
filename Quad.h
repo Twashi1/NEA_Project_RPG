@@ -5,6 +5,7 @@
 #include "VertexBuffer.h"
 #include "IndexBuffer.h"
 #include "Rect.h"
+#include "Body.h"
 
 struct Quad {
 private:
@@ -45,8 +46,6 @@ public:
 	Vector2<float> TopLeft() const;
 
 	const Rect& GetRect() const;
-	// TODO: make private and make Body a friend
-	Rect* GetRectPtr();
 
 	void SetCenter(const Vector2<float>& ncenter);
 	void SetCenter(float nx, float ny);
@@ -72,6 +71,8 @@ public:
 	friend bool operator==(const Quad& a, const Quad& b);
 
 	std::string ToString() const;
+
+	friend Body; // So that Body can access m_Rect;
 };
 
 bool operator==(const Quad& a, const Quad& b);

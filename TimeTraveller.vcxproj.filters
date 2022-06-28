@@ -170,9 +170,6 @@
     <Filter Include="Source\Rendering">
       <UniqueIdentifier>{28132a6a-30bf-4623-99a7-83f23bf1df8a}</UniqueIdentifier>
     </Filter>
-    <Filter Include="Resources\res\region">
-      <UniqueIdentifier>{25b07e7e-0dc2-4281-a39d-de4a3b653c4a}</UniqueIdentifier>
-    </Filter>
     <Filter Include="Resources\res\fonts">
       <UniqueIdentifier>{3aa5e1cf-9aa7-4c6b-a613-3a06c758a847}</UniqueIdentifier>
     </Filter>
