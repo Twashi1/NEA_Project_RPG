@@ -3,6 +3,8 @@
 #include "Quad.h"
 #include "Vector2.h"
 
+// TODO: switch from using quads to rects
+
 struct Body {
 	Quad* quad;			// Pointer to quad which describes location and dimensions of Body
 	bool isImmovable;	// If an object is immovable, collisions will not change velocity/acceleration of this body (infinite mass)

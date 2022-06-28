@@ -115,6 +115,13 @@ Rect::Rect(const Rect& other)
 	m_UpdateTrig();
 }
 
+std::string Rect::ToString() const
+{
+	std::stringstream ss;
+	ss << "[" << BottomLeft() << ", " << BottomRight() << ", " << TopRight() << ", " << TopLeft() << "]";
+	return ss.str();
+}
+
 Rect::Rect(const Vector2<float>& center, const Vector2<float>& dim, float angle)
 	: center(center), dim(dim), angle(angle)
 {

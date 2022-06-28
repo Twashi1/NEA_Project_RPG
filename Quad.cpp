@@ -234,9 +234,7 @@ const Rect& Quad::GetRect() const
 
 std::string Quad::ToString() const
 {
-	std::stringstream ss;
-	ss << "[" << BottomLeft() << ", " << BottomRight() << ", " << TopRight() << ", " << TopLeft() << "]";
-	return ss.str();
+	return m_Rect.ToString();
 }
 
 bool operator==(const Quad& a, const Quad& b)
