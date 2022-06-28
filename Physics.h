@@ -1,0 +1,34 @@
+#pragma once
+
+#include <set>
+#include <iterator>
+#include <cstddef>
+#include <bitset>
+
+#include "Utilities.h"
+#include "Quad.h"
+#include "Body.h"
+#include "Collision.h"
+#include "Shader.h"
+#include "Camera.h"
+
+class Physics {
+public:
+	// Shorthands for various types
+	typedef std::vector<std::shared_ptr<Body>> layer_t;
+	typedef std::unordered_map<int, layer_t> layermap_t;
+	typedef std::vector<Collision> collisions_t;
+
+	layermap_t layers; // Objects within one layer cannot interact with objects in other layers
+
+	double last_time;  // Stores last time class was updated
+
+	Shader* debug_shader;
+	Camera* debug_camera;
+
+	// Update all bodies tracked, and resolve collisions
+	void Update(float new_time);
+
+	Physics();
+	~Physics();
+};
