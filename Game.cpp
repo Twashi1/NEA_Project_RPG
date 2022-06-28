@@ -206,13 +206,13 @@ void Game::PollPerformance(double dt)
 void Game::DrawStats()
 {
     {
-        double avg_tpf_ms = (processing_time / frames_processed) * 1000;
+        double avg_tpf = (processing_time / frames_processed);
 
         Vector3<float> color = COLORS::WHITE;
-        if (avg_tpf_ms * 0.001 > tpf) { color = COLORS::RED * 255; }
-        else if (avg_tpf_ms * 0.001 > tpf * 0.7) { color = COLORS::YELLOW * 255; }
+        if (avg_tpf > tpf) { color = COLORS::RED * 255; }
+        else if (avg_tpf > tpf * 0.7) { color = COLORS::YELLOW * 255; }
 
-        std::stringstream avg_tpf_str; avg_tpf_str << std::fixed << std::setprecision(8) << "AVG tpf: " << avg_tpf_ms << "ms";
+        std::stringstream avg_tpf_str; avg_tpf_str << std::fixed << std::setprecision(8) << "Average time per frame: " << avg_tpf * 1000.0f << "ms";
         Renderer::DrawText(avg_tpf_str.str(), Vector2<int>(5, height - 15), 0.25, color, *text_shader, *consolas_font);
     }
 

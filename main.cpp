@@ -35,8 +35,8 @@
     // tex.Bind(0); // Bind the texture
     // region_shader.SetUniform1i("u_Texture", 0); // Tells the region shader where the texture its meant to use is
 
-// TODO: rotation physics system
-// TODO: separate physics collider from quad
+// TODO: impulse resolution physics system/general upgrade to physics system
+// TODO: interpolated string in Utilities, or upgrade everything to C++:latest?
 // TODO: title screen
 // TODO: world
 // TODO: save files
@@ -54,6 +54,7 @@
 // TODO: level editor?
 // TODO: buttons/panels/gui
 // TODO: figure out how post-processing works
+// TODO: fix up hardcoded stuff
 
 constexpr float PI_CONST = 3.14159265358979323846f;
 const int WIDTH = 1080;
@@ -86,7 +87,7 @@ int main(void)
 
     // DEBUG: shaders
     Shader texture_shader("texture_vertex", "texture_frag");
-    texture_shader.SetUniformMat4fv("u_projMat", game.proj); // Set the projection matrix
+    texture_shader.SetUniformMat4fv("u_projMat", game.proj);
     texture_shader.SetUniform1f("u_Scale", 5);
 
     Shader cellular_shader("cellular_vertex", "cellular_frag");
