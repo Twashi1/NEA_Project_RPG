@@ -1,7 +1,7 @@
 #include "Body.h"
 
-Body::Body(Quad* quad, bool isImmovable, float restitution, float mass)
-	: quad(quad),
+Body::Body(Rect* rect, bool isImmovable, float restitution, float mass)
+	: rect(rect),
 	isImmovable(isImmovable),
 	vel(Vector2<float>::ZERO), acc(Vector2<float>::ZERO),
 	restitution(restitution),
@@ -9,7 +9,7 @@ Body::Body(Quad* quad, bool isImmovable, float restitution, float mass)
 	angular_acc(0.0f), angular_vel(0.0f) {}
 
 Body::Body(const Body& other)
-	: quad(other.quad),
+	: rect(other.rect),
 	isImmovable(other.isImmovable),
 	vel(other.vel), acc(other.acc),
 	restitution(other.restitution),
@@ -21,21 +21,21 @@ void Body::Update(float dt)
 {
 	// Update velocity and position
 	vel += acc * dt;
-	quad->SetCenter(quad->GetCenter() + (vel * dt));
+	rect->SetCenter(rect->GetCenter() + (vel * dt));
 
 	// Update angular velocity and angle
 	angular_vel += angular_acc * dt;
-	quad->SetAngle(quad->GetAngle() + (angular_vel * dt));
+	rect->SetAngle(rect->GetAngle() + (angular_vel * dt));
 }
 
-Quad Body::Peek(float dt)
+Rect Body::Peek(float dt)
 {
 	Vector2<float> next_vel = vel + (acc * dt);	// Get future velocity
-	Vector2<float> next_pos = quad->GetCenter() + (next_vel * dt); // Get future position
+	Vector2<float> next_pos = rect->GetCenter() + (next_vel * dt); // Get future position
 	float next_angular_vel = angular_vel + (angular_acc * dt); // Get future angular velocity
-	float next_angle = quad->GetAngle() + (next_angular_vel * dt); // Get future angle
+	float next_angle = rect->GetAngle() + (next_angular_vel * dt); // Get future angle
 
-	Quad next_shape = Quad(next_pos, quad->GetDim(), next_angle);
+	Rect next_shape = Rect(next_pos, rect->GetDim(), next_angle);
 
 	return next_shape;
 }

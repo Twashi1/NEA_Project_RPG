@@ -45,6 +45,8 @@ public:
 	Vector2<float> TopLeft() const;
 
 	const Rect& GetRect() const;
+	// TODO: make private and make Body a friend
+	Rect* GetRectPtr();
 
 	void SetCenter(const Vector2<float>& ncenter);
 	void SetCenter(float nx, float ny);

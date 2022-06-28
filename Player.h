@@ -10,7 +10,7 @@
 class Player {
 public:
     std::shared_ptr<Body> body; // Describes physical properties of player and how it should interact with other objects
-    std::shared_ptr<Quad> quad; // Describes location and dimensions of player
+    std::shared_ptr<Quad> quad; // Holds vertex buffer and index buffer of player
     Shader* shader;             // Pointer to player shader
 
     // Miscellaneous constants for player movement

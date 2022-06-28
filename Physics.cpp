@@ -19,12 +19,12 @@ void Physics::Update(float new_time) {
 				std::shared_ptr<Body> b = layer[j];
 
 				// Calculate future positions of bodies
-				Quad future_quad_a = a->Peek(dt);
-				Quad future_quad_b = b->Peek(dt);
+				Rect future_quad_a = a->Peek(dt);
+				Rect future_quad_b = b->Peek(dt);
 
 				// Create two bodies to represent bodies in future
-				Body future_a = *a; future_a.quad = &future_quad_a;
-				Body future_b = *b; future_b.quad = &future_quad_b;
+				Body future_a = *a; future_a.rect = &future_quad_a;
+				Body future_b = *b; future_b.rect = &future_quad_b;
 
 				// Create collision object
 				Collision collision = Collision(&future_a, &future_b);

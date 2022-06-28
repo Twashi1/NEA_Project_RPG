@@ -1,12 +1,12 @@
 #pragma once
 
-#include "Quad.h"
+#include "Rect.h"
 #include "Vector2.h"
 
 // TODO: switch from using quads to rects
 
 struct Body {
-	Quad* quad;			// Pointer to quad which describes location and dimensions of Body
+	Rect* rect;			// Pointer to rect which describes location and dimensions of Body
 	bool isImmovable;	// If an object is immovable, collisions will not change velocity/acceleration of this body (infinite mass)
 	float restitution;	// Represents amount of velocity transferred to this object in collision, but has no link to actual coefficient of restitution in physics (basically just a bad name)
 	float mass;			// Mass of an object, also included in calculation of how much velocity is transferred to this object in a collision
@@ -18,16 +18,16 @@ struct Body {
 	float angular_vel;  // Current angular velocity of object
 	float angular_acc;  // Current angular acceleration of object
 
-	Body(Quad* quad, bool isImmovable, float restitution, float mass);
+	Body(Rect* quad, bool isImmovable, float restitution, float mass);
 	Body(const Body& other);
 
 	// Updates position and velocity, takes time since last update as parameter
 	void Update(float dt);
 	// Returns a quad which represents the location the object will be at, "dt" seconds into the future (provided no outside influences)
-	Quad Peek(float dt);
+	Rect Peek(float dt);
 
 	bool operator==(const Body& other) const {
-		return *quad == *other.quad
+		return *rect == *other.rect
 			&& isImmovable == other.isImmovable
 			&& vel == other.vel && acc == other.acc
 			&& mass == other.mass

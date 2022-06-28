@@ -232,6 +232,11 @@ const Rect& Quad::GetRect() const
 	return m_Rect;
 }
 
+Rect* Quad::GetRectPtr()
+{
+	return &m_Rect;
+}
+
 std::string Quad::ToString() const
 {
 	return m_Rect.ToString();

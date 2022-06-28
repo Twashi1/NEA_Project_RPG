@@ -114,7 +114,7 @@ int main(void)
     game.drawcalls.push_back(&bg_render);
 
     // DEBUG: add to physics system
-    Body wallbody = Body(&wall, true, 0.0f, 999);
+    Body wallbody = Body(wall.GetRectPtr(), true, 0.0f, 999);
     game.physics->layers[0].push_back(std::shared_ptr<Body>(&wallbody));
 
     // Loop until window is closed by user

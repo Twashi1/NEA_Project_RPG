@@ -265,14 +265,14 @@ void Game::DrawStats()
     }
 
     {
-        Quad player_quad = *player->body->quad;
+        Quad player_quad = *player->body->rect;
 
         std::stringstream player_quad_str; player_quad_str << "Player quad: " << player_quad.ToString();
         Renderer::DrawText(player_quad_str.str(), Vector2<int>(5, height - 145), 0.25, COLORS::WHITE, *text_shader, *consolas_font);
     }
 
     {
-        Quad wall_quad = *physics->layers[0][1]->quad;
+        Quad wall_quad = *physics->layers[0][1]->rect;
 
         std::stringstream player_quad_str; player_quad_str << "Wall quad: " << wall_quad.ToString();
         Renderer::DrawText(player_quad_str.str(), Vector2<int>(5, height - 160), 0.25, COLORS::WHITE, *text_shader, *consolas_font);
