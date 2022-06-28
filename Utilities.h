@@ -80,6 +80,9 @@ namespace Utilities {
 
 	// Reads an entire file into one string on heap (NOTE: remember to delete the string once done with it)
 	std::string* ReadFile(const std::string& path);
+
+	// Splits string by delimiter
+	std::vector<std::string> SplitString(const std::string& s, const std::string& delim);
 }
 
 void m_Log(const std::string& message, Utilities::ERROR error_type, const char* function, int line);

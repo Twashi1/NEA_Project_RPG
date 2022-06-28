@@ -1,5 +1,7 @@
 #include "Game.h"
 
+std::string Game::GENERAL_DATA_PATH = "res/saves/general.txt";
+
 void Game::m_OnWindowResize(int nwidth, int nheight)
 {
     std::stringstream ss; ss << "Window dimensions changed to: " << Vector2<int>(nwidth, nheight);
@@ -21,6 +23,55 @@ void Game::m_OnWindowResize(int nwidth, int nheight)
     camera.offset = Vector2<float>(width, height) * 0.5f;
 }
 
+void Game::m_DeserialiseGeneralData()
+{
+    // First check if file exists
+    if (Utilities::CheckFileExists(GENERAL_DATA_PATH)) {
+        general_data.BeginRead(GENERAL_DATA_PATH.c_str());
+
+        // Read in 3 shorts, representing the major, minor, and patch of the version number
+        uint16_t major = general_data.Deserialise<uint16_t>();
+        uint16_t minor = general_data.Deserialise<uint16_t>();
+        uint16_t patch = general_data.Deserialise<uint16_t>();
+
+        // Construct VersionNumber object
+        VersionNumber serialised_version = VersionNumber(major, minor, patch);
+
+        // Ensure serialised version number is the same as current version number
+        // Otherwise, let the general data be initialised to generic values
+        if (version_number == serialised_version) {
+            // Deserialise play time
+            play_time = general_data.Deserialise<decltype(play_time)>();
+            /* ... */
+            general_data.EndRead();
+            // Exit here so we don't overwrite the values we read from the file
+            return;
+        }
+        
+        // File exists but is on a different version, so just let program continue and initialise with generic values
+        general_data.EndRead();
+    }
+
+    // If file doesn't exist, or has different version number, fill in some generic values
+    play_time = 0.0;
+}
+
+void Game::SerialiseGeneralData()
+{
+    // Open file, creating new file if it doesn't exist already
+    general_data.BeginWrite(GENERAL_DATA_PATH.c_str());
+
+    // Serialise 3 parts of version number
+    general_data.Serialise<uint16_t>(version_number.major);
+    general_data.Serialise<uint16_t>(version_number.minor);
+    general_data.Serialise<uint16_t>(version_number.patch);
+
+    // Serialise play time
+    general_data.Serialise<decltype(play_time)>(play_time);
+
+    general_data.EndWrite();
+}
+
 Game::Game(int width, int height, int fps, bool enable_stats)
     : width(width), height(height), fps(fps), tpf(1.0/double(fps)), enable_stats(enable_stats)
 {
@@ -29,7 +80,8 @@ Game::Game(int width, int height, int fps, bool enable_stats)
         Log("Couldn't initialise GLFW library", Utilities::ERROR::FATAL);
 
     // Create window
-    window = glfwCreateWindow(width, height, "Game", NULL, NULL);
+    std::stringstream ss; ss << "RPG Game " << version_number;
+    window = glfwCreateWindow(width, height, ss.str().c_str(), NULL, NULL);
 
     if (!window) {
         // Terminate glfw if window couldn't be created
@@ -59,7 +111,7 @@ Game::Game(int width, int height, int fps, bool enable_stats)
     // Initialise player
     player = new Player(proj);
     // Initialise physics
-    physics = new Physics();
+    physics = Physics();
     // Initialise camera
     camera = Camera(Vector2<float>(width * 0.5f, height * 0.5f), player->quad->GetCenter());
 
@@ -84,9 +136,8 @@ Game::Game(int width, int height, int fps, bool enable_stats)
     ShaderManager::projmat_name = "u_projMat";
 
     // Add player to physics system
-    physics->layers[0] = Physics::layer_t{};
-    physics->layers[0].push_back(player->body);
-    physics->debug_camera = &camera;
+    physics.layers[0] = Physics::layer_t{};
+    physics.layers[0].push_back(player->body);
 
     // Initialise text shader
     text_shader = new Shader("text_vertex", "text_frag");
@@ -98,14 +149,24 @@ Game::Game(int width, int height, int fps, bool enable_stats)
 
     // Update projection uniform for all shaders
     ShaderManager::UpdateProjectionMatrix(proj);
+
+    // Deserialise general data about game
+    m_DeserialiseGeneralData();
 }
 
 Game::~Game()
 {
-    delete player;
-    delete physics;
-    delete text_shader;
-    delete consolas_font;
+    Log("Game shutting down", Utilities::ERROR::INFO);
+
+    SerialiseGeneralData();
+
+    delete player;        player = nullptr;
+    delete text_shader;   text_shader = nullptr;
+    delete consolas_font; consolas_font = nullptr;
+
+    glfwDestroyWindow(window); window = nullptr;
+    
+    // TODO: fix the errors which happen when deconstructing game
 }
 
 void Game::Update()
@@ -119,7 +180,7 @@ void Game::Update()
     Input::Update(tpf);
 
     // Update physics
-    physics->Update(glfwGetTime());
+    physics.Update(glfwGetTime());
 
     // Update player
     player->Update(glfwGetTime());
@@ -158,7 +219,7 @@ void Game::Update()
     // Stall for time
     while (elapsed < tpf) { elapsed = glfwGetTime() - start; }
 
-    time_running += tpf;
+    play_time += tpf;
 }
 
 void Game::Draw()
@@ -192,7 +253,7 @@ void Game::PollPerformance(double dt)
         // If average time per frame is more than max time per frame, we're running behind so display a message
         if (average_tpf > tpf) {
             std::stringstream ss;
-            ss << "Running behind by " << std::fixed << std::setprecision(8) << (average_tpf - tpf) * 1000 << "ms";
+            ss << "Running behind by " << std::fixed << std::setprecision(3) << (average_tpf - tpf) * 1000 << "ms";
 
             Log(ss.str(), Utilities::ERROR::WARNING);
         }
@@ -212,7 +273,7 @@ void Game::DrawStats()
         if (avg_tpf > tpf) { color = COLORS::RED * 255; }
         else if (avg_tpf > tpf * 0.7) { color = COLORS::YELLOW * 255; }
 
-        std::stringstream avg_tpf_str; avg_tpf_str << std::fixed << std::setprecision(8) << "Average time per frame: " << avg_tpf * 1000.0f << "ms";
+        std::stringstream avg_tpf_str; avg_tpf_str << std::fixed << std::setprecision(3) << "Average time per frame: " << avg_tpf * 1000.0f << "ms";
         Renderer::DrawText(avg_tpf_str.str(), Vector2<int>(5, height - 15), 0.25, color, *text_shader, *consolas_font);
     }
 
@@ -228,7 +289,8 @@ void Game::DrawStats()
     }
 
     {
-        int seconds = floor(time_running);
+        // Convert play time to hh:mm:ss and display
+        int seconds = floor(play_time);
         int minutes = (seconds / 60);
         int hours = minutes / 60;
 
@@ -272,7 +334,7 @@ void Game::DrawStats()
     }
 
     {
-        Quad wall_quad = *physics->layers[0][1]->rect;
+        Quad wall_quad = *physics.layers[0][1]->rect;
 
         std::stringstream player_quad_str; player_quad_str << "Wall quad: " << wall_quad.ToString();
         Renderer::DrawText(player_quad_str.str(), Vector2<int>(5, height - 160), 0.25, COLORS::WHITE, *text_shader, *consolas_font);

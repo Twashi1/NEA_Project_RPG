@@ -56,10 +56,4 @@ void Physics::Update(float new_time) {
 	}
 }
 
-Physics::Physics()
-{
-	debug_shader = new Shader("colour_vertex", "colour_frag");
-	debug_shader->SetUniform3f("u_Color", COLORS::GREEN);
-}
-
-Physics::~Physics() { delete debug_shader; }
+Physics::Physics() {}

@@ -206,6 +206,23 @@ std::string* Utilities::ReadFile(const std::string& path)
 	return out; // Return pointer to text
 }
 
+std::vector<std::string> Utilities::SplitString(const std::string& s, const std::string& delim)
+{
+	// Ripped from https://stackoverflow.com/questions/14265581/parse-split-a-string-in-c-using-string-delimiter-standard-c
+	size_t pos_start = 0, pos_end, delim_len = delim.length();
+	std::string token;
+	std::vector<std::string> res;
+
+	while ((pos_end = s.find(delim, pos_start)) != std::string::npos) {
+		token = s.substr(pos_start, pos_end - pos_start);
+		pos_start = pos_end + delim_len;
+		res.push_back(token);
+	}
+
+	res.push_back(s.substr(pos_start));
+	return res;
+}
+
 void m_Log(const std::string& message, Utilities::ERROR error_type, const char* function, int line)
 {
 	std::string function_cleaned = function;

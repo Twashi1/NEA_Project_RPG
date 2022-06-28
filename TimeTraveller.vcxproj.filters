@@ -67,6 +67,9 @@
     <ClCompile Include="Rect.cpp">
       <Filter>Source\Miscellaneous</Filter>
     </ClCompile>
+    <ClCompile Include="VersionNumber.cpp">
+      <Filter>Source\Miscellaneous</Filter>
+    </ClCompile>
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="Game.h">
@@ -139,6 +142,9 @@
       <Filter>Headers\Rendering</Filter>
     </ClInclude>
     <ClInclude Include="Rect.h">
+      <Filter>Headers\Miscellaneous</Filter>
+    </ClInclude>
+    <ClInclude Include="VersionNumber.h">
       <Filter>Headers\Miscellaneous</Filter>
     </ClInclude>
   </ItemGroup>

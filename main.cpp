@@ -55,6 +55,7 @@
 // TODO: buttons/panels/gui
 // TODO: figure out how post-processing works
 // TODO: fix up hardcoded stuff
+// TODO: clean up debug_stats code
 
 constexpr float PI_CONST = 3.14159265358979323846f;
 const int WIDTH = 1080;
@@ -80,6 +81,10 @@ int main(void)
 
     // Construct game instance
     Game game(WIDTH, HEIGHT, FPS, true);
+    {
+        std::stringstream ss; ss << "Loaded game on version: " << game.version_number;
+        Log(ss.str(), Utilities::ERROR::INFO);
+    }
 
     // DEBUG: quads
     Quad wall = Quad(500.0f, 500.0f, 100.0f, 500.0f, 0.25 * PI_CONST);
@@ -117,7 +122,7 @@ int main(void)
 
     // DEBUG: add to physics system
     Body wallbody = Body(wall, true, 0.0f, 999);
-    game.physics->layers[0].push_back(std::shared_ptr<Body>(&wallbody));
+    game.physics.layers[0].push_back(std::shared_ptr<Body>(&wallbody));
 
     // Loop until window is closed by user
     while (!glfwWindowShouldClose(game.window))
@@ -130,7 +135,13 @@ int main(void)
         wallbody.angular_vel = Utilities::ClampMax(wallbody.angular_vel, 3.0f);
     }
 
+    Log("Window closed", Utilities::ERROR::INFO);
+
+    game.SerialiseGeneralData();
+
     // Close program
     glfwTerminate();
-    return 0;
+
+    Log("Ending program", Utilities::ERROR::INFO);
+    exit(EXIT_SUCCESS);
 }

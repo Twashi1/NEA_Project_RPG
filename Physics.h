@@ -21,14 +21,10 @@ public:
 
 	layermap_t layers; // Objects within one layer cannot interact with objects in other layers
 
-	double last_time;  // Stores last time class was updated
-
-	Shader* debug_shader;
-	Camera* debug_camera;
+	double last_time = 0.0;  // Stores last time class was updated
 
 	// Update all bodies tracked, and resolve collisions
 	void Update(float new_time);
 
 	Physics();
-	~Physics();
 };

@@ -1,9 +1,9 @@
 #include "Serialiser.h"
 
 void Serialiser::BeginRead(const char* path) { instream = new std::ifstream(path, std::ios::binary); }
-void Serialiser::BeginWrite(const char* path) { outstream = new std::ofstream(path, std::ios::binary); }
-void Serialiser::EndRead() { instream->close(); delete instream; }
-void Serialiser::EndWrite() { outstream->close(); delete outstream; }
+void Serialiser::BeginWrite(const char* path) { outstream = new std::ofstream(path, std::ios::binary | std::ofstream::trunc); }
+void Serialiser::EndRead() { instream->close(); delete instream; instream = nullptr; }
+void Serialiser::EndWrite() { outstream->close(); delete outstream; outstream = nullptr; }
 
 void Serialiser::Serialise(std::string* data, unsigned int length)
 {

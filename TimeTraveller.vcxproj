@@ -40,6 +40,7 @@
     <ClCompile Include="Texture.cpp" />
     <ClCompile Include="Tile.cpp" />
     <ClCompile Include="Utilities.cpp" />
+    <ClCompile Include="VersionNumber.cpp" />
     <ClCompile Include="VertexBuffer.cpp" />
   </ItemGroup>
   <ItemGroup>
@@ -65,6 +66,7 @@
     <ClInclude Include="Utilities.h" />
     <ClInclude Include="Vector2.h" />
     <ClInclude Include="Vector3.h" />
+    <ClInclude Include="VersionNumber.h" />
     <ClInclude Include="VertexBuffer.h" />
     <ClInclude Include="World.h" />
   </ItemGroup>
