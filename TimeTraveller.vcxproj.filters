@@ -226,4 +226,9 @@
       <Filter>Resources\res\fonts</Filter>
     </Font>
   </ItemGroup>
+  <ItemGroup>
+    <Text Include="README.txt">
+      <Filter>Resources</Filter>
+    </Text>
+  </ItemGroup>
 </Project>

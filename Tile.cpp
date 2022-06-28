@@ -9,22 +9,22 @@ std::array<Tile::Properties, Tile::TOTAL_TILES> Tile::m_Properties = {
 
 Tile::Properties Tile::GetProperties(const Tile::ID& id)
 {
-	return Tile::m_properties[uint16_t(id)];
+	return Tile::m_Properties[uint16_t(id)];
 }
 
 const char* Tile::GetName(const Tile::ID& id)
 {
-	return Tile::m_properties[uint16_t(id)].name;
+	return Tile::m_Properties[uint16_t(id)].name;
 }
 
 bool Tile::GetIsPhysical(const Tile::ID& id)
 {
-	return Tile::m_properties[uint16_t(id)].isPhysical;
+	return Tile::m_Properties[uint16_t(id)].isPhysical;
 }
 
 int Tile::GetZ(const Tile::ID& id)
 {
-	return Tile::m_properties[uint16_t(id)].z;
+	return Tile::m_Properties[uint16_t(id)].z;
 }
 
 Tile::Tile() { ids.emplace_back(Tile::ID::VOID); }
