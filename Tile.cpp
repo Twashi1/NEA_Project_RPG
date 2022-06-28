@@ -1,6 +1,6 @@
 #include "Tile.h"
 
-std::array<Tile::Properties, Tile::TOTAL_TILES> Tile::m_properties = {
+std::array<Tile::Properties, Tile::TOTAL_TILES> Tile::m_Properties = {
 	Tile::Properties("void", false, 0),
 	Tile::Properties("ground", false, 1),
 	Tile::Properties("grass", false, 2),

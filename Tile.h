@@ -38,5 +38,5 @@ public:
 	Tile(const Tile& other);
 
 private:
-	static std::array<Properties, TOTAL_TILES> m_properties;
+	static std::array<Properties, TOTAL_TILES> m_Properties;
 };
