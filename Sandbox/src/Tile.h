@@ -3,7 +3,7 @@
 
 #include <array>
 
-class ENGINE_API Tile {
+class Tile {
 public:
 	enum class ID : uint16_t {
 		VOID,
