@@ -1,0 +1,242 @@
+﻿<?xml version="1.0" encoding="utf-8"?>
+<Project ToolsVersion="4.0" xmlns="http://schemas.microsoft.com/developer/msbuild/2003">
+  <ItemGroup>
+    <ClCompile Include="src\Engine\Game.cpp">
+      <Filter>Source\Game</Filter>
+    </ClCompile>
+    <ClCompile Include="src\Engine\Input.cpp">
+      <Filter>Source\Game</Filter>
+    </ClCompile>
+    <ClCompile Include="src\Engine\IndexBuffer.cpp">
+      <Filter>Source\Rendering</Filter>
+    </ClCompile>
+    <ClCompile Include="src\Engine\Renderer.cpp">
+      <Filter>Source\Rendering</Filter>
+    </ClCompile>
+    <ClCompile Include="src\Engine\Shader.cpp">
+      <Filter>Source\Rendering</Filter>
+    </ClCompile>
+    <ClCompile Include="src\Engine\VertexBuffer.cpp">
+      <Filter>Source\Rendering</Filter>
+    </ClCompile>
+    <ClCompile Include="src\Engine\Tile.cpp">
+      <Filter>Source\Game</Filter>
+    </ClCompile>
+    <ClCompile Include="src\Engine\Font.cpp">
+      <Filter>Source\Rendering</Filter>
+    </ClCompile>
+    <ClCompile Include="src\Engine\Physics.cpp">
+      <Filter>Source\Physics</Filter>
+    </ClCompile>
+    <ClCompile Include="src\Engine\Body.cpp">
+      <Filter>Source\Physics</Filter>
+    </ClCompile>
+    <ClCompile Include="src\Engine\Collision.cpp">
+      <Filter>Source\Physics</Filter>
+    </ClCompile>
+    <ClCompile Include="src\Engine\Camera.cpp">
+      <Filter>Source\Rendering</Filter>
+    </ClCompile>
+    <ClCompile Include="src\Engine\Renderable.cpp">
+      <Filter>Source\Rendering</Filter>
+    </ClCompile>
+    <ClCompile Include="src\Engine\Player.cpp">
+      <Filter>Source\Game</Filter>
+    </ClCompile>
+    <ClCompile Include="src\Engine\Noise.cpp">
+      <Filter>Source\Miscellaneous</Filter>
+    </ClCompile>
+    <ClCompile Include="src\Engine\Serialiser.cpp">
+      <Filter>Source\Miscellaneous</Filter>
+    </ClCompile>
+    <ClCompile Include="src\Engine\Texture.cpp">
+      <Filter>Source\Miscellaneous</Filter>
+    </ClCompile>
+    <ClCompile Include="src\Engine\Utilities.cpp">
+      <Filter>Source\Miscellaneous</Filter>
+    </ClCompile>
+    <ClCompile Include="src\Engine\ShaderManager.cpp">
+      <Filter>Source\Rendering</Filter>
+    </ClCompile>
+    <ClCompile Include="src\Engine\Quad.cpp">
+      <Filter>Source\Rendering</Filter>
+    </ClCompile>
+    <ClCompile Include="src\Engine\Rect.cpp">
+      <Filter>Source\Miscellaneous</Filter>
+    </ClCompile>
+    <ClCompile Include="src\Engine\VersionNumber.cpp">
+      <Filter>Source\Miscellaneous</Filter>
+    </ClCompile>
+  </ItemGroup>
+  <ItemGroup>
+    <ClInclude Include="src\Engine\Game.h">
+      <Filter>Headers\Game</Filter>
+    </ClInclude>
+    <ClInclude Include="src\Engine\Input.h">
+      <Filter>Headers\Game</Filter>
+    </ClInclude>
+    <ClInclude Include="src\Engine\IndexBuffer.h">
+      <Filter>Headers\Rendering</Filter>
+    </ClInclude>
+    <ClInclude Include="src\Engine\Shader.h">
+      <Filter>Headers\Rendering</Filter>
+    </ClInclude>
+    <ClInclude Include="src\Engine\Texture.h">
+      <Filter>Headers\Rendering</Filter>
+    </ClInclude>
+    <ClInclude Include="src\Engine\VertexBuffer.h">
+      <Filter>Headers\Rendering</Filter>
+    </ClInclude>
+    <ClInclude Include="src\Engine\Renderer.h">
+      <Filter>Headers\Rendering</Filter>
+    </ClInclude>
+    <ClInclude Include="src\Engine\Tile.h">
+      <Filter>Headers\Game</Filter>
+    </ClInclude>
+    <ClInclude Include="src\Engine\Font.h">
+      <Filter>Headers\Rendering</Filter>
+    </ClInclude>
+    <ClInclude Include="src\Engine\World.h">
+      <Filter>Headers\Game</Filter>
+    </ClInclude>
+    <ClInclude Include="src\Engine\Body.h">
+      <Filter>Headers\Physics</Filter>
+    </ClInclude>
+    <ClInclude Include="src\Engine\Physics.h">
+      <Filter>Headers\Physics</Filter>
+    </ClInclude>
+    <ClInclude Include="src\Engine\Collision.h">
+      <Filter>Headers\Physics</Filter>
+    </ClInclude>
+    <ClInclude Include="src\Engine\Camera.h">
+      <Filter>Headers\Rendering</Filter>
+    </ClInclude>
+    <ClInclude Include="src\Engine\Renderable.h">
+      <Filter>Headers\Rendering</Filter>
+    </ClInclude>
+    <ClInclude Include="src\Engine\Player.h">
+      <Filter>Headers\Game</Filter>
+    </ClInclude>
+    <ClInclude Include="src\Engine\Noise.h">
+      <Filter>Headers\Miscellaneous</Filter>
+    </ClInclude>
+    <ClInclude Include="src\Engine\Serialiser.h">
+      <Filter>Headers\Miscellaneous</Filter>
+    </ClInclude>
+    <ClInclude Include="src\Engine\Utilities.h">
+      <Filter>Headers\Miscellaneous</Filter>
+    </ClInclude>
+    <ClInclude Include="src\Engine\Vector2.h">
+      <Filter>Headers\Miscellaneous</Filter>
+    </ClInclude>
+    <ClInclude Include="src\Engine\Vector3.h">
+      <Filter>Headers\Miscellaneous</Filter>
+    </ClInclude>
+    <ClInclude Include="src\Engine\ShaderManager.h">
+      <Filter>Headers\Rendering</Filter>
+    </ClInclude>
+    <ClInclude Include="src\Engine\Quad.h">
+      <Filter>Headers\Rendering</Filter>
+    </ClInclude>
+    <ClInclude Include="src\Engine\Rect.h">
+      <Filter>Headers\Miscellaneous</Filter>
+    </ClInclude>
+    <ClInclude Include="src\Engine\VersionNumber.h">
+      <Filter>Headers\Miscellaneous</Filter>
+    </ClInclude>
+    <ClInclude Include="src\Engine.h" />
+  </ItemGroup>
+  <ItemGroup>
+    <Filter Include="Headers">
+      <UniqueIdentifier>{1f2e164b-e22f-4852-bf06-9f499ea7ac17}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="Source">
+      <UniqueIdentifier>{f2713ec7-ace5-4c0a-b3e4-de46704199fe}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="Resources">
+      <UniqueIdentifier>{bc1d066e-beb9-4581-b5a4-d43716b5fd69}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="Resources\res">
+      <UniqueIdentifier>{778a7106-ca6c-4277-b7ea-7c2c9b12f2a4}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="Resources\res\shaders">
+      <UniqueIdentifier>{f0ef84f0-0772-4c13-9db9-2fa9025fa971}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="Headers\Game">
+      <UniqueIdentifier>{c1afd999-a3bb-48dc-b61b-b639b9a4f14f}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="Source\Game">
+      <UniqueIdentifier>{f107eccc-57fa-4f69-85f3-345ffa8d4dc5}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="Headers\Rendering">
+      <UniqueIdentifier>{53823cab-cf2c-4b7a-9509-59ea88c18c56}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="Source\Rendering">
+      <UniqueIdentifier>{28132a6a-30bf-4623-99a7-83f23bf1df8a}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="Resources\res\fonts">
+      <UniqueIdentifier>{3aa5e1cf-9aa7-4c6b-a613-3a06c758a847}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="Resources\res\saves">
+      <UniqueIdentifier>{b7029ea6-7b3a-47c0-b0f0-da1bf04d095a}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="Source\Physics">
+      <UniqueIdentifier>{032f1ec0-a666-46af-b3c0-507af3422bc8}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="Headers\Physics">
+      <UniqueIdentifier>{4cdd4b21-84c9-4d23-b9e9-6d48c7dc1b7a}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="Headers\Miscellaneous">
+      <UniqueIdentifier>{8378132f-337a-42e4-b3ec-dcffc755d54f}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="Source\Miscellaneous">
+      <UniqueIdentifier>{6a120f64-bd68-462b-86c8-2956923dd27d}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="Resources\res\scenes">
+      <UniqueIdentifier>{db7f6004-2335-4576-a99d-3492e94e911b}</UniqueIdentifier>
+    </Filter>
+  </ItemGroup>
+  <ItemGroup>
+    <None Include="res\shaders\colour_vertex.glsl">
+      <Filter>Resources\res\shaders</Filter>
+    </None>
+    <None Include="res\shaders\colour_frag.glsl">
+      <Filter>Resources\res\shaders</Filter>
+    </None>
+    <None Include="res\shaders\texture_frag.glsl">
+      <Filter>Resources\res\shaders</Filter>
+    </None>
+    <None Include="res\shaders\texture_vertex.glsl">
+      <Filter>Resources\res\shaders</Filter>
+    </None>
+    <None Include="res\shaders\uv_frag.glsl">
+      <Filter>Resources\res\shaders</Filter>
+    </None>
+    <None Include="res\shaders\uv_vertex.glsl">
+      <Filter>Resources\res\shaders</Filter>
+    </None>
+    <None Include="res\shaders\cellular_frag.glsl">
+      <Filter>Resources\res\shaders</Filter>
+    </None>
+    <None Include="res\shaders\cellular_vertex.glsl">
+      <Filter>Resources\res\shaders</Filter>
+    </None>
+    <None Include="res\shaders\text_frag.glsl">
+      <Filter>Resources\res\shaders</Filter>
+    </None>
+    <None Include="res\shaders\text_vertex.glsl">
+      <Filter>Resources\res\shaders</Filter>
+    </None>
+    <None Include="..\README.md">
+      <Filter>Resources</Filter>
+    </None>
+    <None Include="..\premake5.lua">
+      <Filter>Resources</Filter>
+    </None>
+  </ItemGroup>
+  <ItemGroup>
+    <Font Include="res\fonts\consola.ttf">
+      <Filter>Resources\res\fonts</Filter>
+    </Font>
+  </ItemGroup>
+</Project>
