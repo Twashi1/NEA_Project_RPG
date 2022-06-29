@@ -1,9 +1,10 @@
 #include "Renderer.h"
-
+#include "Renderable.h"
 #include "VertexBuffer.h"
 #include "IndexBuffer.h"
 #include "Shader.h"
 #include "Font.h"
+#include "Camera.h"
 
 void GlClearError() {
 	// While we have an error stay in function
@@ -18,6 +19,8 @@ bool GlLogCall(const char* function, const char* file, int line) {
 	return true;
 }
 
+Renderer::RenderMap_t Renderer::m_Renderables = {};
+Camera* Renderer::camera = nullptr;
 std::queue<uint8_t> Renderer::available_slots = std::queue<uint8_t>({ 0, 1, 2, 3, 4, 5, 6, 7, 8, 9, 10, 11, 12, 13, 14, 15 });
 
 uint8_t Renderer::GetTextureSlot()
@@ -35,6 +38,31 @@ uint8_t Renderer::GetTextureSlot()
 void Renderer::FreeTextureSlot(uint8_t slot)
 {
 	available_slots.push(slot);
+}
+
+void Renderer::Update()
+{
+	// Because declared as std::map, key values should be in ascending order
+	// Iterate over key value pairs
+	for (const auto& [z, renderables] : m_Renderables) {
+		// Iterate over Renderable* for each z level
+		for (Renderable* renderable : renderables) {
+			// Transform quad into screen coordinates
+			Quad screen_quad = camera->Transform(*renderable->quad);
+			
+			// Get components
+			const VertexBuffer& vb = screen_quad.GetVertexBuffer();
+			const IndexBuffer& ib = screen_quad.GetIndexBuffer();
+
+			// Bind components
+			vb.Bind();
+			ib.Bind();
+			renderable->shader->Bind();
+
+			// Draw to screen
+			GlCall(glDrawElements(GL_TRIANGLES, ib.count, ib.type, nullptr));
+		}
+	}
 }
 
 void Renderer::Draw(const VertexBuffer& vb, const IndexBuffer& ib, const Shader& shader)

@@ -114,6 +114,8 @@ Game::Game(int width, int height, int fps, bool enable_stats)
     physics = Physics();
     // Initialise camera
     camera = Camera(Vector2<float>(width * 0.5f, height * 0.5f), player->quad->GetCenter());
+    // Pass camera to Renderer
+    Renderer::camera = &camera;
 
     // Initialise input system
     Input::window = window;
@@ -216,7 +218,7 @@ void Game::Update()
     // Update performance tracking variables and display warning if running behind
     PollPerformance(elapsed);
 
-    // Stall for time
+    // Stall for time TODO: this is bad probably
     while (elapsed < tpf) { elapsed = glfwGetTime() - start; }
 
     play_time += tpf;
@@ -224,20 +226,7 @@ void Game::Update()
 
 void Game::Draw()
 {
-    // Sort drawcalls by z value
-    sort(drawcalls.begin(), drawcalls.end(), CompareLessThanRenderable);
-
-    for (Renderable* drawcall : drawcalls) {
-        // Transform quad to screen coordinates
-        Quad transformed = camera.Transform(*drawcall->quad);
-        // Draw transformed quad to screen
-        Renderer::Draw(transformed.GetVertexBuffer(), transformed.GetIndexBuffer(), *drawcall->shader);
-    }
-
-    // Transform player quad to screen coordinates
-    Quad transformed = camera.Transform(*player->quad);
-    // Draw player quad to screen
-    Renderer::Draw(transformed.GetVertexBuffer(), transformed.GetIndexBuffer(), *player->shader);
+    Renderer::Update();
 }
 
 void Game::PollPerformance(double dt)

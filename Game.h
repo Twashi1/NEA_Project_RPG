@@ -42,8 +42,6 @@ public:
 
     glm::mat4 proj;      // Projection matrix
 
-    std::vector<Renderable*> drawcalls; // Tracks all renderable objects, iterated over in Draw() subroutine
-
     Physics physics;     // Physics system
     Player* player;      // Pointer to Player instance
     Camera camera;       // Camera currently being used
@@ -70,7 +68,7 @@ public:
 
     // Updates screen, physics system, player, camera position, etc.
 	void Update();
-    // Iterates over drawcalls to render every object
+    // TODO: useless now, just calls Renderer::Draw
     void Draw();
     // Checks average time per frame, and will display warning if game is running behind
     void PollPerformance(double dt);

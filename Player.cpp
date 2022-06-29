@@ -47,6 +47,9 @@ Player::Player(glm::mat4& proj)
     shader = new Shader("colour_vertex", "colour_frag");
     shader->SetUniformMat4fv("u_projMat", proj);
     shader->SetUniform3f("u_Color", COLORS::YELLOW);
+
+    // Setup renderable object
+    renderable = new Renderable(quad, shader, ZLEVEL);
 }
 
-Player::~Player() { delete shader; }
+Player::~Player() { delete shader; delete renderable; }

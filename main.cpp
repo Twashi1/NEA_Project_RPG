@@ -114,10 +114,7 @@ int main(void)
 
     // DEBUG: renderables
     Renderable walldraw(std::shared_ptr<Quad>(&wall), &colour_shader, 1);
-    game.drawcalls.push_back(&walldraw);
-
     Renderable bg_render(std::shared_ptr<Quad>(&bg), &bg_shader, 0);
-    game.drawcalls.push_back(&bg_render);
 
     // DEBUG: add to physics system
     Body wallbody = Body(wall, true, 0.0f, 999);
