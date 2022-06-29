@@ -233,7 +233,7 @@
     </Font>
   </ItemGroup>
   <ItemGroup>
-    <Text Include="README.txt">
+    <Text Include="README.md">
       <Filter>Resources</Filter>
     </Text>
   </ItemGroup>
