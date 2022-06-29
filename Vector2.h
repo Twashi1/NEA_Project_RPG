@@ -8,6 +8,8 @@
 #include <functional>
 #include <iomanip>
 
+#include "Utilities.h"
+
 template <typename T = int>
 struct Vector2 {
 	static Vector2 ZERO;
@@ -98,6 +100,11 @@ struct Vector2 {
 
 	// Normalise this vector
 	void normalise() { T inverse_magnitude = 1.0f / magnitude(); x *= inverse_magnitude; y *= inverse_magnitude; }
+
+	std::string ToString() const
+	{
+		return std::format("[{}, {}]", std::to_string(Utilities::Round(x, 3)), std::to_string(Utilities::Round(y, 3)));
+	}
 
 	operator Vector2<int>()			 { return Vector2<int>((int)x, (int)y);							   }
 	operator Vector2<long>()		 { return Vector2<long>((long)x, (long)y);						   }

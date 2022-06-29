@@ -48,9 +48,7 @@ VersionNumber::VersionNumber(const VersionNumber & other)
 
 std::string VersionNumber::ToString() const
 {
-    std::stringstream ss;
-    ss << "v" << major << "." << minor << "." << patch;
-    return ss.str();
+    return std::format("v{}.{}.{}", std::to_string(major), std::to_string(minor), std::to_string(patch));
 }
 
 void VersionNumber::operator=(const char* version_string)

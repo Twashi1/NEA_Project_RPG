@@ -11,7 +11,7 @@ class Shader;
 class ShaderManager {
 	typedef std::vector<Shader*> ShaderList_t;
 
-	static ShaderList_t m_shaders;
+	static ShaderList_t m_Shaders;
 
 public:
 	static std::string projmat_name;

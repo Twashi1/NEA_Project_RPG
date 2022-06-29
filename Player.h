@@ -16,7 +16,6 @@ public:
     // Miscellaneous constants for player movement
     static constexpr float FRICTION = 20.0f;
     static constexpr float MAXACCEL = 15000.0f;
-    static constexpr float MAXSPEED = 800.0f;
 
     double last_time; // Stores last time object was updated
 

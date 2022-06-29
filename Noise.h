@@ -1,6 +1,7 @@
 #pragma once
 
 #include "Utilities.h"
+#include "Vector2.h"
 
 namespace Noise {
     // Hash integer into integer

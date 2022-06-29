@@ -4,8 +4,8 @@ std::string Game::GENERAL_DATA_PATH = "res/saves/general.txt";
 
 void Game::m_OnWindowResize(int nwidth, int nheight)
 {
-    std::stringstream ss; ss << "Window dimensions changed to: " << Vector2<int>(nwidth, nheight);
-    Log(ss.str(), Utilities::ERROR::INFO);
+    std::string text = std::format("Window dimensions changed to {}, {}", std::to_string(nwidth), std::to_string(nheight));
+    Log(text, Utilities::ERROR::INFO);
 
     // Update window dimensions
     width = nwidth; height = nheight;
@@ -80,8 +80,8 @@ Game::Game(int width, int height, int fps, bool enable_stats)
         Log("Couldn't initialise GLFW library", Utilities::ERROR::FATAL);
 
     // Create window
-    std::stringstream ss; ss << "RPG Game " << version_number;
-    window = glfwCreateWindow(width, height, ss.str().c_str(), NULL, NULL);
+    std::string title = std::format("RPG Game {}", version_number.ToString());
+    window = glfwCreateWindow(width, height, title.c_str(), NULL, NULL);
 
     if (!window) {
         // Terminate glfw if window couldn't be created
@@ -252,10 +252,8 @@ void Game::PollPerformance(double dt)
 
         // If average time per frame is more than max time per frame, we're running behind so display a message
         if (average_tpf > tpf) {
-            std::stringstream ss;
-            ss << "Running behind by " << std::fixed << std::setprecision(3) << (average_tpf - tpf) * 1000 << "ms";
-
-            Log(ss.str(), Utilities::ERROR::WARNING);
+            std::string text = std::format("Running behind by {}ms", Utilities::Round((average_tpf - tpf) * 1000, 3));
+            Log(text, Utilities::ERROR::WARNING);
         }
 
         // Reset trackers
@@ -268,24 +266,25 @@ void Game::DrawStats()
 {
     {
         double avg_tpf = (processing_time / frames_processed);
+        double avg_tpf_ms = Utilities::Round(avg_tpf * 1000.0, 3);
 
         Vector3<float> color = COLORS::WHITE;
         if (avg_tpf > tpf) { color = COLORS::RED * 255; }
         else if (avg_tpf > tpf * 0.7) { color = COLORS::YELLOW * 255; }
 
-        std::stringstream avg_tpf_str; avg_tpf_str << std::fixed << std::setprecision(3) << "Average time per frame: " << avg_tpf * 1000.0f << "ms";
-        Renderer::DrawText(avg_tpf_str.str(), Vector2<int>(5, height - 15), 0.25, color, *text_shader, *consolas_font);
+        std::string text = std::format("Average time per frame: {}ms", std::to_string(avg_tpf_ms));
+        Renderer::DrawText(text, Vector2<int>(5, height - 15), 0.25, color, *text_shader, *consolas_font);
     }
 
     {
-        double percentage_processing = (processing_time / (tpf * frames_processed)) * 100.0f;
+        double percentage_processing = Utilities::Round((processing_time / (tpf * frames_processed)) * 100.0f, 2);
 
         Vector3<float> color = COLORS::WHITE;
         if (percentage_processing > 100) { color = COLORS::RED * 255; }
         else if (percentage_processing > 70) { color = COLORS::YELLOW * 255; }
 
-        std::stringstream percentage_processing_str; percentage_processing_str << "Processing time: " << Utilities::Round(percentage_processing, 2) << "%";
-        Renderer::DrawText(percentage_processing_str.str(), Vector2<int>(5, height - 30), 0.25, color, *text_shader, *consolas_font);
+        std::string text = std::format("Processing time: {}", std::to_string(percentage_processing));
+        Renderer::DrawText(text, Vector2<int>(5, height - 30), 0.25, color, *text_shader, *consolas_font);
     }
 
     {
@@ -302,41 +301,42 @@ void Game::DrawStats()
             std::setw(2) << std::setfill('0') << hours << ":" <<
             std::setw(2) << std::setfill('0') << minutes << ":" <<
             std::setw(2) << std::setfill('0') << seconds;
+
         Renderer::DrawText(time_str.str(), Vector2<int>(5, height - 45), 0.25, COLORS::WHITE, *text_shader, *consolas_font);
     }
 
     {
-        Vector2<float> player_position = player->quad->GetCenter();
+        Vector2<float> player_position = Utilities::Round(player->quad->GetCenter(), 2);
 
-        std::stringstream player_pos_str; player_pos_str << "Player pos: " << Utilities::Round(player_position, 2);
-        Renderer::DrawText(player_pos_str.str(), Vector2<int>(5, height - 100), 0.25, COLORS::WHITE, *text_shader, *consolas_font);
+        std::string text = std::format("Player position: {}", player_position.ToString());
+        Renderer::DrawText(text, Vector2<int>(5, height - 100), 0.25, COLORS::WHITE, *text_shader, *consolas_font);
     }
 
     {
-        Vector2<float> player_velocity = player->body->vel;
+        Vector2<float> player_velocity = Utilities::Round(player->body->vel, 2);
 
-        std::stringstream player_vel_str; player_vel_str << "Player vel: " << Utilities::Round(player_velocity, 2);
-        Renderer::DrawText(player_vel_str.str(), Vector2<int>(5, height - 115), 0.25, COLORS::WHITE, *text_shader, *consolas_font);
+        std::string text = std::format("Player velocity: {}", player_velocity.ToString());
+        Renderer::DrawText(text, Vector2<int>(5, height - 115), 0.25, COLORS::WHITE, *text_shader, *consolas_font);
     }
 
     {
-        Vector2<float> player_acceleration = player->body->acc;
+        Vector2<float> player_acceleration = Utilities::Round(player->body->acc, 2);
 
-        std::stringstream player_acc_str; player_acc_str << "Player acc: " << Utilities::Round(player_acceleration, 2);
-        Renderer::DrawText(player_acc_str.str(), Vector2<int>(5, height - 130), 0.25, COLORS::WHITE, *text_shader, *consolas_font);
+        std::string text = std::format("Player acceleration: {}", player_acceleration.ToString());
+        Renderer::DrawText(text, Vector2<int>(5, height - 130), 0.25, COLORS::WHITE, *text_shader, *consolas_font);
     }
 
     {
         Quad player_quad = *player->body->rect;
 
-        std::stringstream player_quad_str; player_quad_str << "Player quad: " << player_quad.ToString();
-        Renderer::DrawText(player_quad_str.str(), Vector2<int>(5, height - 145), 0.25, COLORS::WHITE, *text_shader, *consolas_font);
+        std::string text = std::format("Player quad: {}", player_quad.ToString());
+        Renderer::DrawText(text, Vector2<int>(5, height - 145), 0.25, COLORS::WHITE, *text_shader, *consolas_font);
     }
 
     {
         Quad wall_quad = *physics.layers[0][1]->rect;
 
-        std::stringstream player_quad_str; player_quad_str << "Wall quad: " << wall_quad.ToString();
-        Renderer::DrawText(player_quad_str.str(), Vector2<int>(5, height - 160), 0.25, COLORS::WHITE, *text_shader, *consolas_font);
+        std::string text = std::format("Wall quad: {}", wall_quad.ToString());
+        Renderer::DrawText(text, Vector2<int>(5, height - 160), 0.25, COLORS::WHITE, *text_shader, *consolas_font);
     }
 }

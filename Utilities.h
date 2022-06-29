@@ -5,11 +5,13 @@
 #include <string>
 #include <fstream>
 #include <iostream>
-
-#include "Vector2.h"
+#include <format>
 #include "Vector3.h"
 
 #define Log(msg, error_type) m_Log(msg, error_type, __FUNCSIG__, __LINE__);
+
+template <typename T>
+struct Vector2;
 
 class COLORS {
 public:

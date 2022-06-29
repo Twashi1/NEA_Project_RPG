@@ -1,37 +1,37 @@
 #include "ShaderManager.h"
 #include "Shader.h"
 
-ShaderManager::ShaderList_t ShaderManager::m_shaders = ShaderList_t();
+ShaderManager::ShaderList_t ShaderManager::m_Shaders = ShaderList_t();
 std::string ShaderManager::projmat_name = "u_projMat";
 
 void ShaderManager::AddShader(Shader* shader)
 {
-	m_shaders.push_back(shader);
+	m_Shaders.push_back(shader);
 }
 
 void ShaderManager::RemoveShader(const Shader* shader)
 {
-	// Remove all occurences of shader from m_shaders, and return new end of list
-	auto new_end = std::remove(m_shaders.begin(), m_shaders.end(), shader);
+	// Remove all occurences of shader from m_Shaders, and return new end of list
+	auto new_end = std::remove(m_Shaders.begin(), m_Shaders.end(), shader);
 	
 	// Erase all elements from the new end of the list to the old end of the list
-	m_shaders.erase(new_end, m_shaders.end());
+	m_Shaders.erase(new_end, m_Shaders.end());
 }
 
 void ShaderManager::RemoveIndex(int index)
 {
-	if (index < m_shaders.size()) {
-		m_shaders.erase(m_shaders.begin() + index);
+	if (index < m_Shaders.size()) {
+		m_Shaders.erase(m_Shaders.begin() + index);
 	}
 	else {
-		std::stringstream ss; ss << "Index out of bounds, " << index << " > " << m_shaders.size();
-		Log(ss.str(), Utilities::ERROR::FATAL);
+		std::string text = std::format("Index out of bounds: {} > {}", std::to_string(index), std::to_string(m_Shaders.size()));
+		Log(text, Utilities::ERROR::FATAL);
 	}
 }
 
 void ShaderManager::UpdateProjectionMatrix(const glm::mat4& proj)
 {
-	for (Shader* shader : m_shaders) {
+	for (Shader* shader : m_Shaders) {
 		shader->Bind();
 		shader->SetUniformMat4fv(projmat_name.c_str(), proj);
 	}

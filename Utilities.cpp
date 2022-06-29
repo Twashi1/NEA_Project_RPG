@@ -1,4 +1,5 @@
 #include "Utilities.h"
+#include "Vector2.h"
 
 Vector3<float> COLORS::BLACK  = { 0.00, 0.00, 0.00 };
 Vector3<float> COLORS::WHITE  = { 1.00, 1.00, 1.00 };

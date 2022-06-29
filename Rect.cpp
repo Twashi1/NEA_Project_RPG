@@ -117,9 +117,12 @@ Rect::Rect(const Rect& other)
 
 std::string Rect::ToString() const
 {
-	std::stringstream ss;
-	ss << "[" << BottomLeft() << ", " << BottomRight() << ", " << TopRight() << ", " << TopLeft() << "]";
-	return ss.str();
+	return std::format("[{}, {}, {}, {}]",
+		BottomLeft().ToString(),
+		BottomRight().ToString(), 
+		TopRight().ToString(),
+		TopLeft().ToString()
+	);
 }
 
 Rect::Rect(const Vector2<float>& center, const Vector2<float>& dim, float angle)
