@@ -37,7 +37,6 @@
     <ClCompile Include="src\Engine\Font.cpp" />
     <ClCompile Include="src\Engine\ShaderManager.cpp" />
     <ClCompile Include="src\Engine\Texture.cpp" />
-    <ClCompile Include="src\Engine\Tile.cpp" />
     <ClCompile Include="src\Engine\Utilities.cpp" />
     <ClCompile Include="src\Engine\VersionNumber.cpp" />
     <ClCompile Include="src\Engine\VertexBuffer.cpp" />
@@ -62,13 +61,11 @@
     <ClInclude Include="src\Engine\Font.h" />
     <ClInclude Include="src\Engine\ShaderManager.h" />
     <ClInclude Include="src\Engine\Texture.h" />
-    <ClInclude Include="src\Engine\Tile.h" />
     <ClInclude Include="src\Engine\Utilities.h" />
     <ClInclude Include="src\Engine\Vector2.h" />
     <ClInclude Include="src\Engine\Vector3.h" />
     <ClInclude Include="src\Engine\VersionNumber.h" />
     <ClInclude Include="src\Engine\VertexBuffer.h" />
-    <ClInclude Include="src\Engine\World.h" />
   </ItemGroup>
   <PropertyGroup Label="Globals">
     <VCProjectVersion>16.0</VCProjectVersion>

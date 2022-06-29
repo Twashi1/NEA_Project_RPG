@@ -19,9 +19,6 @@
     <ClCompile Include="src\Engine\VertexBuffer.cpp">
       <Filter>Source\Rendering</Filter>
     </ClCompile>
-    <ClCompile Include="src\Engine\Tile.cpp">
-      <Filter>Source\Game</Filter>
-    </ClCompile>
     <ClCompile Include="src\Engine\Font.cpp">
       <Filter>Source\Rendering</Filter>
     </ClCompile>
@@ -90,14 +87,8 @@
     <ClInclude Include="src\Engine\Renderer.h">
       <Filter>Headers\Rendering</Filter>
     </ClInclude>
-    <ClInclude Include="src\Engine\Tile.h">
-      <Filter>Headers\Game</Filter>
-    </ClInclude>
     <ClInclude Include="src\Engine\Font.h">
       <Filter>Headers\Rendering</Filter>
-    </ClInclude>
-    <ClInclude Include="src\Engine\World.h">
-      <Filter>Headers\Game</Filter>
     </ClInclude>
     <ClInclude Include="src\Engine\Body.h">
       <Filter>Headers\Physics</Filter>
