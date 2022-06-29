@@ -36,7 +36,6 @@
     // region_shader.SetUniform1i("u_Texture", 0); // Tells the region shader where the texture its meant to use is
 
 // TODO: impulse resolution physics system/general upgrade to physics system
-// TODO: interpolated string in Utilities, or upgrade everything to C++:latest?
 // TODO: title screen
 // TODO: world
 // TODO: save files
@@ -56,6 +55,7 @@
 // TODO: figure out how post-processing works
 // TODO: fix up hardcoded stuff
 // TODO: clean up debug_stats code
+// TODO: proper testing suite
 
 constexpr float PI_CONST = 3.14159265358979323846f;
 const int WIDTH = 1080;
@@ -68,6 +68,7 @@ void CheckDirectories() {
     if (!Utilities::CheckDirectoryExists("res/saves"))   Log("Saves folder not found; app not properly installed?",     Utilities::ERROR::FATAL);
     if (!Utilities::CheckDirectoryExists("res/fonts"))   Log("Fonts folder not found; app not properly installed?",     Utilities::ERROR::FATAL);
     if (!Utilities::CheckDirectoryExists("res/shaders")) Log("Shaders folder not found; app not properly installed?",   Utilities::ERROR::FATAL);
+    if (!Utilities::CheckDirectoryExists("res/scenes"))  Log("Scenes folder not found; app not properly installed?",    Utilities::ERROR::FATAL);
 }
 
 int main(void)
@@ -126,7 +127,7 @@ int main(void)
         bg_render.quad->SetCenter(game.player->quad->GetCenter()); // Make background quad follow player
         game.Update(); // Update game
         
-        // Rotate our example wall
+        // DEGUG: Rotate our example wall
         wallbody.angular_acc = 1.0f;
         wallbody.angular_vel = Utilities::ClampMax(wallbody.angular_vel, 3.0f);
     }

@@ -194,6 +194,9 @@
     <Filter Include="Source\Miscellaneous">
       <UniqueIdentifier>{6a120f64-bd68-462b-86c8-2956923dd27d}</UniqueIdentifier>
     </Filter>
+    <Filter Include="Resources\res\scenes">
+      <UniqueIdentifier>{db7f6004-2335-4576-a99d-3492e94e911b}</UniqueIdentifier>
+    </Filter>
   </ItemGroup>
   <ItemGroup>
     <None Include="res\shaders\colour_vertex.glsl">

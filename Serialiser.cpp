@@ -5,33 +5,57 @@ void Serialiser::BeginWrite(const char* path) { outstream = new std::ofstream(pa
 void Serialiser::EndRead() { instream->close(); delete instream; instream = nullptr; }
 void Serialiser::EndWrite() { outstream->close(); delete outstream; outstream = nullptr; }
 
-void Serialiser::Serialise(std::string* data, unsigned int length)
-{
-	outstream->write((char*)&length, sizeof(unsigned int)); // Assign 4 bytes to represent length of data
-	outstream->write(data->c_str(), length); // Write the characters in
-}
-
-void Serialiser::Serialise(const void* data, unsigned int length, unsigned int size) {
-	outstream->write((char*)&length, sizeof(unsigned int)); // Assign 4 bytes to represent length of data
-	outstream->write((char*)data, length * size); // Write all the raw data in
-}
-
-void Serialiser::Deserialise(std::string* memory) {
-	unsigned int length = Deserialise<unsigned int>(); // Get length of string
-
-	// Read file data into buffer
-	char* buffer = new char[length + 1]; // +1 for null termination character
-	instream->read(buffer, length); // Read data into buffer
-	buffer[length] = '\0'; // Set last character to null termination
-
-	*memory = reinterpret_cast<const char*>(buffer); // Convert buffer data into cstr, and copy into memory given
-
-	delete[] buffer; // Free buffer
-}
-
 Serialiser::Serialiser() : instream(nullptr), outstream(nullptr) {}
 
 Serialiser::~Serialiser() {
 	if (instream != nullptr) delete instream;
 	if (outstream != nullptr) delete outstream;
+}
+
+template <>
+void Deserialise<std::string>(const Serialiser& s, std::string* memory)
+{
+	std::string buffer = "";
+	char lastchar;
+
+	s.instream->get(lastchar); // Get first character
+	buffer += lastchar; // Add to buffer
+
+	// While the last character is not null termination character
+	while (lastchar != '\0') {
+		s.instream->get(lastchar); // Get next character
+		buffer += lastchar; // Add next character to buffer
+
+		// If character is null termination character, break
+		if (lastchar == '\0') break;
+	}
+
+	// Copy buffer to memory 
+	*memory = buffer;
+}
+
+template <>
+void Deserialise<VersionNumber>(const Serialiser& s, VersionNumber* memory)
+{
+	uint16_t major, minor, patch;
+	Deserialise<uint16_t>(s, &major);
+	Deserialise<uint16_t>(s, &minor);
+	Deserialise<uint16_t>(s, &patch);
+
+	*memory = VersionNumber(major, minor, patch);
+}
+
+template <>
+void Serialise<std::string>(Serialiser& s, const std::string& data)
+{
+	s.outstream->write(data.c_str(), data.length());
+	s.outstream->put('\0'); // Write null termination character
+}
+
+template <>
+void Serialise<VersionNumber>(Serialiser& s, const VersionNumber& v)
+{
+	Serialise<uint16_t>(s, v.major);
+	Serialise<uint16_t>(s, v.minor);
+	Serialise<uint16_t>(s, v.patch);
 }

@@ -29,20 +29,17 @@ void Game::m_DeserialiseGeneralData()
     if (Utilities::CheckFileExists(GENERAL_DATA_PATH)) {
         general_data.BeginRead(GENERAL_DATA_PATH.c_str());
 
-        // Read in 3 shorts, representing the major, minor, and patch of the version number
-        uint16_t major = general_data.Deserialise<uint16_t>();
-        uint16_t minor = general_data.Deserialise<uint16_t>();
-        uint16_t patch = general_data.Deserialise<uint16_t>();
-
-        // Construct VersionNumber object
-        VersionNumber serialised_version = VersionNumber(major, minor, patch);
+        // Deserialise VersionNumber object
+        VersionNumber serialised_version;
+        Deserialise<VersionNumber>(general_data, &serialised_version);
 
         // Ensure serialised version number is the same as current version number
         // Otherwise, let the general data be initialised to generic values
         if (version_number == serialised_version) {
             // Deserialise play time
-            play_time = general_data.Deserialise<decltype(play_time)>();
+            Deserialise<decltype(play_time)>(general_data, &play_time);
             /* ... */
+
             general_data.EndRead();
             // Exit here so we don't overwrite the values we read from the file
             return;
@@ -61,13 +58,13 @@ void Game::SerialiseGeneralData()
     // Open file, creating new file if it doesn't exist already
     general_data.BeginWrite(GENERAL_DATA_PATH.c_str());
 
-    // Serialise 3 parts of version number
-    general_data.Serialise<uint16_t>(version_number.major);
-    general_data.Serialise<uint16_t>(version_number.minor);
-    general_data.Serialise<uint16_t>(version_number.patch);
+    // Serialise version number
+    Serialise<VersionNumber>(general_data, version_number);
 
     // Serialise play time
-    general_data.Serialise<decltype(play_time)>(play_time);
+    Serialise<decltype(play_time)>(general_data, play_time);
+
+    /* ... */
 
     general_data.EndWrite();
 }
