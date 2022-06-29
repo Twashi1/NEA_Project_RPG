@@ -1,7 +1,7 @@
 ﻿<?xml version="1.0" encoding="utf-8"?>
 <Project ToolsVersion="4.0" xmlns="http://schemas.microsoft.com/developer/msbuild/2003">
   <ItemGroup>
-    <ClCompile Include="src\Engine\Game.cpp">
+    <ClCompile Include="src\Engine\Engine.cpp">
       <Filter>Source\Game</Filter>
     </ClCompile>
     <ClCompile Include="src\Engine\Input.cpp">
@@ -69,7 +69,7 @@
     </ClCompile>
   </ItemGroup>
   <ItemGroup>
-    <ClInclude Include="src\Engine\Game.h">
+    <ClInclude Include="src\Engine\Engine.h">
       <Filter>Headers\Game</Filter>
     </ClInclude>
     <ClInclude Include="src\Engine\Input.h">
@@ -156,12 +156,6 @@
     <Filter Include="Resources">
       <UniqueIdentifier>{bc1d066e-beb9-4581-b5a4-d43716b5fd69}</UniqueIdentifier>
     </Filter>
-    <Filter Include="Resources\res">
-      <UniqueIdentifier>{778a7106-ca6c-4277-b7ea-7c2c9b12f2a4}</UniqueIdentifier>
-    </Filter>
-    <Filter Include="Resources\res\shaders">
-      <UniqueIdentifier>{f0ef84f0-0772-4c13-9db9-2fa9025fa971}</UniqueIdentifier>
-    </Filter>
     <Filter Include="Headers\Game">
       <UniqueIdentifier>{c1afd999-a3bb-48dc-b61b-b639b9a4f14f}</UniqueIdentifier>
     </Filter>
@@ -173,12 +167,6 @@
     </Filter>
     <Filter Include="Source\Rendering">
       <UniqueIdentifier>{28132a6a-30bf-4623-99a7-83f23bf1df8a}</UniqueIdentifier>
-    </Filter>
-    <Filter Include="Resources\res\fonts">
-      <UniqueIdentifier>{3aa5e1cf-9aa7-4c6b-a613-3a06c758a847}</UniqueIdentifier>
-    </Filter>
-    <Filter Include="Resources\res\saves">
-      <UniqueIdentifier>{b7029ea6-7b3a-47c0-b0f0-da1bf04d095a}</UniqueIdentifier>
     </Filter>
     <Filter Include="Source\Physics">
       <UniqueIdentifier>{032f1ec0-a666-46af-b3c0-507af3422bc8}</UniqueIdentifier>
@@ -192,51 +180,5 @@
     <Filter Include="Source\Miscellaneous">
       <UniqueIdentifier>{6a120f64-bd68-462b-86c8-2956923dd27d}</UniqueIdentifier>
     </Filter>
-    <Filter Include="Resources\res\scenes">
-      <UniqueIdentifier>{db7f6004-2335-4576-a99d-3492e94e911b}</UniqueIdentifier>
-    </Filter>
-  </ItemGroup>
-  <ItemGroup>
-    <None Include="res\shaders\colour_vertex.glsl">
-      <Filter>Resources\res\shaders</Filter>
-    </None>
-    <None Include="res\shaders\colour_frag.glsl">
-      <Filter>Resources\res\shaders</Filter>
-    </None>
-    <None Include="res\shaders\texture_frag.glsl">
-      <Filter>Resources\res\shaders</Filter>
-    </None>
-    <None Include="res\shaders\texture_vertex.glsl">
-      <Filter>Resources\res\shaders</Filter>
-    </None>
-    <None Include="res\shaders\uv_frag.glsl">
-      <Filter>Resources\res\shaders</Filter>
-    </None>
-    <None Include="res\shaders\uv_vertex.glsl">
-      <Filter>Resources\res\shaders</Filter>
-    </None>
-    <None Include="res\shaders\cellular_frag.glsl">
-      <Filter>Resources\res\shaders</Filter>
-    </None>
-    <None Include="res\shaders\cellular_vertex.glsl">
-      <Filter>Resources\res\shaders</Filter>
-    </None>
-    <None Include="res\shaders\text_frag.glsl">
-      <Filter>Resources\res\shaders</Filter>
-    </None>
-    <None Include="res\shaders\text_vertex.glsl">
-      <Filter>Resources\res\shaders</Filter>
-    </None>
-    <None Include="..\README.md">
-      <Filter>Resources</Filter>
-    </None>
-    <None Include="..\premake5.lua">
-      <Filter>Resources</Filter>
-    </None>
-  </ItemGroup>
-  <ItemGroup>
-    <Font Include="res\fonts\consola.ttf">
-      <Filter>Resources\res\fonts</Filter>
-    </Font>
   </ItemGroup>
 </Project>

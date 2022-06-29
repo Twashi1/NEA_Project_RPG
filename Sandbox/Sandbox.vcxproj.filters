@@ -13,10 +13,70 @@
       <UniqueIdentifier>{67DA6AB6-F800-4c08-8B7A-83BB121AAD01}</UniqueIdentifier>
       <Extensions>rc;ico;cur;bmp;dlg;rc2;rct;bin;rgs;gif;jpg;jpeg;jpe;resx;tiff;tif;png;wav;mfcribbon-ms</Extensions>
     </Filter>
+    <Filter Include="Resource Files\res">
+      <UniqueIdentifier>{ff7f7d83-50eb-4eb0-ac36-60ddf4d6e762}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="Resource Files\res\shaders">
+      <UniqueIdentifier>{ae975bb2-fc83-4eb3-8ebb-83cad95d6759}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="Resource Files\res\sprites">
+      <UniqueIdentifier>{8e1bf7de-dd9d-4dd4-8516-26a7cc3b5495}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="Resource Files\res\scenes">
+      <UniqueIdentifier>{4dc70d33-3158-48f7-a431-a3fc225f2c9f}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="Resource Files\res\saves">
+      <UniqueIdentifier>{1e8d5fbf-3ec2-4111-b6f4-540545e817d8}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="Resource Files\res\fonts">
+      <UniqueIdentifier>{0212cd58-c8f5-4784-b345-e535e8eb4c3f}</UniqueIdentifier>
+    </Filter>
   </ItemGroup>
   <ItemGroup>
     <ClCompile Include="src\main.cpp">
       <Filter>Source Files</Filter>
     </ClCompile>
+  </ItemGroup>
+  <ItemGroup>
+    <None Include="res\shaders\cellular_frag.glsl">
+      <Filter>Resource Files\res\shaders</Filter>
+    </None>
+    <None Include="res\shaders\cellular_vertex.glsl">
+      <Filter>Resource Files\res\shaders</Filter>
+    </None>
+    <None Include="res\shaders\colour_frag.glsl">
+      <Filter>Resource Files\res\shaders</Filter>
+    </None>
+    <None Include="res\shaders\colour_vertex.glsl">
+      <Filter>Resource Files\res\shaders</Filter>
+    </None>
+    <None Include="res\shaders\text_frag.glsl">
+      <Filter>Resource Files\res\shaders</Filter>
+    </None>
+    <None Include="res\shaders\text_vertex.glsl">
+      <Filter>Resource Files\res\shaders</Filter>
+    </None>
+    <None Include="res\shaders\texture_frag.glsl">
+      <Filter>Resource Files\res\shaders</Filter>
+    </None>
+    <None Include="res\shaders\texture_vertex.glsl">
+      <Filter>Resource Files\res\shaders</Filter>
+    </None>
+    <None Include="res\shaders\uv_frag.glsl">
+      <Filter>Resource Files\res\shaders</Filter>
+    </None>
+    <None Include="res\shaders\uv_vertex.glsl">
+      <Filter>Resource Files\res\shaders</Filter>
+    </None>
+  </ItemGroup>
+  <ItemGroup>
+    <Font Include="res\fonts\consola.ttf">
+      <Filter>Resource Files\res\fonts</Filter>
+    </Font>
+  </ItemGroup>
+  <ItemGroup>
+    <Text Include="res\saves\general.txt">
+      <Filter>Resource Files\res\saves</Filter>
+    </Text>
   </ItemGroup>
 </Project>

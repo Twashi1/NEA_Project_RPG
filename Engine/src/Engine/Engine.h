@@ -24,9 +24,9 @@
 #include "Rect.h"
 #include "VersionNumber.h"
 
-// TODO: shouldn't game be full static?
+// TODO: shouldn't engine be full static?
 
-class ENGINE_API Game {
+class ENGINE_API Engine {
     static std::string GENERAL_DATA_PATH;
 
     // Called when window is resized
@@ -35,7 +35,7 @@ class ENGINE_API Game {
     void m_DeserialiseGeneralData();
     // Checks all necessary directories exist
     void m_CheckDirectories();
-    // Initialises everything in Game
+    // Initialises everything in Engine
     void m_Start();
 
 public:
@@ -67,16 +67,16 @@ public:
     // General data (stuff that will be serialised/deserialised)
     // NOTE: order variables are listed in here should also be order of serialisation/deserialisation
     VersionNumber version_number = "v0.0.1"; // Version number (NOTE: every time version number is changed, serialised data is lost, since same format is not guaranteed)
-    double play_time;                        // How long game has been running
+    double play_time;                        // How long engine has been running
 
-    Game(int width, int height, int fps, bool enable_stats);
-    ~Game();
+    Engine(int width, int height, int fps, bool enable_stats);
+    ~Engine();
 
     // Updates screen, physics system, player, camera position, etc.
 	void Update();
     // TODO: useless now, just calls Renderer::Draw
     void Draw();
-    // Checks average time per frame, and will display warning if game is running behind
+    // Checks average time per frame, and will display warning if engine is running behind
     void PollPerformance(double dt);
     // Draws text displaying various performance information and debug information on screen
     void DrawStats();

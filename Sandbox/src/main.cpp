@@ -11,8 +11,8 @@ const int FPS = 144;
 
 int main(void)
 {
-    // Construct game instance
-    Game game(WIDTH, HEIGHT, FPS, true);
+    // Construct engine instance
+    Engine engine(WIDTH, HEIGHT, FPS, true);
 
     // DEBUG: quads
     Quad wall = Quad(500.0f, 500.0f, 100.0f, 500.0f, 0.25 * PI_CONST);
@@ -20,21 +20,21 @@ int main(void)
 
     // DEBUG: shaders
     Shader texture_shader("texture_vertex", "texture_frag");
-    texture_shader.SetUniformMat4fv("u_projMat", game.proj);
+    texture_shader.SetUniformMat4fv("u_projMat", engine.proj);
     texture_shader.SetUniform1f("u_Scale", 5);
 
     Shader cellular_shader("cellular_vertex", "cellular_frag");
-    cellular_shader.SetUniformMat4fv("u_projMat", game.proj);
-    cellular_shader.SetUniform2f("u_Resolution", game.width, game.height);
+    cellular_shader.SetUniformMat4fv("u_projMat", engine.proj);
+    cellular_shader.SetUniform2f("u_Resolution", engine.width, engine.height);
     cellular_shader.SetUniform1f("u_Scale", 5);
     cellular_shader.SetUniform1ui("u_Seed", 0);
 
     Shader colour_shader = Shader("colour_vertex", "colour_frag");
-    colour_shader.SetUniformMat4fv("u_projMat", game.proj);
+    colour_shader.SetUniformMat4fv("u_projMat", engine.proj);
     colour_shader.SetUniform3f("u_Color", COLORS::RED);
 
     Shader bg_shader = Shader("colour_vertex", "colour_frag");
-    bg_shader.SetUniformMat4fv("u_projMat", game.proj);
+    bg_shader.SetUniformMat4fv("u_projMat", engine.proj);
     bg_shader.SetUniform3f("u_Color", COLORS::BLUE * 0.5f);
 
     // DEBUG: renderables
@@ -43,13 +43,13 @@ int main(void)
 
     // DEBUG: add to physics system
     Body wallbody = Body(wall, true, 0.0f, 999);
-    game.physics.layers[0].push_back(std::shared_ptr<Body>(&wallbody));
+    engine.physics.layers[0].push_back(std::shared_ptr<Body>(&wallbody));
 
     // Loop until window is closed by user
-    while (game.IsRunning())
+    while (engine.IsRunning())
     {
-        bg_render.quad->SetCenter(game.player->quad->GetCenter()); // Make background quad follow player
-        game.Update(); // Update game
+        bg_render.quad->SetCenter(engine.player->quad->GetCenter()); // Make background quad follow player
+        engine.Update(); // Update engine
 
         // DEGUG: Rotate our example wall
         wallbody.angular_acc = 1.0f;
@@ -58,7 +58,7 @@ int main(void)
 
     Log("Window closed", Utilities::ERROR::INFO);
 
-    game.SerialiseGeneralData();
+    engine.SerialiseGeneralData();
 
     Log("Ending program", Utilities::ERROR::INFO);
 

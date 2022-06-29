@@ -1,8 +1,8 @@
-#include "Game.h"
+#include "Engine.h"
 
-std::string Game::GENERAL_DATA_PATH = "res/saves/general.txt";
+std::string Engine::GENERAL_DATA_PATH = "res/saves/general.txt";
 
-void Game::m_OnWindowResize(int nwidth, int nheight)
+void Engine::m_OnWindowResize(int nwidth, int nheight)
 {
     std::string text = std::format("Window dimensions changed to {}, {}", to_string(nwidth), to_string(nheight));
     Log(text, Utilities::ERROR::INFO);
@@ -23,7 +23,7 @@ void Game::m_OnWindowResize(int nwidth, int nheight)
     camera.offset = Vector2<float>(width, height) * 0.5f;
 }
 
-void Game::m_DeserialiseGeneralData()
+void Engine::m_DeserialiseGeneralData()
 {
     // First check if file exists
     if (Utilities::CheckFileExists(GENERAL_DATA_PATH)) {
@@ -53,7 +53,7 @@ void Game::m_DeserialiseGeneralData()
     play_time = 0.0;
 }
 
-void Game::m_CheckDirectories() {
+void Engine::m_CheckDirectories() {
     if (!Utilities::CheckDirectoryExists("res"))         Log("Resources folder not found; app not properly installed?", Utilities::ERROR::FATAL);
     if (!Utilities::CheckDirectoryExists("res/saves"))   Log("Saves folder not found; app not properly installed?", Utilities::ERROR::FATAL);
     if (!Utilities::CheckDirectoryExists("res/fonts"))   Log("Fonts folder not found; app not properly installed?", Utilities::ERROR::FATAL);
@@ -61,7 +61,7 @@ void Game::m_CheckDirectories() {
     if (!Utilities::CheckDirectoryExists("res/scenes"))  Log("Scenes folder not found; app not properly installed?", Utilities::ERROR::FATAL);
 }
 
-void Game::m_Start()
+void Engine::m_Start()
 {
     Log("Program starting", Utilities::ERROR::INFO);
 
@@ -149,7 +149,7 @@ void Game::m_Start()
     // Update projection uniform for all shaders
     ShaderManager::UpdateProjectionMatrix(proj);
 
-    // Deserialise general data about game
+    // Deserialise general data about engine
     m_DeserialiseGeneralData();
 
     // Allow transparency
@@ -157,10 +157,10 @@ void Game::m_Start()
     GlCall(glBlendFunc(GL_SRC_ALPHA, GL_ONE_MINUS_SRC_ALPHA));
 
     // Finished loading
-    Log(std::format("Loaded game on version: {}", to_string(version_number)), Utilities::ERROR::INFO);
+    Log(std::format("Loaded engine on version: {}", to_string(version_number)), Utilities::ERROR::INFO);
 }
 
-void Game::SerialiseGeneralData()
+void Engine::SerialiseGeneralData()
 {
     // Open file, creating new file if it doesn't exist already
     general_data.BeginWrite(GENERAL_DATA_PATH.c_str());
@@ -176,20 +176,20 @@ void Game::SerialiseGeneralData()
     general_data.EndWrite();
 }
 
-bool Game::IsRunning()
+bool Engine::IsRunning()
 {
     return !glfwWindowShouldClose(window);
 }
 
-Game::Game(int width, int height, int fps, bool enable_stats)
+Engine::Engine(int width, int height, int fps, bool enable_stats)
     : width(width), height(height), fps(fps), tpf(1.0/double(fps)), enable_stats(enable_stats)
 {
     m_Start();
 }
 
-Game::~Game()
+Engine::~Engine()
 {
-    Log("Game shutting down", Utilities::ERROR::INFO);
+    Log("Engine shutting down", Utilities::ERROR::INFO);
 
     SerialiseGeneralData();
 
@@ -201,10 +201,10 @@ Game::~Game()
 
     glfwTerminate();
     
-    // TODO: fix the errors which happen when deconstructing game
+    // TODO: fix the errors which happen when deconstructing engine
 }
 
-void Game::Update()
+void Engine::Update()
 {
     double start = glfwGetTime();
 
@@ -257,12 +257,12 @@ void Game::Update()
     play_time += tpf;
 }
 
-void Game::Draw()
+void Engine::Draw()
 {
     Renderer::Update();
 }
 
-void Game::PollPerformance(double dt)
+void Engine::PollPerformance(double dt)
 {
     // Update performance tracking variables
     frames_processed++;
@@ -284,7 +284,7 @@ void Game::PollPerformance(double dt)
     }
 }
 
-void Game::DrawStats()
+void Engine::DrawStats()
 {
     {
         double avg_tpf = (processing_time / frames_processed);

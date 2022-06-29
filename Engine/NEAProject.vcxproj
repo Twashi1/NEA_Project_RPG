@@ -22,7 +22,7 @@
     <ClCompile Include="src\Engine\Body.cpp" />
     <ClCompile Include="src\Engine\Camera.cpp" />
     <ClCompile Include="src\Engine\Collision.cpp" />
-    <ClCompile Include="src\Engine\Game.cpp" />
+    <ClCompile Include="src\Engine\Engine.cpp" />
     <ClCompile Include="src\Engine\IndexBuffer.cpp" />
     <ClCompile Include="src\Engine\Input.cpp" />
     <ClCompile Include="src\Engine\Noise.cpp" />
@@ -47,7 +47,7 @@
     <ClInclude Include="src\Engine\Camera.h" />
     <ClInclude Include="src\Engine\Collision.h" />
     <ClInclude Include="src\Engine.h" />
-    <ClInclude Include="src\Engine\Game.h" />
+    <ClInclude Include="src\Engine\Engine.h" />
     <ClInclude Include="src\Engine\IndexBuffer.h" />
     <ClInclude Include="src\Engine\Input.h" />
     <ClInclude Include="src\Engine\Noise.h" />
@@ -69,23 +69,6 @@
     <ClInclude Include="src\Engine\VersionNumber.h" />
     <ClInclude Include="src\Engine\VertexBuffer.h" />
     <ClInclude Include="src\Engine\World.h" />
-  </ItemGroup>
-  <ItemGroup>
-    <None Include="..\premake5.lua" />
-    <None Include="..\README.md" />
-    <None Include="res\shaders\cellular_frag.glsl" />
-    <None Include="res\shaders\cellular_vertex.glsl" />
-    <None Include="res\shaders\colour_frag.glsl" />
-    <None Include="res\shaders\colour_vertex.glsl" />
-    <None Include="res\shaders\texture_frag.glsl" />
-    <None Include="res\shaders\texture_vertex.glsl" />
-    <None Include="res\shaders\text_frag.glsl" />
-    <None Include="res\shaders\text_vertex.glsl" />
-    <None Include="res\shaders\uv_frag.glsl" />
-    <None Include="res\shaders\uv_vertex.glsl" />
-  </ItemGroup>
-  <ItemGroup>
-    <Font Include="res\fonts\consola.ttf" />
   </ItemGroup>
   <PropertyGroup Label="Globals">
     <VCProjectVersion>16.0</VCProjectVersion>

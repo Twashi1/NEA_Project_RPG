@@ -145,6 +145,24 @@
       <Project>{2e05089d-8f1b-4f1f-9b82-e37b1e84c4f2}</Project>
     </ProjectReference>
   </ItemGroup>
+  <ItemGroup>
+    <None Include="res\shaders\cellular_frag.glsl" />
+    <None Include="res\shaders\cellular_vertex.glsl" />
+    <None Include="res\shaders\colour_frag.glsl" />
+    <None Include="res\shaders\colour_vertex.glsl" />
+    <None Include="res\shaders\texture_frag.glsl" />
+    <None Include="res\shaders\texture_vertex.glsl" />
+    <None Include="res\shaders\text_frag.glsl" />
+    <None Include="res\shaders\text_vertex.glsl" />
+    <None Include="res\shaders\uv_frag.glsl" />
+    <None Include="res\shaders\uv_vertex.glsl" />
+  </ItemGroup>
+  <ItemGroup>
+    <Font Include="res\fonts\consola.ttf" />
+  </ItemGroup>
+  <ItemGroup>
+    <Text Include="res\saves\general.txt" />
+  </ItemGroup>
   <Import Project="$(VCTargetsPath)\Microsoft.Cpp.targets" />
   <ImportGroup Label="ExtensionTargets">
   </ImportGroup>
