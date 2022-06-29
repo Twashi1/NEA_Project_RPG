@@ -1,4 +1,5 @@
 #include "Rect.h"
+#include "Quad.h"
 
 Vector2<float> Rect::m_Offsets[4] = {
 	{-1.0f, -1.0f }, // Bottom left corner
@@ -101,6 +102,11 @@ bool Rect::Contains(const Vector2<float>& point) const
 
 	// If sum of triangle areas is equal to the area of the rectangle, then the point is within the rectangle
 	return Utilities::EqualBias(total_area, width * height, epsilon);
+}
+
+Rect::Rect()
+	: x(0.0f), y(0.0f), width(0.0f), height(0.0f), angle(0.0f)
+{
 }
 
 Rect::Rect(float x, float y, float width, float height, float angle)

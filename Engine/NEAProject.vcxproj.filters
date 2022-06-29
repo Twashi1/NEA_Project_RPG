@@ -2,10 +2,10 @@
 <Project ToolsVersion="4.0" xmlns="http://schemas.microsoft.com/developer/msbuild/2003">
   <ItemGroup>
     <ClCompile Include="src\Engine\Engine.cpp">
-      <Filter>Source\Game</Filter>
+      <Filter>Source\Engine</Filter>
     </ClCompile>
     <ClCompile Include="src\Engine\Input.cpp">
-      <Filter>Source\Game</Filter>
+      <Filter>Source\Engine</Filter>
     </ClCompile>
     <ClCompile Include="src\Engine\IndexBuffer.cpp">
       <Filter>Source\Rendering</Filter>
@@ -38,7 +38,7 @@
       <Filter>Source\Rendering</Filter>
     </ClCompile>
     <ClCompile Include="src\Engine\Player.cpp">
-      <Filter>Source\Game</Filter>
+      <Filter>Source\Engine</Filter>
     </ClCompile>
     <ClCompile Include="src\Engine\Noise.cpp">
       <Filter>Source\Miscellaneous</Filter>
@@ -64,13 +64,19 @@
     <ClCompile Include="src\Engine\VersionNumber.cpp">
       <Filter>Source\Miscellaneous</Filter>
     </ClCompile>
+    <ClCompile Include="src\Engine\Scene.cpp">
+      <Filter>Source\Engine</Filter>
+    </ClCompile>
+    <ClCompile Include="src\Engine\LevelEditor.cpp">
+      <Filter>Source\Engine</Filter>
+    </ClCompile>
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="src\Engine\Engine.h">
-      <Filter>Headers\Game</Filter>
+      <Filter>Headers\Engine</Filter>
     </ClInclude>
     <ClInclude Include="src\Engine\Input.h">
-      <Filter>Headers\Game</Filter>
+      <Filter>Headers\Engine</Filter>
     </ClInclude>
     <ClInclude Include="src\Engine\IndexBuffer.h">
       <Filter>Headers\Rendering</Filter>
@@ -106,7 +112,7 @@
       <Filter>Headers\Rendering</Filter>
     </ClInclude>
     <ClInclude Include="src\Engine\Player.h">
-      <Filter>Headers\Game</Filter>
+      <Filter>Headers\Engine</Filter>
     </ClInclude>
     <ClInclude Include="src\Engine\Noise.h">
       <Filter>Headers\Miscellaneous</Filter>
@@ -136,6 +142,12 @@
       <Filter>Headers\Miscellaneous</Filter>
     </ClInclude>
     <ClInclude Include="src\Engine.h" />
+    <ClInclude Include="src\Engine\Scene.h">
+      <Filter>Headers\Engine</Filter>
+    </ClInclude>
+    <ClInclude Include="src\Engine\LevelEditor.h">
+      <Filter>Headers\Engine</Filter>
+    </ClInclude>
   </ItemGroup>
   <ItemGroup>
     <Filter Include="Headers">
@@ -146,12 +158,6 @@
     </Filter>
     <Filter Include="Resources">
       <UniqueIdentifier>{bc1d066e-beb9-4581-b5a4-d43716b5fd69}</UniqueIdentifier>
-    </Filter>
-    <Filter Include="Headers\Game">
-      <UniqueIdentifier>{c1afd999-a3bb-48dc-b61b-b639b9a4f14f}</UniqueIdentifier>
-    </Filter>
-    <Filter Include="Source\Game">
-      <UniqueIdentifier>{f107eccc-57fa-4f69-85f3-345ffa8d4dc5}</UniqueIdentifier>
     </Filter>
     <Filter Include="Headers\Rendering">
       <UniqueIdentifier>{53823cab-cf2c-4b7a-9509-59ea88c18c56}</UniqueIdentifier>
@@ -170,6 +176,12 @@
     </Filter>
     <Filter Include="Source\Miscellaneous">
       <UniqueIdentifier>{6a120f64-bd68-462b-86c8-2956923dd27d}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="Source\Engine">
+      <UniqueIdentifier>{f107eccc-57fa-4f69-85f3-345ffa8d4dc5}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="Headers\Engine">
+      <UniqueIdentifier>{c1afd999-a3bb-48dc-b61b-b639b9a4f14f}</UniqueIdentifier>
     </Filter>
   </ItemGroup>
 </Project>

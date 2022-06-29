@@ -143,6 +143,12 @@ const IndexBuffer& Quad::GetIndexBuffer() const
 	return *ib;
 }
 
+Quad::Quad()
+	: m_Rect()
+{
+	m_ConstructBuffers();
+}
+
 Quad::Quad(float x, float y, float width, float height, float angle)
 	: m_Rect(x, y, width, height, angle)
 {

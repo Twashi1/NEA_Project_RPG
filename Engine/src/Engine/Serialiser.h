@@ -8,8 +8,10 @@
 #include <iostream>
 #include <array>
 
-#include "Tile.h"
 #include "VersionNumber.h"
+#include "Quad.h"
+#include "Rect.h"
+#include "Renderable.h"
 
 class ENGINE_API Serialiser {
 public:
@@ -44,7 +46,15 @@ void Serialise<std::string>(Serialiser& s, const std::string& data);
 
 // Template specialisation for VersionNumber
 template <>
-void Serialise<VersionNumber>(Serialiser& s, const VersionNumber& v);
+void Serialise<VersionNumber>(Serialiser& s, const VersionNumber& data);
+
+// Template specialisation for Rect
+template <>
+void Serialise<Rect>(Serialiser& s, const Rect& data);
+
+// Template specialisation for Quad
+template <>
+void Serialise<Quad>(Serialiser& s, const Quad& data);
 
 // Serialises a vector
 template <typename T>
@@ -102,13 +112,21 @@ void Deserialise(const Serialiser& s, T* memory)
 	delete[] readbuff; // Delete buffer after copying the data
 }
 
-// Deserialises a version number
+// Template specialisation for VersionNumber
 template <>
 void Deserialise<VersionNumber>(const Serialiser& s, VersionNumber* memory);
 
-// Deserialises a string and stores in "memory"
+// Template specialisation for std::string
 template <>
 void Deserialise<std::string>(const Serialiser& s, std::string* memory);
+
+// Template specialisation for Rect
+template <>
+void Deserialise<Rect>(const Serialiser& s, Rect* memory);
+
+// Template specialisation for Quad
+template <>
+void Deserialise<Quad>(const Serialiser& s, Quad* memory);
 
 // Deserialises a vector and stores in "memory"
 template <typename T>

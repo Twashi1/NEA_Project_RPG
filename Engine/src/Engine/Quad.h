@@ -25,6 +25,7 @@ public:
 	const VertexBuffer& GetVertexBuffer() const;
 	const IndexBuffer& GetIndexBuffer()   const;
 
+	Quad();
 	Quad(float x, float y, float width, float height, float angle);
 	Quad(const Vector2<float>& center, const Vector2<float>& dim, float angle);
 	Quad(const Rect& rect);

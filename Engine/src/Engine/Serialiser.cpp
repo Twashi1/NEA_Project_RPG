@@ -34,6 +34,28 @@ void Deserialise<std::string>(const Serialiser& s, std::string* memory)
 	*memory = buffer;
 }
 
+template<>
+void Deserialise(const Serialiser& s, Rect* memory)
+{
+	float x, y, width, height, angle;
+	Deserialise<float>(s, &x);
+	Deserialise<float>(s, &y);
+	Deserialise<float>(s, &width);
+	Deserialise<float>(s, &height);
+	Deserialise<float>(s, &angle);
+
+	*memory = Rect(x, y, width, height, angle);
+}
+
+template<>
+void Deserialise(const Serialiser& s, Quad* memory)
+{
+	Rect rect;
+	Deserialise<Rect>(s, &rect);
+
+	*memory = Quad(Rect(rect)); // Using a copy constructor to ensure everything is being properly initialised
+}
+
 template <>
 void Deserialise<VersionNumber>(const Serialiser& s, VersionNumber* memory)
 {
@@ -58,4 +80,20 @@ void Serialise<VersionNumber>(Serialiser& s, const VersionNumber& v)
 	Serialise<uint16_t>(s, v.major);
 	Serialise<uint16_t>(s, v.minor);
 	Serialise<uint16_t>(s, v.patch);
+}
+
+template<>
+void Serialise(Serialiser& s, const Rect& data)
+{
+	Serialise<float>(s, data.GetX());
+	Serialise<float>(s, data.GetY());
+	Serialise<float>(s, data.GetWidth());
+	Serialise<float>(s, data.GetHeight());
+	Serialise<float>(s, data.GetAngle());
+}
+
+template<>
+void Serialise(Serialiser& s, const Quad& data)
+{
+	Serialise<Rect>(s, data.GetRect());
 }

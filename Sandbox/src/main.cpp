@@ -1,6 +1,3 @@
-// Sandbox.cpp : This file contains the 'main' function. Program execution begins and ends there.
-//
-
 #include <iostream>
 #include <Engine.h>
 
@@ -8,6 +5,31 @@ constexpr float PI_CONST = 3.14159265358979323846f;
 const int WIDTH = 1080;
 const int HEIGHT = 720;
 const int FPS = 144;
+
+/*
+TODOs:
+
+# Engine
+Level editor
+Buttons
+Panels
+GUI
+Pathfinding
+Sprites
+Animations
+Scenes
+Ambient particles
+Texture atlas API
+Sound API
+Physics System update (impulse resolution)
+Post-processing
+
+# Game
+World
+Save files
+Control config
+Options and general config
+*/
 
 int main(void)
 {

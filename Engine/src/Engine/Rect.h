@@ -3,7 +3,10 @@
 #include "Vector2.h"
 #include "Utilities.h"
 
+struct Quad;
+
 struct ENGINE_API Rect {
+private:
 	static Vector2<float> m_Offsets[4];
 
 	// Store as vector2, or x, y
@@ -22,6 +25,7 @@ struct ENGINE_API Rect {
 	float cos_angle = 0.0f, sin_angle = 1.0f; // Store precomputed values for cos/sin of angle
 
 	void m_UpdateTrig(); // Updates precomputed values for cos/sin of angle
+
 public:
 	// For indexing the return value of GetVertices
 	enum VERTEX : int {
@@ -63,6 +67,7 @@ public:
 
 	bool IsIntersecting(const Rect& rect) const;
 
+	Rect();
 	Rect(float x, float y, float width, float height, float angle);
 	Rect(const Vector2<float>& center, const Vector2<float>& dim, float angle);
 	Rect(const Rect& other);
@@ -79,6 +84,7 @@ public:
 
 	friend bool operator==(const Rect& a, const Rect& b);
 	friend std::string to_string(const Rect& rect);
+	friend Quad;
 };
 
 bool operator==(const Rect& a, const Rect& b);
