@@ -101,11 +101,6 @@ struct Vector2 {
 	// Normalise this vector
 	void normalise() { T inverse_magnitude = 1.0f / magnitude(); x *= inverse_magnitude; y *= inverse_magnitude; }
 
-	std::string ToString() const
-	{
-		return std::format("[{}, {}]", std::to_string(Utilities::Round(x, 3)), std::to_string(Utilities::Round(y, 3)));
-	}
-
 	operator Vector2<int>()			 { return Vector2<int>((int)x, (int)y);							   }
 	operator Vector2<long>()		 { return Vector2<long>((long)x, (long)y);						   }
 	operator Vector2<float>()		 { return Vector2<float>((float)x, (float)y);					   }
@@ -113,6 +108,11 @@ struct Vector2 {
 	operator Vector2<unsigned int>() { return Vector2<unsigned int>((unsigned int)x, (unsigned int)y); }
 	operator Vector2<std::uint8_t>() { return Vector2<std::uint8_t>((std::uint8_t)x, (std::uint8_t)y); }
 };
+
+template <typename T>
+std::string to_string(const Vector2<T>& v) {
+	return std::format("[{}, {}]", to_string(Utilities::Round(v.x, 3)), to_string(Utilities::Round(v.y, 3)));
+}
 
 template <typename T>
 std::ostream& operator<<(std::ostream& os, const Vector2<T>& vec) {

@@ -6,12 +6,16 @@
 #include <fstream>
 #include <iostream>
 #include <format>
-#include "Vector3.h"
 
 #define Log(msg, error_type) m_Log(msg, error_type, __FUNCSIG__, __LINE__);
 
+using std::to_string;
+
 template <typename T>
 struct Vector2;
+
+template <typename T>
+struct Vector3;
 
 class COLORS {
 public:

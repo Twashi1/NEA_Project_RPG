@@ -104,6 +104,11 @@ struct Vector3 {
 };
 
 template <typename T>
+std::string to_string(const Vector3<T>& v) {
+	return std::format("[{}, {}, {}]", to_string(Utilities::Round(v.x, 3)), to_string(Utilities::Round(v.y, 3)), to_string(Utilities::Round(v.z, 3)));
+}
+
+template <typename T>
 std::ostream& operator<<(std::ostream& os, const Vector3<T>& vec) {
 	os << "[" << vec.x << ", " << vec.y << ", " << vec.z << "]";
 

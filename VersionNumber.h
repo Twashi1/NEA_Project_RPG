@@ -19,11 +19,11 @@ public:
     VersionNumber(const std::string& version_string);
     VersionNumber(const VersionNumber& other);
 
-    std::string ToString() const;
-
     void operator=(const char* version_string);
     void operator=(const std::string& version_string);
 };
+
+std::string to_string(const VersionNumber& version_number);
 
 bool operator==(const VersionNumber& a, const VersionNumber& b);
 

@@ -78,8 +78,8 @@ public:
 	}
 
 	friend bool operator==(const Rect& a, const Rect& b);
-	
-	std::string ToString() const;
+	friend std::string to_string(const Rect& rect);
 };
 
 bool operator==(const Rect& a, const Rect& b);
+std::string to_string(const Rect& rect);

@@ -232,9 +232,9 @@ const Rect& Quad::GetRect() const
 	return m_Rect;
 }
 
-std::string Quad::ToString() const
+std::string to_string(const Quad& quad)
 {
-	return m_Rect.ToString();
+	return to_string(quad.m_Rect);
 }
 
 bool operator==(const Quad& a, const Quad& b)

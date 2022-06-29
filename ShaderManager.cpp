@@ -24,7 +24,7 @@ void ShaderManager::RemoveIndex(int index)
 		m_Shaders.erase(m_Shaders.begin() + index);
 	}
 	else {
-		std::string text = std::format("Index out of bounds: {} > {}", std::to_string(index), std::to_string(m_Shaders.size()));
+		std::string text = std::format("Index out of bounds: {} > {}", to_string(index), to_string(m_Shaders.size()));
 		Log(text, Utilities::ERROR::FATAL);
 	}
 }

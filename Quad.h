@@ -69,10 +69,11 @@ public:
 	bool IsIntersecting(const Quad& quad) const;
 
 	friend bool operator==(const Quad& a, const Quad& b);
-
-	std::string ToString() const;
+	friend std::string to_string(const Quad& quad);
 
 	friend Body; // So that Body can access m_Rect;
 };
+
+std::string to_string(const Quad& quad);
 
 bool operator==(const Quad& a, const Quad& b);

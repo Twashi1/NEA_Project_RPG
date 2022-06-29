@@ -82,7 +82,7 @@ int main(void)
     // Construct game instance
     Game game(WIDTH, HEIGHT, FPS, true);
     {
-        Log(std::format("Loaded game on version: {}", game.version_number.ToString()), Utilities::ERROR::INFO);
+        Log(std::format("Loaded game on version: {}", to_string(game.version_number)), Utilities::ERROR::INFO);
     }
 
     // DEBUG: quads

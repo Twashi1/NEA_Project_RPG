@@ -1,5 +1,10 @@
 #include "VersionNumber.h"
 
+std::string to_string(const VersionNumber& version_number)
+{
+    return std::format("v{}.{}.{}", to_string(version_number.major), to_string(version_number.minor), to_string(version_number.patch));
+}
+
 bool operator==(const VersionNumber& a, const VersionNumber& b)
 {
     return a.major == b.major && a.minor == b.minor && a.patch == b.patch;
@@ -45,11 +50,6 @@ VersionNumber::VersionNumber(const std::string& version_string)
 VersionNumber::VersionNumber(const VersionNumber & other)
     : major(other.major), minor(other.minor), patch(other.patch)
 {}
-
-std::string VersionNumber::ToString() const
-{
-    return std::format("v{}.{}.{}", std::to_string(major), std::to_string(minor), std::to_string(patch));
-}
 
 void VersionNumber::operator=(const char* version_string)
 {

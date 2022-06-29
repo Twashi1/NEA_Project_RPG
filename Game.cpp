@@ -4,7 +4,7 @@ std::string Game::GENERAL_DATA_PATH = "res/saves/general.txt";
 
 void Game::m_OnWindowResize(int nwidth, int nheight)
 {
-    std::string text = std::format("Window dimensions changed to {}, {}", std::to_string(nwidth), std::to_string(nheight));
+    std::string text = std::format("Window dimensions changed to {}, {}", to_string(nwidth), to_string(nheight));
     Log(text, Utilities::ERROR::INFO);
 
     // Update window dimensions
@@ -80,7 +80,7 @@ Game::Game(int width, int height, int fps, bool enable_stats)
         Log("Couldn't initialise GLFW library", Utilities::ERROR::FATAL);
 
     // Create window
-    std::string title = std::format("RPG Game {}", version_number.ToString());
+    std::string title = std::format("RPG Game {}", to_string(version_number));
     window = glfwCreateWindow(width, height, title.c_str(), NULL, NULL);
 
     if (!window) {
@@ -272,7 +272,7 @@ void Game::DrawStats()
         if (avg_tpf > tpf) { color = COLORS::RED * 255; }
         else if (avg_tpf > tpf * 0.7) { color = COLORS::YELLOW * 255; }
 
-        std::string text = std::format("Average time per frame: {}ms", std::to_string(avg_tpf_ms));
+        std::string text = std::format("Average time per frame: {}ms", to_string(avg_tpf_ms));
         Renderer::DrawText(text, Vector2<int>(5, height - 15), 0.25, color, *text_shader, *consolas_font);
     }
 
@@ -283,7 +283,7 @@ void Game::DrawStats()
         if (percentage_processing > 100) { color = COLORS::RED * 255; }
         else if (percentage_processing > 70) { color = COLORS::YELLOW * 255; }
 
-        std::string text = std::format("Processing time: {}", std::to_string(percentage_processing));
+        std::string text = std::format("Processing time: {}", to_string(percentage_processing));
         Renderer::DrawText(text, Vector2<int>(5, height - 30), 0.25, color, *text_shader, *consolas_font);
     }
 
@@ -308,35 +308,35 @@ void Game::DrawStats()
     {
         Vector2<float> player_position = Utilities::Round(player->quad->GetCenter(), 2);
 
-        std::string text = std::format("Player position: {}", player_position.ToString());
+        std::string text = std::format("Player position: {}", to_string(player_position));
         Renderer::DrawText(text, Vector2<int>(5, height - 100), 0.25, COLORS::WHITE, *text_shader, *consolas_font);
     }
 
     {
         Vector2<float> player_velocity = Utilities::Round(player->body->vel, 2);
 
-        std::string text = std::format("Player velocity: {}", player_velocity.ToString());
+        std::string text = std::format("Player velocity: {}", to_string(player_velocity));
         Renderer::DrawText(text, Vector2<int>(5, height - 115), 0.25, COLORS::WHITE, *text_shader, *consolas_font);
     }
 
     {
         Vector2<float> player_acceleration = Utilities::Round(player->body->acc, 2);
 
-        std::string text = std::format("Player acceleration: {}", player_acceleration.ToString());
+        std::string text = std::format("Player acceleration: {}", to_string(player_acceleration));
         Renderer::DrawText(text, Vector2<int>(5, height - 130), 0.25, COLORS::WHITE, *text_shader, *consolas_font);
     }
 
     {
         Quad player_quad = *player->body->rect;
 
-        std::string text = std::format("Player quad: {}", player_quad.ToString());
+        std::string text = std::format("Player quad: {}", to_string(player_quad));
         Renderer::DrawText(text, Vector2<int>(5, height - 145), 0.25, COLORS::WHITE, *text_shader, *consolas_font);
     }
 
     {
         Quad wall_quad = *physics.layers[0][1]->rect;
 
-        std::string text = std::format("Wall quad: {}", wall_quad.ToString());
+        std::string text = std::format("Wall quad: {}", to_string(wall_quad));
         Renderer::DrawText(text, Vector2<int>(5, height - 160), 0.25, COLORS::WHITE, *text_shader, *consolas_font);
     }
 }

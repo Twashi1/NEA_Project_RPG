@@ -115,16 +115,6 @@ Rect::Rect(const Rect& other)
 	m_UpdateTrig();
 }
 
-std::string Rect::ToString() const
-{
-	return std::format("[{}, {}, {}, {}]",
-		BottomLeft().ToString(),
-		BottomRight().ToString(), 
-		TopRight().ToString(),
-		TopLeft().ToString()
-	);
-}
-
 Rect::Rect(const Vector2<float>& center, const Vector2<float>& dim, float angle)
 	: center(center), dim(dim), angle(angle)
 {
@@ -199,6 +189,16 @@ bool operator==(const Rect& a, const Rect& b)
 	return a.x == b.x && a.y == b.y
 		&& a.width == b.width && a.height == b.height
 		&& a.angle == b.angle;
+}
+
+std::string to_string(const Rect& rect)
+{
+	return std::format("[{}, {}, {}, {}]",
+		to_string(rect.BottomLeft()),
+		to_string(rect.BottomRight()),
+		to_string(rect.TopRight()),
+		to_string(rect.TopLeft())
+	);
 }
 
 void Rect::SetCenter(float nx, float ny)
