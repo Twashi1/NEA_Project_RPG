@@ -16,12 +16,13 @@ public:
     std::shared_ptr<Quad> quad; // Describes the location and dimensions of object to render
     Shader* shader;             // Pointer to shader
     bool isVisible = true;      // Determines if renerable will be drawn
-    bool isGameWorld = true;    // If renderable exists in game world (should it be transformed by the camera
+    bool isGameWorld = true;    // If renderable exists in game world (if its not in the game world, it won't be transformed by the camera)
 
     Renderable(std::shared_ptr<Quad> quad, Shader* shader, int z);
     Renderable(std::shared_ptr<Quad> quad, Shader* shader, int z, bool isGameWorld);
     Renderable(std::shared_ptr<Quad> quad, Shader* shader, int z, bool isGameWorld, bool isVisible);
 
+    // Set new z value
     void SetZ(int nz);
 
     ~Renderable();
