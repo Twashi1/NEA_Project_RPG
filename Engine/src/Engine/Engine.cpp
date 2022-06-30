@@ -5,7 +5,7 @@ std::string Engine::GENERAL_DATA_PATH = "res/saves/general.txt";
 void Engine::m_OnWindowResize(int nwidth, int nheight)
 {
     std::string text = std::format("Window dimensions changed to {}, {}", to_string(nwidth), to_string(nheight));
-    Log(text, Utilities::ERROR::INFO);
+    Log(text, Utils::ERROR::INFO);
 
     // Update window dimensions
     width = nwidth; height = nheight;
@@ -26,7 +26,7 @@ void Engine::m_OnWindowResize(int nwidth, int nheight)
 void Engine::m_DeserialiseGeneralData()
 {
     // First check if file exists
-    if (Utilities::CheckFileExists(GENERAL_DATA_PATH)) {
+    if (Utils::CheckFileExists(GENERAL_DATA_PATH)) {
         general_data.BeginRead(GENERAL_DATA_PATH.c_str());
 
         // Deserialise VersionNumber object
@@ -54,16 +54,16 @@ void Engine::m_DeserialiseGeneralData()
 }
 
 void Engine::m_CheckDirectories() {
-    if (!Utilities::CheckDirectoryExists("res"))         Log("Resources folder not found; app not properly installed?", Utilities::ERROR::FATAL);
-    if (!Utilities::CheckDirectoryExists("res/saves"))   Log("Saves folder not found; app not properly installed?", Utilities::ERROR::FATAL);
-    if (!Utilities::CheckDirectoryExists("res/fonts"))   Log("Fonts folder not found; app not properly installed?", Utilities::ERROR::FATAL);
-    if (!Utilities::CheckDirectoryExists("res/shaders")) Log("Shaders folder not found; app not properly installed?", Utilities::ERROR::FATAL);
-    if (!Utilities::CheckDirectoryExists("res/scenes"))  Log("Scenes folder not found; app not properly installed?", Utilities::ERROR::FATAL);
+    if (!Utils::CheckDirectoryExists("res"))         Log("Resources folder not found; app not properly installed?", Utils::ERROR::FATAL);
+    if (!Utils::CheckDirectoryExists("res/saves"))   Log("Saves folder not found; app not properly installed?", Utils::ERROR::FATAL);
+    if (!Utils::CheckDirectoryExists("res/fonts"))   Log("Fonts folder not found; app not properly installed?", Utils::ERROR::FATAL);
+    if (!Utils::CheckDirectoryExists("res/shaders")) Log("Shaders folder not found; app not properly installed?", Utils::ERROR::FATAL);
+    if (!Utils::CheckDirectoryExists("res/scenes"))  Log("Scenes folder not found; app not properly installed?", Utils::ERROR::FATAL);
 }
 
 void Engine::m_Start()
 {
-    Log("Program starting", Utilities::ERROR::INFO);
+    Log("Program starting", Utils::ERROR::INFO);
 
     // Set shader statics
     Shader::PATH = "res/shaders/";
@@ -74,7 +74,7 @@ void Engine::m_Start()
 
     // Initialise glfw library, if it doesn't succeed, exit program
     if (!glfwInit())
-        Log("Couldn't initialise GLFW library", Utilities::ERROR::FATAL);
+        Log("Couldn't initialise GLFW library", Utils::ERROR::FATAL);
 
     // Create window
     std::string title = std::format("RPG Game {}", to_string(version_number));
@@ -83,7 +83,7 @@ void Engine::m_Start()
     if (!window) {
         // Terminate glfw if window couldn't be created
         glfwTerminate();
-        Log("Window couldn't be created", Utilities::ERROR::FATAL);
+        Log("Window couldn't be created", Utils::ERROR::FATAL);
     }
 
     // Make the window's context current
@@ -157,7 +157,7 @@ void Engine::m_Start()
     GlCall(glBlendFunc(GL_SRC_ALPHA, GL_ONE_MINUS_SRC_ALPHA));
 
     // Finished loading
-    Log(std::format("Loaded engine on version: {}", to_string(version_number)), Utilities::ERROR::INFO);
+    Log(std::format("Loaded engine on version: {}", to_string(version_number)), Utils::ERROR::INFO);
 }
 
 void Engine::SerialiseGeneralData()
@@ -189,7 +189,7 @@ Engine::Engine(int width, int height, int fps, bool enable_stats)
 
 Engine::~Engine()
 {
-    Log("Engine shutting down", Utilities::ERROR::INFO);
+    Log("Engine shutting down", Utils::ERROR::INFO);
 
     SerialiseGeneralData();
 
@@ -274,8 +274,8 @@ void Engine::PollPerformance(double dt)
 
         // If average time per frame is more than max time per frame, we're running behind so display a message
         if (average_tpf > tpf) {
-            std::string text = std::format("Running behind by {}ms", Utilities::Round((average_tpf - tpf) * 1000, 3));
-            Log(text, Utilities::ERROR::WARNING);
+            std::string text = std::format("Running behind by {}ms", Utils::Round((average_tpf - tpf) * 1000, 3));
+            Log(text, Utils::ERROR::WARNING);
         }
 
         // Reset trackers
@@ -288,7 +288,7 @@ void Engine::DrawStats()
 {
     {
         double avg_tpf = (processing_time / frames_processed);
-        double avg_tpf_ms = Utilities::Round(avg_tpf * 1000.0, 3);
+        double avg_tpf_ms = Utils::Round(avg_tpf * 1000.0, 3);
 
         Vector3<float> color = COLORS::WHITE;
         if (avg_tpf > tpf) { color = COLORS::RED * 255; }
@@ -299,7 +299,7 @@ void Engine::DrawStats()
     }
 
     {
-        double percentage_processing = Utilities::Round((processing_time / (tpf * frames_processed)) * 100.0f, 2);
+        double percentage_processing = Utils::Round((processing_time / (tpf * frames_processed)) * 100.0f, 2);
 
         Vector3<float> color = COLORS::WHITE;
         if (percentage_processing > 100) { color = COLORS::RED * 255; }
@@ -328,21 +328,21 @@ void Engine::DrawStats()
     }
 
     {
-        Vector2<float> player_position = Utilities::Round(player->quad->GetCenter(), 2);
+        Vector2<float> player_position = Utils::Round(player->quad->GetCenter(), 2);
 
         std::string text = std::format("Player position: {}", to_string(player_position));
         Renderer::DrawText(text, Vector2<int>(5, height - 100), 0.25, COLORS::WHITE, *text_shader, *consolas_font);
     }
 
     {
-        Vector2<float> player_velocity = Utilities::Round(player->body->vel, 2);
+        Vector2<float> player_velocity = Utils::Round(player->body->vel, 2);
 
         std::string text = std::format("Player velocity: {}", to_string(player_velocity));
         Renderer::DrawText(text, Vector2<int>(5, height - 115), 0.25, COLORS::WHITE, *text_shader, *consolas_font);
     }
 
     {
-        Vector2<float> player_acceleration = Utilities::Round(player->body->acc, 2);
+        Vector2<float> player_acceleration = Utils::Round(player->body->acc, 2);
 
         std::string text = std::format("Player acceleration: {}", to_string(player_acceleration));
         Renderer::DrawText(text, Vector2<int>(5, height - 130), 0.25, COLORS::WHITE, *text_shader, *consolas_font);

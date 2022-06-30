@@ -34,12 +34,14 @@ void Input::m_UpdateListener(Listener& listener, int current_action, float dt)
 
 void Input::AddKeyListener(int key)
 {
-	key_listeners[key] = Listener();
+	// If key is not already in our listeners, add
+	if (!key_listeners.contains(key)) key_listeners[key] = Listener();
 }
 
 void Input::AddMouseListener(int btn)
 {
-	mouse_listeners[btn] = Listener();
+	// If btn is not already in our listeners, add
+	if (!mouse_listeners.contains(btn)) mouse_listeners[btn] = Listener();
 }
 
 Input::State Input::GetKeyState(int key)
@@ -53,7 +55,7 @@ Input::State Input::GetKeyState(int key)
 		return it->second.state;
 	}
 
-	Log(std::format("Couldn't find key {}", to_string(key)), Utilities::ERROR::WARNING);
+	Log(std::format("Couldn't find key {}", to_string(key)), Utils::ERROR::WARNING);
 
 	return State::NONE;
 }
@@ -69,7 +71,7 @@ Input::State Input::GetMouseState(int button)
 		return it->second.state;
 	}
 
-	Log(std::format("Couldn't find button {}", to_string(button)), Utilities::ERROR::WARNING);
+	Log(std::format("Couldn't find button {}", to_string(button)), Utils::ERROR::WARNING);
 
 	return State::NONE;
 }

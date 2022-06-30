@@ -56,7 +56,7 @@ std::vector<Vector2<float>> Rect::GetVertices() const
 	Vector2<float> halfdim = dim * 0.5f; // half width/height
 	
 	for (int i = 0; i < 4; i++) {
-		vertices[i] = Utilities::RotatePointPrecomp(
+		vertices[i] = Utils::RotatePointPrecomp(
 			center + (halfdim * m_Offsets[i]), // Calculate vertex coordinates
 			center, cos_angle, sin_angle
 		);
@@ -67,22 +67,22 @@ std::vector<Vector2<float>> Rect::GetVertices() const
 
 Vector2<float> Rect::BottomLeft() const
 {
-	return Utilities::RotatePointPrecomp(center + (dim * 0.5f * m_Offsets[VERTEX::BOTTOMLEFT]), center, cos_angle, sin_angle);
+	return Utils::RotatePointPrecomp(center + (dim * 0.5f * m_Offsets[VERTEX::BOTTOMLEFT]), center, cos_angle, sin_angle);
 }
 
 Vector2<float> Rect::BottomRight() const
 {
-	return Utilities::RotatePointPrecomp(center + (dim * 0.5f * m_Offsets[VERTEX::BOTTOMRIGHT]), center, cos_angle, sin_angle);
+	return Utils::RotatePointPrecomp(center + (dim * 0.5f * m_Offsets[VERTEX::BOTTOMRIGHT]), center, cos_angle, sin_angle);
 }
 
 Vector2<float> Rect::TopRight() const
 {
-	return Utilities::RotatePointPrecomp(center + (dim * 0.5f * m_Offsets[VERTEX::TOPRIGHT]), center, cos_angle, sin_angle);
+	return Utils::RotatePointPrecomp(center + (dim * 0.5f * m_Offsets[VERTEX::TOPRIGHT]), center, cos_angle, sin_angle);
 }
 
 Vector2<float> Rect::TopLeft() const
 {
-	return Utilities::RotatePointPrecomp(center + (dim * 0.5f * m_Offsets[VERTEX::TOPLEFT]), center, cos_angle, sin_angle);
+	return Utils::RotatePointPrecomp(center + (dim * 0.5f * m_Offsets[VERTEX::TOPLEFT]), center, cos_angle, sin_angle);
 }
 
 bool Rect::Contains(const Vector2<float>& point) const
@@ -92,16 +92,16 @@ bool Rect::Contains(const Vector2<float>& point) const
 	std::vector<Vector2<float>> vertices = GetVertices();
 
 	// Calculate triangle areas (where A, B, C, D = 0, 1, 2, 3)
-	float apd = Utilities::TriangleArea(vertices[0], point, vertices[3]); // Triangle APD
-	float dpc = Utilities::TriangleArea(vertices[3], point, vertices[2]); // Triangle DPC
-	float cpb = Utilities::TriangleArea(vertices[2], point, vertices[1]); // Triangle CPB
-	float pba = Utilities::TriangleArea(point, vertices[1], vertices[0]); // Triangle PBA
+	float apd = Utils::TriangleArea(vertices[0], point, vertices[3]); // Triangle APD
+	float dpc = Utils::TriangleArea(vertices[3], point, vertices[2]); // Triangle DPC
+	float cpb = Utils::TriangleArea(vertices[2], point, vertices[1]); // Triangle CPB
+	float pba = Utils::TriangleArea(point, vertices[1], vertices[0]); // Triangle PBA
 
 	// Sum triangle areas
 	float total_area = apd + dpc + cpb + pba;
 
 	// If sum of triangle areas is equal to the area of the rectangle, then the point is within the rectangle
-	return Utilities::EqualBias(total_area, width * height, epsilon);
+	return Utils::EqualBias(total_area, width * height, epsilon);
 }
 
 Rect::Rect()

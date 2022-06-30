@@ -33,7 +33,7 @@
     <ClCompile Include="src\Engine\Rect.cpp" />
     <ClCompile Include="src\Engine\Renderable.cpp" />
     <ClCompile Include="src\Engine\Renderer.cpp" />
-    <ClCompile Include="src\Engine\Scene.cpp" />
+    <ClCompile Include="src\Engine\Button.cpp" />
     <ClCompile Include="src\Engine\Serialiser.cpp" />
     <ClCompile Include="src\Engine\Shader.cpp" />
     <ClCompile Include="src\Engine\Font.cpp" />
@@ -49,6 +49,7 @@
     <ClInclude Include="src\Engine\Collision.h" />
     <ClInclude Include="src\Engine.h" />
     <ClInclude Include="src\Engine\Engine.h" />
+    <ClInclude Include="src\Engine\GUIManager.h" />
     <ClInclude Include="src\Engine\IndexBuffer.h" />
     <ClInclude Include="src\Engine\Input.h" />
     <ClInclude Include="src\Engine\LevelEditor.h" />
@@ -59,7 +60,7 @@
     <ClInclude Include="src\Engine\Rect.h" />
     <ClInclude Include="src\Engine\Renderable.h" />
     <ClInclude Include="src\Engine\Renderer.h" />
-    <ClInclude Include="src\Engine\Scene.h" />
+    <ClInclude Include="src\Engine\Button.h" />
     <ClInclude Include="src\Engine\Serialiser.h" />
     <ClInclude Include="src\Engine\Shader.h" />
     <ClInclude Include="src\Engine\Font.h" />

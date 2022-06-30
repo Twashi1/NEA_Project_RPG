@@ -2,47 +2,49 @@
 #include "Vector2.h"
 #include "Vector3.h"
 
-Vector3<float> COLORS::BLACK  = { 0.00, 0.00, 0.00 };
-Vector3<float> COLORS::WHITE  = { 1.00, 1.00, 1.00 };
-Vector3<float> COLORS::RED    = { 1.00, 0.00, 0.00 };
-Vector3<float> COLORS::GREEN  = { 0.00, 1.00, 0.00 };
-Vector3<float> COLORS::BLUE   = { 0.00, 0.00, 1.00 };
-Vector3<float> COLORS::YELLOW = { 1.00, 1.00, 0.00 };
-Vector3<float> COLORS::ORANGE = { 1.00, 0.65, 0.00 };
-Vector3<float> COLORS::PURPLE = { 1.00, 0.00, 1.00 };
+Vector3<float> COLORS::BLACK  =   { 0.00, 0.00, 0.00 };
+Vector3<float> COLORS::WHITE  =   { 1.00, 1.00, 1.00 };
+Vector3<float> COLORS::RED    =   { 1.00, 0.00, 0.00 };
+Vector3<float> COLORS::GREEN  =   { 0.00, 1.00, 0.00 };
+Vector3<float> COLORS::BLUE   =   { 0.00, 0.00, 1.00 };
+Vector3<float> COLORS::YELLOW =   { 1.00, 1.00, 0.00 };
+Vector3<float> COLORS::ORANGE =   { 1.00, 0.65, 0.00 };
+Vector3<float> COLORS::PURPLE =   { 1.00, 0.00, 1.00 };
+Vector3<float> COLORS::GRAY =	  { 0.20, 0.20, 0.20 };
+Vector3<float> COLORS::DARKGRAY = { 0.12, 0.12, 0.12 };
 
-std::ostream& Utilities::operator<<(std::ostream& os, const Utilities::ERROR& error)
+std::ostream& Utils::operator<<(std::ostream& os, const Utils::ERROR& error)
 {
 	switch (error) {
-	case Utilities::ERROR::INFO:
+	case Utils::ERROR::INFO:
 		os << "INFO"; break;
-	case Utilities::ERROR::WARNING:
+	case Utils::ERROR::WARNING:
 		os << "WARNING"; break;
-	case Utilities::ERROR::FATAL:
+	case Utils::ERROR::FATAL:
 		os << "FATAL"; break;
 	}
 
 	return os;
 }
 
-bool Utilities::CheckFileExists(const std::string& path)
+bool Utils::CheckFileExists(const std::string& path)
 {
 	// Faster than std::filesystem::exists
 	struct stat buffer;
 	return !stat(path.c_str(), &buffer);
 }
 
-bool Utilities::CheckDirectoryExists(const std::string& path)
+bool Utils::CheckDirectoryExists(const std::string& path)
 {
 	return std::filesystem::exists(path);
 }
 
-void Utilities::CreateDirectory(const std::string& path)
+void Utils::CreateDirectory(const std::string& path)
 {
 	std::filesystem::create_directory(path);
 }
 
-Vector2<float> Utilities::RotatePoint(Vector2<float> point, Vector2<float> pivot, float angle) {
+Vector2<float> Utils::RotatePoint(Vector2<float> point, Vector2<float> pivot, float angle) {
 	Vector2<float> centered = point - pivot; // Subtract pivot so we rotate about origin
 
 	// Precompute trig values
@@ -56,7 +58,7 @@ Vector2<float> Utilities::RotatePoint(Vector2<float> point, Vector2<float> pivot
 	return Vector2<float>(rotated_x, rotated_y) + pivot; // Add pivot back and return
 }
 
-Vector2<float> Utilities::RotatePointPrecomp(Vector2<float> point, Vector2<float> pivot, float cos_angle, float sin_angle) {
+Vector2<float> Utils::RotatePointPrecomp(Vector2<float> point, Vector2<float> pivot, float cos_angle, float sin_angle) {
 	Vector2<float> centered = point - pivot; // Subtract pivot so we rotate about origin
 
 	// Apply rotation by multiplying by rotation matrix
@@ -66,7 +68,7 @@ Vector2<float> Utilities::RotatePointPrecomp(Vector2<float> point, Vector2<float
 	return Vector2<float>(rotated_x, rotated_y) + pivot; // Add pivot back and return
 }
 
-uint32_t Utilities::Factorial(uint32_t n)
+uint32_t Utils::Factorial(uint32_t n)
 {
 	uint32_t val = 1;
 
@@ -77,7 +79,7 @@ uint32_t Utilities::Factorial(uint32_t n)
 	return val;
 }
 
-float Utilities::TriangleArea(Vector2<float> a, Vector2<float> b, Vector2<float> c)
+float Utils::TriangleArea(Vector2<float> a, Vector2<float> b, Vector2<float> c)
 {
 	return std::abs(
 		a.x * (b.y - c.y) +
@@ -86,27 +88,27 @@ float Utilities::TriangleArea(Vector2<float> a, Vector2<float> b, Vector2<float>
 	) * 0.5f;
 }
 
-float Utilities::ClampMax(float val, float max)
+float Utils::ClampMax(float val, float max)
 {
 	return std::min(val, max);
 }
 
-float Utilities::ClampMin(float val, float min)
+float Utils::ClampMin(float val, float min)
 {
 	return std::max(val, min);
 }
 
-Vector2<float> Utilities::ClampMax(Vector2<float> val, float max)
+Vector2<float> Utils::ClampMax(Vector2<float> val, float max)
 {
 	return Vector2<float>(std::min(val.x, max), std::min(val.y, max));
 }
 
-Vector2<float> Utilities::ClampMin(Vector2<float> val, float min)
+Vector2<float> Utils::ClampMin(Vector2<float> val, float min)
 {
 	return Vector2<float>(std::max(val.x, min), std::max(val.y, min));
 }
 
-Vector2<float> Utilities::Clamp(Vector2<float> val, float min, float max)
+Vector2<float> Utils::Clamp(Vector2<float> val, float min, float max)
 {
 	Vector2<float> clamped = val;
 	clamped.x = std::min(std::max(val.x, min), max);
@@ -115,7 +117,7 @@ Vector2<float> Utilities::Clamp(Vector2<float> val, float min, float max)
 	return clamped;
 }
 
-void Utilities::EraseSubstring(std::string& str, const std::string& substr)
+void Utils::EraseSubstring(std::string& str, const std::string& substr)
 {
 	// Check substring exists in string
 	if (str.find(substr) != std::string::npos) {
@@ -123,7 +125,7 @@ void Utilities::EraseSubstring(std::string& str, const std::string& substr)
 	}
 }
 
-void Utilities::EraseSubstring(std::string& str, const char* substr)
+void Utils::EraseSubstring(std::string& str, const char* substr)
 {
 	// Check substring exists in string
 	if (str.find(substr) != std::string::npos) {
@@ -131,12 +133,12 @@ void Utilities::EraseSubstring(std::string& str, const char* substr)
 	}
 }
 
-bool Utilities::EqualBias(float a, float b, float bias)
+bool Utils::EqualBias(float a, float b, float bias)
 {
 	return std::abs(a - b) <= bias;
 }
 
-std::string Utilities::EraseSubstring(const char* str, const std::string& substr)
+std::string Utils::EraseSubstring(const char* str, const std::string& substr)
 {
 	std::string result = str;
 	// Check substring exists in string
@@ -146,7 +148,7 @@ std::string Utilities::EraseSubstring(const char* str, const std::string& substr
 	return result;
 }
 
-std::string Utilities::EraseSubstring(const char* str, const char* substr)
+std::string Utils::EraseSubstring(const char* str, const char* substr)
 {
 	std::string result = str;
 	// Check substring exists in string
@@ -156,7 +158,7 @@ std::string Utilities::EraseSubstring(const char* str, const char* substr)
 	return result;
 }
 
-double Utilities::Round(double val, int decimal_places)
+double Utils::Round(double val, int decimal_places)
 {
 	double ten_to_decimal_places = pow(10, decimal_places);
 	double tmp = val * ten_to_decimal_places;
@@ -165,7 +167,7 @@ double Utilities::Round(double val, int decimal_places)
 	else return floor(tmp + 0.5) / ten_to_decimal_places;
 }
 
-Vector2<float> Utilities::Round(Vector2<float> val, int decimal_places)
+Vector2<float> Utils::Round(Vector2<float> val, int decimal_places)
 {
 	float ten_to_decimal_places = pow(10, decimal_places);
 	float inverse_ten_to_decimal_places = 1.0 / ten_to_decimal_places;
@@ -180,7 +182,7 @@ Vector2<float> Utilities::Round(Vector2<float> val, int decimal_places)
 	return tmp;
 }
 
-Vector2<double> Utilities::Round(Vector2<double> val, int decimal_places)
+Vector2<double> Utils::Round(Vector2<double> val, int decimal_places)
 {
 	double ten_to_decimal_places = pow(10, decimal_places);
 	double inverse_ten_to_decimal_places = 1.0 / ten_to_decimal_places;
@@ -195,12 +197,12 @@ Vector2<double> Utilities::Round(Vector2<double> val, int decimal_places)
 	return tmp;
 }
 
-Vector2<float> Utilities::Lerp(Vector2<float> start, Vector2<float> dest, float speed)
+Vector2<float> Utils::Lerp(Vector2<float> start, Vector2<float> dest, float speed)
 {
 	return start + ((dest - start) * speed);
 }
 
-std::string* Utilities::ReadFile(const std::string& path)
+std::string* Utils::ReadFile(const std::string& path)
 {
 	std::ifstream file(path, std::ios::in); // Create file pointer
 	std::string* out = new std::string((std::istreambuf_iterator<char>(file)), std::istreambuf_iterator<char>()); // Read all text and store on heap
@@ -208,7 +210,7 @@ std::string* Utilities::ReadFile(const std::string& path)
 	return out; // Return pointer to text
 }
 
-std::vector<std::string> Utilities::SplitString(const std::string& s, const std::string& delim)
+std::vector<std::string> Utils::SplitString(const std::string& s, const std::string& delim)
 {
 	// Ripped from https://stackoverflow.com/questions/14265581/parse-split-a-string-in-c-using-string-delimiter-standard-c
 	size_t pos_start = 0, pos_end, delim_len = delim.length();
@@ -225,14 +227,14 @@ std::vector<std::string> Utilities::SplitString(const std::string& s, const std:
 	return res;
 }
 
-void m_Log(const std::string& message, Utilities::ERROR error_type, const char* function, int line)
+void m_Log(const std::string& message, Utils::ERROR error_type, const char* function, int line)
 {
 	std::string function_cleaned = function;
 	// TODO: generalise removing __xyz
-	Utilities::EraseSubstring(function_cleaned, "__cdecl ");
-	Utilities::EraseSubstring(function_cleaned, "__thiscall ");
+	Utils::EraseSubstring(function_cleaned, "__cdecl ");
+	Utils::EraseSubstring(function_cleaned, "__thiscall ");
 
 	std::cout << "[" << error_type << "] " << function_cleaned << ":" << line << " " << message << std::endl;
 	// Exit program if it was a fatal error
-	if (error_type == Utilities::ERROR::FATAL) exit(EXIT_FAILURE);
+	if (error_type == Utils::ERROR::FATAL) exit(EXIT_FAILURE);
 }

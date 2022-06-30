@@ -111,7 +111,7 @@ struct ENGINE_API Vector2 {
 
 template <typename T>
 std::string to_string(const Vector2<T>& v) {
-	return std::format("[{}, {}]", to_string(Utilities::Round(v.x, 3)), to_string(Utilities::Round(v.y, 3)));
+	return std::format("[{}, {}]", to_string(Utils::Round(v.x, 3)), to_string(Utils::Round(v.y, 3)));
 }
 
 template <typename T>

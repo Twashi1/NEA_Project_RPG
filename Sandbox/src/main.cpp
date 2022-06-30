@@ -75,14 +75,14 @@ int main(void)
 
         // DEGUG: Rotate our example wall
         wallbody.angular_acc = 1.0f;
-        wallbody.angular_vel = Utilities::ClampMax(wallbody.angular_vel, 3.0f);
+        wallbody.angular_vel = Utils::ClampMax(wallbody.angular_vel, 3.0f);
     }
 
-    Log("Window closed", Utilities::ERROR::INFO);
+    Log("Window closed", Utils::ERROR::INFO);
 
     engine.SerialiseGeneralData();
 
-    Log("Ending program", Utilities::ERROR::INFO);
+    Log("Ending program", Utils::ERROR::INFO);
 
     exit(EXIT_SUCCESS);
 }

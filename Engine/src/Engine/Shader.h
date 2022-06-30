@@ -9,6 +9,9 @@
 #include "Vector3.h"
 #include "Vector2.h"
 
+// TODO: creating a shader will look in the Sandbox/res/shaders directory, however some shaders are used within Engine,
+// thus should have their resource files here as well
+
 class ENGINE_API Shader {
 private:
     // Registers shader with opengl
@@ -34,6 +37,7 @@ public:
     void SetUniform2f    (const char* name, Vector2<float> v);
     void SetUniform3f    (const char* name, float x, float y, float z);
     void SetUniform3f    (const char* name, Vector3<float> v);
+    void SetUniform4f    (const char* name, float x, float y, float z, float w);
     void SetUniform1fv   (const char* name, unsigned int count, const float* values);
     void SetUniform1uiv  (const char* name, unsigned int count, const unsigned int* values);
     void SetUniformMat4fv(const char* name, const glm::mat4& mat);

@@ -64,7 +64,7 @@
     <ClCompile Include="src\Engine\VersionNumber.cpp">
       <Filter>Source\Miscellaneous</Filter>
     </ClCompile>
-    <ClCompile Include="src\Engine\Scene.cpp">
+    <ClCompile Include="src\Engine\Button.cpp">
       <Filter>Source\Engine</Filter>
     </ClCompile>
     <ClCompile Include="src\Engine\LevelEditor.cpp">
@@ -142,10 +142,13 @@
       <Filter>Headers\Miscellaneous</Filter>
     </ClInclude>
     <ClInclude Include="src\Engine.h" />
-    <ClInclude Include="src\Engine\Scene.h">
+    <ClInclude Include="src\Engine\Button.h">
       <Filter>Headers\Engine</Filter>
     </ClInclude>
     <ClInclude Include="src\Engine\LevelEditor.h">
+      <Filter>Headers\Engine</Filter>
+    </ClInclude>
+    <ClInclude Include="src\Engine\GUIManager.h">
       <Filter>Headers\Engine</Filter>
     </ClInclude>
   </ItemGroup>

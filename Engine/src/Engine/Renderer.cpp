@@ -31,7 +31,7 @@ uint8_t Renderer::GetTextureSlot()
 		return id;
 	}
 
-	Log("Ran out of texture slots", Utilities::ERROR::WARNING);
+	Log("Ran out of texture slots", Utils::ERROR::WARNING);
 	return 0;
 }
 

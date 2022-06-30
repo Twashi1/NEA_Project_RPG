@@ -33,16 +33,18 @@ public:
 	static Vector3<float> YELLOW;
 	static Vector3<float> PURPLE;
 	static Vector3<float> ORANGE;
+	static Vector3<float> GRAY;
+	static Vector3<float> DARKGRAY;
 };
 
-namespace Utilities {
+namespace Utils {
 	enum class ENGINE_API ERROR : uint8_t {
 		INFO,
 		WARNING,
 		FATAL // Fatal errors will terminate the program when logged
 	};
 
-	ENGINE_API std::ostream& operator<<(std::ostream& os, const Utilities::ERROR& error);
+	ENGINE_API std::ostream& operator<<(std::ostream& os, const Utils::ERROR& error);
 
 	ENGINE_API bool CheckFileExists(const std::string& path);
 	ENGINE_API bool CheckDirectoryExists(const std::string& path);
@@ -97,4 +99,4 @@ namespace Utilities {
 	ENGINE_API std::vector<std::string> SplitString(const std::string& s, const std::string& delim);
 }
 
-ENGINE_API void m_Log(const std::string& message, Utilities::ERROR error_type, const char* function, int line);
+ENGINE_API void m_Log(const std::string& message, Utils::ERROR error_type, const char* function, int line);
