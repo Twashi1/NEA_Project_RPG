@@ -12,7 +12,7 @@ void Texture::Bind(uint8_t slot) const
 		GlCall(glBindTexture(GL_TEXTURE_2D, id));
 	}
 	else {
-		Log("Binding texture that has not been created", Utilities::ERROR::WARNING);
+		Log("Binding texture that has not been created", Utils::ERROR::WARNING);
 	}
 }
 
@@ -30,7 +30,7 @@ void Texture::Create()
 		GlCall(glTexImage2D(GL_TEXTURE_2D, 0, GL_RGBA8, width, height, 0, GL_RGBA, GL_UNSIGNED_BYTE, buffer.get()));
 	}
 	else {
-		Log("Creating texture that has not been deleted properly", Utilities::ERROR::WARNING);
+		Log("Creating texture that has not been deleted properly", Utils::ERROR::WARNING);
 	}
 }
 

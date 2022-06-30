@@ -8,29 +8,19 @@ Renderable::Renderable(std::shared_ptr<Quad> quad, Shader* shader, int z)
     // Key didn't exist
     if (it == Renderer::m_Renderables.end()) {
         // Create a list which only contains a pointer to this instance
-        std::vector<Renderable*> new_list = { this };
+        Utils::List<Renderable*> new_list; new_list.Push(this);
         // Add that list at key "z"
         Renderer::m_Renderables.insert({z, new_list});
     }
     // Key did exist
     else {
         // At our key value, push back a pointer to this instance to the list of Renderables
-        Renderer::m_Renderables.at(z).push_back(this);
+        Renderer::m_Renderables.at(z).Push(this);
     }
 }
 
 Renderable::~Renderable()
 {
-    // Get list of renderables from m_Renderables
-    std::vector<Renderable*>& renderables = Renderer::m_Renderables.at(z);
-    // Get index of ourselves in renderables list
-    auto it = std::find(renderables.begin(), renderables.end(), this);
-    // If element was found
-    if (it != renderables.end()) {
-        // Remove from list
-        renderables.erase(it);
-    }
-    else {
-        Log("Renderable wasn't found in Renderer::m_Renderables", Utilities::ERROR::WARNING);
-    }
+    // Remove ourselves from the list at the relevant index
+    Renderer::m_Renderables.at(z).Remove(this);
 }

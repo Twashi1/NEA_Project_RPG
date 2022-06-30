@@ -26,7 +26,7 @@ struct Camera;
 
 class ENGINE_API Renderer {
 private:
-	typedef std::map<int, std::vector<Renderable*>> RenderMap_t; // Declaring it as a map so that key is stored in ascending order
+	typedef std::map<int, Utils::List<Renderable*>> RenderMap_t; // Declaring it as a map so that key is stored in ascending order
 	static RenderMap_t m_Renderables; // Maps z level to list of Renderable object ptrs on that z level
 
 public:

@@ -44,6 +44,48 @@ namespace Utils {
 		FATAL // Fatal errors will terminate the program when logged
 	};
 
+	// A wrapper for std::vector which implements simplified remove and erase methods
+	template <typename T>
+	struct ENGINE_API List {
+	private:
+		using ListData_t = std::vector<T>;
+
+		ListData_t m_data;
+
+	public:
+		// Adds on object to the list
+		void Push(const T& object) { m_data.push_back(object); }
+		// Removes all occurences of the object from the list
+		void Remove(const T& object)
+		{
+			// Remove all occurences of shader from m_Shaders, and return new end of list
+			auto new_end = std::remove(m_data.begin(), m_data.end(), object);
+
+			// Erase all elements from the new end of the list to the old end of the list
+			m_data.erase(new_end, m_data.end());
+		}
+		// Removes the index from the list
+		void Erase(unsigned int index)
+		{
+			if (index < m_data.size()) {
+				m_data.erase(m_data.begin() + index);
+			}
+			else {
+				std::string text = std::format("Index out of bounds: {} > {}", to_string(index), to_string(m_data.size()));
+				Log(text, Utils::ERROR::FATAL);
+			}
+		}
+		// Reserves the given amount of bytes
+		void Reserve(unsigned int bytes) { m_data.reserve(bytes); }
+		// Returns size of object
+		unsigned int Size() { return m_data.size(); }
+
+		/* Iterator functions */
+		ListData_t::iterator begin() { return m_data.begin(); }
+		ListData_t::iterator end() { return m_data.end(); }
+
+	};
+
 	ENGINE_API std::ostream& operator<<(std::ostream& os, const Utils::ERROR& error);
 
 	ENGINE_API bool CheckFileExists(const std::string& path);

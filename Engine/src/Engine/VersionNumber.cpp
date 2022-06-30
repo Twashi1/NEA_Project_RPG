@@ -17,10 +17,10 @@ std::ostream& operator<<(std::ostream& os, const VersionNumber& n)
 
 void VersionNumber::m_ConstructFromString(const char* string)
 {
-    std::vector<std::string> parts = Utilities::SplitString(string, ".");
+    std::vector<std::string> parts = Utils::SplitString(string, ".");
 
     // Remove v from first element in parts
-    Utilities::EraseSubstring(parts[0], "v");
+    Utils::EraseSubstring(parts[0], "v");
 
     // Convert strings to integers and store in major, minor, and patch
     major = stoi(parts[0]);

@@ -31,4 +31,3 @@ void Button::Update()
 	// Get position of cursor
 	Vector2<float> cursor_pos = Input::GetCursorPos();
 }
-Header.h

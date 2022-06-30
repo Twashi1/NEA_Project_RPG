@@ -49,8 +49,8 @@ GLuint Shader::CreateShader(const char* vertex_name, const char* frag_name) {
     GLuint program = glCreateProgram();
 
     // Read files and return pointer to string
-    std::string* vertex_shader = Utilities::ReadFile(vertex_name);
-    std::string* fragment_shader = Utilities::ReadFile(frag_name);
+    std::string* vertex_shader = Utils::ReadFile(vertex_name);
+    std::string* fragment_shader = Utils::ReadFile(frag_name);
 
     // Compile the shaders
     GLuint vs = CompileShader(*vertex_shader, GL_VERTEX_SHADER);
@@ -79,13 +79,13 @@ Shader::Shader(const char* vs_file, const char* fs_file)
     Bind();
 
     // Add ourselves to the shader manager
-    ShaderManager::AddShader(this);
+    ShaderManager::shaders.Push(this);
 }
 
 Shader::~Shader()
 {
     // Remove ourselves from shader manager
-    ShaderManager::RemoveShader(this);
+    ShaderManager::shaders.Remove(this);
 
     // Delete program
     GlCall(glDeleteProgram(id));

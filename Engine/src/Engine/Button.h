@@ -29,9 +29,9 @@ public:
 	// Initialises standard shaders and Input listeners
 	static void Init();
 
-	Button(const Vector2<float>& pos, const Vector2<float>& dim, CallbackFunc_t callback);
-	Button(const Rect& rect, CallbackFunc_t callback);
-	Button(const Quad& quad, CallbackFunc_t callback);
+	//Button(const Vector2<float>& pos, const Vector2<float>& dim, CallbackFunc_t callback);
+	//Button(const Rect& rect, CallbackFunc_t callback);
+	//Button(const Quad& quad, CallbackFunc_t callback);
 	// Changing the quad will change position of Button if using this constructor
 	Button(std::shared_ptr<Quad> quad_ptr, CallbackFunc_t callback);
 

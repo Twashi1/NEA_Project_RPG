@@ -44,7 +44,7 @@ void Renderer::Update()
 {
 	// Because declared as std::map, key values should be in ascending order
 	// Iterate over key value pairs
-	for (const auto& [z, renderables] : m_Renderables) {
+	for (auto& [z, renderables] : m_Renderables) {
 		// Iterate over Renderable* for each z level
 		for (Renderable* renderable : renderables) {
 			// Transform quad into screen coordinates
