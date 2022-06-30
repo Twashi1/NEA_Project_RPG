@@ -124,4 +124,4 @@ template <typename T, typename ret_t = T>
 Vector3<T> abs(const Vector3<T>& vec) { return Vector3<ret_t>(abs(vec.x), abs(vec.y), abs(vec.z)); }
 
 template <typename T>
-Vector3<T> Vector3<T>::ZERO = Vector2<T>(T(), T(), T());
+Vector3<T> Vector3<T>::ZERO = Vector3<T>(T(), T(), T());
