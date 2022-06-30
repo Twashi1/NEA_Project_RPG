@@ -149,7 +149,7 @@
       <PreprocessorDefinitions>ENGINE_BUILD_DLL;WIN32;GLEW_STATIC;_DEBUG;_CONSOLE;%(PreprocessorDefinitions)</PreprocessorDefinitions>
       <ConformanceMode>true</ConformanceMode>
       <LanguageStandard>stdcpplatest</LanguageStandard>
-      <AdditionalIncludeDirectories>src;D:\coding\NEAProject\Engine\external\glew\include;D:\coding\NEAProject\Engine\external\freetype\include;D:\coding\NEAProject\Engine\external\glfw\include;D:\coding\NEAProject\Engine\external\glm\glm;%(AdditionalIncludeDirectories)</AdditionalIncludeDirectories>
+      <AdditionalIncludeDirectories>src;D:\coding\NEAProject\vendor\glew\include;D:\coding\NEAProject\vendor\freetype\include;D:\coding\NEAProject\vendor\glfw\include;D:\coding\NEAProject\vendor\glm\glm;%(AdditionalIncludeDirectories)</AdditionalIncludeDirectories>
     </ClCompile>
     <Link>
       <SubSystem>Console</SubSystem>
