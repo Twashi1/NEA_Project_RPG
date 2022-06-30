@@ -149,7 +149,10 @@ void Engine::m_Start()
     TextRenderable::shader->SetUniformMat4fv(ShaderManager::projmat_name.c_str(), proj);
     TextRenderable::shader->SetUniform3f("u_TextColor", COLORS::WHITE);
 
+    Button::Init();
+
     // Update projection uniform for all shaders
+    // NOTE: all shader initialisation should come before this function, unless we're setting the projection matrix ourselves
     ShaderManager::UpdateProjectionMatrix(proj);
 
     // Deserialise general data about engine

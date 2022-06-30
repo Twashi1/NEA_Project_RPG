@@ -147,6 +147,8 @@
     </ProjectReference>
   </ItemGroup>
   <ItemGroup>
+    <None Include="res\shaders\button_frag.glsl" />
+    <None Include="res\shaders\button_vertex.glsl" />
     <None Include="res\shaders\cellular_frag.glsl" />
     <None Include="res\shaders\cellular_vertex.glsl" />
     <None Include="res\shaders\colour_frag.glsl" />

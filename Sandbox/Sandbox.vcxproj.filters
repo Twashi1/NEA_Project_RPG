@@ -31,6 +31,24 @@
     <Filter Include="Resource Files\res\fonts">
       <UniqueIdentifier>{0212cd58-c8f5-4784-b345-e535e8eb4c3f}</UniqueIdentifier>
     </Filter>
+    <Filter Include="Resource Files\res\shaders\cellular">
+      <UniqueIdentifier>{2e9f885e-b894-47eb-b80d-ccd3af9bf715}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="Resource Files\res\shaders\colour">
+      <UniqueIdentifier>{093095c0-582b-431b-aaf7-dd9fb453b89b}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="Resource Files\res\shaders\text">
+      <UniqueIdentifier>{d3bd3a90-e3db-4cc2-90b3-03013a35ca91}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="Resource Files\res\shaders\texture">
+      <UniqueIdentifier>{d0065641-5d2b-49c8-8004-3c7123c94a8e}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="Resource Files\res\shaders\uv">
+      <UniqueIdentifier>{2aec1af5-3adc-4da7-9a40-a8d7092a1684}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="Resource Files\res\shaders\button">
+      <UniqueIdentifier>{58655ef6-253d-4ac8-8935-ef6708e95de5}</UniqueIdentifier>
+    </Filter>
   </ItemGroup>
   <ItemGroup>
     <ClCompile Include="src\main.cpp">
@@ -41,35 +59,41 @@
     </ClCompile>
   </ItemGroup>
   <ItemGroup>
-    <None Include="res\shaders\cellular_frag.glsl">
-      <Filter>Resource Files\res\shaders</Filter>
-    </None>
     <None Include="res\shaders\cellular_vertex.glsl">
-      <Filter>Resource Files\res\shaders</Filter>
+      <Filter>Resource Files\res\shaders\cellular</Filter>
     </None>
-    <None Include="res\shaders\colour_frag.glsl">
-      <Filter>Resource Files\res\shaders</Filter>
+    <None Include="res\shaders\cellular_frag.glsl">
+      <Filter>Resource Files\res\shaders\cellular</Filter>
     </None>
     <None Include="res\shaders\colour_vertex.glsl">
-      <Filter>Resource Files\res\shaders</Filter>
+      <Filter>Resource Files\res\shaders\colour</Filter>
     </None>
-    <None Include="res\shaders\text_frag.glsl">
-      <Filter>Resource Files\res\shaders</Filter>
+    <None Include="res\shaders\colour_frag.glsl">
+      <Filter>Resource Files\res\shaders\colour</Filter>
     </None>
     <None Include="res\shaders\text_vertex.glsl">
-      <Filter>Resource Files\res\shaders</Filter>
+      <Filter>Resource Files\res\shaders\text</Filter>
+    </None>
+    <None Include="res\shaders\text_frag.glsl">
+      <Filter>Resource Files\res\shaders\text</Filter>
     </None>
     <None Include="res\shaders\texture_frag.glsl">
-      <Filter>Resource Files\res\shaders</Filter>
-    </None>
-    <None Include="res\shaders\texture_vertex.glsl">
-      <Filter>Resource Files\res\shaders</Filter>
-    </None>
-    <None Include="res\shaders\uv_frag.glsl">
-      <Filter>Resource Files\res\shaders</Filter>
+      <Filter>Resource Files\res\shaders\texture</Filter>
     </None>
     <None Include="res\shaders\uv_vertex.glsl">
-      <Filter>Resource Files\res\shaders</Filter>
+      <Filter>Resource Files\res\shaders\uv</Filter>
+    </None>
+    <None Include="res\shaders\uv_frag.glsl">
+      <Filter>Resource Files\res\shaders\uv</Filter>
+    </None>
+    <None Include="res\shaders\texture_vertex.glsl">
+      <Filter>Resource Files\res\shaders\texture</Filter>
+    </None>
+    <None Include="res\shaders\button_frag.glsl">
+      <Filter>Resource Files\res\shaders\button</Filter>
+    </None>
+    <None Include="res\shaders\button_vertex.glsl">
+      <Filter>Resource Files\res\shaders\button</Filter>
     </None>
   </ItemGroup>
   <ItemGroup>

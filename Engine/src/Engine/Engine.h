@@ -25,6 +25,7 @@
 #include "VersionNumber.h"
 #include "TextRenderable.h"
 #include "GUIManager.h"
+#include "Button.h"
 
 // TODO: shouldn't engine be full static?
 
