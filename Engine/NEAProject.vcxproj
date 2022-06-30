@@ -75,6 +75,9 @@
     <ClInclude Include="src\Engine\VersionNumber.h" />
     <ClInclude Include="src\Engine\VertexBuffer.h" />
   </ItemGroup>
+  <ItemGroup>
+    <None Include="..\README.md" />
+  </ItemGroup>
   <PropertyGroup Label="Globals">
     <VCProjectVersion>16.0</VCProjectVersion>
     <Keyword>Win32Proj</Keyword>
