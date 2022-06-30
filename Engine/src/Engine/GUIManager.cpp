@@ -14,6 +14,8 @@ void GUIManager::Update()
 		for (Button* button : buttons) {
 			// Check if button was clicked
 			button->CheckClicked(cursor_pos);
+			// Update pos just in case
+			button->UpdatePos();
 		}
 	}
 
@@ -22,6 +24,8 @@ void GUIManager::Update()
 		for (Button* button : buttons) {
 			// Check if button is pressed
 			button->CheckPressed(cursor_pos);
+			// Update pos just in case
+			button->UpdatePos();
 		}
 	}
 }

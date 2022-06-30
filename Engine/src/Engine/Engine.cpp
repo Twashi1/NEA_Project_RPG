@@ -149,7 +149,9 @@ void Engine::m_Start()
     TextRenderable::shader->SetUniformMat4fv(ShaderManager::projmat_name.c_str(), proj);
     TextRenderable::shader->SetUniform3f("u_TextColor", COLORS::WHITE);
 
+    // Initialise button class
     Button::Init();
+    Button::font = consolas_font;
 
     // Update projection uniform for all shaders
     // NOTE: all shader initialisation should come before this function, unless we're setting the projection matrix ourselves

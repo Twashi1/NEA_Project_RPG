@@ -76,12 +76,18 @@ void Renderer::Draw(const Renderable* renderable)
 {
 	// If renderable is visible
 	if (renderable->isVisible) {
-		// Transform quad into screen coordinates
-		Quad screen_quad = camera->Transform(*renderable->quad);
+		
+		Quad* quad = renderable->quad.get();
+
+		// If its an object in the game world
+		if (renderable->isGameWorld) {
+			// Transform quad into screen coordinates
+			quad = new Quad (camera->Transform(*renderable->quad));
+		}
 
 		// Get components
-		const VertexBuffer& vb = screen_quad.GetVertexBuffer();
-		const IndexBuffer& ib = screen_quad.GetIndexBuffer();
+		const VertexBuffer& vb = quad->GetVertexBuffer();
+		const IndexBuffer& ib = quad->GetIndexBuffer();
 
 		// Bind components
 		vb.Bind();
@@ -90,6 +96,12 @@ void Renderer::Draw(const Renderable* renderable)
 
 		// Draw to screen
 		GlCall(glDrawElements(GL_TRIANGLES, ib.count, ib.type, nullptr));
+
+		// If its an object in the game world
+		if (renderable->isGameWorld) {
+			// Delete the quad we made on heap
+			delete quad;
+		}
 	}
 }
 

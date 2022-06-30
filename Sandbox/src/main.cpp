@@ -33,6 +33,10 @@ Control config
 Options and general config
 */
 
+void tester_callback(Button* button_pressed) {
+    Log("I was pressed", Utils::ERROR::INFO);
+}
+
 int main(void)
 {
     // Construct engine instance
@@ -41,6 +45,10 @@ int main(void)
     // DEBUG: quads
     Quad wall = Quad(500.0f, 500.0f, 100.0f, 500.0f, 0.25 * PI_CONST);
     Quad bg = Quad(0, 0, 1920, 1080, 0);
+    Quad btn_quad = Quad(100, 100, 100, 50, 0);
+    
+    // DEBUG: buttons
+    Button btn = Button(btn_quad, &tester_callback, "Hello", "Pressed");
 
     // DEBUG: shaders
     Shader texture_shader("texture_vertex", "texture_frag");

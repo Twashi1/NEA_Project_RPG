@@ -146,7 +146,7 @@ void Shader::SetUniform3f(const char* name, Vector3<float> v)
 void Shader::SetUniform4f(const char* name, float x, float y, float z, float w)
 {
     GlCall(GLuint location = glGetUniformLocation(id, name));
-    GlCall(glUniform4f(location, x, y, z, z));
+    GlCall(glUniform4f(location, x, y, z, w));
 }
 
 void Shader::SetUniformMat4fv(const char* name, const glm::mat4& mat)
