@@ -60,7 +60,6 @@ void Engine::m_CheckDirectories() {
     if (!Utils::CheckDirectoryExists("res/saves"))   Log("Saves folder not found; app not properly installed?", Utils::ERROR::FATAL);
     if (!Utils::CheckDirectoryExists("res/fonts"))   Log("Fonts folder not found; app not properly installed?", Utils::ERROR::FATAL);
     if (!Utils::CheckDirectoryExists("res/shaders")) Log("Shaders folder not found; app not properly installed?", Utils::ERROR::FATAL);
-    if (!Utils::CheckDirectoryExists("res/scenes"))  Log("Scenes folder not found; app not properly installed?", Utils::ERROR::FATAL);
 }
 
 void Engine::m_Start()
