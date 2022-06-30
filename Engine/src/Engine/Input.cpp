@@ -1,6 +1,8 @@
 #include "Input.h"
 
 GLFWwindow* Input::window = nullptr;
+int* Input::window_width = nullptr;
+int* Input::window_height = nullptr;
 
 std::unordered_map<int, Input::Listener> Input::key_listeners{};
 std::unordered_map<int, Input::Listener> Input::mouse_listeners{};
@@ -84,10 +86,13 @@ Vector2<float> Input::GetCursorPos()
 	return Vector2<float>(xpos, ypos);
 }
 
-Vector2<float> Input::GetCursorUVPos(int width, int height)
+Vector2<float> Input::GetCursorUVPos()
 {
 	double xpos, ypos;
 	glfwGetCursorPos(window, &xpos, &ypos);
+
+	float width = (float)*window_width;
+	float height = (float)*window_height;
 
 	// Divide by width and height, and invert height to convert to uv coordinates
 	return Vector2<float>(xpos / (float)width, (height - ypos) / (float)height);

@@ -36,8 +36,10 @@ void Engine::m_DeserialiseGeneralData()
         // Ensure serialised version number is the same as current version number
         // Otherwise, let the general data be initialised to generic values
         if (version_number == serialised_version) {
+            // NOTE: maybe i should be using decltype(play_time) instead of explicity defining the type,
+            // but it kinda looks ugly and it takes longer to type
             // Deserialise play time
-            Deserialise<decltype(play_time)>(general_data, &play_time);
+            Deserialise<double>(general_data, &play_time);
             /* ... */
 
             general_data.EndRead();
@@ -116,6 +118,8 @@ void Engine::m_Start()
 
     // Initialise input system
     Input::window = window;
+    Input::window_width = &width;
+    Input::window_height = &height;
     // Add key listeners
     Input::AddKeyListener(GLFW_KEY_W);
     Input::AddKeyListener(GLFW_KEY_A);
@@ -138,13 +142,13 @@ void Engine::m_Start()
     physics.layers[0] = Physics::layer_t{};
     physics.layers[0].push_back(player->body);
 
-    // Initialise text shader
-    text_shader = new Shader("text_vertex", "text_frag");
-    text_shader->SetUniformMat4fv(ShaderManager::projmat_name.c_str(), proj);
-    text_shader->SetUniform3f("u_TextColor", 255, 255, 255);
-
     // Create consolas font
     consolas_font = new Font("res/fonts/consola.ttf");
+
+    // Set up text renderable's shader
+    TextRenderable::shader = std::shared_ptr<Shader>(new Shader("text_vertex", "text_frag"));
+    TextRenderable::shader->SetUniformMat4fv(ShaderManager::projmat_name.c_str(), proj);
+    TextRenderable::shader->SetUniform3f("u_TextColor", COLORS::WHITE);
 
     // Update projection uniform for all shaders
     ShaderManager::UpdateProjectionMatrix(proj);
@@ -155,6 +159,16 @@ void Engine::m_Start()
     // Allow transparency
     GlCall(glEnable(GL_BLEND));
     GlCall(glBlendFunc(GL_SRC_ALPHA, GL_ONE_MINUS_SRC_ALPHA));
+
+    // Create all text renderables for stats
+    if (enable_stats) {
+        debug_stats_text.insert({ "Average TPF", TextRenderable("", Vector2<float>(5, height - 15), consolas_font, COLORS::WHITE, 0.25, 0) });
+        debug_stats_text.insert({ "Percentage Processing", TextRenderable("", Vector2<float>(5, height - 30), consolas_font, COLORS::WHITE, 0.25, 0) });
+        debug_stats_text.insert({ "Time", TextRenderable("", Vector2<float>(5, height - 45), consolas_font, COLORS::WHITE, 0.25, 0) });
+        debug_stats_text.insert({ "Player pos", TextRenderable("", Vector2<float>(5, height - 100), consolas_font, COLORS::WHITE, 0.25, 0) });
+        debug_stats_text.insert({ "Player vel", TextRenderable("", Vector2<float>(5, height - 115), consolas_font, COLORS::WHITE, 0.25, 0) });
+        debug_stats_text.insert({ "Player acc", TextRenderable("", Vector2<float>(5, height - 130), consolas_font, COLORS::WHITE, 0.25, 0) });
+    }
 
     // Finished loading
     Log(std::format("Loaded engine on version: {}", to_string(version_number)), Utils::ERROR::INFO);
@@ -194,7 +208,6 @@ Engine::~Engine()
     SerialiseGeneralData();
 
     delete player;        player = nullptr;
-    delete text_shader;   text_shader = nullptr;
     delete consolas_font; consolas_font = nullptr;
 
     glfwDestroyWindow(window); window = nullptr;
@@ -214,6 +227,9 @@ void Engine::Update()
     // Update input system
     Input::Update(tpf);
 
+    // Update GUI
+    GUIManager::Update();
+
     // Update physics
     physics.Update(glfwGetTime());
 
@@ -223,12 +239,13 @@ void Engine::Update()
     // Update camera position
     camera.pos = player->quad->GetCenter();
 
+    // Update all text renderables for stats
+    if (enable_stats) {
+        UpdateStats();
+    }
+
     // All draw calls start here
     Draw();
-
-    if (enable_stats) {
-        DrawStats();
-    }
 
     // Update the screen from all the draw calls
     glfwSwapBuffers(window);
@@ -284,29 +301,36 @@ void Engine::PollPerformance(double dt)
     }
 }
 
-void Engine::DrawStats()
+void Engine::UpdateStats()
 {
     {
         double avg_tpf = (processing_time / frames_processed);
         double avg_tpf_ms = Utils::Round(avg_tpf * 1000.0, 3);
 
         Vector3<float> color = COLORS::WHITE;
-        if (avg_tpf > tpf) { color = COLORS::RED * 255; }
-        else if (avg_tpf > tpf * 0.7) { color = COLORS::YELLOW * 255; }
+        if (avg_tpf > tpf) { color = COLORS::RED; }
+        else if (avg_tpf > tpf * 0.7) { color = COLORS::YELLOW; }
 
         std::string text = std::format("Average time per frame: {}ms", to_string(avg_tpf_ms));
-        Renderer::DrawText(text, Vector2<int>(5, height - 15), 0.25, color, *text_shader, *consolas_font);
+        
+        TextRenderable& t = debug_stats_text["Average TPF"];
+        t.color = color;
+        t.text = text;
+
     }
 
     {
         double percentage_processing = Utils::Round((processing_time / (tpf * frames_processed)) * 100.0f, 2);
 
         Vector3<float> color = COLORS::WHITE;
-        if (percentage_processing > 100) { color = COLORS::RED * 255; }
-        else if (percentage_processing > 70) { color = COLORS::YELLOW * 255; }
+        if (percentage_processing > 100) { color = COLORS::RED; }
+        else if (percentage_processing > 70) { color = COLORS::YELLOW; }
 
-        std::string text = std::format("Processing time: {}", to_string(percentage_processing));
-        Renderer::DrawText(text, Vector2<int>(5, height - 30), 0.25, color, *text_shader, *consolas_font);
+        std::string text = std::format("Processing time: {}%", to_string(percentage_processing));
+        
+        TextRenderable& t = debug_stats_text["Percentage Processing"];
+        t.color = color;
+        t.text = text;
     }
 
     {
@@ -324,41 +348,34 @@ void Engine::DrawStats()
             std::setw(2) << std::setfill('0') << minutes << ":" <<
             std::setw(2) << std::setfill('0') << seconds;
 
-        Renderer::DrawText(time_str.str(), Vector2<int>(5, height - 45), 0.25, COLORS::WHITE, *text_shader, *consolas_font);
+        TextRenderable& t = debug_stats_text["Time"];
+        t.text = time_str.str();
     }
 
     {
         Vector2<float> player_position = Utils::Round(player->quad->GetCenter(), 2);
 
         std::string text = std::format("Player position: {}", to_string(player_position));
-        Renderer::DrawText(text, Vector2<int>(5, height - 100), 0.25, COLORS::WHITE, *text_shader, *consolas_font);
+
+        TextRenderable& t = debug_stats_text["Player pos"];
+        t.text = text;
     }
 
     {
         Vector2<float> player_velocity = Utils::Round(player->body->vel, 2);
 
         std::string text = std::format("Player velocity: {}", to_string(player_velocity));
-        Renderer::DrawText(text, Vector2<int>(5, height - 115), 0.25, COLORS::WHITE, *text_shader, *consolas_font);
+
+        TextRenderable& t = debug_stats_text["Player vel"];
+        t.text = text;
     }
 
     {
         Vector2<float> player_acceleration = Utils::Round(player->body->acc, 2);
 
         std::string text = std::format("Player acceleration: {}", to_string(player_acceleration));
-        Renderer::DrawText(text, Vector2<int>(5, height - 130), 0.25, COLORS::WHITE, *text_shader, *consolas_font);
-    }
-
-    {
-        Quad player_quad = *player->body->rect;
-
-        std::string text = std::format("Player quad: {}", to_string(player_quad));
-        Renderer::DrawText(text, Vector2<int>(5, height - 145), 0.25, COLORS::WHITE, *text_shader, *consolas_font);
-    }
-
-    {
-        Quad wall_quad = *physics.layers[0][1]->rect;
-
-        std::string text = std::format("Wall quad: {}", to_string(wall_quad));
-        Renderer::DrawText(text, Vector2<int>(5, height - 160), 0.25, COLORS::WHITE, *text_shader, *consolas_font);
+        
+        TextRenderable& t = debug_stats_text["Player acc"];
+        t.text = text;
     }
 }

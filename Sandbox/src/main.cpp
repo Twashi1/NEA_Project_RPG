@@ -9,22 +9,24 @@ const int FPS = 144;
 /*
 TODOs:
 
-# Engine
-Level editor
-Buttons
-Panels
-GUI
-Pathfinding
+****** Engine ******
+# Renderer
+Texture atlas API
 Sprites
 Animations
-Scenes
-Ambient particles
-Texture atlas API
-Sound API
-Physics System update (impulse resolution)
+GUI
 Post-processing
+Better API for rendering text
 
-# Game
+# General
+Level editor
+Buttons
+Pathfinding
+Ambient particles
+Sound API
+Physics System update (impulse resolution?)
+
+****** Game ******
 World
 Save files
 Control config

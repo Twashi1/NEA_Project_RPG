@@ -13,7 +13,7 @@ private:
 	static constexpr float m_std_alpha = 0.7f; // Standard alpha (transparency) for a button
 
 public:
-	typedef void (*CallbackFunc_t)(void); // Shorthand for a callback function pointer
+	typedef void (*CallbackFunc_t)(Button*); // Shorthand for a callback function pointer (takes the button that was pressed as a paramater)
 
 	CallbackFunc_t callback; // Function called when button is pressed
 	std::string default_text; // Text that displays when button is not pressed
@@ -22,18 +22,20 @@ public:
 	Shader* default_shader; // Shader used when button is not pressed
 	Shader* pressed_shader; // Shader used when button is pressed
 
-	bool isPressed; // State of button on last update
+	bool isVisible = true;  // If button is being drawn or not
+	bool isPressed = false; // If button is being pressed
 
-	std::shared_ptr<Quad> quad; // Stores position and dimensions of button
+	Quad quad; // Stores position and dimensions of button
 
 	// Initialises standard shaders and Input listeners
 	static void Init();
 
-	//Button(const Vector2<float>& pos, const Vector2<float>& dim, CallbackFunc_t callback);
-	//Button(const Rect& rect, CallbackFunc_t callback);
-	//Button(const Quad& quad, CallbackFunc_t callback);
-	// Changing the quad will change position of Button if using this constructor
-	Button(std::shared_ptr<Quad> quad_ptr, CallbackFunc_t callback);
+	Button(const Quad& quad, CallbackFunc_t callback, std::string default_text, std::string pressed_text, Shader* default_shader, Shader* pressed_shader);
+	Button(const Quad& quad, CallbackFunc_t callback, std::string default_text, std::string pressed_text);
+	Button(const Quad& quad, CallbackFunc_t callback, std::string text);
+	~Button();
 
-	void Update();
+	void CheckClicked(const Vector2<float>& cursor_pos);
+	void CheckPressed(const Vector2<float>& cursor_pos);
+	void Draw();
 };

@@ -13,7 +13,7 @@
 
 class ENGINE_API Input {
 public:
-	enum class State : uint8_t {
+	enum class State: uint8_t {
 		PRESS,   // If last action was RELEASE, and current action is PRESS, then PRESS
 		RELEASE, // If last action was PRESS/HOLD, and current action is RELEASE, then RELEASE
 		HOLD,    // If last action was PRESS, and current action is PRESS, then HOLD
@@ -40,7 +40,10 @@ private:
 	static void m_UpdateListener(Listener& listener, int current_action, float dt);
 
 public:
-	static GLFWwindow* window;			
+	static GLFWwindow* window;
+	// Pointers to window width/height which are stored in Engine class
+	static int* window_width;
+	static int* window_height;
 
 	static void AddKeyListener(int key);
 	static void AddMouseListener(int btn);
@@ -49,8 +52,8 @@ public:
 	static Input::State GetMouseState(int button);
 	// Get position of cursor in screen coordinates (0, 0) -> (width, height)
 	static Vector2<float> GetCursorPos();
-	// Get position of cursor within range (0.0, 0.0) -> (1.0, 1.0) in UV coordinates (Takes window width/height)
-	static Vector2<float> GetCursorUVPos(int width, int height);
+	// Get position of cursor within range (0.0, 0.0) -> (1.0, 1.0) in UV coordinates
+	static Vector2<float> GetCursorUVPos();
 
 	// Update all listener objects, takes time since last update
 	static void Update(float dt);

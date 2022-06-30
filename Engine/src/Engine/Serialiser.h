@@ -133,7 +133,7 @@ template <typename T>
 void Deserialise(const Serialiser& s, std::vector<T>* memory)
 {
 	uint32_t length = Deserialise<uint32_t>(s); // Get length of vector
-	memory->reserve(length * sizeof(T)); // Reserve space needed for vector
+	memory->reserve(length); // Reserve space needed for vector
 
 	for (uint32_t i = 0; i < length; i++) {
 		memory->push_back(Deserialise<T>(s)); // Deserialise and push to vector

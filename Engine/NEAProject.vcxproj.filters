@@ -70,6 +70,12 @@
     <ClCompile Include="src\Engine\LevelEditor.cpp">
       <Filter>Source\Engine</Filter>
     </ClCompile>
+    <ClCompile Include="src\Engine\GUIManager.cpp">
+      <Filter>Source\Rendering</Filter>
+    </ClCompile>
+    <ClCompile Include="src\Engine\TextRenderable.cpp">
+      <Filter>Source\Rendering</Filter>
+    </ClCompile>
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="src\Engine\Engine.h">
@@ -150,6 +156,9 @@
     </ClInclude>
     <ClInclude Include="src\Engine\GUIManager.h">
       <Filter>Headers\Engine</Filter>
+    </ClInclude>
+    <ClInclude Include="src\Engine\TextRenderable.h">
+      <Filter>Headers\Rendering</Filter>
     </ClInclude>
   </ItemGroup>
   <ItemGroup>

@@ -75,8 +75,8 @@ namespace Utils {
 				Log(text, Utils::ERROR::FATAL);
 			}
 		}
-		// Reserves the given amount of bytes
-		void Reserve(unsigned int bytes) { m_data.reserve(bytes); }
+		// Reserves size to fit n objects
+		void Reserve(unsigned int n) { m_data.reserve(n * sizeof(T)); }
 		// Returns size of object
 		unsigned int Size() { return m_data.size(); }
 

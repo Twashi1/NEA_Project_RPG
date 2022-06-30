@@ -23,11 +23,16 @@ class Shader;
 class Font;
 struct Renderable;
 struct Camera;
+struct TextRenderable;
+
+// TODO: change api
 
 class ENGINE_API Renderer {
 private:
 	typedef std::map<int, Utils::List<Renderable*>> RenderMap_t; // Declaring it as a map so that key is stored in ascending order
+	typedef std::map<int, Utils::List<TextRenderable*>> RenderTextMap_t;
 	static RenderMap_t m_Renderables; // Maps z level to list of Renderable object ptrs on that z level
+	static RenderTextMap_t m_TextRenderables; // Maps z level to list of TextRenderable object ptrs on that z level
 
 public:
 	static Camera* camera; // Camera currently being used on all Renderable objects
@@ -38,15 +43,20 @@ public:
 	// Makes a texture slot available again
 	static void FreeTextureSlot(uint8_t slot);
 
-	// Draws all objects in m_Renderables
+	// Draws all objects in m_Renderables and m_TextRenderables
 	static void Update();
 
 	// Draw shape to screen given a vertex buffer, index buffer, and shader
 	static void Draw(const VertexBuffer& vb, const IndexBuffer& ib, const Shader& shader);
+	// Forcibly draw renderable (ignores z level)
+	static void Draw(const Renderable* renderable);
+	// Draw text renderable (ignores z level)
+	static void Draw(const TextRenderable* renderable);
 	// Draw text to screen
 	static void DrawText(std::string text, Vector2<float> pos, float scale, Vector3<float> color, Shader& shader, const Font& font);
 	// Clear the screen
 	static void Clear();
 
 	friend Renderable;
+	friend TextRenderable;
 };

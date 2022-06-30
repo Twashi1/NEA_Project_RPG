@@ -23,6 +23,8 @@
 #include "Serialiser.h"
 #include "Rect.h"
 #include "VersionNumber.h"
+#include "TextRenderable.h"
+#include "GUIManager.h"
 
 // TODO: shouldn't engine be full static?
 
@@ -38,6 +40,9 @@ class ENGINE_API Engine {
     // Initialises everything in Engine
     void m_Start();
 
+    // Maps a name for each debug stat to a text renderable object
+    std::unordered_map<std::string, TextRenderable> debug_stats_text;
+
 public:
     GLFWwindow* window;  // Pointer to GLFW window
     int width;           // Width of window
@@ -52,7 +57,7 @@ public:
     Player* player;      // Pointer to Player instance
     Camera camera;       // Camera currently being used
 
-    Shader* text_shader; // For rendering plain coloured text
+    // TODO: storing font here seems kinda wrong
     Font* consolas_font; // Hold consolas-font characters
 
     // Variables for displaying stats and tracking performance
@@ -78,8 +83,8 @@ public:
     void Draw();
     // Checks average time per frame, and will display warning if engine is running behind
     void PollPerformance(double dt);
-    // Draws text displaying various performance information and debug information on screen
-    void DrawStats();
+    // Updates all text for stats to display correct information for that frame
+    void UpdateStats();
     // Serialises general data to res/saves/general.txt
     void SerialiseGeneralData();
 
