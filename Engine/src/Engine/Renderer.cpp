@@ -37,12 +37,14 @@ uint8_t Renderer::GetTextureSlot()
 	}
 
 	Log("Ran out of texture slots (MAX 16 concurrent)", Utils::ERROR::WARNING);
-	return 0;
+	return Renderer::m_INVALID_TEXTURE_SLOT;
 }
 
 void Renderer::FreeTextureSlot(uint8_t slot)
 {
-	available_slots.push(slot);
+	if (slot != Renderer::m_INVALID_TEXTURE_SLOT) {
+		available_slots.push(slot);
+	}
 }
 
 void Renderer::Update()
@@ -94,12 +96,24 @@ void Renderer::Draw(const Renderable* renderable)
 		ib.Bind();
 		renderable->shader->Bind();
 
+		// If the renderable has a texture, bind it as well
+		uint8_t slot = Renderer::m_INVALID_TEXTURE_SLOT;
+		if (renderable->texture != nullptr) {
+			slot = Renderer::GetTextureSlot();
+			renderable->texture->Bind(slot);
+			renderable->shader->SetUniform1i("u_Texture", slot);
+		}
+
 		// Draw to screen
 		GlCall(glDrawElements(GL_TRIANGLES, ib.count, ib.type, nullptr));
 
+		// Unbind and delete the texture, and unbind texture slot
+		Texture::Unbind();
+		Renderer::FreeTextureSlot(slot); // NOTE: Function ignores m_INVALID_TEXTURE_SLOT
+
 		// If its an object in the game world
 		if (renderable->isGameWorld) {
-			// Delete the quad we made on heap
+			// Delete the transformed quad we made on heap
 			delete quad;
 		}
 	}

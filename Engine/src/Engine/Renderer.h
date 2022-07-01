@@ -29,10 +29,13 @@ struct TextRenderable;
 
 class ENGINE_API Renderer {
 private:
-	typedef std::map<int, Utils::List<Renderable*>> RenderMap_t; // Declaring it as a map so that key is stored in ascending order
+	// Shorthands for RenderMap types
+	typedef std::map<int, Utils::List<Renderable*>> RenderMap_t;
 	typedef std::map<int, Utils::List<TextRenderable*>> RenderTextMap_t;
-	static RenderMap_t m_Renderables; // Maps z level to list of Renderable object ptrs on that z level
-	static RenderTextMap_t m_TextRenderables; // Maps z level to list of TextRenderable object ptrs on that z level
+
+	static RenderMap_t m_Renderables;					   // Stores all text renderable objects, sorting them by their z level
+	static RenderTextMap_t m_TextRenderables;			   // Stores all renderable objects, sorting them by their z level
+	static constexpr uint8_t m_INVALID_TEXTURE_SLOT = 255; // Constant to represent an invalid texture slot
 
 public:
 	static Camera* camera; // Camera currently being used on all Renderable objects
