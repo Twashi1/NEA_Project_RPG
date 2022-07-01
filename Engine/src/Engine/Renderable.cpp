@@ -24,14 +24,32 @@ Renderable::Renderable(std::shared_ptr<Quad> quad, Shader* shader, int z)
     m_Register(z);
 }
 
+Renderable::Renderable(std::shared_ptr<Quad> quad, Shader* shader, Texture* texture, int z)
+    : quad(quad), shader(shader), z(z), texture(texture)
+{
+    m_Register(z);
+}
+
 Renderable::Renderable(std::shared_ptr<Quad> quad, Shader* shader, int z, bool isGameWorld)
     : quad(quad), shader(shader), z(z), isGameWorld(isGameWorld)
 {
     m_Register(z);
 }
 
+Renderable::Renderable(std::shared_ptr<Quad> quad, Shader* shader, Texture* texture, int z, bool isGameWorld)
+    : quad(quad), shader(shader), z(z), texture(texture), isGameWorld(isGameWorld)
+{
+    m_Register(z);
+}
+
 Renderable::Renderable(std::shared_ptr<Quad> quad, Shader* shader, int z, bool isGameWorld, bool isVisible)
     : quad(quad), shader(shader), z(z), isGameWorld(isGameWorld), isVisible(isVisible)
+{
+    m_Register(z);
+}
+
+Renderable::Renderable(std::shared_ptr<Quad> quad, Shader* shader, Texture* texture, int z, bool isGameWorld, bool isVisible)
+    : quad(quad), shader(shader), z(z), texture(texture), isGameWorld(isGameWorld), isVisible(isVisible)
 {
     m_Register(z);
 }
