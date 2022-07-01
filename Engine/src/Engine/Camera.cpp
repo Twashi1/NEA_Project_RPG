@@ -12,7 +12,11 @@ Quad Camera::Transform(const Quad& quad)
     center -= pos; // Subtract camera pos from center
     center += offset; // Add camera offset to center
 
-    return Quad(center.x, center.y, quad.GetWidth(), quad.GetHeight(), quad.GetAngle()); // Return new quad which uses new center
+    Quad transformed(quad); // Copy data into new quad
+    transformed.SetCenter(center); // Change center of the new quad
+
+    // Return transformed quad
+    return transformed;
 }
 
 Vector2<int> Camera::Transform(const Vector2<int>& vec)

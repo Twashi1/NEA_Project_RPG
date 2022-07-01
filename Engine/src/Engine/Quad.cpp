@@ -133,6 +133,30 @@ bool Quad::IsIntersecting(const Quad& quad) const
 	return m_Rect.IsIntersecting(quad.m_Rect);
 }
 
+void Quad::SetTextureCoords(const Texture& atlas, const Vector2<int>& index, const Vector2<int>& size)
+{
+	// Inverse width and height of atlas
+	float inv_width = 1.0f / atlas.width;
+	float inv_height = 1.0f / atlas.height;
+
+	// Calculate faces
+	float left = index.x * inv_width * size.x;
+	float right = (index.x + 1) * inv_width * size.x;
+	float bottom = index.y * inv_height * size.y;
+	float top = (index.y + 1) * inv_height * size.y;
+
+	// Create tex coords list
+	std::vector<float> tex_coords = {
+			left, bottom,
+			right, bottom,
+			right, top,
+			left, top
+	};
+
+	// Update VertexBuffer coords
+	vb->SetTex(tex_coords);
+}
+
 const VertexBuffer& Quad::GetVertexBuffer() const
 {
 	return *vb;

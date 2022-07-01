@@ -11,12 +11,10 @@ TODOs:
 
 ****** Engine ******
 # Renderer
-Texture atlas API
 Sprites
 Animations
 GUI
 Post-processing
-Better API for rendering text
 
 # General
 Level editor
@@ -33,7 +31,14 @@ Control config
 Options and general config
 
 ****** Other ******
-Engine documentation? (because you made the engine so bad even you don't understand/remember how to use it)
+Engine documentation
+Fix inconsistent styling
+*/
+
+/*
+Bugs
+- Some textures load in with a line of pixels on the left hand side from texture atlas api
+
 */
 
 void tester_callback(Button* button_pressed) {
@@ -46,10 +51,10 @@ int main(void)
     Engine engine(WIDTH, HEIGHT, FPS, true);
 
     // DEBUG: quads
-    Quad wall = Quad(500.0f, 500.0f, 100.0f, 500.0f, 0.25 * PI_CONST);
+    Quad wall = Quad(500, 500, 100, 500, 0.25 * PI_CONST);
     Quad bg = Quad(0, 0, 1920, 1080, 0);
     Quad btn_quad = Quad(100, 100, 100, 50, 0);
-    Quad dummy = Quad(-500, -500, 500, 500, 0);
+    Quad dummy = Quad(-100, -100, 64, 64, 0);
 
     // DEBUG: buttons
     Button btn = Button(btn_quad, &tester_callback, "Hello", "Pressed");
@@ -73,13 +78,14 @@ int main(void)
     bg_shader.SetUniformMat4fv("u_projMat", engine.proj);
     bg_shader.SetUniform3f("u_Color", COLORS::BLUE * 0.5f);
 
-    // DEBUG: textures
-    Texture dummytex = Texture("testing.png");
+    // DEBUG: atlas test
+    Texture atlas_test = Texture("example_atlas.png"); // Create texture
 
     // DEBUG: renderables
     Renderable walldraw(std::shared_ptr<Quad>(&wall), &colour_shader, 1);
     Renderable bg_render(std::shared_ptr<Quad>(&bg), &bg_shader, 0);
-    Renderable dummydraw(std::shared_ptr<Quad>(&dummy), &texture_shader, &dummytex, 2);
+    Renderable dummydraw(std::shared_ptr<Quad>(&dummy), &texture_shader, &atlas_test, 2);
+    dummydraw.quad->SetTextureCoords(atlas_test, { 7, 3 }, { 64, 64 }); // Get the texture at (7, 3) - a ladder, and size of each image is 64x64
 
     // DEBUG: add to physics system
     Body wallbody = Body(wall, true, 0.0f, 999);
@@ -102,5 +108,7 @@ int main(void)
 
     Log("Ending program", Utils::ERROR::INFO);
 
+    // TODO: still have to forcibly exit since deconstructors aren't being called properly
+    // maybe something to do with order?
     exit(EXIT_SUCCESS);
 }

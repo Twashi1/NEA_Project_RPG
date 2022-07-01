@@ -12,11 +12,13 @@ private:
 	static constexpr int z = 5;
 	static Shader* m_std_default_shader; // Standard shader for when button is not pressed
 	static Shader* m_std_pressed_shader; // Standard shader for when button is pressed
+
 	static constexpr float m_std_alpha = 1.0f; // Standard alpha (transparency) for a button
+	static constexpr float m_std_scale = 0.25f; // Standard scaling factor for text (1/4 size)
 
-	static constexpr float m_std_scale = 0.25f;
-
+	// Constructs the objects
 	void m_Construct();
+	// Gets width/height of text so that it can be centered on the button
 	Vector2<float> m_GetTextDim(const std::string& text);
 
 public:

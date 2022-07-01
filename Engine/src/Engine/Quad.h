@@ -6,6 +6,7 @@
 #include "IndexBuffer.h"
 #include "Rect.h"
 #include "Body.h"
+#include "Texture.h"
 
 struct ENGINE_API Quad {
 private:
@@ -68,6 +69,10 @@ public:
 
 	bool IsIntersecting(const Rect& rect) const;
 	bool IsIntersecting(const Quad& quad) const;
+
+	// Changes texture coordinates so a specific texture from a texture atlas can be loaded
+	// Takes the atlas being loaded, the index of the image within the atlas, and the size (in px) of each image in the atlas
+	void SetTextureCoords(const Texture& atlas, const Vector2<int>& index, const Vector2<int>& size);
 
 	friend bool operator==(const Quad& a, const Quad& b);
 	friend std::string to_string(const Quad& quad);
