@@ -7,7 +7,11 @@
 #include <vector>
 #include <memory>
 
+#include "stb_image.h"
+
 struct ENGINE_API Texture {
+	static std::string PATH;
+
 	GLuint id;
 	
 	unsigned int width;					// Width of texture
@@ -20,6 +24,9 @@ struct ENGINE_API Texture {
 	void Create();
 	void Delete();
 
+	// Construct from colour data (3 bytes per pixel), and width/height of image
 	Texture(std::shared_ptr<uint8_t[]> buffer, unsigned int width, unsigned int height);
+	// Construct from png
+	Texture(std::string filename);
 	~Texture();
 };

@@ -1,4 +1,7 @@
+#define STB_IMAGE_IMPLEMENTATION
 #include "Texture.h"
+
+std::string Texture::PATH = "";
 
 void Texture::Unbind()
 {
@@ -46,6 +49,28 @@ Texture::Texture(std::shared_ptr<uint8_t[]> buffer, unsigned int width, unsigned
 	this->buffer = buffer;
 
 	Create();
+	Unbind();
+}
+
+Texture::Texture(std::string filename)
+	: id(0)
+{
+	std::string full_path = PATH + filename;
+
+	// Load pixel data into our buffer, and set width/height of image
+	int iwidth, iheight, bpp;
+	uint8_t* image_data = stbi_load(full_path.c_str(), &iwidth, &iheight, &bpp, STBI_rgb_alpha);
+
+	// Set image width/height
+	width = iwidth;
+	height = iheight;
+
+	// Set buffer as a shared ptr to that image data
+	buffer = std::shared_ptr<uint8_t[]>(image_data);
+
+	// Create texture object
+	Create();
+	// Unbind it
 	Unbind();
 }
 
