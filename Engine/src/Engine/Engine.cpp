@@ -70,6 +70,12 @@ void Engine::m_Start()
     Shader::PATH = "res/shaders/";
     Shader::EXTENSION = ".glsl";
 
+    // Set texture statics
+    Texture::PATH = "res/sprites/";
+
+    // Make stb_image flip all images vertically so textures display correct way up
+    stbi_set_flip_vertically_on_load(1);
+
     // Verify all directories exist
     m_CheckDirectories();
 
