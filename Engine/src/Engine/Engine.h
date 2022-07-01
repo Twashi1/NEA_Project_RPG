@@ -26,6 +26,8 @@
 #include "TextRenderable.h"
 #include "GUIManager.h"
 #include "Button.h"
+#include "AnimationManager.h"
+#include "Animation.h"
 
 // TODO: shouldn't engine be full static?
 

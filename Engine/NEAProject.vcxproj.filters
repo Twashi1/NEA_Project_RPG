@@ -76,6 +76,12 @@
     <ClCompile Include="src\Engine\Texture.cpp">
       <Filter>Source\Rendering</Filter>
     </ClCompile>
+    <ClCompile Include="src\Engine\AnimationManager.cpp">
+      <Filter>Source\Rendering</Filter>
+    </ClCompile>
+    <ClCompile Include="src\Engine\Animation.cpp">
+      <Filter>Source\Rendering</Filter>
+    </ClCompile>
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="src\Engine\Engine.h">
@@ -156,6 +162,12 @@
     </ClInclude>
     <ClInclude Include="src\Engine\GUIManager.h">
       <Filter>Headers\Engine</Filter>
+    </ClInclude>
+    <ClInclude Include="src\Engine\Animation.h">
+      <Filter>Headers\Rendering</Filter>
+    </ClInclude>
+    <ClInclude Include="src\Engine\AnimationManager.h">
+      <Filter>Headers\Rendering</Filter>
     </ClInclude>
   </ItemGroup>
   <ItemGroup>

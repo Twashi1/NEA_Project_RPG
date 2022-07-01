@@ -40,9 +40,11 @@ Bugs
 
 void tester_callback(Button* button_pressed) {
     static int times_pressed = 0;
+
     times_pressed++;
     std::string text = std::format("Clicked: {}", to_string(times_pressed));
     button_pressed->default_text = text;
+
     Log(text, Utils::ERROR::INFO);
 }
 
@@ -80,13 +82,15 @@ int main(void)
     bg_shader.SetUniform3f("u_Color", COLORS::BLUE * 0.5f);
 
     // DEBUG: atlas test
-    Texture atlas_test = Texture("example_atlas.png"); // Create texture
+    Texture atlas_test = Texture("atlas.png"); // Create texture
 
     // DEBUG: renderables
     Renderable walldraw(std::shared_ptr<Quad>(&wall), &colour_shader, 1);
     Renderable bg_render(std::shared_ptr<Quad>(&bg), &bg_shader, 0);
     Renderable dummydraw(std::shared_ptr<Quad>(&dummy), &texture_shader, &atlas_test, 2);
-    dummydraw.quad->SetTextureCoords(atlas_test, { 7, 3 }, { 64, 64 }); // Get the texture at (7, 3) - a ladder, and size of each image is 64x64
+
+    // DEBUG: Animation object
+    Animation animation(std::shared_ptr<Renderable>(&dummydraw), std::shared_ptr<Texture>(&atlas_test), { 64, 64 }, "data");
 
     // DEBUG: add to physics system
     Body wallbody = Body(wall, true, 0.0f, 999);

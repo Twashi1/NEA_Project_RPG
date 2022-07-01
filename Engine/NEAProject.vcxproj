@@ -19,6 +19,8 @@
     </ProjectConfiguration>
   </ItemGroup>
   <ItemGroup>
+    <ClCompile Include="src\Engine\Animation.cpp" />
+    <ClCompile Include="src\Engine\AnimationManager.cpp" />
     <ClCompile Include="src\Engine\Body.cpp" />
     <ClCompile Include="src\Engine\Camera.cpp" />
     <ClCompile Include="src\Engine\Collision.cpp" />
@@ -46,6 +48,8 @@
     <ClCompile Include="src\Engine\VertexBuffer.cpp" />
   </ItemGroup>
   <ItemGroup>
+    <ClInclude Include="src\Engine\Animation.h" />
+    <ClInclude Include="src\Engine\AnimationManager.h" />
     <ClInclude Include="src\Engine\Body.h" />
     <ClInclude Include="src\Engine\Camera.h" />
     <ClInclude Include="src\Engine\Collision.h" />

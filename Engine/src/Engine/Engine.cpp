@@ -143,6 +143,9 @@ void Engine::m_Start()
     // Initialise ShaderManager
     ShaderManager::projmat_name = "u_projMat";
 
+    // Initialise Animation
+    Animation::FILE_EXTENSION = ".animation";
+
     // Add player to physics system
     physics.layers[0] = Physics::layer_t{};
     physics.layers[0].push_back(player->body);
@@ -239,6 +242,9 @@ void Engine::Update()
 
     // Update GUI
     GUIManager::Update();
+
+    // Update animations
+    AnimationManager::Update(glfwGetTime());
 
     // Update physics
     physics.Update(glfwGetTime());

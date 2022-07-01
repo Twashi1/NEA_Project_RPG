@@ -6,6 +6,7 @@
 #include "Font.h"
 #include "Camera.h"
 #include "TextRenderable.h"
+#include "Animation.h"
 
 void GlClearError() {
 	// While we have an error stay in function
@@ -22,6 +23,7 @@ bool GlLogCall(const char* function, const char* file, int line) {
 
 Renderer::RenderMap_t Renderer::m_Renderables = {};
 Renderer::RenderTextMap_t Renderer::m_TextRenderables = {};
+
 Camera* Renderer::camera = nullptr;
 std::queue<uint8_t> Renderer::available_slots = std::queue<uint8_t>({ 0, 1, 2, 3, 4, 5, 6, 7, 8, 9, 10, 11, 12, 13, 14, 15 });
 
