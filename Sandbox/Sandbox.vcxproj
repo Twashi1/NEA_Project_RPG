@@ -81,7 +81,7 @@
       <PreprocessorDefinitions>WIN32;_DEBUG;_CONSOLE;%(PreprocessorDefinitions)</PreprocessorDefinitions>
       <ConformanceMode>true</ConformanceMode>
       <LanguageStandard>stdcpplatest</LanguageStandard>
-      <AdditionalIncludeDirectories>src;D:\coding\NEAProject\vendor\glew\include;D:\coding\NEAProject\vendor\freetype\include;D:\coding\NEAProject\vendor\glfw\include;D:\coding\NEAProject\vendor\glm\glm;D:\coding\NEAProject\Engine\src;%(AdditionalIncludeDirectories)</AdditionalIncludeDirectories>
+      <AdditionalIncludeDirectories>src;D:\coding\NEAProject\vendor\glew\include;D:\coding\NEAProject\vendor\freetype\include;D:\coding\NEAProject\vendor\glfw\include;D:\coding\NEAProject\vendor\glm\glm;D:\coding\NEAProject\Engine\src;D:\coding\NEAProject\vendor\stb_image;%(AdditionalIncludeDirectories)</AdditionalIncludeDirectories>
     </ClCompile>
     <Link>
       <SubSystem>Console</SubSystem>

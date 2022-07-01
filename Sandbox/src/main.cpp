@@ -49,14 +49,15 @@ int main(void)
     Quad wall = Quad(500.0f, 500.0f, 100.0f, 500.0f, 0.25 * PI_CONST);
     Quad bg = Quad(0, 0, 1920, 1080, 0);
     Quad btn_quad = Quad(100, 100, 100, 50, 0);
-    
+    Quad dummy = Quad(-500, -500, 500, 500, 0);
+
     // DEBUG: buttons
     Button btn = Button(btn_quad, &tester_callback, "Hello", "Pressed");
 
     // DEBUG: shaders
     Shader texture_shader("texture_vertex", "texture_frag");
     texture_shader.SetUniformMat4fv("u_projMat", engine.proj);
-    texture_shader.SetUniform1f("u_Scale", 5);
+    texture_shader.SetUniform1f("u_Scale", 1);
 
     Shader cellular_shader("cellular_vertex", "cellular_frag");
     cellular_shader.SetUniformMat4fv("u_projMat", engine.proj);
@@ -72,9 +73,13 @@ int main(void)
     bg_shader.SetUniformMat4fv("u_projMat", engine.proj);
     bg_shader.SetUniform3f("u_Color", COLORS::BLUE * 0.5f);
 
+    // DEBUG: textures
+    Texture dummytex = Texture("testing.png");
+
     // DEBUG: renderables
     Renderable walldraw(std::shared_ptr<Quad>(&wall), &colour_shader, 1);
     Renderable bg_render(std::shared_ptr<Quad>(&bg), &bg_shader, 0);
+    Renderable dummydraw(std::shared_ptr<Quad>(&dummy), &texture_shader, &dummytex, 2);
 
     // DEBUG: add to physics system
     Body wallbody = Body(wall, true, 0.0f, 999);
