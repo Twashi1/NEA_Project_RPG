@@ -121,9 +121,6 @@
       <Filter>Headers\Miscellaneous</Filter>
     </ClInclude>
     <ClInclude Include="src\Engine.h" />
-    <ClInclude Include="src\Engine\LevelEditor.h">
-      <Filter>Headers\Engine</Filter>
-    </ClInclude>
     <ClInclude Include="src\Engine\VertexBuffer.h">
       <Filter>Headers\Rendering</Filter>
     </ClInclude>

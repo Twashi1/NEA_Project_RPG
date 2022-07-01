@@ -17,8 +17,6 @@ GUI
 Post-processing
 
 # General
-Level editor
-Buttons
 Pathfinding
 Ambient particles
 Sound API
@@ -38,7 +36,6 @@ Fix inconsistent styling
 /*
 Bugs
 - Some textures load in with a line of pixels on the left hand side from texture atlas api
-
 */
 
 void tester_callback(Button* button_pressed) {

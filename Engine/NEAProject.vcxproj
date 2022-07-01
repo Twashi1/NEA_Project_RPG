@@ -54,7 +54,6 @@
     <ClInclude Include="src\Engine\GUIManager.h" />
     <ClInclude Include="src\Engine\IndexBuffer.h" />
     <ClInclude Include="src\Engine\Input.h" />
-    <ClInclude Include="src\Engine\LevelEditor.h" />
     <ClInclude Include="src\Engine\Noise.h" />
     <ClInclude Include="src\Engine\Physics.h" />
     <ClInclude Include="src\Engine\Player.h" />
