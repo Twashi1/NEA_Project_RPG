@@ -90,17 +90,22 @@ void Button::CheckClicked(const Vector2<float>& cursor_pos)
 {
 	// Check if we're visible
 	if (isVisible) {
-		// If the cursor is within the bounds of the button
-		if (quad.Contains(cursor_pos)) {
-			// Call callback function
-			callback(this);
-			// We're not being pressed anymore
-			isPressed = false;
+		// Reset back to default state, regardless if we specifically were the button pressed
+		// This is so if you pressed on a button, then move your cursor away and release, the button
+		// will still reset back to its default state (but doesn't register as us being clicked)
+		
+		// We're not being pressed anymore
+		isPressed = false;
 
-			// Set shader to default shader
-			renderable->shader = default_shader;
-			// Set text to default text
-			text_renderable->text = default_text;
+		// Set shader to default shader
+		renderable->shader = default_shader;
+		// Set text to default text
+		text_renderable->text = default_text;
+
+		// If the cursor is within the bounds of the button, run callback function
+		if (quad.Contains(cursor_pos)) {
+			// Execute callback function
+			callback(this);
 
 			// Update position
 			UpdatePos();
@@ -130,5 +135,7 @@ void Button::CheckPressed(const Vector2<float>& cursor_pos)
 
 void Button::UpdatePos()
 {
+	// Subtracting half the size of the text being displayed
+	// from the center of the background so that the text is centered
 	text_renderable->pos = quad.GetCenter() - (m_GetTextDim(isPressed ? pressed_text : default_text) * 0.5f);
 }

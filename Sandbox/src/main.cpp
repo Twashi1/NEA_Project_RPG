@@ -42,7 +42,11 @@ Bugs
 */
 
 void tester_callback(Button* button_pressed) {
-    Log("I was pressed", Utils::ERROR::INFO);
+    static int times_pressed = 0;
+    times_pressed++;
+    std::string text = std::format("Clicked: {}", to_string(times_pressed));
+    button_pressed->default_text = text;
+    Log(text, Utils::ERROR::INFO);
 }
 
 int main(void)
@@ -57,7 +61,7 @@ int main(void)
     Quad dummy = Quad(-100, -100, 64, 64, 0);
 
     // DEBUG: buttons
-    Button btn = Button(btn_quad, &tester_callback, "Hello", "Pressed");
+    Button btn = Button(btn_quad, &tester_callback, "Clicked: 0", "Pressed");
 
     // DEBUG: shaders
     Shader texture_shader("texture_vertex", "texture_frag");
