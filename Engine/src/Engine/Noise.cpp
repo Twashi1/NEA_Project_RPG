@@ -202,6 +202,11 @@ Noise::Interpolated::Interpolated(unsigned int seed, float amplitude, int wavele
 
 Noise::Interpolated::~Interpolated() {}
 
+void Noise::__NoiseVirtual::SetSeed(unsigned int nseed)
+{
+    m_seed = nseed;
+}
+
 Noise::__NoiseVirtual::__NoiseVirtual()
     : m_seed(0), amplitude(1), wavelength(1)
 {}

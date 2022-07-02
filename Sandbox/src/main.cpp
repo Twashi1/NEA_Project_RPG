@@ -11,8 +11,12 @@ TODOs:
 
 ****** Engine ******
 # Renderer
-GUI
 Post-processing
+
+# GUI
+Sliders
+Input boxes
+Panels/displays
 
 # General
 Pathfinding
@@ -36,14 +40,14 @@ Bugs
 - Some textures load in with a line of pixels on the left hand side from texture atlas api
 */
 
+static int seed = 0;
+static Noise::Interpolated* i = nullptr;
+static bool seedChanged = false;
+
 void tester_callback(Button* button_pressed) {
-    static int times_pressed = 0;
-
-    times_pressed++;
-    std::string text = std::format("Clicked: {}", to_string(times_pressed));
-    button_pressed->default_text = text;
-
-    Log(text, Utils::ERROR::INFO);
+    seed++;
+    i->SetSeed(seed);
+    seedChanged = true;
 }
 
 int main(void)
@@ -54,12 +58,12 @@ int main(void)
     // DEBUG: quads
     Quad wall = Quad(500, 500, 100, 500, 0.25 * PI_CONST);
     Quad bg = Quad(0, 0, 1920, 1080, 0);
-    Quad btn_quad = Quad(100, 100, 100, 50, 0);
+    Quad btn_quad = Quad(50, 100, 100, 50, 0);
     Quad dummy = Quad(-100, -100, 64, 64, 0);
     Quad noisequad = Quad(-500, 500, 256, 256, 0);
 
     // DEBUG: buttons
-    Button btn = Button(btn_quad, &tester_callback, "Clicked: 0", "Pressed");
+    Button btn = Button(btn_quad, &tester_callback, "Change seed", "Change seed");
 
     // DEBUG: shaders
     Shader texture_shader("texture_vertex", "texture_frag");
@@ -85,7 +89,8 @@ int main(void)
 
     // DEBUG: noise test
     const int SIZE = 256;
-    Noise::Interpolated interp(0, 1.0f, 64);
+    Noise::Interpolated interp(seed, 1.0f, 64);
+    i = &interp;
     std::uint8_t* buffer2 = new std::uint8_t[SIZE * SIZE * 4];
     for (int i = 0; i < SIZE * SIZE; i++) {
         int index = i * 4;
@@ -118,6 +123,25 @@ int main(void)
     // Loop until window is closed by user
     while (engine.IsRunning())
     {
+        if (seedChanged) {
+            seedChanged = false;
+
+            for (int i = 0; i < SIZE * SIZE; i++) {
+                int index = i * 4;
+                int y = i / SIZE; int x = i - (y * SIZE);
+
+                uint8_t v = interp.GetFractal(x, y, 4) * 0xff;
+
+                buffer2[index] = v;
+                buffer2[index + 1] = v;
+                buffer2[index + 2] = v;
+                buffer2[index + 3] = 0xff;
+            }
+
+            noisetext.Delete();
+            noisetext.Create();
+        }
+
         bg_render.quad->SetCenter(engine.player->quad->GetCenter()); // Make background quad follow player
         engine.Update(); // Update engine
 

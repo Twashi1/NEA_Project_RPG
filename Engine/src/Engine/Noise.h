@@ -41,6 +41,8 @@ namespace Noise {
         float amplitude; // Multiplier for value of noise
         int wavelength;  // Determines period at which noise repeats
 
+        virtual void SetSeed(unsigned int nseed);
+
         __NoiseVirtual();
         __NoiseVirtual(unsigned int m_seed, float amplitude, int wavelength);
         virtual ~__NoiseVirtual();
