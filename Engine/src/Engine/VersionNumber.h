@@ -23,8 +23,8 @@ public:
     void operator=(const std::string& version_string);
 };
 
-std::string to_string(const VersionNumber& version_number);
+std::string ENGINE_API to_string(const VersionNumber& version_number);
 
-bool operator==(const VersionNumber& a, const VersionNumber& b);
+bool ENGINE_API operator==(const VersionNumber& a, const VersionNumber& b);
 
 std::ostream& operator<<(std::ostream& os, const VersionNumber& n);

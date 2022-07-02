@@ -11,25 +11,26 @@ World::World(const std::string& save_directory)
 
 	{
 		// Get version number
-		//VersionNumber serialised_version = Deserialise<VersionNumber>(m_serialiser);
+		VersionNumber serialised_version;
+		Deserialise<VersionNumber>(m_serialiser, &serialised_version);
 		// If version number is different
-		//if (serialised_version != m_version)
-		//{
+		if (serialised_version != m_version)
+		{
 			// We can't interpret this data so log fatal error
-		//	Log(std::format("World version is {}, but we're on version {}", to_string(serialised_version), to_string(m_version)), Utils::ERROR::FATAL);
-		//}
+			Log(std::format("World version is {}, but we're on version {}", to_string(serialised_version), to_string(m_version)), Utils::ERROR::FATAL);
+		}
 
 		// Get world name
-		//Deserialise<std::string>(m_serialiser, &world_name);
+		Deserialise<std::string>(m_serialiser, &world_name);
 
 		// Get seed
-		//Deserialise<unsigned int>(m_serialiser, &m_seed);
+		Deserialise<unsigned int>(m_serialiser, &m_seed);
 
 		// Get player position
-		//Vector2<float> player_pos = Deserialise<Vector2<float>>(m_serialiser);
+		Vector2<float> player_pos = Deserialise<Vector2<float>>(m_serialiser);
 
 		// Load region around player pos
-		//m_LoadRegions(player_pos, 1);
+		m_LoadRegions(player_pos, 1);
 	}
 
 	m_serialiser.EndRead();

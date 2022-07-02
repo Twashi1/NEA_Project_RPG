@@ -1,6 +1,6 @@
 #include "Engine.h"
 
-std::string Engine::GENERAL_DATA_PATH = "res/saves/general.txt";
+std::string Engine::GENERAL_DATA_PATH = "../Resources/saves/general.txt";
 
 void Engine::m_OnWindowResize(int nwidth, int nheight)
 {
