@@ -7,23 +7,100 @@ Project("{8BC9CEB8-8B4A-11D0-8D11-00A0C91BC942}") = "Sandbox", "Sandbox\Sandbox.
 EndProject
 Project("{8BC9CEB8-8B4A-11D0-8D11-00A0C91BC942}") = "Engine", "Engine\NEAProject.vcxproj", "{2E05089D-8F1B-4F1F-9B82-E37B1E84C4F2}"
 EndProject
+Project("{8BC9CEB8-8B4A-11D0-8D11-00A0C91BC942}") = "Game", "Game\Game.vcxproj", "{67F6C795-CBCE-4093-AF64-26F031417902}"
+EndProject
+Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "Solution Items", "Solution Items", "{6FD0E3C2-547C-41AD-985F-1BB54B174BFB}"
+	ProjectSection(SolutionItems) = preProject
+		README.md = README.md
+		TODO.md = TODO.md
+	EndProjectSection
+EndProject
+Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "Resources", "Resources", "{8450CC3B-3D01-46B1-99CE-AD62BB93F784}"
+EndProject
+Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "fonts", "fonts", "{FC4E52F9-CD46-4087-831D-8F32827A9F79}"
+	ProjectSection(SolutionItems) = preProject
+		Resources\fonts\consola.ttf = Resources\fonts\consola.ttf
+	EndProjectSection
+EndProject
+Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "shaders", "shaders", "{AD78A436-E971-44E3-A8A6-A5287D198026}"
+	ProjectSection(SolutionItems) = preProject
+		Resources\shaders\button_frag.glsl = Resources\shaders\button_frag.glsl
+		Resources\shaders\button_vertex.glsl = Resources\shaders\button_vertex.glsl
+		Resources\shaders\cellular_frag.glsl = Resources\shaders\cellular_frag.glsl
+		Resources\shaders\cellular_vertex.glsl = Resources\shaders\cellular_vertex.glsl
+		Resources\shaders\colour_frag.glsl = Resources\shaders\colour_frag.glsl
+		Resources\shaders\colour_vertex.glsl = Resources\shaders\colour_vertex.glsl
+		Resources\shaders\texture_frag.glsl = Resources\shaders\texture_frag.glsl
+		Resources\shaders\texture_vertex.glsl = Resources\shaders\texture_vertex.glsl
+		Resources\shaders\text_frag.glsl = Resources\shaders\text_frag.glsl
+		Resources\shaders\text_vertex.glsl = Resources\shaders\text_vertex.glsl
+		Resources\shaders\uv_frag.glsl = Resources\shaders\uv_frag.glsl
+		Resources\shaders\uv_vertex.glsl = Resources\shaders\uv_vertex.glsl
+	EndProjectSection
+EndProject
+Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "saves", "saves", "{E42AB3D6-99D8-4BBF-86EA-8511129968F3}"
+	ProjectSection(SolutionItems) = preProject
+		Resources\saves\general.txt = Resources\saves\general.txt
+	EndProjectSection
+EndProject
+Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "sprites", "sprites", "{09A99787-00EB-4920-AA8F-67E5B1B52DFA}"
+	ProjectSection(SolutionItems) = preProject
+		Resources\sprites\atlas.png = Resources\sprites\atlas.png
+		Resources\sprites\example_atlas.png = Resources\sprites\example_atlas.png
+		Resources\sprites\testing.png = Resources\sprites\testing.png
+	EndProjectSection
+EndProject
+Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "scenes", "scenes", "{279A77EC-76C2-4E6F-A014-FAFB36A16B4A}"
+EndProject
+Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "_animationfiles", "_animationfiles", "{590723D0-7424-4DAF-8286-94C13FC15F88}"
+	ProjectSection(SolutionItems) = preProject
+		Resources\sprites\data.animation = Resources\sprites\data.animation
+	EndProjectSection
+EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
+		Debug|x64 = Debug|x64
 		Debug|x86 = Debug|x86
+		Release|x64 = Release|x64
 		Release|x86 = Release|x86
 	EndGlobalSection
 	GlobalSection(ProjectConfigurationPlatforms) = postSolution
+		{1E425948-947D-4653-A577-FB24BF7D8CCE}.Debug|x64.ActiveCfg = Debug|x64
+		{1E425948-947D-4653-A577-FB24BF7D8CCE}.Debug|x64.Build.0 = Debug|x64
 		{1E425948-947D-4653-A577-FB24BF7D8CCE}.Debug|x86.ActiveCfg = Debug|Win32
 		{1E425948-947D-4653-A577-FB24BF7D8CCE}.Debug|x86.Build.0 = Debug|Win32
+		{1E425948-947D-4653-A577-FB24BF7D8CCE}.Release|x64.ActiveCfg = Release|x64
+		{1E425948-947D-4653-A577-FB24BF7D8CCE}.Release|x64.Build.0 = Release|x64
 		{1E425948-947D-4653-A577-FB24BF7D8CCE}.Release|x86.ActiveCfg = Release|Win32
 		{1E425948-947D-4653-A577-FB24BF7D8CCE}.Release|x86.Build.0 = Release|Win32
+		{2E05089D-8F1B-4F1F-9B82-E37B1E84C4F2}.Debug|x64.ActiveCfg = Debug|x64
+		{2E05089D-8F1B-4F1F-9B82-E37B1E84C4F2}.Debug|x64.Build.0 = Debug|x64
 		{2E05089D-8F1B-4F1F-9B82-E37B1E84C4F2}.Debug|x86.ActiveCfg = Debug|Win32
 		{2E05089D-8F1B-4F1F-9B82-E37B1E84C4F2}.Debug|x86.Build.0 = Debug|Win32
+		{2E05089D-8F1B-4F1F-9B82-E37B1E84C4F2}.Release|x64.ActiveCfg = Release|x64
+		{2E05089D-8F1B-4F1F-9B82-E37B1E84C4F2}.Release|x64.Build.0 = Release|x64
 		{2E05089D-8F1B-4F1F-9B82-E37B1E84C4F2}.Release|x86.ActiveCfg = Release|Win32
 		{2E05089D-8F1B-4F1F-9B82-E37B1E84C4F2}.Release|x86.Build.0 = Release|Win32
+		{67F6C795-CBCE-4093-AF64-26F031417902}.Debug|x64.ActiveCfg = Debug|x64
+		{67F6C795-CBCE-4093-AF64-26F031417902}.Debug|x64.Build.0 = Debug|x64
+		{67F6C795-CBCE-4093-AF64-26F031417902}.Debug|x86.ActiveCfg = Debug|Win32
+		{67F6C795-CBCE-4093-AF64-26F031417902}.Debug|x86.Build.0 = Debug|Win32
+		{67F6C795-CBCE-4093-AF64-26F031417902}.Release|x64.ActiveCfg = Release|x64
+		{67F6C795-CBCE-4093-AF64-26F031417902}.Release|x64.Build.0 = Release|x64
+		{67F6C795-CBCE-4093-AF64-26F031417902}.Release|x86.ActiveCfg = Release|Win32
+		{67F6C795-CBCE-4093-AF64-26F031417902}.Release|x86.Build.0 = Release|Win32
 	EndGlobalSection
 	GlobalSection(SolutionProperties) = preSolution
 		HideSolutionNode = FALSE
+	EndGlobalSection
+	GlobalSection(NestedProjects) = preSolution
+		{8450CC3B-3D01-46B1-99CE-AD62BB93F784} = {6FD0E3C2-547C-41AD-985F-1BB54B174BFB}
+		{FC4E52F9-CD46-4087-831D-8F32827A9F79} = {8450CC3B-3D01-46B1-99CE-AD62BB93F784}
+		{AD78A436-E971-44E3-A8A6-A5287D198026} = {8450CC3B-3D01-46B1-99CE-AD62BB93F784}
+		{E42AB3D6-99D8-4BBF-86EA-8511129968F3} = {8450CC3B-3D01-46B1-99CE-AD62BB93F784}
+		{09A99787-00EB-4920-AA8F-67E5B1B52DFA} = {8450CC3B-3D01-46B1-99CE-AD62BB93F784}
+		{279A77EC-76C2-4E6F-A014-FAFB36A16B4A} = {8450CC3B-3D01-46B1-99CE-AD62BB93F784}
+		{590723D0-7424-4DAF-8286-94C13FC15F88} = {09A99787-00EB-4920-AA8F-67E5B1B52DFA}
 	EndGlobalSection
 	GlobalSection(ExtensibilityGlobals) = postSolution
 		SolutionGuid = {2AA395CE-ACD5-43DE-A8C5-164B98FFF289}

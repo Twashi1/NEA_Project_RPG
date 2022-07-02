@@ -208,9 +208,4 @@
       <UniqueIdentifier>{c1afd999-a3bb-48dc-b61b-b639b9a4f14f}</UniqueIdentifier>
     </Filter>
   </ItemGroup>
-  <ItemGroup>
-    <None Include="..\README.md">
-      <Filter>Resources</Filter>
-    </None>
-  </ItemGroup>
 </Project>

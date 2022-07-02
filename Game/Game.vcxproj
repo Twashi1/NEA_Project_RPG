@@ -19,77 +19,23 @@
     </ProjectConfiguration>
   </ItemGroup>
   <ItemGroup>
-    <ClCompile Include="src\Engine\Animation.cpp" />
-    <ClCompile Include="src\Engine\AnimationManager.cpp" />
-    <ClCompile Include="src\Engine\Body.cpp" />
-    <ClCompile Include="src\Engine\Camera.cpp" />
-    <ClCompile Include="src\Engine\Collision.cpp" />
-    <ClCompile Include="src\Engine\Engine.cpp" />
-    <ClCompile Include="src\Engine\GUIManager.cpp" />
-    <ClCompile Include="src\Engine\IndexBuffer.cpp" />
-    <ClCompile Include="src\Engine\Input.cpp" />
-    <ClCompile Include="src\Engine\LevelEditor.cpp" />
-    <ClCompile Include="src\Engine\Noise.cpp" />
-    <ClCompile Include="src\Engine\Physics.cpp" />
-    <ClCompile Include="src\Engine\Player.cpp" />
-    <ClCompile Include="src\Engine\Quad.cpp" />
-    <ClCompile Include="src\Engine\Rect.cpp" />
-    <ClCompile Include="src\Engine\Renderable.cpp" />
-    <ClCompile Include="src\Engine\Renderer.cpp" />
-    <ClCompile Include="src\Engine\Button.cpp" />
-    <ClCompile Include="src\Engine\Serialiser.cpp" />
-    <ClCompile Include="src\Engine\Shader.cpp" />
-    <ClCompile Include="src\Engine\Font.cpp" />
-    <ClCompile Include="src\Engine\ShaderManager.cpp" />
-    <ClCompile Include="src\Engine\TextRenderable.cpp" />
-    <ClCompile Include="src\Engine\Texture.cpp" />
-    <ClCompile Include="src\Engine\Utilities.cpp" />
-    <ClCompile Include="src\Engine\VersionNumber.cpp" />
-    <ClCompile Include="src\Engine\VertexBuffer.cpp" />
+    <ClCompile Include="src\main.cpp" />
   </ItemGroup>
   <ItemGroup>
-    <ClInclude Include="src\Engine\Animation.h" />
-    <ClInclude Include="src\Engine\AnimationManager.h" />
-    <ClInclude Include="src\Engine\Body.h" />
-    <ClInclude Include="src\Engine\Camera.h" />
-    <ClInclude Include="src\Engine\Collision.h" />
-    <ClInclude Include="src\Engine.h" />
-    <ClInclude Include="src\Engine\ComputeShader.h" />
-    <ClInclude Include="src\Engine\Engine.h" />
-    <ClInclude Include="src\Engine\GUIManager.h" />
-    <ClInclude Include="src\Engine\IndexBuffer.h" />
-    <ClInclude Include="src\Engine\Input.h" />
-    <ClInclude Include="src\Engine\Noise.h" />
-    <ClInclude Include="src\Engine\Physics.h" />
-    <ClInclude Include="src\Engine\Player.h" />
-    <ClInclude Include="src\Engine\Quad.h" />
-    <ClInclude Include="src\Engine\Rect.h" />
-    <ClInclude Include="src\Engine\Renderable.h" />
-    <ClInclude Include="src\Engine\Renderer.h" />
-    <ClInclude Include="src\Engine\Button.h" />
-    <ClInclude Include="src\Engine\Serialiser.h" />
-    <ClInclude Include="src\Engine\Shader.h" />
-    <ClInclude Include="src\Engine\Font.h" />
-    <ClInclude Include="src\Engine\ShaderManager.h" />
-    <ClInclude Include="src\Engine\TextRenderable.h" />
-    <ClInclude Include="src\Engine\Texture.h" />
-    <ClInclude Include="src\Engine\Utilities.h" />
-    <ClInclude Include="src\Engine\Vector2.h" />
-    <ClInclude Include="src\Engine\Vector3.h" />
-    <ClInclude Include="src\Engine\VersionNumber.h" />
-    <ClInclude Include="src\Engine\VertexBuffer.h" />
+    <ProjectReference Include="..\Engine\NEAProject.vcxproj">
+      <Project>{2e05089d-8f1b-4f1f-9b82-e37b1e84c4f2}</Project>
+    </ProjectReference>
   </ItemGroup>
   <PropertyGroup Label="Globals">
     <VCProjectVersion>16.0</VCProjectVersion>
     <Keyword>Win32Proj</Keyword>
-    <ProjectGuid>{2E05089D-8F1B-4F1F-9B82-E37B1E84C4F2}</ProjectGuid>
-    <RootNamespace>Redstone</RootNamespace>
+    <ProjectGuid>{67f6c795-cbce-4093-af64-26f031417902}</ProjectGuid>
+    <RootNamespace>Game</RootNamespace>
     <WindowsTargetPlatformVersion>10.0</WindowsTargetPlatformVersion>
-    <ProjectName>Engine</ProjectName>
   </PropertyGroup>
   <Import Project="$(VCTargetsPath)\Microsoft.Cpp.Default.props" />
   <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Debug|Win32'" Label="Configuration">
-    <ConfigurationType>DynamicLibrary</ConfigurationType>
+    <ConfigurationType>Application</ConfigurationType>
     <UseDebugLibraries>true</UseDebugLibraries>
     <PlatformToolset>v143</PlatformToolset>
     <CharacterSet>Unicode</CharacterSet>
@@ -133,33 +79,21 @@
   </ImportGroup>
   <PropertyGroup Label="UserMacros" />
   <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Debug|Win32'">
-    <LinkIncremental>true</LinkIncremental>
     <OutDir>$(SolutionDir)bin\$(Configuration)-$(Platform)\</OutDir>
     <IntDir>$(SolutionDir)bin-int\$(Configuration)-$(Platform)\$(ProjectName)\</IntDir>
-  </PropertyGroup>
-  <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Release|Win32'">
-    <LinkIncremental>false</LinkIncremental>
-  </PropertyGroup>
-  <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Debug|x64'">
-    <LinkIncremental>true</LinkIncremental>
-  </PropertyGroup>
-  <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Release|x64'">
-    <LinkIncremental>false</LinkIncremental>
   </PropertyGroup>
   <ItemDefinitionGroup Condition="'$(Configuration)|$(Platform)'=='Debug|Win32'">
     <ClCompile>
       <WarningLevel>Level3</WarningLevel>
       <SDLCheck>true</SDLCheck>
-      <PreprocessorDefinitions>ENGINE_BUILD_DLL;WIN32;GLEW_STATIC;_DEBUG;_CONSOLE;%(PreprocessorDefinitions)</PreprocessorDefinitions>
+      <PreprocessorDefinitions>WIN32;_DEBUG;_CONSOLE;%(PreprocessorDefinitions)</PreprocessorDefinitions>
       <ConformanceMode>true</ConformanceMode>
-      <LanguageStandard>stdcpplatest</LanguageStandard>
-      <AdditionalIncludeDirectories>src;D:\coding\NEAProject\vendor\glew\include;D:\coding\NEAProject\vendor\freetype\include;D:\coding\NEAProject\vendor\glfw\include;D:\coding\NEAProject\vendor\glm\glm;D:\coding\NEAProject\vendor\stb_image;%(AdditionalIncludeDirectories)</AdditionalIncludeDirectories>
+      <AdditionalIncludeDirectories>src;D:\coding\NEAProject\vendor\glew\include;D:\coding\NEAProject\vendor\freetype\include;D:\coding\NEAProject\vendor\glfw\include;D:\coding\NEAProject\vendor\glm\glm;D:\coding\NEAProject\Engine\src;D:\coding\NEAProject\vendor\stb_image;%(AdditionalIncludeDirectories)</AdditionalIncludeDirectories>
+      <LanguageStandard>stdcpp20</LanguageStandard>
     </ClCompile>
     <Link>
       <SubSystem>Console</SubSystem>
       <GenerateDebugInformation>true</GenerateDebugInformation>
-      <AdditionalLibraryDirectories>D:\coding\NEAProject\vendor\freetype\static\vs2015-2022\win32;D:\coding\NEAProject\vendor\glew\lib\Release\Win32;D:\coding\NEAProject\vendor\glfw\lib-vc2019;%(AdditionalLibraryDirectories)</AdditionalLibraryDirectories>
-      <AdditionalDependencies>glfw3.lib;freetype.lib;opengl32.lib;glew32s.lib;kernel32.lib;user32.lib;gdi32.lib;winspool.lib;comdlg32.lib;advapi32.lib;shell32.lib;ole32.lib;oleaut32.lib;uuid.lib;odbc32.lib;odbccp32.lib;%(AdditionalDependencies)</AdditionalDependencies>
     </Link>
   </ItemDefinitionGroup>
   <ItemDefinitionGroup Condition="'$(Configuration)|$(Platform)'=='Release|Win32'">
@@ -168,18 +102,14 @@
       <FunctionLevelLinking>true</FunctionLevelLinking>
       <IntrinsicFunctions>true</IntrinsicFunctions>
       <SDLCheck>true</SDLCheck>
-      <PreprocessorDefinitions>WIN32;GLEW_STATIC;NDEBUG;_CONSOLE;%(PreprocessorDefinitions)</PreprocessorDefinitions>
+      <PreprocessorDefinitions>WIN32;NDEBUG;_CONSOLE;%(PreprocessorDefinitions)</PreprocessorDefinitions>
       <ConformanceMode>true</ConformanceMode>
-      <LanguageStandard>stdcpp17</LanguageStandard>
-      <AdditionalIncludeDirectories>D:\coding\dependencies\freetype\include;D:\coding\dependencies\glm\glm;D:\coding\dependencies\glfw-3.3.2.bin.WIN32\include;D:\coding\dependencies\glew-2.1.0\include;%(AdditionalIncludeDirectories)</AdditionalIncludeDirectories>
     </ClCompile>
     <Link>
       <SubSystem>Console</SubSystem>
       <EnableCOMDATFolding>true</EnableCOMDATFolding>
       <OptimizeReferences>true</OptimizeReferences>
       <GenerateDebugInformation>true</GenerateDebugInformation>
-      <AdditionalLibraryDirectories>D:\coding\dependencies\freetype\static\vs2015-2022\win32;D:\coding\dependencies\glew-2.1.0\lib\Release\Win32;D:\coding\dependencies\glfw-3.3.2.bin.WIN32\lib-vc2019;%(AdditionalLibraryDirectories)</AdditionalLibraryDirectories>
-      <AdditionalDependencies>glfw3.lib;freetype.lib;opengl32.lib;glew32s.lib;kernel32.lib;user32.lib;gdi32.lib;winspool.lib;comdlg32.lib;advapi32.lib;shell32.lib;ole32.lib;oleaut32.lib;uuid.lib;odbc32.lib;odbccp32.lib;%(AdditionalDependencies)</AdditionalDependencies>
     </Link>
   </ItemDefinitionGroup>
   <ItemDefinitionGroup Condition="'$(Configuration)|$(Platform)'=='Debug|x64'">
@@ -188,7 +118,6 @@
       <SDLCheck>true</SDLCheck>
       <PreprocessorDefinitions>_DEBUG;_CONSOLE;%(PreprocessorDefinitions)</PreprocessorDefinitions>
       <ConformanceMode>true</ConformanceMode>
-      <LanguageStandard>stdcpplatest</LanguageStandard>
     </ClCompile>
     <Link>
       <SubSystem>Console</SubSystem>
