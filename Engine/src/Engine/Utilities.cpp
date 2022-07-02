@@ -206,6 +206,13 @@ std::string* Utils::ReadFile(const std::string& path)
 {
 	std::ifstream file(path, std::ios::in); // Create file pointer
 	std::string* out = new std::string((std::istreambuf_iterator<char>(file)), std::istreambuf_iterator<char>()); // Read all text and store on heap
+	
+	if (*out == "") {
+		Log(
+			std::format("File was empty/couldn't find file at {}", path),
+			Utils::ERROR::WARNING
+		);
+	}
 
 	return out; // Return pointer to text
 }

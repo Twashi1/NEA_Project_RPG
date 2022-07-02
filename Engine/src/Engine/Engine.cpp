@@ -56,10 +56,10 @@ void Engine::m_DeserialiseGeneralData()
 }
 
 void Engine::m_CheckDirectories() {
-    if (!Utils::CheckDirectoryExists("res"))         Log("Resources folder not found; app not properly installed?", Utils::ERROR::FATAL);
-    if (!Utils::CheckDirectoryExists("res/saves"))   Log("Saves folder not found; app not properly installed?", Utils::ERROR::FATAL);
-    if (!Utils::CheckDirectoryExists("res/fonts"))   Log("Fonts folder not found; app not properly installed?", Utils::ERROR::FATAL);
-    if (!Utils::CheckDirectoryExists("res/shaders")) Log("Shaders folder not found; app not properly installed?", Utils::ERROR::FATAL);
+    if (!Utils::CheckDirectoryExists("../Resources"))         Log("Resources folder not found; app not properly installed?", Utils::ERROR::FATAL);
+    if (!Utils::CheckDirectoryExists("../Resources/saves"))   Log("Saves folder not found; app not properly installed?", Utils::ERROR::FATAL);
+    if (!Utils::CheckDirectoryExists("../Resources/fonts"))   Log("Fonts folder not found; app not properly installed?", Utils::ERROR::FATAL);
+    if (!Utils::CheckDirectoryExists("../Resources/shaders")) Log("Shaders folder not found; app not properly installed?", Utils::ERROR::FATAL);
 }
 
 void Engine::m_Start()
@@ -67,11 +67,14 @@ void Engine::m_Start()
     Log("Program starting", Utils::ERROR::INFO);
 
     // Set shader statics
-    Shader::PATH = "res/shaders/";
+    Shader::PATH = "../Resources/shaders/";
     Shader::EXTENSION = ".glsl";
 
     // Set texture statics
-    Texture::PATH = "res/sprites/";
+    Texture::PATH = "../Resources/sprites/";
+    
+    // Set font statics
+    Font::PATH = "../Resources/fonts/";
 
     // Make stb_image flip all images vertically so textures display correct way up
     stbi_set_flip_vertically_on_load(1);
@@ -151,7 +154,7 @@ void Engine::m_Start()
     physics.layers[0].push_back(player->body);
 
     // Create consolas font
-    consolas_font = new Font("res/fonts/consola.ttf");
+    consolas_font = new Font("consola.ttf");
 
     // Set up text renderable's shader
     TextRenderable::shader = std::shared_ptr<Shader>(new Shader("text_vertex", "text_frag"));
@@ -332,6 +335,7 @@ void Engine::UpdateStats()
         TextRenderable& t = debug_stats_text["Average TPF"];
         t.color = color;
         t.text = text;
+        t.pos = Vector2<float>(5, height - 15);
 
     }
 
@@ -347,6 +351,7 @@ void Engine::UpdateStats()
         TextRenderable& t = debug_stats_text["Percentage Processing"];
         t.color = color;
         t.text = text;
+        t.pos = Vector2<float>(5, height - 30);
     }
 
     {
@@ -366,6 +371,7 @@ void Engine::UpdateStats()
 
         TextRenderable& t = debug_stats_text["Time"];
         t.text = time_str.str();
+        t.pos = Vector2<float>(5, height - 45);
     }
 
     {
@@ -375,6 +381,7 @@ void Engine::UpdateStats()
 
         TextRenderable& t = debug_stats_text["Player pos"];
         t.text = text;
+        t.pos = Vector2<float>(5, height - 100);
     }
 
     {
@@ -384,6 +391,7 @@ void Engine::UpdateStats()
 
         TextRenderable& t = debug_stats_text["Player vel"];
         t.text = text;
+        t.pos = Vector2<float>(5, height - 115);
     }
 
     {
@@ -393,5 +401,6 @@ void Engine::UpdateStats()
         
         TextRenderable& t = debug_stats_text["Player acc"];
         t.text = text;
+        t.pos = Vector2<float>(5, height - 130);
     }
 }

@@ -1,5 +1,7 @@
 #include "Font.h"
 
+std::string Font::PATH = "";
+
 void Font::m_LoadChar(const FT_Face& face, char character)
 {
 	if (FT_Load_Char(face, character, FT_LOAD_RENDER)) {
@@ -16,7 +18,7 @@ Font::Font(const char* font_path) {
 
 	// Initialise consolas font
 	FT_Face face;
-	if (FT_New_Face(ft, font_path, 0, &face)) {
+	if (FT_New_Face(ft, (PATH + font_path).c_str(), 0, &face)) {
 		Log("Failed to load font", Utils::ERROR::FATAL);
 	}
 

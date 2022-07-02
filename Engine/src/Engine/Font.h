@@ -14,6 +14,8 @@ class ENGINE_API Font {
 	void m_LoadChar(const FT_Face& face, char character);
 
 public:
+	static std::string PATH;
+
 	struct Character {
 		uint32_t texture_id;  // ID of glyph
 		Vector2<int> size;	  // Size of glyph
