@@ -3,6 +3,8 @@
 #include <array>
 #include <vector>
 
+#include <Engine.h>
+
 class Tile {
 public:
 	enum class ID : uint16_t {
