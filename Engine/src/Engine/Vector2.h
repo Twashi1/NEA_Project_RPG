@@ -100,6 +100,7 @@ struct ENGINE_API Vector2 {
 
 	// Normalise this vector
 	void normalise() { T inverse_magnitude = 1.0f / magnitude(); x *= inverse_magnitude; y *= inverse_magnitude; }
+	Vector2<T> floor() const { return Vector2(std::floor(x), std::floor(y)); }
 
 	operator Vector2<int>()			 { return Vector2<int>((int)x, (int)y);							   }
 	operator Vector2<long>()		 { return Vector2<long>((long)x, (long)y);						   }

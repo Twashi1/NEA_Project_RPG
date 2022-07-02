@@ -11,8 +11,6 @@ TODOs:
 
 ****** Engine ******
 # Renderer
-Sprites
-Animations
 GUI
 Post-processing
 
@@ -58,6 +56,7 @@ int main(void)
     Quad bg = Quad(0, 0, 1920, 1080, 0);
     Quad btn_quad = Quad(100, 100, 100, 50, 0);
     Quad dummy = Quad(-100, -100, 64, 64, 0);
+    Quad noisequad = Quad(-500, 500, 256, 256, 0);
 
     // DEBUG: buttons
     Button btn = Button(btn_quad, &tester_callback, "Clicked: 0", "Pressed");
@@ -83,6 +82,26 @@ int main(void)
 
     // DEBUG: atlas test
     Texture atlas_test = Texture("atlas.png"); // Create texture
+
+    // DEBUG: noise test
+    const int SIZE = 256;
+    Noise::Interpolated interp(0, 1.0f, 64);
+    std::uint8_t* buffer2 = new std::uint8_t[SIZE * SIZE * 4];
+    for (int i = 0; i < SIZE * SIZE; i++) {
+        int index = i * 4;
+        int y = i / SIZE; int x = i - (y * SIZE);
+
+        uint8_t v = interp.GetFractal(x, y, 4) * 0xff;
+
+        buffer2[index] = v;
+        buffer2[index + 1] = v;
+        buffer2[index + 2] = v;
+        buffer2[index + 3] = 0xff;
+    }
+
+    Texture noisetext = Texture(std::shared_ptr <uint8_t[]>(buffer2), SIZE, SIZE);
+
+    Renderable noisedraw = Renderable(std::shared_ptr<Quad>(&noisequad), &texture_shader, &noisetext, 5);
 
     // DEBUG: renderables
     Renderable walldraw(std::shared_ptr<Quad>(&wall), &colour_shader, 1);

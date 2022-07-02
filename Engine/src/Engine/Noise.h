@@ -3,7 +3,10 @@
 #include "Utilities.h"
 #include "Vector2.h"
 
+// TODO: rework to use function pointers and enums to select functions/fractal/etc.
+
 namespace Noise {
+    // TODO: all these functions should probably be under Utitilies.h as Random namespace or something
     // Hash integer into integer
     int ENGINE_API Hash(unsigned int seed, int x);
     // Hash integer into float
@@ -18,24 +21,33 @@ namespace Noise {
     // Hash 2 integers to float
     float ENGINE_API Hashf(unsigned int seed, int x, int y);
 
-    // Linearly interpolate between two doubles
-    double ENGINE_API LinearInterpolate(double a, double b, double speed);
-    // Interpolate between two doubles using smooth step function
-    double ENGINE_API SmoothStepInterpolate(double a, double b, double speed);
+    // Hash Vector2<int> to Vector2<int>
+    Vector2<int> ENGINE_API Hash2(unsigned int seed, Vector2<int> pos);
+    // Hash Vector2<int> to Vector2<float>
+    Vector2<float> ENGINE_API Hash2f(unsigned int seed, Vector2<int> pos);
 
-    // Linearly interpolate between two unsigned bytes
-    uint8_t ENGINE_API LinearInterpolate(uint8_t a, uint8_t b, double speed);
-    // Interpolate between two unsigned bytes using smooth step function
-    uint8_t ENGINE_API SmoothStepInterpolate(uint8_t a, uint8_t b, double speed);
+    // Interpolate between two doubles
+    float ENGINE_API Interpolate(float a, float b, float t);
 
-    class ENGINE_API White {
-    private:
+    // Cubic hermite interpolation function (s shaped curve between 0 and 1)
+    float Cubic(float t);
+    // Quintic hermite interpolation function (smoother s shaped curve between 0 and 1)
+    float Quintic(float t);
+
+    class ENGINE_API __NoiseVirtual {
+    protected:
         unsigned int m_seed;
-
     public:
-        float amplitude;         // Multiplier for value of noise
-        unsigned int wavelength; // Determines period at which noise repeats
+        float amplitude; // Multiplier for value of noise
+        int wavelength;  // Determines period at which noise repeats
 
+        __NoiseVirtual();
+        __NoiseVirtual(unsigned int m_seed, float amplitude, int wavelength);
+        virtual ~__NoiseVirtual();
+    };
+
+    class ENGINE_API White : public __NoiseVirtual {
+    public:
         // Get value noise for 1D coordinate as float
         float Get(int x);
         // Get value noise for 2D coordinate as float
@@ -54,29 +66,28 @@ namespace Noise {
         // Returns 2D array of dimensions (width, height) of random bytes (indexed [y][x])
         uint8_t** GetByteList(int x, int y, unsigned int width, unsigned int height);
 
-        White(unsigned int seed, float amplitude, unsigned int wavelength);
+        White(unsigned int seed, float amplitude, int wavelength);
         ~White();
     };
 
-    class ENGINE_API Interpolated {
-    private:
-        unsigned int m_seed;
-
+    class ENGINE_API Interpolated : public __NoiseVirtual {
     public:
-        float amplitude;         // Multiplier for value of noise
-        unsigned int wavelength; // Determines period at which noise repeats
-
         // Get linearly interpolated noise for 1D coordinate as float
         float GetLinear(int x);
         // Get smoothly interpolated noise for 1D coordinate as float
         float GetSmooth(int x);
+
+        // Gets linealy interpolated noise for 2D coordinate as float
+        float Get(int x, int y);
+        // Gets fractal noise for 2D coordinate as float
+        float GetFractal(int x, int y, int octaves);
 
         // Get linearly interpolated noise for 1D coordinate as byte
         uint8_t GetByteLinear(int x);
         // Get smoothly interpolated noise for 1D coordinate as byte
         uint8_t GetByteSmooth(int x);
 
-        Interpolated(unsigned int seed, float amplitude, unsigned int wavelength);
+        Interpolated(unsigned int seed, float amplitude, int wavelength);
         ~Interpolated();
     };
 }

@@ -169,6 +169,9 @@
     <ClInclude Include="src\Engine\AnimationManager.h">
       <Filter>Headers\Rendering</Filter>
     </ClInclude>
+    <ClInclude Include="src\Engine\ComputeShader.h">
+      <Filter>Headers\Rendering</Filter>
+    </ClInclude>
   </ItemGroup>
   <ItemGroup>
     <Filter Include="Headers">

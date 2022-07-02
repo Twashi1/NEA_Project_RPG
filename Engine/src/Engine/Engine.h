@@ -28,6 +28,7 @@
 #include "Button.h"
 #include "AnimationManager.h"
 #include "Animation.h"
+#include "Noise.h"
 
 // TODO: shouldn't engine be full static?
 
