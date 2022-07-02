@@ -5,7 +5,7 @@
 #include <cstddef>
 #include <bitset>
 
-#include "Utilities.h"
+#include "Utils.h"
 #include "Quad.h"
 #include "Body.h"
 #include "Collision.h"

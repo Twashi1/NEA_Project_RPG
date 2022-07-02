@@ -5,7 +5,7 @@
 
 #include "Renderer.h"
 #include "ShaderManager.h"
-#include "Utilities.h"
+#include "Utils.h"
 #include "Vector3.h"
 #include "Vector2.h"
 

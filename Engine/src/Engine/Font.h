@@ -1,6 +1,6 @@
 #pragma once
 
-#include "Utilities.h"
+#include "Utils.h"
 #include "Texture.h"
 
 #include <ft2build.h>

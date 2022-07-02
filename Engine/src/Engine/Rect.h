@@ -1,7 +1,7 @@
 #pragma once
 
 #include "Vector2.h"
-#include "Utilities.h"
+#include "Utils.h"
 
 struct Quad;
 

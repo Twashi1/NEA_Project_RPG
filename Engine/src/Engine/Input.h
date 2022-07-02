@@ -6,7 +6,7 @@
 #include <unordered_map>
 #include <iostream>
 
-#include "Utilities.h"
+#include "Utils.h"
 #include "Renderer.h"
 
 #include <GLFW/glfw3.h>

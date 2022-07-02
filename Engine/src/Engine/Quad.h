@@ -1,6 +1,6 @@
 #pragma once
 
-#include "Utilities.h"
+#include "Utils.h"
 #include "Vector2.h"
 #include "VertexBuffer.h"
 #include "IndexBuffer.h"

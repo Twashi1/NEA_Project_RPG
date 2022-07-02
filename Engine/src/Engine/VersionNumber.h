@@ -1,6 +1,6 @@
 #pragma once
 
-#include "Utilities.h"
+#include "Utils.h"
 
 // Stores version number in format major.minor.patch
 struct ENGINE_API VersionNumber {

@@ -1,6 +1,6 @@
 #pragma once
 
-#include "Utilities.h"
+#include "Utils.h"
 #include "Renderable.h"
 #include "Input.h"
 #include "GUIManager.h"

@@ -1,7 +1,7 @@
 #pragma once
 
 #include "Renderer.h"
-#include "Utilities.h"
+#include "Utils.h"
 #include <iostream>
 #include <array>
 #include <vector>

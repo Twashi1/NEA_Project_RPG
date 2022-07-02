@@ -43,7 +43,7 @@
     <ClCompile Include="src\Engine\ShaderManager.cpp" />
     <ClCompile Include="src\Engine\TextRenderable.cpp" />
     <ClCompile Include="src\Engine\Texture.cpp" />
-    <ClCompile Include="src\Engine\Utilities.cpp" />
+    <ClCompile Include="src\Engine\Utils.cpp" />
     <ClCompile Include="src\Engine\VersionNumber.cpp" />
     <ClCompile Include="src\Engine\VertexBuffer.cpp" />
   </ItemGroup>
@@ -73,7 +73,7 @@
     <ClInclude Include="src\Engine\ShaderManager.h" />
     <ClInclude Include="src\Engine\TextRenderable.h" />
     <ClInclude Include="src\Engine\Texture.h" />
-    <ClInclude Include="src\Engine\Utilities.h" />
+    <ClInclude Include="src\Engine\Utils.h" />
     <ClInclude Include="src\Engine\Vector2.h" />
     <ClInclude Include="src\Engine\Vector3.h" />
     <ClInclude Include="src\Engine\VersionNumber.h" />
