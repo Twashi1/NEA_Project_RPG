@@ -83,7 +83,7 @@ Vector2<float> Input::GetCursorPos()
 	double xpos, ypos;
 	glfwGetCursorPos(window, &xpos, &ypos);
 
-	return Vector2<float>(xpos - (*window_width / 2.0f), (*window_height / 2.0f) - ypos);
+	return Vector2<float>(xpos - (*window_width * 0.5f), (*window_height * 0.5f) - ypos);
 }
 
 Vector2<float> Input::GetCursorUVPos()
