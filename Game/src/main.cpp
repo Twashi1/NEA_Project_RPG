@@ -51,7 +51,7 @@ int main(void)
     Log("Finished initialising world", Utils::ERROR::INFO);
 
     // DEBUG: quads
-    Quad wall = Quad(500, 500, 100, 500, 0.25 * PI_CONST);
+    Quad wall = Quad(500, 500, 100, 500, 0.5 * PI_CONST);
     Quad btn_quad = Quad(-400, -300, 150, 50, 0);
     Quad dummy = Quad(-100, -100, 150, 150, 0);
     Quad noisequad = Quad(-500, 500, 256, 256, 0);
@@ -121,6 +121,8 @@ int main(void)
         // DEGUG: Rotate our example wall
         wallbody.angular_acc = 1.0f;
         wallbody.angular_vel = Utils::ClampMax(wallbody.angular_vel, 3.0f);
+
+        wall.SetAngle(wall.GetAngle());
     }
 
     Log("Window closed", Utils::ERROR::INFO);

@@ -2,6 +2,7 @@
 
 void Quad::m_UpdateVB()
 {
+	// Maybe unnecessary
 	m_Rect.m_UpdateTrig();
 
 	std::vector<Vector2<float>> vertices = m_Rect.GetVertices();

@@ -34,6 +34,10 @@
 ## Player
 - [ ] Player sprites/animation
 
-# Bugs
+# Other
 - Texture atlas API sometimes leaves stay pixels on side of image
 - Objects aren't being deconstructed properly, so program can't properly exit
+- Performance issues with large amounts of renderables
+- Fix sandbox
+- Camera
+- While updating a body in the physics system will update its rect, the VertexBuffer of the quad that contains that rect is not updated, thus the object will not appear as having moved
