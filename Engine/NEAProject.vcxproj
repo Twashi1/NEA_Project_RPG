@@ -153,12 +153,12 @@
       <PreprocessorDefinitions>ENGINE_BUILD_DLL;WIN32;GLEW_STATIC;_DEBUG;_CONSOLE;%(PreprocessorDefinitions)</PreprocessorDefinitions>
       <ConformanceMode>true</ConformanceMode>
       <LanguageStandard>stdcpplatest</LanguageStandard>
-      <AdditionalIncludeDirectories>src;D:\coding\NEAProject\vendor\glew\include;D:\coding\NEAProject\vendor\freetype\include;D:\coding\NEAProject\vendor\glfw\include;D:\coding\NEAProject\vendor\glm\glm;D:\coding\NEAProject\vendor\stb_image;%(AdditionalIncludeDirectories)</AdditionalIncludeDirectories>
+      <AdditionalIncludeDirectories>src;$(SolutionDir)vendor\glew\include;$(SolutionDir)vendor\freetype\include;$(SolutionDir)vendor\glfw\include;$(SolutionDir)vendor\glm\glm;$(SolutionDir)vendor\stb_image;%(AdditionalIncludeDirectories)</AdditionalIncludeDirectories>
     </ClCompile>
     <Link>
       <SubSystem>Console</SubSystem>
       <GenerateDebugInformation>true</GenerateDebugInformation>
-      <AdditionalLibraryDirectories>D:\coding\NEAProject\vendor\freetype\static\vs2015-2022\win32;D:\coding\NEAProject\vendor\glew\lib\Release\Win32;D:\coding\NEAProject\vendor\glfw\lib-vc2019;%(AdditionalLibraryDirectories)</AdditionalLibraryDirectories>
+      <AdditionalLibraryDirectories>$(SolutionDir)vendor\freetype\static\vs2015-2022\win32;$(SolutionDir)vendor\glew\lib\Release\Win32;$(SolutionDir)vendor\glfw\lib-vc2019;%(AdditionalLibraryDirectories)</AdditionalLibraryDirectories>
       <AdditionalDependencies>glfw3.lib;freetype.lib;opengl32.lib;glew32s.lib;kernel32.lib;user32.lib;gdi32.lib;winspool.lib;comdlg32.lib;advapi32.lib;shell32.lib;ole32.lib;oleaut32.lib;uuid.lib;odbc32.lib;odbccp32.lib;%(AdditionalDependencies)</AdditionalDependencies>
     </Link>
   </ItemDefinitionGroup>
