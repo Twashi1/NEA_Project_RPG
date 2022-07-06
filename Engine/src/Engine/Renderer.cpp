@@ -86,7 +86,7 @@ void Renderer::Draw(const Renderable* renderable)
 		// If its an object in the game world
 		if (renderable->isGameWorld) {
 			// Transform quad into screen coordinates
-			// TODO
+			quad = new Quad(camera->Transform(*renderable->quad));
 		}
 
 		// Get components
@@ -116,7 +116,7 @@ void Renderer::Draw(const Renderable* renderable)
 		// If its an object in the game world
 		if (renderable->isGameWorld) {
 			// Delete the transformed quad we made on heap
-			// delete quad;
+			delete quad;
 		}
 	}
 }

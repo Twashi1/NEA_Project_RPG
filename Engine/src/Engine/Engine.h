@@ -39,6 +39,8 @@ class ENGINE_API Engine {
     void m_OnWindowResize(int nwidth, int nheight);
     // Reads all general data from file if there
     void m_DeserialiseGeneralData();
+    // Checks all necessary directories exist
+    void m_CheckDirectories();
     // Initialises everything in Engine
     void m_Start();
 
@@ -52,6 +54,8 @@ public:
 
     unsigned int fps;    // Frames per second
     double tpf;          // Time per frame (1 / fps)
+
+    glm::mat4 proj;      // Projection matrix
 
     Physics physics;     // Physics system
     Player* player;      // Pointer to Player instance
@@ -78,7 +82,7 @@ public:
     ~Engine();
 
     // Updates screen, physics system, player, camera position, etc.
-	void Update();
+    void Update();
     // TODO: useless now, just calls Renderer::Draw
     void Draw();
     // Checks average time per frame, and will display warning if engine is running behind

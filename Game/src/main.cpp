@@ -37,6 +37,8 @@ int main(void)
     Shader bg_shader = Shader("colour_vertex", "colour_frag");
     bg_shader.SetUniform3f("u_Color", COLORS::BLUE * 0.5f);
 
+    ShaderManager::UpdateProjectionMatrix(engine.proj);
+
     World::texture_shader = &texture_shader;
 
     // Test construct world
@@ -48,17 +50,15 @@ int main(void)
     //world.Update(Vector2<int>(0, 0));
     Log("Finished initialising world", Utils::ERROR::INFO);
 
-    Log("uhh", Utils::ERROR::INFO);
-
     // DEBUG: quads
-    Quad wall = Quad(.5, .5, .1, .5, 0.25 * PI_CONST);
-    Quad bg = Quad(.8, .5, 1, 1, 0);
-    Quad btn_quad = Quad(.5, .1, .1, .5, 0);
-    Quad dummy = Quad(-.1, -.1, .3, .3, 0);
-    Quad noisequad = Quad(-.5, .5, .256, .256, 0);
+    Quad wall = Quad(500, 500, 100, 500, 0.25 * PI_CONST);
+    Quad bg = Quad(1920/2, 1080/2, 1920, 1080, 0);
+    Quad btn_quad = Quad(150, 100, 150, 50, 0);
+    Quad dummy = Quad(-100, -100, 150, 150, 0);
+    Quad noisequad = Quad(-500, 500, 256, 256, 0);
 
     // DEBUG: buttons
-    //Button btn = Button(btn_quad, &tester_callback, "Change seed", "Change seed"); btn.isVisible = false;
+    Button btn = Button(btn_quad, &tester_callback, "Change seed", "Change seed");
 
     // DEBUG: atlas test
     Texture atlas_test = Texture("atlas.png"); // Create texture
@@ -80,14 +80,14 @@ int main(void)
         buffer2[index + 3] = 0xff;
     }
 
-    Texture noisetext = Texture(std::shared_ptr <uint8_t[]>(buffer2), SIZE, SIZE);
+    Texture noisetext = Texture(std::shared_ptr<uint8_t[]>(buffer2), SIZE, SIZE);
 
-    Renderable noisedraw = Renderable(std::shared_ptr<Quad>(&noisequad), &texture_shader, &noisetext, 5); noisedraw.isVisible = false;
+    Renderable noisedraw = Renderable(std::shared_ptr<Quad>(&noisequad), &texture_shader, &noisetext, 5);
 
     // DEBUG: renderables
     Renderable walldraw(std::shared_ptr<Quad>(&wall), &colour_shader, 1);
-    Renderable bg_render(std::shared_ptr<Quad>(&bg), &bg_shader, 0, false); bg_render.isVisible = false;
-    Renderable dummydraw(std::shared_ptr<Quad>(&dummy), &texture_shader, &atlas_test, 2); dummydraw.isVisible = false;
+    Renderable bg_render(std::shared_ptr<Quad>(&bg), &bg_shader, 0, false);
+    Renderable dummydraw(std::shared_ptr<Quad>(&dummy), &texture_shader, &atlas_test, 2);
 
     // DEBUG: Animation object
     Animation animation(std::shared_ptr<Renderable>(&dummydraw), std::shared_ptr<Texture>(&atlas_test), { 64, 64 }, "data");
