@@ -52,8 +52,7 @@ int main(void)
 
     // DEBUG: quads
     Quad wall = Quad(500, 500, 100, 500, 0.25 * PI_CONST);
-    Quad bg = Quad(0, 0, 1920, 1080, 0);
-    Quad btn_quad = Quad(150, 100, 150, 50, 0);
+    Quad btn_quad = Quad(-400, -300, 150, 50, 0);
     Quad dummy = Quad(-100, -100, 150, 150, 0);
     Quad noisequad = Quad(-500, 500, 256, 256, 0);
 
@@ -86,7 +85,6 @@ int main(void)
 
     // DEBUG: renderables
     Renderable walldraw(std::shared_ptr<Quad>(&wall), &colour_shader, 1);
-    Renderable bg_render(std::shared_ptr<Quad>(&bg), &bg_shader, 0, false);
     Renderable dummydraw(std::shared_ptr<Quad>(&dummy), &texture_shader, &atlas_test, 2);
 
     // DEBUG: Animation object

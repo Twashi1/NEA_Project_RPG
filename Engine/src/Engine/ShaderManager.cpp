@@ -11,8 +11,8 @@ void ShaderManager::UpdateShaders(const Camera& camera)
 
 	for (Shader* shader : shaders) {
 		shader->Bind();
-		shader->SetUniform2f(offset_name.c_str(), offset);
-		shader->SetUniform2f("u_OffsetCam", camera.offset);
+		shader->SetUniform2f(offset_name.c_str(), -camera.pos);
+		shader->SetUniform2f("u_OffsetCam", Vector2<float>(0, 0));
 	}
 
 	Shader::Unbind();

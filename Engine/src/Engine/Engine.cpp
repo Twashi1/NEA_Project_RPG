@@ -11,7 +11,7 @@ void Engine::m_OnWindowResize(int nwidth, int nheight)
     width = nwidth; height = nheight;
 
     // Update projection matrix
-    proj = glm::ortho(0.0f, (float)width, 0.0f, (float)height, -1.0f, 1.0f);
+    proj = glm::ortho(width / 2.0f, (float)width, height / 2.0f, (float)height, -1.0f, 1.0f);
 
     // Update projection uniform for all shaders
     ShaderManager::UpdateProjectionMatrix(proj);
@@ -100,7 +100,7 @@ void Engine::m_Start()
     }
 
     // Initialise projection matrix
-    proj = glm::ortho(0.0f, (float)width, 0.0f, (float)height, -1.0f, 1.0f);
+    proj = glm::ortho(-(width / 2.0f), width / 2.0f, -(height / 2.0f), height / 2.0f, -1.0f, 1.0f);
 
     // Allow transparency
     GlCall(glBlendFunc(GL_SRC_ALPHA, GL_ONE_MINUS_SRC_ALPHA));
@@ -328,7 +328,7 @@ void Engine::UpdateStats()
         TextRenderable& t = debug_stats_text["Average TPF"];
         t.color = color;
         t.text = text;
-        t.pos = Vector2<float>(5, height - 15);
+        t.pos = Vector2<float>(-(width / 2.0f) + 5, (height / 2.0f) - 15);
 
     }
 
@@ -344,7 +344,7 @@ void Engine::UpdateStats()
         TextRenderable& t = debug_stats_text["Percentage Processing"];
         t.color = color;
         t.text = text;
-        t.pos = Vector2<float>(5, height - 30);
+        t.pos = Vector2<float>(-(width / 2.0f) + 5, (height / 2.0f) - 30);
     }
 
     {
@@ -364,7 +364,7 @@ void Engine::UpdateStats()
 
         TextRenderable& t = debug_stats_text["Time"];
         t.text = time_str.str();
-        t.pos = Vector2<float>(5, height - 45);
+        t.pos = Vector2<float>(-(width / 2.0f) + 5, (height / 2.0f) - 45);
     }
 
     {
@@ -374,7 +374,7 @@ void Engine::UpdateStats()
 
         TextRenderable& t = debug_stats_text["Player pos"];
         t.text = text;
-        t.pos = Vector2<float>(5, height - 100);
+        t.pos = Vector2<float>(-(width / 2.0f) + 5, (height / 2.0f) - 100);
     }
 
     {
@@ -384,7 +384,7 @@ void Engine::UpdateStats()
 
         TextRenderable& t = debug_stats_text["Player vel"];
         t.text = text;
-        t.pos = Vector2<float>(5, height - 115);
+        t.pos = Vector2<float>(-(width / 2.0f) + 5, (height / 2.0f) - 115);
     }
 
     {
@@ -394,6 +394,6 @@ void Engine::UpdateStats()
 
         TextRenderable& t = debug_stats_text["Player acc"];
         t.text = text;
-        t.pos = Vector2<float>(5, height - 130);
+        t.pos = Vector2<float>(-(width / 2.0f) + 5, (height / 2.0f) - 130);
     }
 }
