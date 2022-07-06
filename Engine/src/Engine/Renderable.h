@@ -21,6 +21,8 @@ public:
     bool isGameWorld = true;    // If renderable exists in game world (if its not in the game world, it won't be transformed by the camera)
 
     // Think of better way to pass parameters
+    Renderable();
+    Renderable(const Renderable& other);
     Renderable(std::shared_ptr<Quad> quad, Shader* shader, int z);
     Renderable(std::shared_ptr<Quad> quad, Shader* shader, Texture* texture, int z);
     Renderable(std::shared_ptr<Quad> quad, Shader* shader, int z, bool isGameWorld);

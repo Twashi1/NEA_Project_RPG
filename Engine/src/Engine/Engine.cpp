@@ -11,16 +11,16 @@ void Engine::m_OnWindowResize(int nwidth, int nheight)
     width = nwidth; height = nheight;
 
     // Update projection matrix
-    proj = glm::ortho(0.0f, (float)width, 0.0f, (float)height, -1.0f, 1.0f);
+    // proj = glm::ortho(0.0f, (float)width, 0.0f, (float)height, -1.0f, 1.0f);
 
     // Update projection uniform for all shaders
-    ShaderManager::UpdateProjectionMatrix(proj);
+    ShaderManager::UpdateShaders(camera);
 
     // Update viewport
     GlCall(glViewport(0, 0, width, height));
 
     // Update camera offset
-    camera.offset = Vector2<float>(width, height) * 0.5f;
+    // camera.offset = Vector2<float>(width, height) * 0.5f;
 }
 
 void Engine::m_DeserialiseGeneralData()
@@ -55,13 +55,6 @@ void Engine::m_DeserialiseGeneralData()
     play_time = 0.0;
 }
 
-void Engine::m_CheckDirectories() {
-    if (!Utils::CheckDirectoryExists("../Resources"))         Log("Resources folder not found; app not properly installed?", Utils::ERROR::FATAL);
-    if (!Utils::CheckDirectoryExists("../Resources/saves"))   Log("Saves folder not found; app not properly installed?", Utils::ERROR::FATAL);
-    if (!Utils::CheckDirectoryExists("../Resources/fonts"))   Log("Fonts folder not found; app not properly installed?", Utils::ERROR::FATAL);
-    if (!Utils::CheckDirectoryExists("../Resources/shaders")) Log("Shaders folder not found; app not properly installed?", Utils::ERROR::FATAL);
-}
-
 void Engine::m_Start()
 {
     Log("Program starting", Utils::ERROR::INFO);
@@ -78,9 +71,6 @@ void Engine::m_Start()
 
     // Make stb_image flip all images vertically so textures display correct way up
     stbi_set_flip_vertically_on_load(1);
-
-    // Verify all directories exist
-    m_CheckDirectories();
 
     // Initialise glfw library, if it doesn't succeed, exit program
     if (!glfwInit())
@@ -110,17 +100,17 @@ void Engine::m_Start()
     }
 
     // Initialise projection matrix
-    proj = glm::ortho(0.0f, (float)width, 0.0f, (float)height, -1.0f, 1.0f);
+    // proj = glm::ortho(0.0f, (float)width, 0.0f, (float)height, -1.0f, 1.0f);
 
     // Allow transparency
     GlCall(glBlendFunc(GL_SRC_ALPHA, GL_ONE_MINUS_SRC_ALPHA));
 
     // Initialise player
-    player = new Player(proj);
+    player = new Player();
     // Initialise physics
     physics = Physics();
     // Initialise camera
-    camera = Camera(Vector2<float>(width * 0.5f, height * 0.5f), player->quad->GetCenter());
+    camera = Camera(-100, 100, -100, 100);
     // Pass camera to Renderer
     Renderer::camera = &camera;
 
@@ -158,7 +148,7 @@ void Engine::m_Start()
 
     // Set up text renderable's shader
     TextRenderable::shader = std::shared_ptr<Shader>(new Shader("text_vertex", "text_frag"));
-    TextRenderable::shader->SetUniformMat4fv(ShaderManager::projmat_name.c_str(), proj);
+    TextRenderable::shader->SetUniformMat4fv(ShaderManager::projmat_name.c_str(), camera.GetProjMat());
     TextRenderable::shader->SetUniform3f("u_TextColor", COLORS::WHITE);
 
     // Initialise button class
@@ -167,7 +157,7 @@ void Engine::m_Start()
 
     // Update projection uniform for all shaders
     // NOTE: all shader initialisation should come before this function, unless we're setting the projection matrix ourselves
-    ShaderManager::UpdateProjectionMatrix(proj);
+    ShaderManager::UpdateShaders(camera);
 
     // Deserialise general data about engine
     m_DeserialiseGeneralData();
@@ -212,7 +202,7 @@ bool Engine::IsRunning()
 }
 
 Engine::Engine(int width, int height, int fps, bool enable_stats)
-    : width(width), height(height), fps(fps), tpf(1.0/double(fps)), enable_stats(enable_stats)
+    : width(width), height(height), fps(fps), tpf(1.0/double(fps)), enable_stats(enable_stats), camera(-1.0f, 1.0f, -1.0f, 1.0f)
 {
     m_Start();
 }
@@ -256,7 +246,7 @@ void Engine::Update()
     player->Update(glfwGetTime());
 
     // Update camera position
-    camera.pos = player->quad->GetCenter();
+    camera.SetPosition(player->quad->GetCenter());
 
     // Update all text renderables for stats
     if (enable_stats) {

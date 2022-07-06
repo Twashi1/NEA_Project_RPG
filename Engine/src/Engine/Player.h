@@ -29,6 +29,6 @@ public:
     // Update acceleration according to client inputs
     void Update(float dt);
 
-    Player(glm::mat4& proj);
+    Player();
     ~Player();
 };

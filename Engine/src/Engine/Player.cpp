@@ -37,15 +37,14 @@ void Player::Update(float new_time)
     body->vel = body->vel + (body->acc * dt);
 }
 
-Player::Player(glm::mat4& proj)
+Player::Player()
 {
     // Setup player quad and body
-    quad = std::shared_ptr<Quad>(new Quad(0.0f, 0.0f, 100.0f, 100.0f, 0.0f));
+    quad = std::shared_ptr<Quad>(new Quad(0.0f, 0.0f, 0.2f, 0.2f, 0.0f));
     body = std::shared_ptr<Body>(new Body(quad.get(), true, 0.0f, 1.0f));
 
     // Setup shader and uniforms
     shader = new Shader("colour_vertex", "colour_frag");
-    shader->SetUniformMat4fv("u_projMat", proj);
     shader->SetUniform3f("u_Color", COLORS::YELLOW);
 
     // Setup renderable object
