@@ -83,11 +83,7 @@ void Renderer::Draw(const Renderable* renderable)
 		
 		Quad* quad = renderable->quad.get();
 
-		// If its an object in the game world
-		if (renderable->isGameWorld) {
-			// Transform quad into screen coordinates
-			quad = new Quad(camera->Transform(*renderable->quad));
-		}
+		// quad = new Quad(camera->Transform(*quad));
 
 		// Get components
 		const VertexBuffer& vb = quad->GetVertexBuffer();
@@ -112,12 +108,6 @@ void Renderer::Draw(const Renderable* renderable)
 		// Unbind and delete the texture, and unbind texture slot
 		Texture::Unbind();
 		Renderer::FreeTextureSlot(slot); // NOTE: Function ignores m_INVALID_TEXTURE_SLOT
-
-		// If its an object in the game world
-		if (renderable->isGameWorld) {
-			// Delete the transformed quad we made on heap
-			delete quad;
-		}
 	}
 }
 

@@ -12,6 +12,7 @@ class Shader;
 class ENGINE_API ShaderManager {
 public:
 	static std::string projmat_name;
+	static std::string offset_name;
 
 	static Utils::List<Shader*> shaders;
 

@@ -55,13 +55,6 @@ void Engine::m_DeserialiseGeneralData()
     play_time = 0.0;
 }
 
-void Engine::m_CheckDirectories() {
-    if (!Utils::CheckDirectoryExists("../Resources"))         Log("Resources folder not found; app not properly installed?", Utils::ERROR::FATAL);
-    if (!Utils::CheckDirectoryExists("../Resources/saves"))   Log("Saves folder not found; app not properly installed?", Utils::ERROR::FATAL);
-    if (!Utils::CheckDirectoryExists("../Resources/fonts"))   Log("Fonts folder not found; app not properly installed?", Utils::ERROR::FATAL);
-    if (!Utils::CheckDirectoryExists("../Resources/shaders")) Log("Shaders folder not found; app not properly installed?", Utils::ERROR::FATAL);
-}
-
 void Engine::m_Start()
 {
     Log("Program starting", Utils::ERROR::INFO);
@@ -78,9 +71,6 @@ void Engine::m_Start()
 
     // Make stb_image flip all images vertically so textures display correct way up
     stbi_set_flip_vertically_on_load(1);
-
-    // Verify all directories exist
-    m_CheckDirectories();
 
     // Initialise glfw library, if it doesn't succeed, exit program
     if (!glfwInit())
@@ -257,6 +247,9 @@ void Engine::Update()
 
     // Update camera position
     camera.pos = player->quad->GetCenter();
+
+    // Update shaders
+    ShaderManager::UpdateShaders(camera);
 
     // Update all text renderables for stats
     if (enable_stats) {

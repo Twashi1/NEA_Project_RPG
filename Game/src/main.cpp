@@ -43,16 +43,16 @@ int main(void)
 
     // Test construct world
     Log("Loading world...", Utils::ERROR::INFO);
-    //World world(0, "testworld");
+    World world(0, "testworld");
     Log("Loading textures...", Utils::ERROR::INFO);
-    //World::LoadTextures("tile_atlas.png");
+    World::LoadTextures("tile_atlas.png");
     Log("Updating world...", Utils::ERROR::INFO);
-    //world.Update(Vector2<int>(0, 0));
+    world.Update(Vector2<int>(0, 0));
     Log("Finished initialising world", Utils::ERROR::INFO);
 
     // DEBUG: quads
     Quad wall = Quad(500, 500, 100, 500, 0.25 * PI_CONST);
-    Quad bg = Quad(1920/2, 1080/2, 1920, 1080, 0);
+    Quad bg = Quad(0, 0, 1920, 1080, 0);
     Quad btn_quad = Quad(150, 100, 150, 50, 0);
     Quad dummy = Quad(-100, -100, 150, 150, 0);
     Quad noisequad = Quad(-500, 500, 256, 256, 0);

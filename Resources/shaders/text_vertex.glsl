@@ -3,6 +3,7 @@ layout (location = 0) in vec4 vertex; // <vec2 pos, vec2 tex>
 out vec2 v_TexCoords;
 
 uniform mat4 u_projMat;
+uniform vec2 u_Offset;
 
 void main()
 {

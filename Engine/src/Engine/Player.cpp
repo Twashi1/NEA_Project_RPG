@@ -44,7 +44,7 @@ Player::Player(const glm::mat4& proj)
     body = std::shared_ptr<Body>(new Body(quad.get(), true, 0.0f, 1.0f));
 
     // Setup shader and uniforms
-    shader = new Shader("colour_vertex", "colour_frag");
+    shader = new Shader("player_vertex", "player_frag");
     shader->SetUniformMat4fv("u_projMat", proj);
     shader->SetUniform3f("u_Color", COLORS::YELLOW);
 

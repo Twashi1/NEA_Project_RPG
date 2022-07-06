@@ -39,8 +39,6 @@ class ENGINE_API Engine {
     void m_OnWindowResize(int nwidth, int nheight);
     // Reads all general data from file if there
     void m_DeserialiseGeneralData();
-    // Checks all necessary directories exist
-    void m_CheckDirectories();
     // Initialises everything in Engine
     void m_Start();
 
