@@ -94,3 +94,6 @@ extern ENGINE_API void Deserialise(const Serialiser& s, std::vector<T>* memory);
 // NOTE: buffer is created on heap, delete once done with the data
 template <typename T>
 extern ENGINE_API T* DeserialiseArray(const Serialiser& s, uint32_t* length);
+
+template <typename T>
+extern ENGINE_API void DeserialiseArray(const Serialiser& s, T* memory);

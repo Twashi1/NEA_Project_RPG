@@ -11,6 +11,7 @@
 struct ENGINE_API Quad {
 private:
 	Rect m_Rect;
+	std::vector<float> m_tex_coords;
 
 	// Buffers
 	std::shared_ptr<VertexBuffer> vb;

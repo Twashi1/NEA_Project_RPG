@@ -11,7 +11,8 @@ public:
 		VOID,
 		GROUND,
 		GRASS,
-		TREE
+		TREE,
+		MAX
 	};
 
 	struct Properties {
@@ -31,8 +32,8 @@ public:
 
 	std::vector<ID> ids; // List of IDs of tiles that should display at the same coordinate
 
-	// Implicit conversion to id
-	operator Tile::ID() const { return ids[0]; }
+	// Explicit conversion to id
+	explicit operator Tile::ID() const { return ids[0]; }
 
 	Tile();
 	Tile(const Tile::ID& id);
@@ -42,3 +43,21 @@ public:
 private:
 	static std::array<Properties, TOTAL_TILES> m_Properties;
 };
+
+template <>
+void Serialise<Tile>(Serialiser& s, const Tile& data);
+
+template <>
+void Deserialise<Tile>(const Serialiser& s, Tile* memory);
+
+template <>
+void Serialise<Tile>(Serialiser& s, Tile* data, const uint32_t& length);
+
+template <>
+void DeserialiseArray<Tile>(const Serialiser&, Tile*);
+
+template <>
+void Serialise<Tile::ID>(Serialiser& s, Tile::ID* data, const uint32_t& length);
+
+template <>
+void DeserialiseArray<Tile::ID>(const Serialiser&, Tile::ID*);

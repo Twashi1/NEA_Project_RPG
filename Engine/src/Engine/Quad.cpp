@@ -22,6 +22,12 @@ void Quad::m_ConstructBuffers()
 	m_Rect.m_UpdateTrig();
 
 	std::vector<Vector2<float>> vertices = m_Rect.GetVertices();
+	m_tex_coords = {
+			0.0f, 0.0f,
+			1.0f, 0.0f,
+			1.0f, 1.0f,
+			0.0f, 1.0f
+	};
 
 	// Generate vertex and texture coordinates
 	vb = std::shared_ptr<VertexBuffer>(new VertexBuffer(
@@ -31,12 +37,7 @@ void Quad::m_ConstructBuffers()
 			vertices[Rect::TOPRIGHT   ].x, vertices[Rect::TOPRIGHT	 ].y,
 			vertices[Rect::TOPLEFT	  ].x, vertices[Rect::TOPLEFT	 ].y
 		},
-		{
-			0.0f, 0.0f,
-			1.0f, 0.0f,
-			1.0f, 1.0f,
-			0.0f, 1.0f
-		}
+		m_tex_coords
 	));
 
 	// Setup index buffer
@@ -146,7 +147,7 @@ void Quad::SetTextureCoords(const Texture& atlas, const Vector2<int>& index, con
 	float top = (index.y + 1) * inv_height * size.y;
 
 	// Create tex coords list
-	std::vector<float> tex_coords = {
+	m_tex_coords = {
 			left, bottom,
 			right, bottom,
 			right, top,
@@ -154,7 +155,7 @@ void Quad::SetTextureCoords(const Texture& atlas, const Vector2<int>& index, con
 	};
 
 	// Update VertexBuffer coords
-	vb->SetTex(tex_coords);
+	vb->SetTex(m_tex_coords);
 }
 
 const VertexBuffer& Quad::GetVertexBuffer() const
@@ -168,7 +169,7 @@ const IndexBuffer& Quad::GetIndexBuffer() const
 }
 
 Quad::Quad()
-	: m_Rect()
+	: m_Rect(), m_tex_coords()
 {
 	m_ConstructBuffers();
 }
@@ -192,9 +193,9 @@ Quad::Quad(const Rect& rect)
 }
 
 Quad::Quad(const Quad& other)
-	: m_Rect(other.m_Rect), vb(other.vb), ib(other.ib)
+	: m_Rect(other.m_Rect), vb(other.vb), ib(other.ib), m_tex_coords(other.m_tex_coords)
 {
-	// m_UpdateVB();
+	m_UpdateVB();
 }
 
 Vector2<float> Quad::GetCenter() const

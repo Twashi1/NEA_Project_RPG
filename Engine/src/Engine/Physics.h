@@ -9,8 +9,6 @@
 #include "Quad.h"
 #include "Body.h"
 #include "Collision.h"
-#include "Shader.h"
-#include "Camera.h"
 
 class ENGINE_API Physics {
 public:

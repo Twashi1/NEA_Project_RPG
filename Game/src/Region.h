@@ -3,13 +3,13 @@
 #include "Tile.h"
 
 struct Region {
-	static constexpr unsigned int LENGTH = 256;
-	static constexpr unsigned int SIZE = LENGTH * LENGTH; // sizeof(Tile) is 3 bytes, thus each Region is about 200KB
+	static constexpr unsigned int LENGTH = 64;
+	static constexpr unsigned int SIZE = LENGTH * LENGTH;
 
-	Tile* tiles;
+	Tile::ID* tiles; // 1D array of tile ids
 
 	Region();
 	~Region();
 
-	Tile& Index(int x, int y);
+	Tile::ID& Index(int x, int y);
 };

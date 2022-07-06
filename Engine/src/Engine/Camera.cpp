@@ -1,25 +1,32 @@
 #include "Camera.h"
 
-Camera::Camera()
-    : offset(Vector2<float>::ZERO), pos(Vector2<float>::ZERO) {}
-
-Camera::Camera(Vector2<float> offset, Vector2<float> pos)
-    : offset(offset), pos(pos) {}
-
-Quad Camera::Transform(const Quad& quad)
+Camera::Camera(float left, float right, float bottom, float top)
+	: m_projMat(glm::ortho(left, right, bottom, top, -1.0f, 1.0f)), m_viewMat(1.0f)
 {
-    Vector2<float> center = quad.GetCenter();
-    center -= pos; // Subtract camera pos from center
-    center += offset; // Add camera offset to center
-
-    Quad transformed(quad); // Copy data into new quad
-    transformed.SetCenter(center); // Change center of the new quad
-
-    // Return transformed quad
-    return transformed;
+	m_viewProjMat = m_projMat * m_viewMat;
 }
 
-Vector2<int> Camera::Transform(const Vector2<int>& vec)
+void Camera::SetPosition(const Vector3<float>& npos) { m_position = npos; m_UpdateViewMatrix(); }
+void Camera::SetPosition(const Vector2<float>& npos) { m_position = Vector3<float>(npos.x, npos.y, 0); m_UpdateViewMatrix(); }
+void Camera::SetRotation(float nrot) { m_rotation = nrot; m_UpdateViewMatrix(); }
+
+const Vector3<float>& Camera::GetPosition() const { return m_position; }
+
+float Camera::GetRotation() const { return m_rotation; }
+
+const glm::mat4& Camera::GetProjMat() const { return m_projMat; }
+
+const glm::mat4& Camera::GetViewMat() const { return m_viewMat; }
+
+const glm::mat4& Camera::GetViewProjMat() const { return m_viewProjMat; }
+
+void Camera::m_UpdateViewMatrix()
 {
-    return vec - pos + offset;
+	const glm::mat4 identity = glm::mat4(1.0f);
+
+	glm::mat4 transform = glm::translate(identity, glm::vec3(m_position.x, m_position.y, m_position.z)) * glm::rotate(identity, m_rotation, glm::vec3(0, 0, 1));
+
+	m_viewMat = glm::inverse(transform);
+
+	m_viewProjMat = m_projMat * m_viewMat;
 }

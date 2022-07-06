@@ -18,6 +18,10 @@ void Renderable::m_Register(int nz)
     }
 }
 
+Renderable::Renderable()
+    : quad(nullptr), shader(nullptr), z(0)
+{}
+
 Renderable::Renderable(std::shared_ptr<Quad> quad, Shader* shader, int z)
     : quad(quad), shader(shader), z(z)
 {
@@ -62,8 +66,17 @@ void Renderable::SetZ(int nz)
     m_Register(nz);
 }
 
+Renderable::Renderable(const Renderable& other)
+    : quad(other.quad), shader(other.shader), z(other.z), texture(other.texture), isGameWorld(other.isGameWorld), isVisible(other.isVisible)
+{
+    m_Register(z);
+}
+
 Renderable::~Renderable()
 {
-    // Remove ourselves from the list at the relevant index
-    Renderer::m_Renderables.at(z).Remove(this);
+    // If object has been constructed properly
+    if (quad != nullptr && shader != nullptr) {
+        // Remove ourselves from the list at the relevant index
+        Renderer::m_Renderables.at(z).Remove(this);
+    }
 }
