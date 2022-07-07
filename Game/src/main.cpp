@@ -7,6 +7,70 @@ const int WIDTH = 1080;
 const int HEIGHT = 720;
 const int FPS = 144;
 
+/*
+Engine _(WIDTH, HEIGHT, FPS, displayStats); Declare engine
+
+## General rendering API ##
+Shader _("vertex", "frag"); Declare shader
+shader.SetUniformxx(xx, x); Set parameters
+...
+Quad _(x, y, w, h, r); Declare quad
+...
+Renderer::BeginFrame(); Start frame
+
+NOTE: option to submit a z level with all these calls
+Renderer::Schedule(&quad, &shader[, z]);
+Renderer::Schedule(&quad, &texture[, z]); (Shader defaulted to texture shader)
+Renderer::Schedule(&quad, &shader, &texture[, z]);
+
+Renderer::EndFrame(); End frame
+
+## Rendering text API ##
+
+Font font(path);
+(Shader defaulted to white colour shader)
+Text text("Hello world", &font); Declaring with a font
+or
+Text text("Hello world", &shader, &font); Declaring with a shader and a font
+
+Renderer::Schedule(text[, z]);
+
+## Rendering button API ##
+
+Button btn(&quad, "Idle", "Pressed", &callback);
+
+Renderer::Schedule(btn[, z]);
+
+## Rendering animation API ##
+
+(Shader defaulted to texture shader)
+Animation ani(&quad, [&shader], &texture_atlas, sprite_size, animation_data);
+or
+Animation ani(&quad, [&shader], &texture_atlas, sprite_size, Animation::Load("animation_data_file.txt"));
+
+ani.Update(time);
+
+Renderer::Schedule(ani[, z]);
+or
+Renderer::Schedule(ani.quad, ani.shader, ani.texture_atlas);
+
+## Texture initialisation ##
+Texture texture("file"); PNG file usually
+Texture texture("file", sprite_size, index); Initialising a texture atlas
+Texture texture(shared buffer, width, height); Initialising from raw data
+
+## Physics system ##
+Body body(&rect, TODO...);
+physics.Register(&body);
+
+...
+physics.Update(time);
+...
+
+quad.SetRect(rect);
+(Then draw quad through whatever method)
+*/
+
 static int seed = 0;
 static Noise::Interpolated* i = nullptr;
 static bool seedChanged = false;
