@@ -9,4 +9,4 @@ void main()
 {    
     vec4 sampled = vec4(1.0, 1.0, 1.0, texture(u_Texture, v_TexCoords).r);
     color = vec4(u_TextColor, 1.0) * sampled;
-}  
+}
