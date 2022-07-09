@@ -7,6 +7,8 @@ int* Input::window_height = nullptr;
 std::unordered_map<int, Input::Listener> Input::key_listeners{};
 std::unordered_map<int, Input::Listener> Input::mouse_listeners{};
 
+float Input::m_time = 0.0;
+
 int Input::m_GetKeyState(int key)
 {
 	return glfwGetKey(window, key);
@@ -57,7 +59,7 @@ Input::State Input::GetKeyState(int key)
 		return it->second.state;
 	}
 
-	Log(std::format("Couldn't find key {}", to_string(key)), Utils::ERROR::WARNING);
+	Log(std::format("Couldn't find key {}", to_string(key)), LOG::WARNING);
 
 	return State::NONE;
 }
@@ -73,7 +75,7 @@ Input::State Input::GetMouseState(int button)
 		return it->second.state;
 	}
 
-	Log(std::format("Couldn't find button {}", to_string(button)), Utils::ERROR::WARNING);
+	Log(std::format("Couldn't find button {}", to_string(button)), LOG::WARNING);
 
 	return State::NONE;
 }
@@ -98,18 +100,20 @@ Vector2<float> Input::GetCursorUVPos()
 	return Vector2<float>(xpos / (float)width, (height - ypos) / (float)height);
 }
 
-void Input::Update(float dt)
+void Input::Update(float new_time)
 {
+	float elapsed = new_time - m_time; m_time = new_time;
+
 	for (auto& [key, listener] : key_listeners) {
 		int current_action = m_GetKeyState(key);
 
-		m_UpdateListener(listener, current_action, dt);
+		m_UpdateListener(listener, current_action, elapsed);
 	}
 
 	for (auto& [btn, listener] : mouse_listeners) {
 		int current_action = m_GetMouseState(btn);
 
-		m_UpdateListener(listener, current_action, dt);
+		m_UpdateListener(listener, current_action, elapsed);
 	}
 }
 

@@ -141,6 +141,7 @@ namespace std {
 	};
 }
 
+// TODO make dll export
 template <typename T>
 Vector2<T> Vector2<T>::ZERO = Vector2<T>(T(), T());
 

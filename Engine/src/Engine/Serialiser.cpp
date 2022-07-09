@@ -3,14 +3,14 @@
 void Serialiser::BeginRead(const char* path)
 {
 	// If instream is not a nullptr, the instream hasn't been closed yet
-	if (instream != nullptr) Log("Serialiser file not closed before opening new one", Utils::ERROR::WARNING);
+	if (instream != nullptr) Log("Serialiser file not closed before opening new one", LOG::WARNING);
 	instream = new std::ifstream(path, std::ios::binary);
 }
 
 void Serialiser::BeginWrite(const char* path)
 {
 	// If outstream is not a nullptr, the outstream hasn't been closedyet
-	if (outstream != nullptr) Log("Serialiser file not closed before opening new one", Utils::ERROR::WARNING);
+	if (outstream != nullptr) Log("Serialiser file not closed before opening new one", LOG::WARNING);
 	outstream = new std::ofstream(path, std::ios::binary | std::ofstream::trunc);
 }
 
@@ -56,11 +56,11 @@ template <> void Serialise<VersionNumber>(Serialiser& s, const VersionNumber& v)
 
 template<> void Serialise(Serialiser& s, const Rect& data)
 {
-	Serialise<float>(s, data.GetX());
-	Serialise<float>(s, data.GetY());
-	Serialise<float>(s, data.GetWidth());
-	Serialise<float>(s, data.GetHeight());
-	Serialise<float>(s, data.GetAngle());
+	Serialise<float>(s, data.x);
+	Serialise<float>(s, data.y);
+	Serialise<float>(s, data.width);
+	Serialise<float>(s, data.height);
+	Serialise<float>(s, data.angle);
 }
 
 template<> void Serialise(Serialiser& s, const Quad& data)

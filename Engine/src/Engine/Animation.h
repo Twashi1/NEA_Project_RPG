@@ -1,6 +1,5 @@
 #pragma once
 
-#include "Renderable.h"
 #include "Texture.h"
 #include "Quad.h"
 #include "Vector2.h"
@@ -14,6 +13,7 @@ class ENGINE_API Animation {
 	Vector2<int> m_size; // Size of one sprite
 
 	Vector2<int> m_atlas_dim_relative; // Dimensions of atlas in terms of sprites
+	std::shared_ptr<Texture> m_atlas; // The texture atlas we got the sprites from
 
 	// Parses some text to extract timtings and amount of keyframes
 	void m_ParseData(const std::string& data_filename);
@@ -24,15 +24,16 @@ class ENGINE_API Animation {
 	float m_frame_time = 0.0; // Tracks time spent displaying the current frame
 	int m_current_frame = 0; // Tracks the frame of the animation we're currently displaying
 
-	std::shared_ptr<Texture> m_atlas; // The texture atlas we got the sprites from
-
 public:
 	static std::string FILE_EXTENSION;
 
-	std::shared_ptr<Renderable> renderable; // The renderable object we'll be editing
+	std::shared_ptr<Quad> quad;
+	std::shared_ptr<Shader> shader;
+
+	const std::shared_ptr<Texture> GetAtlas() const;
 
 	// NOTE: data_filename refers to the filename of the .animation data file for the texture atlas
-	Animation(std::shared_ptr<Renderable> renderable, std::shared_ptr<Texture> atlas, const Vector2<int>& size, std::string data_filename);
+	Animation(const std::shared_ptr<Quad>& quad, const std::shared_ptr<Shader>& shader, const std::shared_ptr<Texture>& atlas, const Vector2<int>& size, const std::string& data_filename);
 	~Animation();
 
 	// Updates the animation, takes current time

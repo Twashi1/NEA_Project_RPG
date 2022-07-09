@@ -46,12 +46,7 @@ struct ENGINE_API Vector3 {
 
 	// Logical
 	bool operator<(const Vector3& other) const {
-		// If x1 = x2 AND y1 = y2
-		// Return z1 < z2
-		// If x1 = x2 AND y1 != y2
-		// Return  y1 < y2
-		// If x1 != x2
-		// Return x1 < x2
+		// TODO
 		if (x == other.x) {
 			if (y == other.y) {
 				return (z < other.z);
@@ -66,12 +61,7 @@ struct ENGINE_API Vector3 {
 	}
 
 	bool operator>(const Vector3& other) const {
-		// If x1 = x2 AND y1 = y2
-		// Return z1 > z2
-		// If x1 = x2 AND y1 != y2
-		// Return  y1 > y2
-		// If x1 != x2
-		// Return x1 > x2
+		// TODO
 		if (x == other.x) {
 			if (y == other.y) {
 				return (z > other.z);

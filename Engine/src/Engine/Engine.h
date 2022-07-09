@@ -17,13 +17,11 @@
 #include "Input.h"
 #include "Font.h"
 #include "Camera.h"
-#include "Renderable.h"
-#include "Player.h"
 #include "ShaderManager.h"
 #include "Serialiser.h"
 #include "Rect.h"
 #include "VersionNumber.h"
-#include "TextRenderable.h"
+#include "Text.h"
 #include "GUIManager.h"
 #include "Button.h"
 #include "AnimationManager.h"
@@ -43,7 +41,9 @@ class ENGINE_API Engine {
     void m_Start();
 
     // Maps a name for each debug stat to a text renderable object
-    std::unordered_map<std::string, TextRenderable> debug_stats_text;
+    std::unordered_map<std::string, Text> debug_stats_text;
+
+    double m_frame_began_time = 0.0; // Stores time when frame began
 
 public:
     GLFWwindow* window;  // Pointer to GLFW window
@@ -56,7 +56,6 @@ public:
     glm::mat4 proj;      // Projection matrix
 
     Physics physics;     // Physics system
-    Player* player;      // Pointer to Player instance
     Camera camera;       // Camera currently being used
 
     // TODO: storing font here seems kinda wrong
@@ -79,16 +78,19 @@ public:
     Engine(int width, int height, int fps, bool enable_stats);
     ~Engine();
 
-    // Updates screen, physics system, player, camera position, etc.
-    void Update();
-    // TODO: useless now, just calls Renderer::Draw
-    void Draw();
     // Checks average time per frame, and will display warning if engine is running behind
     void PollPerformance(double dt);
     // Updates all text for stats to display correct information for that frame
-    void UpdateStats();
+    void UpdateStats(const Body& player_body);
     // Serialises general data to res/saves/general.txt
     void SerialiseGeneralData();
 
+    void BeginFrame();
+    void EndFrame();
+
     bool IsRunning();
 };
+
+namespace TEMP {
+    ENGINE_API double GetTime();
+}

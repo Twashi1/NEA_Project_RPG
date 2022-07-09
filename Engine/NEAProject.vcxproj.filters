@@ -34,12 +34,6 @@
     <ClCompile Include="src\Engine\Camera.cpp">
       <Filter>Source\Rendering</Filter>
     </ClCompile>
-    <ClCompile Include="src\Engine\Renderable.cpp">
-      <Filter>Source\Rendering</Filter>
-    </ClCompile>
-    <ClCompile Include="src\Engine\Player.cpp">
-      <Filter>Source\Engine</Filter>
-    </ClCompile>
     <ClCompile Include="src\Engine\Noise.cpp">
       <Filter>Source\Miscellaneous</Filter>
     </ClCompile>
@@ -70,7 +64,7 @@
     <ClCompile Include="src\Engine\GUIManager.cpp">
       <Filter>Source\Rendering</Filter>
     </ClCompile>
-    <ClCompile Include="src\Engine\TextRenderable.cpp">
+    <ClCompile Include="src\Engine\Text.cpp">
       <Filter>Source\Rendering</Filter>
     </ClCompile>
     <ClCompile Include="src\Engine\Texture.cpp">
@@ -104,9 +98,6 @@
     </ClInclude>
     <ClInclude Include="src\Engine\Camera.h">
       <Filter>Headers\Rendering</Filter>
-    </ClInclude>
-    <ClInclude Include="src\Engine\Player.h">
-      <Filter>Headers\Engine</Filter>
     </ClInclude>
     <ClInclude Include="src\Engine\Noise.h">
       <Filter>Headers\Miscellaneous</Filter>
@@ -142,10 +133,7 @@
     <ClInclude Include="src\Engine\Texture.h">
       <Filter>Headers\Rendering</Filter>
     </ClInclude>
-    <ClInclude Include="src\Engine\TextRenderable.h">
-      <Filter>Headers\Rendering</Filter>
-    </ClInclude>
-    <ClInclude Include="src\Engine\Renderable.h">
+    <ClInclude Include="src\Engine\Text.h">
       <Filter>Headers\Rendering</Filter>
     </ClInclude>
     <ClInclude Include="src\Engine\Vector3.h">
@@ -160,9 +148,6 @@
     <ClInclude Include="src\Engine\Button.h">
       <Filter>Headers\Engine</Filter>
     </ClInclude>
-    <ClInclude Include="src\Engine\GUIManager.h">
-      <Filter>Headers\Engine</Filter>
-    </ClInclude>
     <ClInclude Include="src\Engine\Animation.h">
       <Filter>Headers\Rendering</Filter>
     </ClInclude>
@@ -170,6 +155,9 @@
       <Filter>Headers\Rendering</Filter>
     </ClInclude>
     <ClInclude Include="src\Engine\ComputeShader.h">
+      <Filter>Headers\Rendering</Filter>
+    </ClInclude>
+    <ClInclude Include="src\Engine\GUIManager.h">
       <Filter>Headers\Rendering</Filter>
     </ClInclude>
   </ItemGroup>

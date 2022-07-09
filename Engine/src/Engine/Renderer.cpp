@@ -1,12 +1,13 @@
 #include "Renderer.h"
-#include "Renderable.h"
 #include "VertexBuffer.h"
 #include "IndexBuffer.h"
 #include "Shader.h"
 #include "Font.h"
 #include "Camera.h"
-#include "TextRenderable.h"
+#include "Text.h"
 #include "Animation.h"
+#include "Quad.h"
+#include "Button.h"
 
 void GlClearError() {
 	// While we have an error stay in function
@@ -21,13 +22,11 @@ bool GlLogCall(const char* function, const char* file, int line) {
 	return true;
 }
 
-Renderer::RenderMap_t Renderer::m_Renderables = {};
-Renderer::RenderTextMap_t Renderer::m_TextRenderables = {};
-
-Camera* Renderer::camera = nullptr;
 std::queue<uint8_t> Renderer::available_slots = std::queue<uint8_t>({ 0, 1, 2, 3, 4, 5, 6, 7, 8, 9, 10, 11, 12, 13, 14, 15 });
+Shader* Renderer::texture_shader = nullptr;
+Camera* Renderer::camera = nullptr;
 
-uint8_t Renderer::GetTextureSlot()
+ENGINE_API uint8_t Renderer::GetTextureSlot()
 {
 	if (available_slots.size() > 1) {
 		// Get front of queue and store it
@@ -38,35 +37,156 @@ uint8_t Renderer::GetTextureSlot()
 		return id;
 	}
 
-	Log("Ran out of texture slots (MAX 16 concurrent)", Utils::ERROR::WARNING);
+	Log("Ran out of texture slots (MAX 16 concurrent)", LOG::WARNING);
 	return Renderer::m_INVALID_TEXTURE_SLOT;
 }
 
-void Renderer::FreeTextureSlot(uint8_t slot)
+ENGINE_API void Renderer::FreeTextureSlot(uint8_t slot)
 {
 	if (slot != Renderer::m_INVALID_TEXTURE_SLOT) {
 		available_slots.push(slot);
 	}
 }
 
-void Renderer::Update()
+ENGINE_API void Renderer::BeginFrame()
 {
-	// NOTE: arrangement of code will mean that text will ALWAYS be displays above a normal renderable even if the z level is lower
-	//		 although this isn't that big of a problem since there are few cases where text needs to be drawn behind a renderable
-	for (auto& [z, renderables] : m_Renderables) {
-		for (Renderable* renderable : renderables) {
-			Draw(renderable);
-		}
-	}
-
-	for (auto& [z, renderables] : m_TextRenderables) {
-		for (TextRenderable* renderable : renderables) {
-			Draw(renderable);
-		}
-	}
+	// DEPRECATED?
 }
 
-void Renderer::Draw(const VertexBuffer& vb, const IndexBuffer& ib, const Shader& shader)
+ENGINE_API void Renderer::EndFrame()
+{
+	// DEPRECATED?
+}
+
+ENGINE_API void Renderer::Schedule(const Quad* quad, Shader* shader, float z)
+{
+	quad->GetVertexBuffer().Bind();
+	const IndexBuffer& ib = quad->GetIndexBuffer(); ib.Bind();
+	shader->Bind();
+	shader->SetUniform1f("u_ZCoord", z);
+
+	GlCall(glDrawElements(GL_TRIANGLES, ib.count, ib.type, nullptr));
+}
+
+ENGINE_API void Renderer::Schedule(const Quad* quad, const Texture* texture, float z)
+{
+	quad->GetVertexBuffer().Bind();
+	const IndexBuffer& ib = quad->GetIndexBuffer(); ib.Bind();
+
+	// Bind texture
+	uint8_t slot = GetTextureSlot();
+	texture->Bind(slot);
+
+	// Bind shader
+	Renderer::texture_shader->Bind();
+	Renderer::texture_shader->SetUniform1f("u_ZCoord", z);
+	Renderer::texture_shader->SetUniform1i("u_Texture", slot);
+
+	GlCall(glDrawElements(GL_TRIANGLES, ib.count, ib.type, nullptr));
+
+	// Unbind texture
+	Texture::Unbind();
+	FreeTextureSlot(slot);
+}
+
+ENGINE_API void Renderer::Schedule(const Quad* quad, Shader* shader, const Texture* texture, float z)
+{
+	quad->GetVertexBuffer().Bind();
+	const IndexBuffer& ib = quad->GetIndexBuffer(); ib.Bind();
+
+	// Bind texture
+	uint8_t slot = GetTextureSlot();
+	texture->Bind(slot);
+
+	// Bind shader
+	shader->Bind();
+	shader->SetUniform1f("u_ZCoord", z);
+	shader->SetUniform1i("u_Texture", slot);
+
+	GlCall(glDrawElements(GL_TRIANGLES, ib.count, ib.type, nullptr));
+
+	// Unbind texture
+	Texture::Unbind();
+	FreeTextureSlot(slot);
+}
+
+ENGINE_API void Renderer::Schedule(const Text* text, float z)
+{
+	uint8_t slot = Renderer::GetTextureSlot(); // Get slot we're drawing texture to
+
+	// Bind shader and set texture slot
+	text->shader->Bind();
+	text->shader->SetUniform1i("u_Texture", slot);
+	text->shader->SetUniform1f("u_ZCoord", z);
+
+	// Bind texture to that slot
+	GlCall(glActiveTexture(GL_TEXTURE0 + slot));
+	GlCall(glBindVertexArray(text->font->vertex_array_id));
+
+	// Copy position to rendering_pos (so we can increment it to write subsequent characters)
+	Vector2<float> rendering_pos = text->pos;
+
+	// Iterate through characters in text
+	for (char c : text->text) {
+		const Font::Character& ch = text->font->character_map.at(c);
+
+		float x = rendering_pos.x + ch.bearing.x * text->scale;
+		float y = rendering_pos.y - (ch.size.y - ch.bearing.y) * text->scale;
+		float w = ch.size.x * text->scale;
+		float h = ch.size.y * text->scale;
+
+		// Update vertex buffer for each character
+		float vertices[6][4] = {
+			{ x,     y + h,   0.0f, 0.0f },
+			{ x,     y,       0.0f, 1.0f },
+			{ x + w, y,       1.0f, 1.0f },
+
+			{ x,     y + h,   0.0f, 0.0f },
+			{ x + w, y,       1.0f, 1.0f },
+			{ x + w, y + h,   1.0f, 0.0f }
+		};
+
+		// Render glyph texture over quad
+		GlCall(glBindTexture(GL_TEXTURE_2D, ch.texture_id));
+		// Update content of vertex buffer memory
+		GlCall(glBindBuffer(GL_ARRAY_BUFFER, text->font->vertex_buffer_id));
+		GlCall(glBufferSubData(GL_ARRAY_BUFFER, 0, sizeof(vertices), vertices));
+
+		// Unbind buffer
+		glBindBuffer(GL_ARRAY_BUFFER, 0);
+		// Render quad
+		GlCall(glDrawArrays(GL_TRIANGLES, 0, 6));
+		// Now advance cursors for next glyph (note that advance is number of 1/64 pixels)
+		rendering_pos.x += (ch.advance >> 6) * text->scale; // Bitshift by 6 to get value in pixels (2^6 = 64 (divide amount of 1/64th pixels by 64 to get amount of pixels))
+	}
+	// Unbind vertex array and texture
+	GlCall(glBindVertexArray(0));
+	GlCall(glBindTexture(GL_TEXTURE_2D, 0));
+
+	// Make texture slot available again
+	Renderer::FreeTextureSlot(slot);
+}
+
+ENGINE_API void Renderer::Schedule(Button* btn, float z)
+{
+	Renderer::Schedule(btn->text, z + 0.1);
+	
+	const Texture* current_texture = btn->CurrentTexture();
+	if (current_texture != nullptr) {
+		Renderer::Schedule(&btn->quad, btn->CurrentShader(), current_texture, z);
+	}
+	else {
+		Renderer::Schedule(&btn->quad, btn->CurrentShader(), z);
+	}
+	
+}
+
+ENGINE_API void Renderer::Schedule(Animation* animation, float z)
+{
+	Renderer::Schedule(animation->quad.get(), animation->shader.get(), animation->GetAtlas().get(), z);
+}
+
+ENGINE_API void Renderer::m_Draw(const VertexBuffer& vb, const IndexBuffer& ib, const Shader& shader)
 {
 	// Bind all the components we need
 	vb.Bind();
@@ -74,158 +194,4 @@ void Renderer::Draw(const VertexBuffer& vb, const IndexBuffer& ib, const Shader&
 	shader.Bind();
 
 	GlCall(glDrawElements(GL_TRIANGLES, ib.count, ib.type, nullptr));
-}
-
-void Renderer::Draw(const Renderable* renderable)
-{
-	// If renderable is visible
-	if (renderable->isVisible) {
-		
-		Quad* quad = renderable->quad.get();
-
-		// quad = new Quad(camera->Transform(*quad));
-
-		// Get components
-		const VertexBuffer& vb = quad->GetVertexBuffer();
-		const IndexBuffer& ib = quad->GetIndexBuffer();
-
-		// Bind components
-		vb.Bind();
-		ib.Bind();
-		renderable->shader->Bind();
-
-		// If the renderable has a texture, bind it as well
-		uint8_t slot = Renderer::m_INVALID_TEXTURE_SLOT;
-		if (renderable->texture != nullptr) {
-			slot = Renderer::GetTextureSlot();
-			renderable->texture->Bind(slot);
-			renderable->shader->SetUniform1i("u_Texture", slot);
-		}
-
-		// Draw to screen
-		GlCall(glDrawElements(GL_TRIANGLES, ib.count, ib.type, nullptr));
-
-		// Unbind and delete the texture, and unbind texture slot
-		Texture::Unbind();
-		Renderer::FreeTextureSlot(slot); // NOTE: Function ignores m_INVALID_TEXTURE_SLOT
-	}
-}
-
-void Renderer::Draw(const TextRenderable* renderable)
-{
-	uint8_t slot = Renderer::GetTextureSlot(); // Get slot we're drawing texture to
-
-	// Ensure shader is not nullptr
-	if (TextRenderable::shader == nullptr) {
-		Log("Couldnt render text renderable since shader is not set", Utils::ERROR::WARNING);
-	}
-
-	// Bind shader and set texture slot
-	TextRenderable::shader->Bind();
-	TextRenderable::shader->SetUniform1i("u_Texture", slot);
-
-	// Bind texture to that slot
-	GlCall(glActiveTexture(GL_TEXTURE0 + slot));
-	GlCall(glBindVertexArray(renderable->font->vertex_array_id));
-
-	// Copy position to rendering_pos (so we can increment it to write subsequent characters)
-	Vector2<float> rendering_pos = renderable->pos;
-
-	// Iterate through characters in text
-	for (char c : renderable->text) {
-		const Font::Character& ch = renderable->font->character_map.at(c);
-
-		float x = rendering_pos.x + ch.bearing.x * renderable->scale;
-		float y = rendering_pos.y - (ch.size.y - ch.bearing.y) * renderable->scale;
-		float w = ch.size.x * renderable->scale;
-		float h = ch.size.y * renderable->scale;
-
-		// Update vertex buffer for each character
-		float vertices[6][4] = {
-			{ x,     y + h,   0.0f, 0.0f },
-			{ x,     y,       0.0f, 1.0f },
-			{ x + w, y,       1.0f, 1.0f },
-
-			{ x,     y + h,   0.0f, 0.0f },
-			{ x + w, y,       1.0f, 1.0f },
-			{ x + w, y + h,   1.0f, 0.0f }
-		};
-
-		// Render glyph texture over quad
-		GlCall(glBindTexture(GL_TEXTURE_2D, ch.texture_id));
-		// Update content of vertex buffer memory
-		GlCall(glBindBuffer(GL_ARRAY_BUFFER, renderable->font->vertex_buffer_id));
-		GlCall(glBufferSubData(GL_ARRAY_BUFFER, 0, sizeof(vertices), vertices));
-
-		// Unbind buffer
-		glBindBuffer(GL_ARRAY_BUFFER, 0);
-		// Render quad
-		GlCall(glDrawArrays(GL_TRIANGLES, 0, 6));
-		// Now advance cursors for next glyph (note that advance is number of 1/64 pixels)
-		rendering_pos.x += (ch.advance >> 6) * renderable->scale; // Bitshift by 6 to get value in pixels (2^6 = 64 (divide amount of 1/64th pixels by 64 to get amount of pixels))
-	}
-	// Unbind vertex array and texture
-	GlCall(glBindVertexArray(0));
-	GlCall(glBindTexture(GL_TEXTURE_2D, 0));
-
-	// Make texture slot available again
-	Renderer::FreeTextureSlot(slot);
-}
-
-void Renderer::DrawText(std::string text, Vector2<float> pos, float scale, Vector3<float> color, Shader& shader, const Font& font)
-{
-	uint8_t slot = Renderer::GetTextureSlot(); // Get slot we're drawing texture to
-
-	shader.Bind();
-	shader.SetUniform1i("u_Texture", slot);
-	shader.SetUniform3f("u_TextColor", color);
-	
-	// Bind texture
-	GlCall(glActiveTexture(GL_TEXTURE0 + slot));
-	GlCall(glBindVertexArray(font.vertex_array_id));
-	// Tell shader which slot texture is in
-
-	// Iterate through characters in text
-	for (char c : text) {
-		const Font::Character& ch = font.character_map.at(c);
-
-		float x = pos.x + ch.bearing.x * scale;
-		float y = pos.y - (ch.size.y - ch.bearing.y) * scale;
-		float w = ch.size.x * scale;
-		float h = ch.size.y * scale;
-
-		// Update vertex buffer for each character
-		float vertices[6][4] = {
-			{ x,     y + h,   0.0f, 0.0f },
-			{ x,     y,       0.0f, 1.0f },
-			{ x + w, y,       1.0f, 1.0f },
-
-			{ x,     y + h,   0.0f, 0.0f },
-			{ x + w, y,       1.0f, 1.0f },
-			{ x + w, y + h,   1.0f, 0.0f }
-		};
-
-		// Render glyph texture over quad
-		GlCall(glBindTexture(GL_TEXTURE_2D, ch.texture_id));
-		// Update content of vertex buffer memory
-		GlCall(glBindBuffer(GL_ARRAY_BUFFER, font.vertex_buffer_id));
-		GlCall(glBufferSubData(GL_ARRAY_BUFFER, 0, sizeof(vertices), vertices));
-
-		// Unbind buffer
-		glBindBuffer(GL_ARRAY_BUFFER, 0);
-		// Render quad
-		GlCall(glDrawArrays(GL_TRIANGLES, 0, 6));
-		// Now advance cursors for next glyph (note that advance is number of 1/64 pixels)
-		pos.x += (ch.advance >> 6) * scale; // Bitshift by 6 to get value in pixels (2^6 = 64 (divide amount of 1/64th pixels by 64 to get amount of pixels))
-	}
-	// Unbind vertex array and texture
-	GlCall(glBindVertexArray(0));
-	GlCall(glBindTexture(GL_TEXTURE_2D, 0));
-	// Make texture slot available again
-	Renderer::FreeTextureSlot(slot);
-}
-
-void Renderer::Clear()
-{
-	glClear(GL_COLOR_BUFFER_BIT);
 }

@@ -1,5 +1,4 @@
 #include "Rect.h"
-#include "Quad.h"
 
 Vector2<float> Rect::m_Offsets[4] = {
 	{-1.0f, -1.0f }, // Bottom left corner
@@ -8,47 +7,6 @@ Vector2<float> Rect::m_Offsets[4] = {
 	{-1.0f,  1.0f }  // Top left corner
 };
 
-void Rect::m_UpdateTrig()
-{
-	cos_angle = std::cos(angle);
-	sin_angle = std::sin(angle);
-}
-
-Vector2<float> Rect::GetCenter() const
-{
-	return center;
-}
-
-Vector2<float> Rect::GetDim() const
-{
-	return dim;
-}
-
-float Rect::GetX() const
-{
-	return x;
-}
-
-float Rect::GetY() const
-{
-	return y;
-}
-
-float Rect::GetWidth() const
-{
-	return width;
-}
-
-float Rect::GetHeight() const
-{
-	return height;
-}
-
-float Rect::GetAngle() const
-{
-	return angle;
-}
-
 std::vector<Vector2<float>> Rect::GetVertices() const
 {
 	std::vector<Vector2<float>> vertices(4);
@@ -56,9 +14,10 @@ std::vector<Vector2<float>> Rect::GetVertices() const
 	Vector2<float> halfdim = dim * 0.5f; // half width/height
 	
 	for (int i = 0; i < 4; i++) {
-		vertices[i] = Utils::RotatePointPrecomp(
+		vertices[i] = Utils::RotatePoint(
 			center + (halfdim * m_Offsets[i]), // Calculate vertex coordinates
-			center, cos_angle, sin_angle
+			center,
+			angle
 		);
 	}
 
@@ -67,22 +26,22 @@ std::vector<Vector2<float>> Rect::GetVertices() const
 
 Vector2<float> Rect::BottomLeft() const
 {
-	return Utils::RotatePointPrecomp(center + (dim * 0.5f * m_Offsets[VERTEX::BOTTOMLEFT]), center, cos_angle, sin_angle);
+	return Utils::RotatePoint(center + (dim * 0.5f * m_Offsets[VERTEX::BOTTOMLEFT]), center, angle);
 }
 
 Vector2<float> Rect::BottomRight() const
 {
-	return Utils::RotatePointPrecomp(center + (dim * 0.5f * m_Offsets[VERTEX::BOTTOMRIGHT]), center, cos_angle, sin_angle);
+	return Utils::RotatePoint(center + (dim * 0.5f * m_Offsets[VERTEX::BOTTOMRIGHT]), center, angle);
 }
 
 Vector2<float> Rect::TopRight() const
 {
-	return Utils::RotatePointPrecomp(center + (dim * 0.5f * m_Offsets[VERTEX::TOPRIGHT]), center, cos_angle, sin_angle);
+	return Utils::RotatePoint(center + (dim * 0.5f * m_Offsets[VERTEX::TOPRIGHT]), center, angle);
 }
 
 Vector2<float> Rect::TopLeft() const
 {
-	return Utils::RotatePointPrecomp(center + (dim * 0.5f * m_Offsets[VERTEX::TOPLEFT]), center, cos_angle, sin_angle);
+	return Utils::RotatePoint(center + (dim * 0.5f * m_Offsets[VERTEX::TOPLEFT]), center, angle);
 }
 
 bool Rect::Contains(const Vector2<float>& point) const
@@ -111,21 +70,15 @@ Rect::Rect()
 
 Rect::Rect(float x, float y, float width, float height, float angle)
 	: x(x), y(y), width(width), height(height), angle(angle)
-{
-	m_UpdateTrig();
-}
+{}
 
 Rect::Rect(const Rect& other)
 	: x(other.x), y(other.y), width(other.width), height(other.height), angle(other.angle)
-{
-	m_UpdateTrig();
-}
+{}
 
 Rect::Rect(const Vector2<float>& center, const Vector2<float>& dim, float angle)
 	: center(center), dim(dim), angle(angle)
-{
-	m_UpdateTrig();
-}
+{}
 
 bool Rect::IsIntersecting(const Rect& rect) const
 {
@@ -154,42 +107,6 @@ bool Rect::ContainsAnyOf(const std::vector<Vector2<float>>& vertices) const
 	return false;
 }
 
-void Rect::SetCenter(const Vector2<float>& ncenter)
-{
-	center = ncenter;
-}
-
-void Rect::SetDim(const Vector2<float>& ndim)
-{
-	dim = ndim;
-}
-
-void Rect::SetX(float nx)
-{
-	x = nx;
-}
-
-void Rect::SetY(float ny)
-{
-	y = ny;
-}
-
-void Rect::SetWidth(float nwidth)
-{
-	width = nwidth;
-}
-
-void Rect::SetHeight(float nheight)
-{
-	height = nheight;
-}
-
-void Rect::SetAngle(float nangle)
-{
-	angle = nangle;
-	m_UpdateTrig();
-}
-
 bool operator==(const Rect& a, const Rect& b)
 {
 	return a.x == b.x && a.y == b.y
@@ -205,16 +122,4 @@ std::string to_string(const Rect& rect)
 		to_string(rect.TopRight()),
 		to_string(rect.TopLeft())
 	);
-}
-
-void Rect::SetCenter(float nx, float ny)
-{
-	x = nx;
-	y = ny;
-}
-
-void Rect::SetDim(float nwidth, float nheight)
-{
-	width = nwidth;
-	height = nheight;
 }

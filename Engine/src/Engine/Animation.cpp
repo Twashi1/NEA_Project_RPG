@@ -21,7 +21,7 @@ void Animation::m_ParseData(const std::string& data_filename)
 		// If animation file contains value that cannot be converted to float
 		catch (std::invalid_argument) {
 			std::string text = std::format("Invalid value in {}.animation: {}", data_filename, parts[i]);
-			Log(text, Utils::ERROR::WARNING);
+			Log(text, LOG::WARNING);
 		}
 
 		m_timings.push_back(value);
@@ -43,8 +43,13 @@ Vector2<int> Animation::m_GetIndex()
 	return Vector2<int>(x, y);
 }
 
-Animation::Animation(std::shared_ptr<Renderable> renderable, std::shared_ptr<Texture> atlas, const Vector2<int>& size, std::string data_filename)
-	: renderable(renderable), m_atlas(atlas), m_size(size)
+const std::shared_ptr<Texture> Animation::GetAtlas() const
+{
+	return m_atlas;
+}
+
+Animation::Animation(const std::shared_ptr<Quad>& quad, const std::shared_ptr<Shader>& shader, const std::shared_ptr<Texture>& atlas, const Vector2<int>& size, const std::string& data_filename)
+	: quad(quad), shader(shader), m_atlas(atlas), m_size(size)
 {
 	// Parse animation file
 	m_ParseData(data_filename);
@@ -83,7 +88,7 @@ void Animation::Update(float current_time)
 		// Reset current frame time
 		m_frame_time -= this_frame_timing;
 		// Change texture coordinates
-		renderable->quad->SetTextureCoords(*m_atlas, m_GetIndex(), m_size);
+		quad->SetTextureCoords(*m_atlas, m_GetIndex(), m_size);
 	}
 
 	// Update my time

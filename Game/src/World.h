@@ -52,8 +52,6 @@ public:
 
 	RegionMap_t regions;			// Maps a region index to a Region object
 
-	std::vector<Renderable> renderables;
-
 	// Loads all tile::ids into textures
 	static void LoadTextures(const std::string& atlas_file);
 

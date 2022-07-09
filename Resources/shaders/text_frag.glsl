@@ -3,7 +3,7 @@ in vec2 v_TexCoords;
 out vec4 color;
 
 uniform sampler2D u_Texture;
-uniform vec3 u_TextColor;
+uniform vec3 u_TextColor = vec3(1.0, 1.0, 1.0);
 
 void main()
 {    

@@ -44,7 +44,7 @@ World::World(const std::string& world_name)
 		m_LoadWorld(fullpath);
 	}
 	else {
-		Log("Directory didn't exist, world hasn't been generated yet?", Utils::ERROR::FATAL);
+		Log("Directory didn't exist, world hasn't been generated yet?", LOG::FATAL);
 	}
 }
 
@@ -136,7 +136,7 @@ void World::m_LoadWorld(const std::string& fullpath)
 	if (serialised_version != m_version)
 	{
 		// We can't interpret this data so log fatal error
-		Log(std::format("World version is {}, but we're on version {}", to_string(serialised_version), to_string(m_version)), Utils::ERROR::FATAL);
+		Log(std::format("World version is {}, but we're on version {}", to_string(serialised_version), to_string(m_version)), LOG::FATAL);
 	}
 
 	// Get seed
@@ -207,7 +207,6 @@ void World::m_RenderAround(const Vector2<int>& center, int radius)
 {
 	constexpr int scale = 128;
 
-	renderables.clear();
 	
 	for (int y = center.y - radius; y < center.y + radius; y++) {
 		for (int x = center.x - radius; x < center.x + radius; x++) {
@@ -223,35 +222,27 @@ void World::m_RenderAround(const Vector2<int>& center, int radius)
 			// Get tile from region
 			Tile::ID& tile = region.Index(rx, ry);
 
-			int tx = x * scale;
-			int ty = y * scale;
-
-			Renderable r(
-				std::shared_ptr<Quad>(new Quad(tx, ty, scale, scale, 0)),
-				texture_shader,
-				m_tile_atlas,
-				1
-			);
-
 			// Get index in atlas
 			Vector2<int> atlas_index = m_tilemap[tile];
 
-			// Set renderable tex coords
-			r.quad->SetTextureCoords(*m_tile_atlas, atlas_index, m_tile_atlas_size);
+			// Calculate draw coords
+			int tx = x * scale;
+			int ty = y * scale;
 
-			renderables.push_back(
-				r
-			);
+			// Construct quad
+			Quad quad(tx, ty, scale, scale, 0);
+			// Set texture coords
+			quad.SetTextureCoords(*m_tile_atlas, atlas_index, m_tile_atlas_size);
+			// Schedule to renderer
+			Renderer::Schedule(&quad, texture_shader, m_tile_atlas, 1);
 		}
 	}
-
-	Log(std::format("Added {}", renderables.size()), Utils::ERROR::INFO);
 }
 
 void World::Update(const Vector2<int>& pos)
 {
-	Log("Loading regions", Utils::ERROR::INFO);
+	Log("Loading regions", LOG::INFO);
 	m_LoadRegions(pos, 3);
-	Log("Loading renderables", Utils::ERROR::INFO);
+	Log("Loading renderables", LOG::INFO);
 	m_RenderAround(pos, 8);
 }

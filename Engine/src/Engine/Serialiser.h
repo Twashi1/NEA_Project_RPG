@@ -11,7 +11,6 @@
 #include "VersionNumber.h"
 #include "Quad.h"
 #include "Rect.h"
-#include "Renderable.h"
 
 class ENGINE_API Serialiser {
 public:

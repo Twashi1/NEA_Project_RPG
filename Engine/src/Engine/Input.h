@@ -39,6 +39,8 @@ private:
 	// Updates a listener's state based on the GLFW action code and time since last update (GLFW_RELEASE/GLFW_PRESSED)
 	static void m_UpdateListener(Listener& listener, int current_action, float dt);
 
+	static float m_time;
+
 public:
 	static GLFWwindow* window;
 	// Pointers to window width/height which are stored in Engine class

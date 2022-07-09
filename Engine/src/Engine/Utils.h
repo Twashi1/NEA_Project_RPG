@@ -6,6 +6,7 @@
 #include <fstream>
 #include <iostream>
 #include <format>
+#include <chrono>
 
 #ifdef ENGINE_BUILD_DLL
 #define ENGINE_API __declspec(dllexport)
@@ -37,11 +38,21 @@ public:
 	static Vector3<float> DARKGRAY;
 };
 
+enum class ENGINE_API LOG : uint8_t {
+	INFO,
+	WARNING,
+	FATAL // Fatal errors will terminate the program when logged
+}; 
+
+ENGINE_API std::ostream& operator<<(std::ostream& os, const LOG& error);
+
 namespace Utils {
-	enum class ENGINE_API ERROR : uint8_t {
-		INFO,
-		WARNING,
-		FATAL // Fatal errors will terminate the program when logged
+	class ENGINE_API Timer {
+	public:
+		static const std::chrono::system_clock::time_point compile_time;
+
+		static double GetTime();
+		static std::string GetTimeString();
 	};
 
 	// A wrapper for std::vector which implements simplified remove and erase methods
@@ -72,7 +83,7 @@ namespace Utils {
 			}
 			else {
 				std::string text = std::format("Index out of bounds: {} > {}", to_string(index), to_string(m_data.size()));
-				Log(text, Utils::ERROR::FATAL);
+				Log(text, LOG::FATAL);
 			}
 		}
 		// Reserves size to fit n objects
@@ -83,10 +94,9 @@ namespace Utils {
 		/* Iterator functions */
 		ListData_t::iterator begin() { return m_data.begin(); }
 		ListData_t::iterator end() { return m_data.end(); }
-
 	};
 
-	ENGINE_API std::ostream& operator<<(std::ostream& os, const Utils::ERROR& error);
+	ENGINE_API std::string GetTimeString();
 
 	ENGINE_API bool CheckFileExists(const std::string& path);
 	ENGINE_API bool CheckDirectoryExists(const std::string& path);
@@ -141,4 +151,4 @@ namespace Utils {
 	ENGINE_API std::vector<std::string> SplitString(const std::string& s, const std::string& delim);
 }
 
-ENGINE_API void m_Log(const std::string& message, Utils::ERROR error_type, const char* function, int line);
+ENGINE_API void m_Log(const std::string& message, LOG error_type, const char* function, int line);

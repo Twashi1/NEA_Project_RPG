@@ -5,13 +5,11 @@
 #include "VertexBuffer.h"
 #include "IndexBuffer.h"
 #include "Rect.h"
-#include "Body.h"
 #include "Texture.h"
 
-struct ENGINE_API Quad {
+struct ENGINE_API Quad : private Rect {
 private:
-	Rect m_Rect;
-	std::vector<float> m_tex_coords;
+	std::vector<float> m_TexCoords;
 
 	// Buffers
 	std::shared_ptr<VertexBuffer> vb;
@@ -24,6 +22,10 @@ private:
 	void m_ConstructBuffers();
 
 public:
+	// Make methods public
+	using Rect::Contains;
+	using Rect::ContainsAnyOf;
+
 	const VertexBuffer& GetVertexBuffer() const;
 	const IndexBuffer& GetIndexBuffer()   const;
 
@@ -42,12 +44,6 @@ public:
 	float GetHeight() const;
 	float GetAngle() const;
 
-	std::vector<Vector2<float>> GetVertices() const;
-	Vector2<float> BottomLeft() const;
-	Vector2<float> BottomRight() const;
-	Vector2<float> TopRight() const;
-	Vector2<float> TopLeft() const;
-
 	const Rect& GetRect() const;
 
 	void SetCenter(const Vector2<float>& ncenter);
@@ -63,12 +59,7 @@ public:
 
 	void SetRect(const Rect& nrect);
 
-	bool ContainsAnyOf(const std::vector<Vector2<float>>& vertices) const;
-	bool ContainsAnyOf(const Rect& rect) const;
 	bool ContainsAnyOf(const Quad& quad) const;
-	bool Contains(const Vector2<float>& point) const;
-
-	bool IsIntersecting(const Rect& rect) const;
 	bool IsIntersecting(const Quad& quad) const;
 
 	// Changes texture coordinates so a specific texture from a texture atlas can be loaded
@@ -77,8 +68,6 @@ public:
 
 	friend bool operator==(const Quad& a, const Quad& b);
 	friend std::string to_string(const Quad& quad);
-
-	friend Body; // So that Body can access m_Rect;
 };
 
 std::string to_string(const Quad& quad);

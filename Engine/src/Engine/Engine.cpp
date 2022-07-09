@@ -5,13 +5,13 @@ std::string Engine::GENERAL_DATA_PATH = "../Resources/saves/general.txt";
 void Engine::m_OnWindowResize(int nwidth, int nheight)
 {
     std::string text = std::format("Window dimensions changed to {}, {}", to_string(nwidth), to_string(nheight));
-    Log(text, Utils::ERROR::INFO);
+    Log(text, LOG::INFO);
 
     // Update window dimensions
     width = nwidth; height = nheight;
 
     // Update projection matrix
-    proj = glm::ortho(width / 2.0f, (float)width, height / 2.0f, (float)height, -1.0f, 1.0f);
+    proj = glm::ortho(-(width / 2.0f), width / 2.0f, -(height / 2.0f), height / 2.0f, -1.0f, 1.0f);
 
     // Update projection uniform for all shaders
     ShaderManager::UpdateProjectionMatrix(proj);
@@ -57,7 +57,7 @@ void Engine::m_DeserialiseGeneralData()
 
 void Engine::m_Start()
 {
-    Log("Program starting", Utils::ERROR::INFO);
+    Log("Program starting", LOG::INFO);
 
     // Set shader statics
     Shader::PATH = "../Resources/shaders/";
@@ -74,7 +74,7 @@ void Engine::m_Start()
 
     // Initialise glfw library, if it doesn't succeed, exit program
     if (!glfwInit())
-        Log("Couldn't initialise GLFW library", Utils::ERROR::FATAL);
+        Log("Couldn't initialise GLFW library", LOG::FATAL);
 
     // Create window
     std::string title = std::format("RPG Game {}", to_string(version_number));
@@ -83,7 +83,7 @@ void Engine::m_Start()
     if (!window) {
         // Terminate glfw if window couldn't be created
         glfwTerminate();
-        Log("Window couldn't be created", Utils::ERROR::FATAL);
+        Log("Window couldn't be created", LOG::FATAL);
     }
 
     // Make the window's context current
@@ -105,12 +105,10 @@ void Engine::m_Start()
     // Allow transparency
     GlCall(glBlendFunc(GL_SRC_ALPHA, GL_ONE_MINUS_SRC_ALPHA));
 
-    // Initialise player
-    player = new Player(proj);
     // Initialise physics
     physics = Physics();
     // Initialise camera
-    camera = Camera(Vector2<float>(width * 0.5f, height * 0.5f), player->quad->GetCenter());
+    camera = Camera(Vector2<float>(width * 0.5f, height * 0.5f), {0.0f, 0.0f});
     // Pass camera to Renderer
     Renderer::camera = &camera;
 
@@ -133,27 +131,18 @@ void Engine::m_Start()
     Input::AddMouseListener(GLFW_MOUSE_BUTTON_1); // Left mouse click
     Input::AddMouseListener(GLFW_MOUSE_BUTTON_2); // Right mouse click
 
-    // Initialise ShaderManager
-    ShaderManager::projmat_name = "u_projMat";
-
     // Initialise Animation
     Animation::FILE_EXTENSION = ".animation";
 
     // Add player to physics system
+    // TODO make function for this
     physics.layers[0] = Physics::layer_t{};
-    physics.layers[0].push_back(player->body);
 
-    // Create consolas font
-    consolas_font = new Font("consola.ttf");
-
-    // Set up text renderable's shader
-    TextRenderable::shader = std::shared_ptr<Shader>(new Shader("text_vertex", "text_frag"));
-    TextRenderable::shader->SetUniformMat4fv(ShaderManager::projmat_name.c_str(), proj);
-    TextRenderable::shader->SetUniform3f("u_TextColor", COLORS::WHITE);
+    // Initialise text class
+    Text::Init();
 
     // Initialise button class
     Button::Init();
-    Button::font = consolas_font;
 
     // Update projection uniform for all shaders
     // NOTE: all shader initialisation should come before this function, unless we're setting the projection matrix ourselves
@@ -168,16 +157,16 @@ void Engine::m_Start()
 
     // Create all text renderables for stats
     if (enable_stats) {
-        debug_stats_text.insert({ "Average TPF", TextRenderable("", Vector2<float>(5, height - 15), consolas_font, COLORS::WHITE, 0.25, 0) });
-        debug_stats_text.insert({ "Percentage Processing", TextRenderable("", Vector2<float>(5, height - 30), consolas_font, COLORS::WHITE, 0.25, 0) });
-        debug_stats_text.insert({ "Time", TextRenderable("", Vector2<float>(5, height - 45), consolas_font, COLORS::WHITE, 0.25, 0) });
-        debug_stats_text.insert({ "Player pos", TextRenderable("", Vector2<float>(5, height - 100), consolas_font, COLORS::WHITE, 0.25, 0) });
-        debug_stats_text.insert({ "Player vel", TextRenderable("", Vector2<float>(5, height - 115), consolas_font, COLORS::WHITE, 0.25, 0) });
-        debug_stats_text.insert({ "Player acc", TextRenderable("", Vector2<float>(5, height - 130), consolas_font, COLORS::WHITE, 0.25, 0) });
+        debug_stats_text.insert({ "Average TPF", Text("", Vector2<float>(5, height - 15), consolas_font, 0.25) });
+        debug_stats_text.insert({ "Percentage Processing", Text("", Vector2<float>(5, height - 30), consolas_font, 0.25) });
+        debug_stats_text.insert({ "Time", Text("", Vector2<float>(5, height - 45), consolas_font, 0.25) });
+        debug_stats_text.insert({ "Player pos", Text("", Vector2<float>(5, height - 100), consolas_font, 0.25) });
+        debug_stats_text.insert({ "Player vel", Text("", Vector2<float>(5, height - 115), consolas_font, 0.25) });
+        debug_stats_text.insert({ "Player acc", Text("", Vector2<float>(5, height - 130), consolas_font, 0.25) });
     }
 
     // Finished loading
-    Log(std::format("Loaded engine on version: {}", to_string(version_number)), Utils::ERROR::INFO);
+    Log(std::format("Loaded engine on version: {}", to_string(version_number)), LOG::INFO);
 }
 
 void Engine::SerialiseGeneralData()
@@ -196,74 +185,41 @@ void Engine::SerialiseGeneralData()
     general_data.EndWrite();
 }
 
-bool Engine::IsRunning()
+void Engine::BeginFrame()
 {
-    return !glfwWindowShouldClose(window);
-}
-
-Engine::Engine(int width, int height, int fps, bool enable_stats)
-    : width(width), height(height), fps(fps), tpf(1.0 / double(fps)), enable_stats(enable_stats)
-{
-    m_Start();
-}
-
-Engine::~Engine()
-{
-    Log("Engine shutting down", Utils::ERROR::INFO);
-
-    SerialiseGeneralData();
-
-    delete player;        player = nullptr;
-    delete consolas_font; consolas_font = nullptr;
-
-    glfwDestroyWindow(window); window = nullptr;
-
-    glfwTerminate();
-
-    // TODO: fix the errors which happen when deconstructing engine
-}
-
-void Engine::Update()
-{
-    double start = glfwGetTime();
+    // Record time of frame beginning
+    m_frame_began_time = Utils::Timer::GetTime();
 
     // Clear the screen
-    Renderer::Clear();
+    GlCall(glClear(GL_COLOR_BUFFER_BIT));
 
     // Update input system
-    Input::Update(tpf);
+    Input::Update(Utils::Timer::GetTime());
 
     // Update GUI
     GUIManager::Update();
 
     // Update animations
-    AnimationManager::Update(glfwGetTime());
-
-    // Update physics
-    physics.Update(glfwGetTime());
-
-    // Update player
-    player->Update(glfwGetTime());
-
-    // Update camera position
-    camera.pos = player->quad->GetCenter();
+    AnimationManager::Update(Utils::Timer::GetTime());
 
     // Update shaders
     ShaderManager::UpdateShaders(camera);
 
-    // Update all text renderables for stats
-    if (enable_stats) {
-        UpdateStats();
-    }
+    // Update physics
+    physics.Update(Utils::Timer::GetTime());
 
-    // All draw calls start here
-    Draw();
-
-    // Update the screen from all the draw calls
-    glfwSwapBuffers(window);
+    // TODO: engine should handle EndFrame BeginFrame
+    // TODO: move to end frame
+    // TODO: make elapsed time work
 
     // Poll and process events
     glfwPollEvents();
+}
+
+void Engine::EndFrame()
+{
+    // Update the screen from all the draw calls
+    glfwSwapBuffers(window);
 
     // Update window width/height if changed
     int nwidth, nheight;
@@ -274,21 +230,48 @@ void Engine::Update()
         m_OnWindowResize(nwidth, nheight);
     }
 
-    double end = glfwGetTime();
-    double elapsed = end - start;
+    double end = Utils::Timer::GetTime();
+    double elapsed = end - m_frame_began_time;
 
     // Update performance tracking variables and display warning if running behind
     PollPerformance(elapsed);
 
-    // Stall for time TODO: this is bad probably
-    while (elapsed < tpf) { elapsed = glfwGetTime() - start; }
+    // Stall for time
+    // TODO: this is bad probably
+    while (elapsed < tpf) { elapsed = Utils::Timer::GetTime() - m_frame_began_time; }
+
+    //std::cout << "Elapsed " << std::fixed << std::setprecision(17) << elapsed << std::endl;
 
     play_time += tpf;
 }
 
-void Engine::Draw()
+bool Engine::IsRunning()
 {
-    Renderer::Update();
+    return !glfwWindowShouldClose(window);
+}
+
+double ENGINE_API TEMP::GetTime()
+{
+    return glfwGetTime();
+}
+
+Engine::Engine(int width, int height, int fps, bool enable_stats)
+    : width(width), height(height), fps(fps), tpf(1.0 / double(fps)), enable_stats(enable_stats)
+{
+    m_Start();
+}
+
+Engine::~Engine()
+{
+    Log("Engine shutting down", LOG::INFO);
+
+    SerialiseGeneralData();
+
+    glfwDestroyWindow(window); window = nullptr;
+
+    glfwTerminate();
+
+    // TODO: fix the errors which happen when deconstructing engine
 }
 
 void Engine::PollPerformance(double dt)
@@ -304,7 +287,7 @@ void Engine::PollPerformance(double dt)
         // If average time per frame is more than max time per frame, we're running behind so display a message
         if (average_tpf > tpf) {
             std::string text = std::format("Running behind by {}ms", Utils::Round((average_tpf - tpf) * 1000, 3));
-            Log(text, Utils::ERROR::WARNING);
+            Log(text, LOG::WARNING);
         }
 
         // Reset trackers
@@ -313,7 +296,7 @@ void Engine::PollPerformance(double dt)
     }
 }
 
-void Engine::UpdateStats()
+void Engine::UpdateStats(const Body& player_body)
 {
     {
         double avg_tpf = (processing_time / frames_processed);
@@ -325,8 +308,7 @@ void Engine::UpdateStats()
 
         std::string text = std::format("Average time per frame: {}ms", to_string(avg_tpf_ms));
 
-        TextRenderable& t = debug_stats_text["Average TPF"];
-        t.color = color;
+        Text& t = debug_stats_text["Average TPF"];
         t.text = text;
         t.pos = Vector2<float>(-(width / 2.0f) + 5, (height / 2.0f) - 15);
 
@@ -341,8 +323,7 @@ void Engine::UpdateStats()
 
         std::string text = std::format("Processing time: {}%", to_string(percentage_processing));
 
-        TextRenderable& t = debug_stats_text["Percentage Processing"];
-        t.color = color;
+        Text& t = debug_stats_text["Percentage Processing"];
         t.text = text;
         t.pos = Vector2<float>(-(width / 2.0f) + 5, (height / 2.0f) - 30);
     }
@@ -362,37 +343,37 @@ void Engine::UpdateStats()
             std::setw(2) << std::setfill('0') << minutes << ":" <<
             std::setw(2) << std::setfill('0') << seconds;
 
-        TextRenderable& t = debug_stats_text["Time"];
+        Text& t = debug_stats_text["Time"];
         t.text = time_str.str();
         t.pos = Vector2<float>(-(width / 2.0f) + 5, (height / 2.0f) - 45);
     }
 
     {
-        Vector2<float> player_position = Utils::Round(player->quad->GetCenter(), 2);
+        Vector2<float> player_position = Utils::Round(player_body.quad->GetCenter(), 2);
 
         std::string text = std::format("Player position: {}", to_string(player_position));
 
-        TextRenderable& t = debug_stats_text["Player pos"];
+        Text& t = debug_stats_text["Player pos"];
         t.text = text;
         t.pos = Vector2<float>(-(width / 2.0f) + 5, (height / 2.0f) - 100);
     }
 
     {
-        Vector2<float> player_velocity = Utils::Round(player->body->vel, 2);
+        Vector2<float> player_velocity = Utils::Round(player_body.vel, 2);
 
         std::string text = std::format("Player velocity: {}", to_string(player_velocity));
 
-        TextRenderable& t = debug_stats_text["Player vel"];
+        Text& t = debug_stats_text["Player vel"];
         t.text = text;
         t.pos = Vector2<float>(-(width / 2.0f) + 5, (height / 2.0f) - 115);
     }
 
     {
-        Vector2<float> player_acceleration = Utils::Round(player->body->acc, 2);
+        Vector2<float> player_acceleration = Utils::Round(player_body.acc, 2);
 
         std::string text = std::format("Player acceleration: {}", to_string(player_acceleration));
 
-        TextRenderable& t = debug_stats_text["Player acc"];
+        Text& t = debug_stats_text["Player acc"];
         t.text = text;
         t.pos = Vector2<float>(-(width / 2.0f) + 5, (height / 2.0f) - 130);
     }

@@ -1,6 +1,7 @@
 #include <iostream>
 
 #include "World.h"
+#include "Player.h"
 
 constexpr float PI_CONST = 3.14159265358979323846f;
 const int WIDTH = 1080;
@@ -29,9 +30,9 @@ Renderer::EndFrame(); End frame
 
 Font font(path);
 (Shader defaulted to white colour shader)
-Text text("Hello world", &font); Declaring with a font
-or
-Text text("Hello world", &shader, &font); Declaring with a shader and a font
+Text text("Hello world", pos, &font[, scale]); Declaring with a font
+Text text("Hello world", pos, &shader[, scale]); Declaring with shader
+Text text("Hello world", pos, &shader, &font[, scale]); Declaring with a shader and a font
 
 Renderer::Schedule(text[, z]);
 
@@ -79,6 +80,7 @@ void tester_callback(Button* button_pressed) {
     seed++;
     i->SetSeed(seed);
     seedChanged = true;
+    Log(std::format("Changing seed to {}", seed), LOG::INFO);
 }
 
 int main(void)
@@ -106,13 +108,13 @@ int main(void)
     World::texture_shader = &texture_shader;
 
     // Test construct world
-    Log("Loading world...", Utils::ERROR::INFO);
+    Log("Loading world...", LOG::INFO);
     World world(0, "testworld");
-    Log("Loading textures...", Utils::ERROR::INFO);
+    Log("Loading textures...", LOG::INFO);
     World::LoadTextures("tile_atlas.png");
-    Log("Updating world...", Utils::ERROR::INFO);
+    Log("Updating world...", LOG::INFO);
     world.Update(Vector2<int>(0, 0));
-    Log("Finished initialising world", Utils::ERROR::INFO);
+    Log("Finished initialising world", LOG::INFO);
 
     // DEBUG: quads
     Quad wall = Quad(500, 500, 100, 500, 0.5 * PI_CONST);
@@ -145,14 +147,11 @@ int main(void)
 
     Texture noisetext = Texture(std::shared_ptr<uint8_t[]>(buffer2), SIZE, SIZE);
 
-    Renderable noisedraw = Renderable(std::shared_ptr<Quad>(&noisequad), &texture_shader, &noisetext, 5);
-
-    // DEBUG: renderables
-    Renderable walldraw(std::shared_ptr<Quad>(&wall), &colour_shader, 1);
-    Renderable dummydraw(std::shared_ptr<Quad>(&dummy), &texture_shader, &atlas_test, 2);
-
     // DEBUG: Animation object
-    Animation animation(std::shared_ptr<Renderable>(&dummydraw), std::shared_ptr<Texture>(&atlas_test), { 64, 64 }, "data");
+    Animation animation(std::shared_ptr<Quad>(&dummy), std::shared_ptr<Shader>(&texture_shader), std::shared_ptr<Texture>(&atlas_test), {64, 64}, "data");
+
+    Player player = Player(engine.proj);
+    engine.physics.layers[0].push_back(player.body);
 
     // DEBUG: add to physics system
     Body wallbody = Body(wall, true, 0.0f, 999);
@@ -180,20 +179,37 @@ int main(void)
             noisetext.Create();
         }
 
-        engine.Update(); // Update engine
+        // TODO better API for this? client has to do too much
+
+        engine.camera.pos = player.quad.GetCenter(); // Update camera
+        engine.BeginFrame();
+
+        if (engine.enable_stats) engine.UpdateStats(*player.body); // Draw stats information
+        player.Update(); // Update player
+
+        /* Draw calls */
+        Renderer::Schedule(&player.quad, player.shader, Player::ZLEVEL);
+        Renderer::Schedule(&wall, &colour_shader, 1);
+        Renderer::Schedule(&noisequad, &texture_shader, &noisetext, 5);
+        Renderer::Schedule(&animation, 8);
+        Renderer::Schedule(&btn, 5);
+        //world.m_RenderAround({ 0, 0 }, 1);
+        
+        engine.EndFrame();
 
         // DEGUG: Rotate our example wall
         wallbody.angular_acc = 1.0f;
         wallbody.angular_vel = Utils::ClampMax(wallbody.angular_vel, 3.0f);
 
+        // TODO find better way to update quads which have a physics object attached
         wall.SetAngle(wall.GetAngle());
     }
 
-    Log("Window closed", Utils::ERROR::INFO);
+    Log("Window closed", LOG::INFO);
 
     engine.SerialiseGeneralData();
 
-    Log("Ending program", Utils::ERROR::INFO);
+    Log("Ending program", LOG::INFO);
 
     // TODO: still have to forcibly exit since deconstructors aren't being called properly
     // maybe something to do with order?

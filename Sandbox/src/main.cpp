@@ -116,11 +116,11 @@ int main(void)
         wallbody.angular_vel = Utils::ClampMax(wallbody.angular_vel, 3.0f);
     }
 
-    Log("Window closed", Utils::ERROR::INFO);
+    Log("Window closed", LOG::INFO);
 
     engine.SerialiseGeneralData();
 
-    Log("Ending program", Utils::ERROR::INFO);
+    Log("Ending program", LOG::INFO);
 
     // TODO: still have to forcibly exit since deconstructors aren't being called properly
     // maybe something to do with order?
