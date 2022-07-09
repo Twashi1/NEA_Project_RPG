@@ -184,22 +184,23 @@ int main(void)
         engine.camera.pos = player.quad.GetCenter(); // Update camera
         engine.BeginFrame();
 
-        if (engine.enable_stats) engine.UpdateStats(*player.body); // Draw stats information
         player.Update(); // Update player
 
         /* Draw calls */
-        Renderer::Schedule(&player.quad, player.shader, Player::ZLEVEL);
-        Renderer::Schedule(&wall, &colour_shader, 1);
-        Renderer::Schedule(&noisequad, &texture_shader, &noisetext, 5);
-        Renderer::Schedule(&animation, 8);
-        Renderer::Schedule(&btn, 5);
+        Renderer::Schedule(&wall, &colour_shader);
+        Renderer::Schedule(&noisequad, &texture_shader, &noisetext);
+        Renderer::Schedule(&animation);
+        Renderer::Schedule(&btn);
+        Renderer::Schedule(&player.quad, player.shader);
         //world.m_RenderAround({ 0, 0 }, 1);
+
+        if (engine.enable_stats) engine.UpdateStats(*player.body); // Draw stats information
         
         engine.EndFrame();
 
         // DEGUG: Rotate our example wall
         wallbody.angular_acc = 1.0f;
-        wallbody.angular_vel = Utils::ClampMax(wallbody.angular_vel, 3.0f);
+        wallbody.angular_vel = std::min(wallbody.angular_vel, 3.0f);
 
         // TODO find better way to update quads which have a physics object attached
         wall.SetAngle(wall.GetAngle());

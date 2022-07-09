@@ -14,9 +14,6 @@ public:
     static constexpr float FRICTION = 20.0f;
     static constexpr float MAXACCEL = 15000.0f;
 
-    // More hardcoded constants
-    static constexpr float ZLEVEL = 10.0f;
-
     double last_time; // Stores last time object was updated
 
     // Update acceleration according to client inputs

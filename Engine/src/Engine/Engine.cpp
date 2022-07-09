@@ -307,7 +307,7 @@ void Engine::UpdateStats(const Body& player_body)
         t.text = text;
         t.pos = Vector2<float>(-(width / 2.0f) + 5, (height / 2.0f) - 15);
 
-        Renderer::Schedule(&t, 5);
+        Renderer::Schedule(&t);
     }
 
     {
@@ -323,7 +323,7 @@ void Engine::UpdateStats(const Body& player_body)
         t.text = text;
         t.pos = Vector2<float>(-(width / 2.0f) + 5, (height / 2.0f) - 30);
 
-        Renderer::Schedule(&t, 5);
+        Renderer::Schedule(&t);
     }
 
     {
@@ -345,7 +345,7 @@ void Engine::UpdateStats(const Body& player_body)
         t.text = time_str.str();
         t.pos = Vector2<float>(-(width / 2.0f) + 5, (height / 2.0f) - 45);
 
-        Renderer::Schedule(&t, 5);
+        Renderer::Schedule(&t);
     }
 
     {
@@ -357,7 +357,7 @@ void Engine::UpdateStats(const Body& player_body)
         t.text = text;
         t.pos = Vector2<float>(-(width / 2.0f) + 5, (height / 2.0f) - 100);
 
-        Renderer::Schedule(&t, 5);
+        Renderer::Schedule(&t);
     }
 
     {
@@ -369,7 +369,7 @@ void Engine::UpdateStats(const Body& player_body)
         t.text = text;
         t.pos = Vector2<float>(-(width / 2.0f) + 5, (height / 2.0f) - 115);
 
-        Renderer::Schedule(&t, 5);
+        Renderer::Schedule(&t);
     }
 
     {
@@ -381,6 +381,6 @@ void Engine::UpdateStats(const Body& player_body)
         t.text = text;
         t.pos = Vector2<float>(-(width / 2.0f) + 5, (height / 2.0f) - 130);
 
-        Renderer::Schedule(&t, 5);
+        Renderer::Schedule(&t);
     }
 }

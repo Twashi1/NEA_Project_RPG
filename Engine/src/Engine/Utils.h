@@ -113,11 +113,6 @@ namespace Utils {
 	// Calculates area of triangle abc
 	ENGINE_API float TriangleArea(Vector2<float> a, Vector2<float> b, Vector2<float> c);
 
-	// Exclusively clamps val to max
-	ENGINE_API float ClampMax(float val, float max);
-	// Exclusively clamps val to min
-	ENGINE_API float ClampMin(float val, float min);
-
 	ENGINE_API Vector2<float> ClampMax(Vector2<float> val, float max);
 	ENGINE_API Vector2<float> ClampMin(Vector2<float> val, float min);
 

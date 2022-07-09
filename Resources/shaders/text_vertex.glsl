@@ -4,7 +4,6 @@ out vec2 v_TexCoords;
 
 uniform mat4 u_projMat;
 uniform vec2 u_Offset;
-uniform float u_ZCoord = 0.0;
 
 void main()
 {

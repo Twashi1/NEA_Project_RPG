@@ -3,7 +3,6 @@
 layout(location = 0) in vec4 position;
 
 uniform mat4 u_projMat;
-uniform float u_ZCoord = 0.0;
 uniform vec2 u_Offset;
 
 void main() {

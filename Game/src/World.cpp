@@ -234,7 +234,7 @@ void World::m_RenderAround(const Vector2<int>& center, int radius)
 			// Set texture coords
 			quad.SetTextureCoords(*m_tile_atlas, atlas_index, m_tile_atlas_size);
 			// Schedule to renderer
-			Renderer::Schedule(&quad, texture_shader, m_tile_atlas, 1);
+			Renderer::Schedule(&quad, texture_shader, m_tile_atlas);
 		}
 	}
 }

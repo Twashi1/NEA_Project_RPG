@@ -5,7 +5,6 @@ layout(location = 1) in vec2 texCoord;
 
 uniform mat4 u_projMat;
 uniform vec2 u_Offset;
-uniform float u_ZCoord = 0.0;
 
 out vec2 v_texCoord;
 

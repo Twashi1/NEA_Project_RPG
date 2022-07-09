@@ -102,12 +102,12 @@ struct ENGINE_API Vector2 {
 	void normalise() { T inverse_magnitude = 1.0f / magnitude(); x *= inverse_magnitude; y *= inverse_magnitude; }
 	Vector2<T> floor() const { return Vector2(std::floor(x), std::floor(y)); }
 
-	operator Vector2<int>()			 { return Vector2<int>((int)x, (int)y);							   }
-	operator Vector2<long>()		 { return Vector2<long>((long)x, (long)y);						   }
-	operator Vector2<float>()		 { return Vector2<float>((float)x, (float)y);					   }
-	operator Vector2<double>()		 { return Vector2<double>((double)x, (double)y);				   }
-	operator Vector2<unsigned int>() { return Vector2<unsigned int>((unsigned int)x, (unsigned int)y); }
-	operator Vector2<std::uint8_t>() { return Vector2<std::uint8_t>((std::uint8_t)x, (std::uint8_t)y); }
+	operator Vector2<int>()			  { return Vector2<int>((int)x, (int)y);							   }
+	operator Vector2<long>()		  { return Vector2<long>((long)x, (long)y);						       }
+	operator Vector2<float>()		  { return Vector2<float>((float)x, (float)y);					       }
+	operator Vector2<double>()		  { return Vector2<double>((double)x, (double)y);				       }
+	operator Vector2<unsigned int>()  { return Vector2<unsigned int>((unsigned int)x, (unsigned int)y);    }
+	operator Vector2<unsigned char>() { return Vector2<unsigned char>((unsigned char)x, (unsigned char)y); }
 };
 
 template <typename T>
@@ -153,6 +153,11 @@ Vector2<T> cross(Vector2<T> v, T a) {
 template <typename T>
 Vector2<T> cross(T a, Vector2<T> v) {
 	return Vector2<T>(-a * v.y, a * v.x);
+}
+
+template <typename T>
+T dot(const Vector2<T>& a, const Vector2<T>& b) {
+	return a.x * b.x + a.y * b.y;
 }
 
 template <typename T>

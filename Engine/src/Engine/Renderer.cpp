@@ -58,17 +58,16 @@ ENGINE_API void Renderer::EndFrame()
 	// DEPRECATED?
 }
 
-ENGINE_API void Renderer::Schedule(const Quad* quad, Shader* shader, float z)
+ENGINE_API void Renderer::Schedule(const Quad* quad, Shader* shader)
 {
 	quad->GetVertexBuffer().Bind();
 	const IndexBuffer& ib = quad->GetIndexBuffer(); ib.Bind();
 	shader->Bind();
-	shader->SetUniform1f("u_ZCoord", z);
 
 	GlCall(glDrawElements(GL_TRIANGLES, ib.count, ib.type, nullptr));
 }
 
-ENGINE_API void Renderer::Schedule(const Quad* quad, const Texture* texture, float z)
+ENGINE_API void Renderer::Schedule(const Quad* quad, const Texture* texture)
 {
 	quad->GetVertexBuffer().Bind();
 	const IndexBuffer& ib = quad->GetIndexBuffer(); ib.Bind();
@@ -79,7 +78,6 @@ ENGINE_API void Renderer::Schedule(const Quad* quad, const Texture* texture, flo
 
 	// Bind shader
 	Renderer::texture_shader->Bind();
-	Renderer::texture_shader->SetUniform1f("u_ZCoord", z);
 	Renderer::texture_shader->SetUniform1i("u_Texture", slot);
 
 	GlCall(glDrawElements(GL_TRIANGLES, ib.count, ib.type, nullptr));
@@ -89,7 +87,7 @@ ENGINE_API void Renderer::Schedule(const Quad* quad, const Texture* texture, flo
 	FreeTextureSlot(slot);
 }
 
-ENGINE_API void Renderer::Schedule(const Quad* quad, Shader* shader, const Texture* texture, float z)
+ENGINE_API void Renderer::Schedule(const Quad* quad, Shader* shader, const Texture* texture)
 {
 	quad->GetVertexBuffer().Bind();
 	const IndexBuffer& ib = quad->GetIndexBuffer(); ib.Bind();
@@ -100,7 +98,6 @@ ENGINE_API void Renderer::Schedule(const Quad* quad, Shader* shader, const Textu
 
 	// Bind shader
 	shader->Bind();
-	shader->SetUniform1f("u_ZCoord", z);
 	shader->SetUniform1i("u_Texture", slot);
 
 	GlCall(glDrawElements(GL_TRIANGLES, ib.count, ib.type, nullptr));
@@ -110,14 +107,13 @@ ENGINE_API void Renderer::Schedule(const Quad* quad, Shader* shader, const Textu
 	FreeTextureSlot(slot);
 }
 
-ENGINE_API void Renderer::Schedule(const Text* text, float z)
+ENGINE_API void Renderer::Schedule(const Text* text)
 {
 	uint8_t slot = Renderer::GetTextureSlot(); // Get slot we're drawing texture to
 
 	// Bind shader and set texture slot
 	text->shader->Bind();
 	text->shader->SetUniform1i("u_Texture", slot);
-	text->shader->SetUniform1f("u_ZCoord", z);
 
 	// Bind texture to that slot
 	GlCall(glActiveTexture(GL_TEXTURE0 + slot));
@@ -167,23 +163,22 @@ ENGINE_API void Renderer::Schedule(const Text* text, float z)
 	Renderer::FreeTextureSlot(slot);
 }
 
-ENGINE_API void Renderer::Schedule(Button* btn, float z)
+ENGINE_API void Renderer::Schedule(Button* btn)
 {
-	Renderer::Schedule(btn->text, z + 0.1);
-	
 	const Texture* current_texture = btn->CurrentTexture();
 	if (current_texture != nullptr) {
-		Renderer::Schedule(&btn->quad, btn->CurrentShader(), current_texture, z);
+		Renderer::Schedule(&btn->quad, btn->CurrentShader(), current_texture);
 	}
 	else {
-		Renderer::Schedule(&btn->quad, btn->CurrentShader(), z);
+		Renderer::Schedule(&btn->quad, btn->CurrentShader());
 	}
 	
+	Renderer::Schedule(btn->text);
 }
 
-ENGINE_API void Renderer::Schedule(Animation* animation, float z)
+ENGINE_API void Renderer::Schedule(Animation* animation)
 {
-	Renderer::Schedule(animation->quad.get(), animation->shader.get(), animation->GetAtlas().get(), z);
+	Renderer::Schedule(animation->quad.get(), animation->shader.get(), animation->GetAtlas().get());
 }
 
 ENGINE_API void Renderer::m_Draw(const VertexBuffer& vb, const IndexBuffer& ib, const Shader& shader)

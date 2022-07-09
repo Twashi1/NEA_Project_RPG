@@ -90,16 +90,6 @@ ENGINE_API float Utils::TriangleArea(Vector2<float> a, Vector2<float> b, Vector2
 	) * 0.5f;
 }
 
-ENGINE_API float Utils::ClampMax(float val, float max)
-{
-	return std::min(val, max);
-}
-
-ENGINE_API float Utils::ClampMin(float val, float min)
-{
-	return std::max(val, min);
-}
-
 ENGINE_API Vector2<float> Utils::ClampMax(Vector2<float> val, float max)
 {
 	return Vector2<float>(std::min(val.x, max), std::min(val.y, max));

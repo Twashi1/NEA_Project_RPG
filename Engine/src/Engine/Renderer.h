@@ -27,8 +27,6 @@ class Animation;
 struct Quad;
 struct Texture;
 
-// TODO: change api
-
 class ENGINE_API Renderer {
 private:
 	static constexpr uint8_t m_INVALID_TEXTURE_SLOT = 255; // Constant to represent an invalid texture slot
@@ -48,10 +46,10 @@ public:
 	static void BeginFrame();
 	static void EndFrame();
 
-	static void Schedule(const Quad* quad, Shader* shader, float z = 0.0f);
-	static void Schedule(const Quad* quad, const Texture* texture, float z = 0.0f);
-	static void Schedule(const Quad* quad, Shader* shader, const Texture* texture, float z = 0.0f);
-	static void Schedule(const Text* text, float z = 0.0f);
-	static void Schedule(Button* btn, float z = 0.0f);
-	static void Schedule(Animation* animation, float z = 0.0f);
+	static void Schedule(const Quad* quad, Shader* shader);
+	static void Schedule(const Quad* quad, const Texture* texture);
+	static void Schedule(const Quad* quad, Shader* shader, const Texture* texture);
+	static void Schedule(const Text* text);
+	static void Schedule(Button* btn);
+	static void Schedule(Animation* animation);
 };
