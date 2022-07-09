@@ -58,9 +58,6 @@ public:
     Physics physics;     // Physics system
     Camera camera;       // Camera currently being used
 
-    // TODO: storing font here seems kinda wrong
-    Font* consolas_font; // Hold consolas-font characters
-
     // Variables for displaying stats and tracking performance
     const double POLL_INTERVAL = 10.0; // Determines how often average performance is calculated and checked
     uint32_t frames_processed;         // Tracks amount of frames that have been processed (resets every POLL_INTERVAL)

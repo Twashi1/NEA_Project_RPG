@@ -157,12 +157,12 @@ void Engine::m_Start()
 
     // Create all text renderables for stats
     if (enable_stats) {
-        debug_stats_text.insert({ "Average TPF", Text("", Vector2<float>(5, height - 15), consolas_font, 0.25) });
-        debug_stats_text.insert({ "Percentage Processing", Text("", Vector2<float>(5, height - 30), consolas_font, 0.25) });
-        debug_stats_text.insert({ "Time", Text("", Vector2<float>(5, height - 45), consolas_font, 0.25) });
-        debug_stats_text.insert({ "Player pos", Text("", Vector2<float>(5, height - 100), consolas_font, 0.25) });
-        debug_stats_text.insert({ "Player vel", Text("", Vector2<float>(5, height - 115), consolas_font, 0.25) });
-        debug_stats_text.insert({ "Player acc", Text("", Vector2<float>(5, height - 130), consolas_font, 0.25) });
+        debug_stats_text.insert({ "Average TPF", Text("", Vector2<float>(5, height - 15), 0.25) });
+        debug_stats_text.insert({ "Percentage Processing", Text("", Vector2<float>(5, height - 30), 0.25) });
+        debug_stats_text.insert({ "Time", Text("", Vector2<float>(5, height - 45), 0.25) });
+        debug_stats_text.insert({ "Player pos", Text("", Vector2<float>(5, height - 100), 0.25) });
+        debug_stats_text.insert({ "Player vel", Text("", Vector2<float>(5, height - 115), 0.25) });
+        debug_stats_text.insert({ "Player acc", Text("", Vector2<float>(5, height - 130), 0.25) });
     }
 
     // Finished loading
@@ -307,6 +307,7 @@ void Engine::UpdateStats(const Body& player_body)
         t.text = text;
         t.pos = Vector2<float>(-(width / 2.0f) + 5, (height / 2.0f) - 15);
 
+        Renderer::Schedule(&t, 5);
     }
 
     {
@@ -321,6 +322,8 @@ void Engine::UpdateStats(const Body& player_body)
         Text& t = debug_stats_text["Percentage Processing"];
         t.text = text;
         t.pos = Vector2<float>(-(width / 2.0f) + 5, (height / 2.0f) - 30);
+
+        Renderer::Schedule(&t, 5);
     }
 
     {
@@ -341,6 +344,8 @@ void Engine::UpdateStats(const Body& player_body)
         Text& t = debug_stats_text["Time"];
         t.text = time_str.str();
         t.pos = Vector2<float>(-(width / 2.0f) + 5, (height / 2.0f) - 45);
+
+        Renderer::Schedule(&t, 5);
     }
 
     {
@@ -351,6 +356,8 @@ void Engine::UpdateStats(const Body& player_body)
         Text& t = debug_stats_text["Player pos"];
         t.text = text;
         t.pos = Vector2<float>(-(width / 2.0f) + 5, (height / 2.0f) - 100);
+
+        Renderer::Schedule(&t, 5);
     }
 
     {
@@ -361,6 +368,8 @@ void Engine::UpdateStats(const Body& player_body)
         Text& t = debug_stats_text["Player vel"];
         t.text = text;
         t.pos = Vector2<float>(-(width / 2.0f) + 5, (height / 2.0f) - 115);
+
+        Renderer::Schedule(&t, 5);
     }
 
     {
@@ -371,5 +380,7 @@ void Engine::UpdateStats(const Body& player_body)
         Text& t = debug_stats_text["Player acc"];
         t.text = text;
         t.pos = Vector2<float>(-(width / 2.0f) + 5, (height / 2.0f) - 130);
+
+        Renderer::Schedule(&t, 5);
     }
 }
