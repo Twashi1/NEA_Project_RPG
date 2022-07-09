@@ -250,11 +250,6 @@ bool Engine::IsRunning()
     return !glfwWindowShouldClose(window);
 }
 
-double ENGINE_API TEMP::GetTime()
-{
-    return glfwGetTime();
-}
-
 Engine::Engine(int width, int height, int fps, bool enable_stats)
     : width(width), height(height), fps(fps), tpf(1.0 / double(fps)), enable_stats(enable_stats)
 {

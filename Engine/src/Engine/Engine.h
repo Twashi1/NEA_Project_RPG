@@ -90,7 +90,3 @@ public:
 
     bool IsRunning();
 };
-
-namespace TEMP {
-    ENGINE_API double GetTime();
-}
