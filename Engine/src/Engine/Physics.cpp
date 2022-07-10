@@ -1,8 +1,8 @@
 #include "Physics.h"
 
 void Physics::Update(float new_time) {
-	float dt = new_time - last_time;
-	last_time = new_time;
+	float elapsed = new_time - m_time;
+	m_time = new_time;
 
 	for (auto& [layer_index, layer] : layers) {
 		collisions_t collisions; // Store all collisions we've already checked
@@ -19,8 +19,8 @@ void Physics::Update(float new_time) {
 				std::shared_ptr<Body> b = layer[j];
 
 				// Calculate future positions of bodies
-				Quad future_quad_a = a->Peek(dt);
-				Quad future_quad_b = b->Peek(dt);
+				Quad future_quad_a = a->Peek(elapsed);
+				Quad future_quad_b = b->Peek(elapsed);
 
 				// Create two bodies to represent bodies in future
 				Body future_a = *a; future_a.quad = &future_quad_a;
@@ -51,8 +51,42 @@ void Physics::Update(float new_time) {
 	// Iterate over every body and update it
 	for (auto& [layer_index, layer] : layers) {
 		for (int i = 0; i < layer.size(); i++) {
-			layer[i]->Update(dt);
+			layer[i]->Update(elapsed);
 		}
+	}
+}
+
+void Physics::Register(const std::shared_ptr<Body>& body, int layer_index)
+{
+	// If layers already contains index
+	if (layers.contains(layer_index)) {
+		// Add to existing index
+		layers[layer_index].push_back(body);
+	}
+	else {
+		// Add new layer
+		layers[layer_index] = layer_t{body};
+	}
+}
+
+void Physics::Unregister(const std::shared_ptr<Body>& body, int layer_index)
+{
+	// Get layer body is in
+	layer_t& layer = layers[layer_index];
+	// Find ourselves in the layer
+	auto it = std::find(layer.begin(), layer.end(), body);
+	// We exist in layer, delete ourselves
+	if (it != layer.end()) layer.erase(it);
+}
+
+void Physics::Unregister(const std::shared_ptr<Body>& body)
+{
+	// Iterate over each layer
+	for (auto& [layer_index, layer] : layers) {
+		// Search for body in layer
+		auto it = std::find(layer.begin(), layer.end(), body);
+		// If we exist in that layer, delete ourselves
+		if (it != layer.end()); layer.erase(it);
 	}
 }
 

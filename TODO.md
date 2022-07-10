@@ -38,9 +38,7 @@
 # Other
 - Texture atlas API sometimes leaves stay pixels on side of image
 - Objects aren't being deconstructed properly, so program can't properly exit
-- Performance issues with large amounts of renderables
 - Fix sandbox
-- Camera
 - Move player to Game/Sandbox
 - World render around still not working (actually basically entirety of world isn't working)
 - Make quad ib a static

@@ -11,9 +11,10 @@ struct ENGINE_API Quad : private Rect {
 private:
 	std::vector<float> m_TexCoords;
 
+	static IndexBuffer* ib;
+
 	// Buffers
 	std::shared_ptr<VertexBuffer> vb;
-	std::shared_ptr<IndexBuffer> ib;
 
 	// Update vertex buffer
 	void m_UpdateVB();
@@ -22,6 +23,8 @@ private:
 	void m_ConstructBuffers();
 
 public:
+	static void Init();
+
 	// Make methods public
 	using Rect::Contains;
 	using Rect::ContainsAnyOf;

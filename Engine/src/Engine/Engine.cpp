@@ -105,38 +105,33 @@ void Engine::m_Start()
     // Allow transparency
     GlCall(glBlendFunc(GL_SRC_ALPHA, GL_ONE_MINUS_SRC_ALPHA));
 
-    // Initialise physics
+    // Initialise statics for Quad
+    Quad::Init();
+
+    // Construct physics object
     physics = Physics();
-    // Initialise camera
+    // Construct camera
     camera = Camera(Vector2<float>(width * 0.5f, height * 0.5f), {0.0f, 0.0f});
-    // Pass camera to Renderer
+    // Set renderer's camera
     Renderer::camera = &camera;
 
     // Initialise input system
     Input::window = window;
     Input::window_width = &width;
     Input::window_height = &height;
-    // Add key listeners
+    // Add all listeners
     Input::AddKeyListener(GLFW_KEY_W);
     Input::AddKeyListener(GLFW_KEY_A);
     Input::AddKeyListener(GLFW_KEY_S);
     Input::AddKeyListener(GLFW_KEY_D);
-
     Input::AddKeyListener(GLFW_KEY_Q);
     Input::AddKeyListener(GLFW_KEY_E);
-
     Input::AddKeyListener(GLFW_KEY_SPACE);
-
-    // Add mouse listeners
     Input::AddMouseListener(GLFW_MOUSE_BUTTON_1); // Left mouse click
     Input::AddMouseListener(GLFW_MOUSE_BUTTON_2); // Right mouse click
 
-    // Initialise Animation
+    // Initialise static for Animation
     Animation::FILE_EXTENSION = ".animation";
-
-    // Add player to physics system
-    // TODO make function for this
-    physics.layers[0] = Physics::layer_t{};
 
     // Initialise text class
     Text::Init();

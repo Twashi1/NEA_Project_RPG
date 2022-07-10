@@ -151,11 +151,11 @@ int main(void)
     Animation animation(std::shared_ptr<Quad>(&dummy), std::shared_ptr<Shader>(&texture_shader), std::shared_ptr<Texture>(&atlas_test), {64, 64}, "data");
 
     Player player = Player(engine.proj);
-    engine.physics.layers[0].push_back(player.body);
+    engine.physics.Register(player.body, 0);
 
     // DEBUG: add to physics system
     Body wallbody = Body(wall, true, 0.0f, 999);
-    engine.physics.layers[0].push_back(std::shared_ptr<Body>(&wallbody));
+    engine.physics.Register(std::shared_ptr<Body>(&wallbody), 0);
 
     // Loop until window is closed by user
     while (engine.IsRunning())

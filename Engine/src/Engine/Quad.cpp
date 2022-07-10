@@ -1,5 +1,7 @@
 #include "Quad.h"
 
+IndexBuffer* Quad::ib = nullptr;
+
 void Quad::m_UpdateVB()
 {
 	std::vector<Vector2<float>> vertices = GetVertices();
@@ -35,9 +37,11 @@ void Quad::m_ConstructBuffers()
 		},
 		m_TexCoords
 	));
+}
 
-	// Setup index buffer
-	ib = std::shared_ptr<IndexBuffer>(new IndexBuffer({ 0, 1, 2, 2, 3, 0 }));
+void Quad::Init()
+{
+	ib = new IndexBuffer({ 0, 1, 2, 2, 3, 0 });
 }
 
 void Quad::SetCenter(float nx, float ny)
@@ -184,7 +188,7 @@ Quad::Quad(const Rect& rect)
 }
 
 Quad::Quad(const Quad& other)
-	:  vb(other.vb), ib(other.ib), m_TexCoords(other.m_TexCoords)
+	:  vb(other.vb), m_TexCoords(other.m_TexCoords)
 {
 	x = other.x; y = other.y;
 	width = other.width; height = other.height;
