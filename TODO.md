@@ -43,4 +43,3 @@
 - World render around still not working (actually basically entirety of world isn't working)
 - Make quad ib a static
 - Better link to Resources folder
-- While updating a body in the physics system will update its rect, the VertexBuffer of the quad that contains that rect is not updated, thus the object will not appear as having moved

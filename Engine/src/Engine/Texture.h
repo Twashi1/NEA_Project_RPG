@@ -23,6 +23,7 @@ struct ENGINE_API Texture {
 
 	void Create();
 	void Delete();
+	void Update(); // Deletes, then Creates texture to update it with new buffer data
 
 	// Construct from colour data (3 bytes per pixel), and width/height of image
 	Texture(std::shared_ptr<uint8_t[]> buffer, unsigned int width, unsigned int height);

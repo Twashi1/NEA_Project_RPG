@@ -48,16 +48,6 @@ ENGINE_API void Renderer::FreeTextureSlot(uint8_t slot)
 	}
 }
 
-ENGINE_API void Renderer::BeginFrame()
-{
-	// DEPRECATED?
-}
-
-ENGINE_API void Renderer::EndFrame()
-{
-	// DEPRECATED?
-}
-
 ENGINE_API void Renderer::Schedule(const Quad* quad, Shader* shader)
 {
 	quad->GetVertexBuffer().Bind();
@@ -82,9 +72,23 @@ ENGINE_API void Renderer::Schedule(const Quad* quad, const Texture* texture)
 
 	GlCall(glDrawElements(GL_TRIANGLES, ib.count, ib.type, nullptr));
 
-	// Unbind texture
-	Texture::Unbind();
+	// Free texture slot
 	FreeTextureSlot(slot);
+}
+
+ENGINE_API void Renderer::Schedule(const Quad* quad, const Texture* texture, uint8_t slot)
+{
+	quad->GetVertexBuffer().Bind();
+	const IndexBuffer& ib = quad->GetIndexBuffer(); ib.Bind();
+
+	// Bind texture
+	texture->Bind(slot);
+
+	// Bind shader
+	Renderer::texture_shader->Bind();
+	Renderer::texture_shader->SetUniform1i("u_Texture", slot);
+
+	GlCall(glDrawElements(GL_TRIANGLES, ib.count, ib.type, nullptr));
 }
 
 ENGINE_API void Renderer::Schedule(const Quad* quad, Shader* shader, const Texture* texture)
@@ -165,28 +169,22 @@ ENGINE_API void Renderer::Schedule(const Text* text)
 
 ENGINE_API void Renderer::Schedule(Button* btn)
 {
+	// Get texture currently being used (if there is a texture)
 	const Texture* current_texture = btn->CurrentTexture();
 	if (current_texture != nullptr) {
+		// Render with texture
 		Renderer::Schedule(&btn->quad, btn->CurrentShader(), current_texture);
 	}
 	else {
+		// Render without texture
 		Renderer::Schedule(&btn->quad, btn->CurrentShader());
 	}
 	
+	// Render text of button
 	Renderer::Schedule(btn->text);
 }
 
 ENGINE_API void Renderer::Schedule(Animation* animation)
 {
 	Renderer::Schedule(animation->quad.get(), animation->shader.get(), animation->GetAtlas().get());
-}
-
-ENGINE_API void Renderer::m_Draw(const VertexBuffer& vb, const IndexBuffer& ib, const Shader& shader)
-{
-	// Bind all the components we need
-	vb.Bind();
-	ib.Bind();
-	shader.Bind();
-
-	GlCall(glDrawElements(GL_TRIANGLES, ib.count, ib.type, nullptr));
 }

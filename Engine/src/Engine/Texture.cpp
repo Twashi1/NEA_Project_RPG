@@ -43,6 +43,12 @@ void Texture::Delete()
 	id = 0;
 }
 
+void Texture::Update()
+{
+	Delete();
+	Create();
+}
+
 Texture::Texture(std::shared_ptr<uint8_t[]> buffer, unsigned int width, unsigned int height)
 	: width(width), height(height), id(0)
 {

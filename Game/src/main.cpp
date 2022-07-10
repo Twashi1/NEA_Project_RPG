@@ -29,16 +29,8 @@ int main(void)
     Shader texture_shader("texture_vertex", "texture_frag");
     texture_shader.SetUniform1f("u_Scale", 1);
 
-    Shader cellular_shader("cellular_vertex", "cellular_frag");
-    cellular_shader.SetUniform2f("u_Resolution", engine.width, engine.height);
-    cellular_shader.SetUniform1f("u_Scale", 5);
-    cellular_shader.SetUniform1ui("u_Seed", 0);
-
     Shader colour_shader = Shader("colour_vertex", "colour_frag");
     colour_shader.SetUniform3f("u_Color", COLORS::RED);
-
-    Shader bg_shader = Shader("colour_vertex", "colour_frag");
-    bg_shader.SetUniform3f("u_Color", COLORS::BLUE * 0.5f);
 
     ShaderManager::UpdateProjectionMatrix(engine.proj);
 
@@ -69,20 +61,20 @@ int main(void)
     const int SIZE = 256;
     Noise::Interpolated interp(seed, 1.0f, 64);
     i = &interp;
-    std::uint8_t* buffer2 = new std::uint8_t[SIZE * SIZE * 4];
+    std::uint8_t* buffer = new std::uint8_t[SIZE * SIZE * 4];
     for (int i = 0; i < SIZE * SIZE; i++) {
         int index = i * 4;
         int y = i / SIZE; int x = i - (y * SIZE);
 
         uint8_t v = interp.GetFractal(x, y, 4) * 0xff;
 
-        buffer2[index] = v;
-        buffer2[index + 1] = v;
-        buffer2[index + 2] = v;
-        buffer2[index + 3] = 0xff;
+        buffer[index] = v;
+        buffer[index + 1] = v;
+        buffer[index + 2] = v;
+        buffer[index + 3] = 0xff;
     }
 
-    Texture noisetext = Texture(std::shared_ptr<uint8_t[]>(buffer2), SIZE, SIZE);
+    Texture noisetext = Texture(std::shared_ptr<uint8_t[]>(buffer), SIZE, SIZE);
 
     // DEBUG: Animation object
     Animation animation(std::shared_ptr<Quad>(&dummy), std::shared_ptr<Shader>(&texture_shader), std::shared_ptr<Texture>(&atlas_test), {64, 64}, "data");
@@ -106,14 +98,13 @@ int main(void)
 
                 uint8_t v = interp.GetFractal(x, y, 4) * 0xff;
 
-                buffer2[index] = v;
-                buffer2[index + 1] = v;
-                buffer2[index + 2] = v;
-                buffer2[index + 3] = 0xff;
+                buffer[index] = v;
+                buffer[index + 1] = v;
+                buffer[index + 2] = v;
+                buffer[index + 3] = 0xff;
             }
 
-            noisetext.Delete();
-            noisetext.Create();
+            noisetext.Update();
         }
 
         // TODO better API for this? client has to do too much
@@ -123,7 +114,7 @@ int main(void)
 
         player.Update(); // Update player
 
-        /* Draw calls */
+        // Draw calls
         Renderer::Schedule(&wall, &colour_shader);
         Renderer::Schedule(&noisequad, &texture_shader, &noisetext);
         Renderer::Schedule(&animation);
