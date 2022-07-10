@@ -2,8 +2,8 @@
 
 void Player::Update()
 {
-    float new_time = Utils::Timer::GetTime();
-    float dt = new_time - last_time; last_time = new_time;
+    float current_time = Utils::Timer::GetTime();
+    float elapsed = current_time - m_time; m_time = current_time;
     // TODO: cleanup
 
     // If W key pressed
@@ -34,7 +34,7 @@ void Player::Update()
     }
 
     body->acc -= body->vel * FRICTION;
-    body->vel = body->vel + (body->acc * dt);
+    body->vel = body->vel + (body->acc * elapsed);
 }
 
 Player::Player(const glm::mat4& proj)

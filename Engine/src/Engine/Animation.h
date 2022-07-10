@@ -34,6 +34,7 @@ public:
 
 	// NOTE: data_filename refers to the filename of the .animation data file for the texture atlas
 	Animation(const std::shared_ptr<Quad>& quad, const std::shared_ptr<Shader>& shader, const std::shared_ptr<Texture>& atlas, const Vector2<int>& size, const std::string& data_filename);
+	Animation(const std::shared_ptr<Quad>& quad, const std::shared_ptr<Shader>& shader, const std::shared_ptr<Texture>& atlas, const Vector2<int>& size, const std::vector<float>& animation_data);
 	~Animation();
 
 	// Updates the animation, takes current time

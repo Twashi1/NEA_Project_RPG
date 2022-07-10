@@ -61,6 +61,16 @@ Animation::Animation(const std::shared_ptr<Quad>& quad, const std::shared_ptr<Sh
 	AnimationManager::animations.Push(this);
 }
 
+Animation::Animation(const std::shared_ptr<Quad>& quad, const std::shared_ptr<Shader>& shader, const std::shared_ptr<Texture>& atlas, const Vector2<int>& size, const std::vector<float>& animation_data)
+	: quad(quad), shader(shader), m_atlas(atlas), m_size(size), m_timings(animation_data)
+{
+	// Calculate dimensions of atlas (in terms of sprites)
+	m_atlas_dim_relative = Vector2<int>(atlas->width / m_size.x, atlas->height / m_size.y);
+
+	// Add ourselves to animation manager
+	AnimationManager::animations.Push(this);
+}
+
 Animation::~Animation()
 {
 	// Remove ourselves from animation manager
@@ -69,10 +79,10 @@ Animation::~Animation()
 
 void Animation::Update(float current_time)
 {
-	float dt = current_time - m_time; // Calculate deltatime
+	float elapsed = current_time - m_time; // Calculate deltatime
 
 	// Add delta time to time spent on current frame
-	m_frame_time += dt;
+	m_frame_time += elapsed;
 
 	// Get time that is meant to be spent on this frame
 	float this_frame_timing = m_timings[m_current_frame];

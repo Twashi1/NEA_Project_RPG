@@ -24,7 +24,7 @@ private:
 
 public:
 	// Update all bodies tracked, and resolve collisions
-	void Update(float new_time);
+	void Update(float current_time);
 
 	void Register(const std::shared_ptr<Body>& body, int layer_index);
 	void Unregister(const std::shared_ptr<Body>& body, int layer_index);
