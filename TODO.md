@@ -40,6 +40,5 @@
 - Objects aren't being deconstructed properly, so program can't properly exit
 - Fix sandbox
 - Move player to Game/Sandbox
-- World render around still not working (actually basically entirety of world isn't working)
 - Make quad ib a static
 - Better link to Resources folder

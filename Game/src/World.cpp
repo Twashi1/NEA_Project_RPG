@@ -60,6 +60,14 @@ World::World(const uint32_t& seed, const std::string& world_name)
 
 }
 
+Vector2<int> World::m_GetChunkIndex(const Vector2<int>& pos)
+{
+	return Vector2<int>(
+		std::floor((double)pos.x / (double)Region::LENGTH),
+		std::floor((double)pos.y / (double)Region::LENGTH)
+	);
+}
+
 std::string World::m_ToRegionName(const Vector2<int>& index)
 {
 	return std::format("region{}_{}{}", to_string(index.x), to_string(index.y), FILE_EXTENSION);
@@ -205,13 +213,10 @@ void World::m_GenWorld(const std::string& fullpath)
 
 void World::m_RenderAround(const Vector2<int>& center, int radius)
 {
-	constexpr int scale = 128;
-
-	
-	for (int y = center.y - radius; y < center.y + radius; y++) {
-		for (int x = center.x - radius; x < center.x + radius; x++) {
+	for (int y = center.y - radius; y <= center.y + radius; y++) {
+		for (int x = center.x - radius; x <= center.x + radius; x++) {
 			// Calculate region index
-			Vector2<int> region_index(x / Region::LENGTH, y / Region::LENGTH);
+			Vector2<int> region_index = m_GetChunkIndex({ x, y });
 			// Calculate relative coords
 			int rx = x - (region_index.x * Region::LENGTH);
 			int ry = y - (region_index.y * Region::LENGTH);
@@ -232,6 +237,7 @@ void World::m_RenderAround(const Vector2<int>& center, int radius)
 			// Construct quad
 			Quad quad(tx, ty, scale, scale, 0);
 			// Set texture coords
+			// TODO atlas API bad (seperate function for this? maybe under Texture)
 			quad.SetTextureCoords(*m_tile_atlas, atlas_index, m_tile_atlas_size);
 			// Schedule to renderer
 			Renderer::Schedule(&quad, texture_shader, m_tile_atlas);

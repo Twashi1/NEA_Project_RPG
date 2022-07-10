@@ -5,15 +5,14 @@
 #include "Region.h"
 
 class World {
-public:
+private:
+	// Converts a coordinate in the world to the index of the chunk that coordinate is in
+	static Vector2<int> m_GetChunkIndex(const Vector2<int>& pos);
+
 	// Some constants for noise
 	static constexpr float m_amplitude = 1.0f;
 	static constexpr int m_wavelength = 1;
 	static constexpr int m_octaves = 1;
-
-	static std::string PATH;
-	static std::string FILE_EXTENSION;
-	static std::string GENERAL_FILE;
 
 	static VersionNumber m_version;
 
@@ -28,6 +27,10 @@ public:
 	unsigned int m_seed;
 
 	std::string m_world_name;
+
+	static std::string PATH;
+	static std::string FILE_EXTENSION;
+	static std::string GENERAL_FILE;
 
 	std::string m_ToRegionName(const Vector2<int>& index);
 
@@ -46,6 +49,8 @@ public:
 	void m_RenderAround(const Vector2<int>& center, int radius);
 
 public:
+	static constexpr float scale = 128.0;
+
 	typedef std::unordered_map<Vector2<int>, Region> RegionMap_t;
 
 	static Shader* texture_shader;

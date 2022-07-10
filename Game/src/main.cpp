@@ -115,12 +115,12 @@ int main(void)
         player.Update(); // Update player
 
         // Draw calls
+        world.m_RenderAround({ 0, 0 }, 5);
         Renderer::Schedule(&wall, &colour_shader);
         Renderer::Schedule(&noisequad, &texture_shader, &noisetext);
         Renderer::Schedule(&animation);
         Renderer::Schedule(&btn);
         Renderer::Schedule(&player.quad, player.shader);
-        //world.m_RenderAround({ 0, 0 }, 1);
 
         if (engine.enable_stats) engine.UpdateStats(*player.body); // Draw stats information
         
