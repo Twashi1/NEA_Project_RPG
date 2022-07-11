@@ -7,7 +7,8 @@
 class World {
 private:
 	// Converts a coordinate in the world to the index of the chunk that coordinate is in
-	static Vector2<int> m_GetChunkIndex(const Vector2<int>& pos);
+	static Vector2<int> m_GetRegionIndex(const Vector2<int>& pos);
+	static Vector2<int> m_GetRegionIndex(int x, int y);
 
 	// Some constants for noise
 	static constexpr float m_amplitude = 1.0f;
@@ -22,7 +23,8 @@ private:
 	static Vector2<int> m_tile_atlas_size; // Size of each sprite in tile atlas
 	static Vector2<int> m_atlas_dim_relative; // Relative dimensions of tile atlas
 
-	Noise::Interpolated* m_noise_gen;
+	Noise::Interpolated* m_noise_terrain;
+	Noise::White* m_noise_trees;
 	Serialiser m_serialiser;
 	unsigned int m_seed;
 
@@ -32,6 +34,21 @@ private:
 	static std::string FILE_EXTENSION;
 	static std::string GENERAL_FILE;
 
+	struct RenderedTile {
+		std::shared_ptr<Quad> quad;
+		Tile tile;
+
+		RenderedTile();
+		RenderedTile(const std::shared_ptr<Quad>& quad, const Tile& tile);
+
+		bool operator==(const RenderedTile& other) { return tile.ids == other.tile.ids && quad == other.quad; }
+	};
+
+	std::unordered_map<Vector2<int>, RenderedTile> rendered_tiles;
+
+	Vector2<int> last_render_pos = Vector2<int>(0);
+	Vector2<int> last_render_frame = Vector2<int>(0);
+
 	std::string m_ToRegionName(const Vector2<int>& index);
 
 	void m_SerialiseRegion(const Vector2<int>& index);
@@ -40,16 +57,21 @@ private:
 	void m_LoadWorld(const std::string& fullpath);
 	void m_GenWorld(const std::string& fullpath);
 
+	// TODO: m_LoadRegions just destroys the entire game for some reason
 	void m_LoadRegions(const Vector2<int>& center, int radius);
-	void m_LoadRegion(const Vector2<int>& index);
+	Region& m_LoadRegion(const Vector2<int>& index);
 
 	void m_DeserialiseRegion(const std::string& filename, const Vector2<int>& index);
 	void m_GenerateRegion(const Vector2<int>& index);
 
-	void m_RenderAround(const Vector2<int>& center, int radius);
+	void m_RenderTile(int x, int y);
+	void m_RenderTile(const Vector2<int>& pos);
+	void m_RenderTile(const RenderedTile& rendered_tile);
+
+	void m_RenderAround(const Vector2<int>& center, const Vector2<int>& frame);
 
 public:
-	static constexpr float scale = 128.0;
+	static constexpr float scale = 64.0;
 
 	typedef std::unordered_map<Vector2<int>, Region> RegionMap_t;
 

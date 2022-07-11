@@ -6,5 +6,5 @@ uniform vec3 u_Color = vec3(0.0, 1.0, 1.0);
 
 void main()
 {
-	color = vec4(u_Color, 1.0);
+	color = vec4(u_Color, 0.2);
 }

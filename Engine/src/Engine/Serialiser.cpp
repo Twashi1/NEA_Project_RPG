@@ -40,6 +40,7 @@ template ENGINE_API void Serialise(Serialiser&, const uint16_t&);
 template ENGINE_API void Serialise(Serialiser&, const unsigned short&);
 template ENGINE_API void Serialise(Serialiser&, const Vector2<float>&);
 template ENGINE_API void Serialise(Serialiser&, const Vector2<int>&);
+template ENGINE_API void Serialise(Serialiser&, const Vector2<uint8_t>&);
 
 template <> void Serialise<std::string>(Serialiser& s, const std::string& data)
 {

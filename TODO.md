@@ -18,6 +18,7 @@
 ## World
 - [ ] Terrain generation
 - [ ] Save files
+- [ ] Animating tiles
 
 ## Gameplay
 - [ ] Crafting
@@ -39,6 +40,6 @@
 - Texture atlas API sometimes leaves stay pixels on side of image
 - Objects aren't being deconstructed properly, so program can't properly exit
 - Fix sandbox
-- Move player to Game/Sandbox
+- Performance issues with m_RenderAround (store quads, and then unload/load relevant quads?)
 - Make quad ib a static
 - Better link to Resources folder

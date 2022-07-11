@@ -6,10 +6,11 @@ struct Region {
 	static constexpr unsigned int LENGTH = 64;
 	static constexpr unsigned int SIZE = LENGTH * LENGTH;
 
-	Tile::ID* tiles; // 1D array of tile ids
+	Tile* tiles; // 1D array of tile ids
 
 	Region();
 	~Region();
 
-	Tile::ID& Index(int x, int y);
+	Tile& Index(int x, int y);
+	Tile& Index(const Vector2<int>& pos);
 };

@@ -115,7 +115,9 @@ int main(void)
         player.Update(); // Update player
 
         // Draw calls
-        world.m_RenderAround({ 0, 0 }, 5);
+        Vector2<int> update_pos = (player.quad.GetCenter() / World::scale).floor();
+        
+        world.Update(update_pos);
         Renderer::Schedule(&wall, &colour_shader);
         Renderer::Schedule(&noisequad, &texture_shader, &noisetext);
         Renderer::Schedule(&animation);

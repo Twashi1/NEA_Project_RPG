@@ -10,8 +10,8 @@
 
 #include "Utils.h"
 
-template <typename T = int>
-struct ENGINE_API Vector2 {
+template <typename T>
+struct Vector2 {
 	static Vector2 ZERO;
 
 	T x, y;
