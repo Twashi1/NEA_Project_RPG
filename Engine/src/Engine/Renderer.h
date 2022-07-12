@@ -23,6 +23,7 @@ class Shader;
 struct Camera;
 class Text;
 class Button;
+class TextInput;
 class Animation;
 struct Quad;
 struct Texture;
@@ -36,6 +37,8 @@ public:
 	static Shader* texture_shader; // Default shader used for textures
 	static std::queue<uint8_t> available_slots; // Available slots on GPU for texture
 
+	static void Init(Camera* camera);
+
 	// Gives a free texture slot
 	static uint8_t GetTextureSlot();
 	// Makes a texture slot available again
@@ -48,4 +51,5 @@ public:
 	static void Schedule(const Text* text);
 	static void Schedule(Button* btn);
 	static void Schedule(Animation* animation);
+	static void Schedule(TextInput* text_input);
 };

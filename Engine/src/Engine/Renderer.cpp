@@ -8,6 +8,7 @@
 #include "Animation.h"
 #include "Quad.h"
 #include "Button.h"
+#include "TextInput.h"
 
 void GlClearError() {
 	// While we have an error stay in function
@@ -25,6 +26,12 @@ bool GlLogCall(const char* function, const char* file, int line) {
 std::queue<uint8_t> Renderer::available_slots = std::queue<uint8_t>({ 0, 1, 2, 3, 4, 5, 6, 7, 8, 9, 10, 11, 12, 13, 14, 15 });
 Shader* Renderer::texture_shader = nullptr;
 Camera* Renderer::camera = nullptr;
+
+void Renderer::Init(Camera* camera)
+{
+	Renderer::camera = camera;
+	Renderer::texture_shader = new Shader("texture_vertex", "texture_frag");
+}
 
 ENGINE_API uint8_t Renderer::GetTextureSlot()
 {
@@ -187,4 +194,21 @@ ENGINE_API void Renderer::Schedule(Button* btn)
 ENGINE_API void Renderer::Schedule(Animation* animation)
 {
 	Renderer::Schedule(animation->quad.get(), animation->shader.get(), animation->GetAtlas().get());
+}
+
+ENGINE_API void Renderer::Schedule(TextInput* text_input)
+{
+	if (text_input->bg_texture != nullptr) {
+		Renderer::Schedule(&text_input->quad, text_input->bg_shader, text_input->bg_texture);
+	}
+	else {
+		Renderer::Schedule(&text_input->quad, text_input->bg_shader);
+	}
+
+	Renderer::Schedule(text_input->GetText());
+	
+	// Display typing bar
+	if (text_input->GetIsTyping()) {
+		Renderer::Schedule(text_input->GetTypingBar());
+	}
 }

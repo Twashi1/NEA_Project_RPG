@@ -1,10 +1,14 @@
 #include "GUIManager.h"
 #include "Button.h"
+#include "TextInput.h"
 
-Utils::List<Button*> GUIManager::buttons = {};
+Utils::List<Button*> GUIManager::buttons{};
+Utils::List<TextInput*> GUIManager::text_inputs{};
 
 void GUIManager::Update()
 {
+	// TODO code so bad ahhahahahahh
+
 	Vector2<float> cursor_pos = Input::GetCursorPos();
 
 	Input::State lmb_state = Input::GetMouseState(GLFW_MOUSE_BUTTON_1);
@@ -27,5 +31,10 @@ void GUIManager::Update()
 			// Update pos just in case
 			button->UpdatePos();
 		}
+	}
+
+	for (TextInput* text_input : text_inputs) {
+		text_input->CheckClicked(lmb_state, cursor_pos);
+		text_input->Update();
 	}
 }

@@ -55,14 +55,8 @@
     <ClCompile Include="src\Engine\VersionNumber.cpp">
       <Filter>Source\Miscellaneous</Filter>
     </ClCompile>
-    <ClCompile Include="src\Engine\Button.cpp">
-      <Filter>Source\Engine</Filter>
-    </ClCompile>
     <ClCompile Include="src\Engine\LevelEditor.cpp">
       <Filter>Source\Engine</Filter>
-    </ClCompile>
-    <ClCompile Include="src\Engine\GUIManager.cpp">
-      <Filter>Source\Rendering</Filter>
     </ClCompile>
     <ClCompile Include="src\Engine\Text.cpp">
       <Filter>Source\Rendering</Filter>
@@ -75,6 +69,15 @@
     </ClCompile>
     <ClCompile Include="src\Engine\Animation.cpp">
       <Filter>Source\Rendering</Filter>
+    </ClCompile>
+    <ClCompile Include="src\Engine\Button.cpp">
+      <Filter>Source\GUI</Filter>
+    </ClCompile>
+    <ClCompile Include="src\Engine\GUIManager.cpp">
+      <Filter>Source\GUI</Filter>
+    </ClCompile>
+    <ClCompile Include="src\Engine\TextInput.cpp">
+      <Filter>Source\GUI</Filter>
     </ClCompile>
   </ItemGroup>
   <ItemGroup>
@@ -145,9 +148,6 @@
     <ClInclude Include="src\Engine\Vector2.h">
       <Filter>Headers\Miscellaneous</Filter>
     </ClInclude>
-    <ClInclude Include="src\Engine\Button.h">
-      <Filter>Headers\Engine</Filter>
-    </ClInclude>
     <ClInclude Include="src\Engine\Animation.h">
       <Filter>Headers\Rendering</Filter>
     </ClInclude>
@@ -158,7 +158,13 @@
       <Filter>Headers\Rendering</Filter>
     </ClInclude>
     <ClInclude Include="src\Engine\GUIManager.h">
-      <Filter>Headers\Rendering</Filter>
+      <Filter>Headers\GUI</Filter>
+    </ClInclude>
+    <ClInclude Include="src\Engine\Button.h">
+      <Filter>Headers\GUI</Filter>
+    </ClInclude>
+    <ClInclude Include="src\Engine\TextInput.h">
+      <Filter>Headers\GUI</Filter>
     </ClInclude>
   </ItemGroup>
   <ItemGroup>
@@ -194,6 +200,12 @@
     </Filter>
     <Filter Include="Headers\Engine">
       <UniqueIdentifier>{c1afd999-a3bb-48dc-b61b-b639b9a4f14f}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="Headers\GUI">
+      <UniqueIdentifier>{db9c9ca7-29ae-4fc8-87be-45283ec9faba}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="Source\GUI">
+      <UniqueIdentifier>{328bd918-b946-41bb-bd80-72a0b5eb0c1b}</UniqueIdentifier>
     </Filter>
   </ItemGroup>
 </Project>

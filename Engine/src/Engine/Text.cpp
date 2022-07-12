@@ -9,6 +9,15 @@ void Text::Init()
     m_DefaultFont = new Font("consola.ttf");
 }
 
+Font* Text::GetDefaultFont()
+{
+    if (m_DefaultFont == nullptr) {
+        Log("Default font not initialised yet", LOG::WARNING);
+    }
+
+    return m_DefaultFont;
+}
+
 Text::Text()
     : text(""), pos(0), font(nullptr), shader(nullptr), scale(0.0f)
 {

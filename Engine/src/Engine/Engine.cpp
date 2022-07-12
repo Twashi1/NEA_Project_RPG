@@ -102,6 +102,12 @@ void Engine::m_Start()
     // Initialise projection matrix
     proj = glm::ortho(-(width / 2.0f), width / 2.0f, -(height / 2.0f), height / 2.0f, -1.0f, 1.0f);
 
+    // Set cursor
+    cursor = glfwCreateStandardCursor(GLFW_ARROW_CURSOR);
+
+    // Set background color
+    GlCall(glClearColor(1.0f, 1.0f, 1.0f, 1.0f));
+
     // Allow transparency
     GlCall(glBlendFunc(GL_SRC_ALPHA, GL_ONE_MINUS_SRC_ALPHA));
 
@@ -113,22 +119,13 @@ void Engine::m_Start()
     // Construct camera
     camera = Camera(Vector2<float>(width * 0.5f, height * 0.5f), {0.0f, 0.0f});
     // Set renderer's camera
-    Renderer::camera = &camera;
+    Renderer::Init(&camera);
+
+    // Create icons texture
+    m_IconsTexture = new Texture("engine_icons.png");
 
     // Initialise input system
-    Input::window = window;
-    Input::window_width = &width;
-    Input::window_height = &height;
-    // Add all listeners
-    Input::AddKeyListener(GLFW_KEY_W);
-    Input::AddKeyListener(GLFW_KEY_A);
-    Input::AddKeyListener(GLFW_KEY_S);
-    Input::AddKeyListener(GLFW_KEY_D);
-    Input::AddKeyListener(GLFW_KEY_Q);
-    Input::AddKeyListener(GLFW_KEY_E);
-    Input::AddKeyListener(GLFW_KEY_SPACE);
-    Input::AddMouseListener(GLFW_MOUSE_BUTTON_1); // Left mouse click
-    Input::AddMouseListener(GLFW_MOUSE_BUTTON_2); // Right mouse click
+    Input::Init(window, &width, &height);
 
     // Initialise static for Animation
     Animation::FILE_EXTENSION = ".animation";
@@ -139,9 +136,14 @@ void Engine::m_Start()
     // Initialise button class
     Button::Init();
 
+    // Initialise text input class
+    TextInput::Init(m_IconsTexture, cursor);
+
     // Update projection uniform for all shaders
     // NOTE: all shader initialisation should come before this function, unless we're setting the projection matrix ourselves
     ShaderManager::UpdateProjectionMatrix(proj);
+
+    glfwSetCursor(window, cursor);
 
     // Deserialise general data about engine
     m_DeserialiseGeneralData();
@@ -188,11 +190,14 @@ void Engine::BeginFrame()
     // Clear the screen
     GlCall(glClear(GL_COLOR_BUFFER_BIT));
 
-    // Update input system
+    // Update Input
     Input::Update(Utils::Timer::GetTime());
 
     // Update GUI
     GUIManager::Update();
+
+    // TODO: SLOW?
+    glfwSetCursor(window, cursor);
 
     // Update animations
     AnimationManager::Update(Utils::Timer::GetTime());
@@ -202,10 +207,6 @@ void Engine::BeginFrame()
 
     // Update physics
     physics.Update(Utils::Timer::GetTime());
-
-    // TODO: engine should handle EndFrame BeginFrame
-    // TODO: move to end frame
-    // TODO: make elapsed time work
 
     // Poll and process events
     glfwPollEvents();

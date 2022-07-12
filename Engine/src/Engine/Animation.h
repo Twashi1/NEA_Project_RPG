@@ -5,7 +5,12 @@
 #include "Vector2.h"
 #include "AnimationManager.h"
 
+/*
+* Each animation
+*/
+
 class ENGINE_API Animation {
+private:
 	// Holds values for how much time should be spent on each frame before displaying the next
 	std::vector<float> m_timings;
 
@@ -23,6 +28,7 @@ class ENGINE_API Animation {
 	float m_time = 0.0;
 	float m_frame_time = 0.0; // Tracks time spent displaying the current frame
 	int m_current_frame = 0; // Tracks the frame of the animation we're currently displaying
+	int m_start_index = 0; // Tracks the index in the texture atlas where we're mean to start the animation
 
 public:
 	static std::string FILE_EXTENSION;

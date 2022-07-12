@@ -27,6 +27,7 @@
 #include "AnimationManager.h"
 #include "Animation.h"
 #include "Noise.h"
+#include "TextInput.h"
 
 // TODO: shouldn't engine be full static?
 
@@ -45,8 +46,11 @@ class ENGINE_API Engine {
 
     double m_frame_began_time = 0.0; // Stores time when frame began
 
+    Texture* m_IconsTexture = nullptr;
+
 public:
     GLFWwindow* window;  // Pointer to GLFW window
+    GLFWcursor* cursor;  // Pointer to GLFW cursor
     int width;           // Width of window
     int height;          // Height of window
 

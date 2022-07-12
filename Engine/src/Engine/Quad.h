@@ -28,6 +28,11 @@ public:
 	// Make methods public
 	using Rect::Contains;
 	using Rect::ContainsAnyOf;
+	using Rect::BottomLeft;
+	using Rect::BottomRight;
+	using Rect::TopRight;
+	using Rect::TopLeft;
+	using Rect::GetVertices;
 
 	const VertexBuffer& GetVertexBuffer() const;
 	const IndexBuffer& GetIndexBuffer()   const;

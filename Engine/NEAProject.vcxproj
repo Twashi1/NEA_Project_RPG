@@ -40,6 +40,7 @@
     <ClCompile Include="src\Engine\Font.cpp" />
     <ClCompile Include="src\Engine\ShaderManager.cpp" />
     <ClCompile Include="src\Engine\Text.cpp" />
+    <ClCompile Include="src\Engine\TextInput.cpp" />
     <ClCompile Include="src\Engine\Texture.cpp" />
     <ClCompile Include="src\Engine\Utils.cpp" />
     <ClCompile Include="src\Engine\VersionNumber.cpp" />
@@ -68,6 +69,7 @@
     <ClInclude Include="src\Engine\Font.h" />
     <ClInclude Include="src\Engine\ShaderManager.h" />
     <ClInclude Include="src\Engine\Text.h" />
+    <ClInclude Include="src\Engine\TextInput.h" />
     <ClInclude Include="src\Engine\Texture.h" />
     <ClInclude Include="src\Engine\Utils.h" />
     <ClInclude Include="src\Engine\Vector2.h" />

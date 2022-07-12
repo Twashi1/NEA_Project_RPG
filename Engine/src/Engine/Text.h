@@ -17,6 +17,7 @@ public:
 	float scale;		   // Scale for text
 
 	static void Init();
+	static Font* GetDefaultFont();
 
 	Text();
 	Text(const Text& other);

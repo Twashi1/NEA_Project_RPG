@@ -20,6 +20,10 @@ void tester_callback(Button* button_pressed) {
     Log(std::format("Changing seed to {}", seed), LOG::INFO);
 }
 
+void text_callback(TextInput* text_input) {
+    Log(std::format("Submitted text: {}", text_input->typed_text), LOG::INFO);
+}
+
 int main(void)
 {
     // Construct engine instance
@@ -32,7 +36,8 @@ int main(void)
     Shader colour_shader = Shader("colour_vertex", "colour_frag");
     colour_shader.SetUniform3f("u_Color", COLORS::RED);
 
-    ShaderManager::UpdateProjectionMatrix(engine.proj);
+    Shader static_color = Shader("button_vertex", "button_frag");
+    static_color.SetUniform4f("u_Color", COLORS::BLUE.x, COLORS::BLUE.y, COLORS::BLUE.z, 1.0f);
 
     World::texture_shader = &texture_shader;
 
@@ -50,6 +55,7 @@ int main(void)
     Quad btn_quad = Quad(-400, -300, 150, 50, 0);
     Quad dummy = Quad(-100, -100, 150, 150, 0);
     Quad noisequad = Quad(-500, 500, 256, 256, 0);
+    Quad textbox = Quad(300, 300, 200, 100, 0);
 
     // DEBUG: buttons
     Button btn = Button(btn_quad, &tester_callback, "Change seed", "Change seed");
@@ -86,9 +92,15 @@ int main(void)
     Body wallbody = Body(wall, true, 0.0f, 999);
     engine.physics.Register(std::shared_ptr<Body>(&wallbody), 0);
 
+    TextInput text_input(textbox, &text_callback);
+
+    ShaderManager::UpdateProjectionMatrix(engine.proj);
+
     // Loop until window is closed by user
     while (engine.IsRunning())
     {
+        ShaderManager::UpdateProjectionMatrix(engine.proj);
+
         if (seedChanged) {
             seedChanged = false;
 
@@ -122,6 +134,7 @@ int main(void)
         Renderer::Schedule(&noisequad, &texture_shader, &noisetext);
         Renderer::Schedule(&animation);
         Renderer::Schedule(&btn);
+        Renderer::Schedule(&text_input);
         Renderer::Schedule(&player.quad, player.shader);
 
         if (engine.enable_stats) engine.UpdateStats(*player.body); // Draw stats information

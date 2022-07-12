@@ -6,30 +6,35 @@ void Player::Update()
     float elapsed = current_time - m_time; m_time = current_time;
     // TODO: cleanup
 
+    Input::State w = Input::GetKeyState(GLFW_KEY_W);
+    Input::State s = Input::GetKeyState(GLFW_KEY_S);
+    Input::State a = Input::GetKeyState(GLFW_KEY_A);
+    Input::State d = Input::GetKeyState(GLFW_KEY_D);
+
     // If W key pressed
-    if (Input::GetKeyState(GLFW_KEY_W) == Input::State::PRESS || Input::GetKeyState(GLFW_KEY_W) == Input::State::HOLD) {
+    if (w == Input::State::PRESS || w == Input::State::HOLD) {
         body->acc.y = MAXACCEL;
     }
     // If S key pressed
-    else if (Input::GetKeyState(GLFW_KEY_S) == Input::State::PRESS || Input::GetKeyState(GLFW_KEY_S) == Input::State::HOLD) {
+    else if (s == Input::State::PRESS || s == Input::State::HOLD) {
         body->acc.y = -MAXACCEL;
     }
     // If D key pressed
-    if (Input::GetKeyState(GLFW_KEY_D) == Input::State::PRESS || Input::GetKeyState(GLFW_KEY_D) == Input::State::HOLD) {
+    if (d == Input::State::PRESS || d == Input::State::HOLD) {
         body->acc.x = MAXACCEL;
     }
     // If A key pressed
-    else if (Input::GetKeyState(GLFW_KEY_A) == Input::State::PRESS || Input::GetKeyState(GLFW_KEY_A) == Input::State::HOLD) {
+    else if (a == Input::State::PRESS || a  == Input::State::HOLD) {
         body->acc.x = -MAXACCEL;
     }
     // If W and S key aren't pressed, or both are pressed
-    if ((Input::GetKeyState(GLFW_KEY_W) == Input::State::NONE && Input::GetKeyState(GLFW_KEY_S) == Input::State::NONE)
-        || Input::GetKeyState(GLFW_KEY_W) == Input::State::HOLD && Input::GetKeyState(GLFW_KEY_S) == Input::State::HOLD) {
+    if ((w == Input::State::NONE && s == Input::State::NONE)
+        || w == Input::State::HOLD && s == Input::State::HOLD) {
         body->acc.y = 0.0f;
     }
     // If D and A key aren't pressed, or both are pressed
-    if ((Input::GetKeyState(GLFW_KEY_D) == Input::State::NONE && Input::GetKeyState(GLFW_KEY_A) == Input::State::NONE)
-        || Input::GetKeyState(GLFW_KEY_D) == Input::State::HOLD && Input::GetKeyState(GLFW_KEY_A) == Input::State::HOLD) {
+    if ((d == Input::State::NONE && a == Input::State::NONE)
+        || d == Input::State::HOLD && a == Input::State::HOLD) {
         body->acc.x = 0.0f;
     }
 

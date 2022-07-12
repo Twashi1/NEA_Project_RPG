@@ -96,8 +96,6 @@ namespace Utils {
 		ListData_t::iterator end() { return m_data.end(); }
 	};
 
-	ENGINE_API std::string GetTimeString();
-
 	ENGINE_API bool CheckFileExists(const std::string& path);
 	ENGINE_API bool CheckDirectoryExists(const std::string& path);
 

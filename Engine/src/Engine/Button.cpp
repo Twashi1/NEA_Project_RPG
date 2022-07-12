@@ -2,7 +2,7 @@
 
 Shader* Button::m_DefaultIdleShader = nullptr;
 Shader* Button::m_DefaultPressedShader = nullptr;
-std::shared_ptr<Font> Button::m_DefaultFont = nullptr;
+Font* Button::m_DefaultFont = nullptr;
 
 void Button::m_Construct()
 {
@@ -32,9 +32,6 @@ void Button::Init()
 		Log("Attempting to reinitialise Button class", LOG::WARNING);
 	}
 
-	// Add listener for left mouse button
-	Input::AddMouseListener(GLFW_MOUSE_BUTTON_1);
-
 	// Construct default shaders
 	m_DefaultIdleShader = new Shader("button_vertex", "button_frag");
 	m_DefaultIdleShader->SetUniform4f("u_Color", COLORS::GRAY.x, COLORS::GRAY.y, COLORS::GRAY.z, Button::m_DefaultScale);
@@ -43,7 +40,7 @@ void Button::Init()
 	m_DefaultPressedShader->SetUniform4f("u_Color", COLORS::DARKGRAY.x, COLORS::DARKGRAY.y, COLORS::DARKGRAY.z, Button::m_DefaultScale);
 
 	// Construct default font
-	m_DefaultFont = std::shared_ptr<Font>(new Font("consola.ttf"));
+	m_DefaultFont = Text::GetDefaultFont();
 }
 
 Button::Button(const Quad& quad, CallbackFunc_t callback, const std::string& idle_text, const std::string& pressed_text, Shader* idle_shader, Shader* pressed_shader, Texture* idle_texture, Texture* pressed_texture)

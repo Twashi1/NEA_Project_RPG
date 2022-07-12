@@ -7,11 +7,21 @@ void Animation::m_ParseData(const std::string& data_filename)
 	std::string* filetext = Utils::ReadFile(Texture::PATH + data_filename + Animation::FILE_EXTENSION);
 
 	std::vector<std::string> parts = Utils::SplitString(*filetext, ",");
-	
-	m_keyframes = parts.size();
+
+	int loop_start = 0;
+
+	// Check if the first part of the data is a #n, indicating to skip n sprites forward
+	if (parts[0][0] == '#') {
+		// Erase first character (which is #)
+		parts[0].erase(parts[0].begin());
+		// Set our starting index to that value
+		m_start_index = std::stoi(parts[0]);
+		// Start at next index since the first isn't a float value
+		loop_start = 1;
+	}
 
 	// Iterate over each string
-	for (int i = 0; i < parts.size(); i++) {
+	for (int i = loop_start; i < parts.size(); i++) {
 		float value = 0.0;
 
 		try {
@@ -24,8 +34,20 @@ void Animation::m_ParseData(const std::string& data_filename)
 			Log(text, LOG::WARNING);
 		}
 
-		m_timings.push_back(value);
+		// NOTE: Sometimes animations are included in larger texture atlases/multiple animations are in the same texture atlas,
+		//	so we can enter lots of 0s at the start of our animation.data file so we start at the first frame of our animation
+		
+		// If value is more than 0, add the timing to our timings
+		if (value > 0.0) {
+			m_timings.push_back(value);
+		}
+		// Otherwise increase the starting index
+		else {
+			m_start_index++;
+		}
 	}
+
+	m_keyframes = m_timings.size();
 
 	delete filetext;
 }
@@ -33,9 +55,9 @@ void Animation::m_ParseData(const std::string& data_filename)
 Vector2<int> Animation::m_GetIndex()
 {
 	// Calculate y index
-	int y = m_current_frame / m_atlas_dim_relative.x;
+	int y = (m_current_frame + m_start_index) / m_atlas_dim_relative.x;
 	// Calculate x index
-	int x = m_current_frame - (y * m_atlas_dim_relative.x);
+	int x = (m_current_frame + m_start_index) - (y * m_atlas_dim_relative.x);
 	// Invert y since we want to read top to bottom
 	y = (m_atlas_dim_relative.y - 1) - y;
 
@@ -62,8 +84,18 @@ Animation::Animation(const std::shared_ptr<Quad>& quad, const std::shared_ptr<Sh
 }
 
 Animation::Animation(const std::shared_ptr<Quad>& quad, const std::shared_ptr<Shader>& shader, const std::shared_ptr<Texture>& atlas, const Vector2<int>& size, const std::vector<float>& animation_data)
-	: quad(quad), shader(shader), m_atlas(atlas), m_size(size), m_timings(animation_data)
+	: quad(quad), shader(shader), m_atlas(atlas), m_size(size)
 {
+	// Iterate timing data passed
+	for (float timing : animation_data) {
+		if (timing > 0.0) {
+			m_timings.push_back(timing);
+		}
+		else {
+			m_start_index++;
+		}
+	}
+
 	// Calculate dimensions of atlas (in terms of sprites)
 	m_atlas_dim_relative = Vector2<int>(atlas->width / m_size.x, atlas->height / m_size.y);
 

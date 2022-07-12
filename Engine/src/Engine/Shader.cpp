@@ -72,8 +72,6 @@ GLuint Shader::CreateShader(const char* vertex_name, const char* frag_name) {
 
 Shader::Shader(const char* vs_file, const char* fs_file)
 {
-    Log(std::format("Compiling {} and {}", vs_file, fs_file), LOG::INFO);
-
     id = CreateShader(
         (PATH + std::string(vs_file) + EXTENSION).c_str(),
         (PATH + std::string(fs_file) + EXTENSION).c_str()
@@ -88,7 +86,7 @@ Shader::~Shader()
 {
     // Remove ourselves from shader manager
     ShaderManager::shaders.Remove(this);
-
+    
     // Delete program
     GlCall(glDeleteProgram(id));
 }

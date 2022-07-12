@@ -8,10 +8,9 @@
 
 class ENGINE_API Button {
 private:
-	static constexpr float z = 5;
 	static Shader* m_DefaultIdleShader; // Standard shader for when button is not pressed
 	static Shader* m_DefaultPressedShader; // Standard shader for when button is pressed
-	static std::shared_ptr<Font> m_DefaultFont;
+	static Font* m_DefaultFont;
 
 	static constexpr float m_DefaultAlpha = 1.0f; // Standard alpha (transparency) for a button
 	static constexpr float m_DefaultScale = 0.25f; // Standard scaling factor for text (1/4 size)
@@ -38,7 +37,7 @@ public:
 	bool isPressed = false; // If button is being pressed
 
 	Quad quad; // Stores position and dimensions of button
-	Text* text; // Text object, stores information required to render text
+	Text* text; // Text object, stores information required to render text TODO: should be private
 
 	// Initialises standard shaders and Input listeners
 	static void Init();
