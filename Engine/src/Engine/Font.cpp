@@ -5,7 +5,7 @@ std::string Font::PATH = "";
 void Font::m_LoadChar(const FT_Face& face, char character)
 {
 	if (FT_Load_Char(face, character, FT_LOAD_RENDER)) {
-		Log("Failed to load glyph", LOG::FATAL);
+		ENG_LogFatal("Failed to load glyph");
 	}
 }
 
@@ -13,15 +13,16 @@ Font::Font(const char* font_path) {
 	// Initialise FT library
 	FT_Library ft;
 	if (FT_Init_FreeType(&ft)) {
-		Log("Couldn't initialise FreeType library", LOG::FATAL);
+		ENG_LogFatal("Couldn't initialise FreeType library");
 	}
 
-	// Initialise consolas font
+	// Initialise font
 	FT_Face face;
 	if (FT_New_Face(ft, (PATH + font_path).c_str(), 0, &face)) {
-		Log("Failed to load font", LOG::FATAL);
+		ENG_LogFatal("Failed to load font");
 	}
 
+	// TODO: non-set font size
 	FT_Set_Pixel_Sizes(face, 0, 48); // Extract a font size of 48
 
 	GlCall(glPixelStorei(GL_UNPACK_ALIGNMENT, 1)); // Disable byte-alignment restriction

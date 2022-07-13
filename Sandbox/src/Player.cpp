@@ -1,53 +1,57 @@
 #include "Player.h"
 
-void Player::Update(float new_time)
+void Player::Update()
 {
-    float dt = new_time - last_time;
-    last_time = new_time;
+    float current_time = Utils::Timer::GetTime();
+    float elapsed = current_time - m_time; m_time = current_time;
     // TODO: cleanup
 
+    Input::State w = Input::GetKeyState(GLFW_KEY_W);
+    Input::State s = Input::GetKeyState(GLFW_KEY_S);
+    Input::State a = Input::GetKeyState(GLFW_KEY_A);
+    Input::State d = Input::GetKeyState(GLFW_KEY_D);
+
     // If W key pressed
-    if (Input::GetKeyState(GLFW_KEY_W) == Input::State::PRESS || Input::GetKeyState(GLFW_KEY_W) == Input::State::HOLD) {
+    if (w == Input::State::PRESS || w == Input::State::HOLD) {
         body->acc.y = MAXACCEL;
     }
     // If S key pressed
-    else if (Input::GetKeyState(GLFW_KEY_S) == Input::State::PRESS || Input::GetKeyState(GLFW_KEY_S) == Input::State::HOLD) {
+    else if (s == Input::State::PRESS || s == Input::State::HOLD) {
         body->acc.y = -MAXACCEL;
     }
     // If D key pressed
-    if (Input::GetKeyState(GLFW_KEY_D) == Input::State::PRESS || Input::GetKeyState(GLFW_KEY_D) == Input::State::HOLD) {
+    if (d == Input::State::PRESS || d == Input::State::HOLD) {
         body->acc.x = MAXACCEL;
     }
     // If A key pressed
-    else if (Input::GetKeyState(GLFW_KEY_A) == Input::State::PRESS || Input::GetKeyState(GLFW_KEY_A) == Input::State::HOLD) {
+    else if (a == Input::State::PRESS || a  == Input::State::HOLD) {
         body->acc.x = -MAXACCEL;
     }
     // If W and S key aren't pressed, or both are pressed
-    if ((Input::GetKeyState(GLFW_KEY_W) == Input::State::NONE && Input::GetKeyState(GLFW_KEY_S) == Input::State::NONE)
-        || Input::GetKeyState(GLFW_KEY_W) == Input::State::HOLD && Input::GetKeyState(GLFW_KEY_S) == Input::State::HOLD) {
+    if ((w == Input::State::NONE && s == Input::State::NONE)
+        || w == Input::State::HOLD && s == Input::State::HOLD) {
         body->acc.y = 0.0f;
     }
     // If D and A key aren't pressed, or both are pressed
-    if ((Input::GetKeyState(GLFW_KEY_D) == Input::State::NONE && Input::GetKeyState(GLFW_KEY_A) == Input::State::NONE)
-        || Input::GetKeyState(GLFW_KEY_D) == Input::State::HOLD && Input::GetKeyState(GLFW_KEY_A) == Input::State::HOLD) {
+    if ((d == Input::State::NONE && a == Input::State::NONE)
+        || d == Input::State::HOLD && a == Input::State::HOLD) {
         body->acc.x = 0.0f;
     }
 
     body->acc -= body->vel * FRICTION;
-    body->vel = body->vel + (body->acc * dt);
+    body->vel = body->vel + (body->acc * elapsed);
 }
 
 Player::Player(const glm::mat4& proj)
 {
     // Setup player quad and body
-    quad = std::shared_ptr<Quad>(new Quad(0.0f, 0.0f, 100.0f, 100.0f, 0.0f));
-    body = std::shared_ptr<Body>(new Body(quad.get(), true, 0.0f, 1.0f));
+    quad = Quad(0.0f, 0.0f, 100.0f, 100.0f, 0.0f);
+    body = std::shared_ptr<Body>(new Body(&quad, true, 0.0f, 1.0f));
 
     // Setup shader and uniforms
     shader = new Shader("player_vertex", "player_frag");
     shader->SetUniformMat4fv("u_projMat", proj);
     shader->SetUniform3f("u_Color", COLORS::YELLOW);
-    shader->SetUniform1f("u_ZCoord", ZLEVEL);
 }
 
 Player::~Player() { delete shader; }

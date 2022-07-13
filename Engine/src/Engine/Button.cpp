@@ -11,7 +11,7 @@ void Button::m_Construct()
 	text = new Text(idle_text, pos, Button::m_DefaultScale);
 
 	// Push ourselves to GUIManager
-	GUIManager::buttons.Push(this);
+	GUIManager::buttons.push_back(this);
 }
 
 Vector2<float> Button::m_GetTextDim(const std::string& text)
@@ -29,7 +29,7 @@ void Button::Init()
 {
 	// Check if class has been initialised already (the standard shaders are default until initialised)
 	if (m_DefaultIdleShader != nullptr) {
-		Log("Attempting to reinitialise Button class", LOG::WARNING);
+		ENG_LogWarn("Attempting to reinitialise Button class");
 	}
 
 	// Construct default shaders
@@ -95,7 +95,7 @@ Button::~Button()
 	delete text;
 
 	// Remove ourselves from GUIManager
-	GUIManager::buttons.Remove(this);
+	Utils::Remove(GUIManager::buttons, this);
 }
 
 void Button::CheckClicked(const Vector2<float>& cursor_pos)

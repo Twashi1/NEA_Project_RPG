@@ -200,10 +200,7 @@ ENGINE_API std::string* Utils::ReadFile(const std::string& path)
 	std::string* out = new std::string((std::istreambuf_iterator<char>(file)), std::istreambuf_iterator<char>()); // Read all text and store on heap
 	
 	if (*out == "") {
-		Log(
-			std::format("File was empty/couldn't find file at {}", path),
-			LOG::WARNING
-		);
+		ENG_LogWarn("File was empty/couldn't find file at {}", path);
 	}
 
 	return out; // Return pointer to text
@@ -238,12 +235,34 @@ ENGINE_API void m_Log(const std::string& message, LOG error_type, const char* fu
 	if (error_type == LOG::FATAL) exit(EXIT_FAILURE);
 }
 
+const long double Utils::Timer::m_NsToS = pow(10, -9);
+
 ENGINE_API double Utils::Timer::GetTime()
 {
-	return std::chrono::duration_cast<std::chrono::nanoseconds>(std::chrono::system_clock::now() - compile_time).count() * pow(10, -9);
+	return std::chrono::duration_cast<std::chrono::nanoseconds>(std::chrono::system_clock::now() - compile_time).count() * m_NsToS;
 }
 
 ENGINE_API std::string Utils::Timer::GetTimeString()
 {
 	return std::format("{:%H:%M:%OS}", std::chrono::system_clock::now());
+}
+
+Utils::Timer::Timer()
+	: m_Time(GetTime())
+{}
+
+Utils::Timer::Timer(double start_time)
+	: m_Time(start_time)
+{}
+
+double Utils::Timer::GetElapsed()
+{
+	// Get current time
+	double now = Utils::Timer::GetTime();
+	// Calculate difference
+	double elapsed = now - m_Time;
+	// Update our time
+	m_Time = now;
+	// Return elapsed time
+	return elapsed;
 }

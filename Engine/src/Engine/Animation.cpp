@@ -15,7 +15,7 @@ void Animation::m_ParseData(const std::string& data_filename)
 		// Erase first character (which is #)
 		parts[0].erase(parts[0].begin());
 		// Set our starting index to that value
-		m_start_index = std::stoi(parts[0]);
+		m_StartIndex = std::stoi(parts[0]);
 		// Start at next index since the first isn't a float value
 		loop_start = 1;
 	}
@@ -30,8 +30,7 @@ void Animation::m_ParseData(const std::string& data_filename)
 		}
 		// If animation file contains value that cannot be converted to float
 		catch (std::invalid_argument) {
-			std::string text = std::format("Invalid value in {}.animation: {}", data_filename, parts[i]);
-			Log(text, LOG::WARNING);
+			ENG_LogWarn("Invalid value in {}.animation: {}", data_filename, parts[i]);
 		}
 
 		// NOTE: Sometimes animations are included in larger texture atlases/multiple animations are in the same texture atlas,
@@ -39,15 +38,15 @@ void Animation::m_ParseData(const std::string& data_filename)
 		
 		// If value is more than 0, add the timing to our timings
 		if (value > 0.0) {
-			m_timings.push_back(value);
+			m_FrameTimes.push_back(value);
 		}
 		// Otherwise increase the starting index
 		else {
-			m_start_index++;
+			m_StartIndex++;
 		}
 	}
 
-	m_keyframes = m_timings.size();
+	m_FrameCount = m_FrameTimes.size();
 
 	delete filetext;
 }
@@ -55,84 +54,87 @@ void Animation::m_ParseData(const std::string& data_filename)
 Vector2<int> Animation::m_GetIndex()
 {
 	// Calculate y index
-	int y = (m_current_frame + m_start_index) / m_atlas_dim_relative.x;
+	int y = (m_FrameIndex + m_StartIndex) / m_AtlasDimRelative.x;
 	// Calculate x index
-	int x = (m_current_frame + m_start_index) - (y * m_atlas_dim_relative.x);
+	int x = (m_FrameIndex + m_StartIndex) - (y * m_AtlasDimRelative.x);
 	// Invert y since we want to read top to bottom
-	y = (m_atlas_dim_relative.y - 1) - y;
+	y = (m_AtlasDimRelative.y - 1) - y;
 
 	// Return index
 	return Vector2<int>(x, y);
 }
 
-const std::shared_ptr<Texture> Animation::GetAtlas() const
+void Animation::m_Construct()
 {
-	return m_atlas;
+	// Calculate dimensions of atlas (in terms of sprites)
+	m_AtlasDimRelative = Vector2<int>(m_Atlas->width / m_SpriteSize.x, m_Atlas->height / m_SpriteSize.y);
+
+	// Add ourselves to animation manager
+	AnimationManager::animations.push_back(this);
 }
 
-Animation::Animation(const std::shared_ptr<Quad>& quad, const std::shared_ptr<Shader>& shader, const std::shared_ptr<Texture>& atlas, const Vector2<int>& size, const std::string& data_filename)
-	: quad(quad), shader(shader), m_atlas(atlas), m_size(size)
+const std::shared_ptr<Texture> Animation::GetAtlas() const
+{
+	return m_Atlas;
+}
+
+Animation::Animation(const std::shared_ptr<Quad>& quad, const std::shared_ptr<Shader>& shader, const std::shared_ptr<Texture>& atlas, const Vector2<int>& sprite_size, const std::string& data_filename)
+	: quad(quad), shader(shader), m_Atlas(atlas), m_SpriteSize(sprite_size)
 {
 	// Parse animation file
 	m_ParseData(data_filename);
 
-	// Calculate dimensions of atlas (in terms of sprites)
-	m_atlas_dim_relative = Vector2<int>(atlas->width / m_size.x, atlas->height / m_size.y);
-
-	// Add ourselves to animation manager
-	AnimationManager::animations.Push(this);
+	m_Construct();
 }
 
-Animation::Animation(const std::shared_ptr<Quad>& quad, const std::shared_ptr<Shader>& shader, const std::shared_ptr<Texture>& atlas, const Vector2<int>& size, const std::vector<float>& animation_data)
-	: quad(quad), shader(shader), m_atlas(atlas), m_size(size)
+Animation::Animation(const std::shared_ptr<Quad>& quad, const std::shared_ptr<Shader>& shader, const std::shared_ptr<Texture>& atlas, const Vector2<int>& sprite_size, const std::vector<float>& animation_data)
+	: quad(quad), shader(shader), m_Atlas(atlas), m_SpriteSize(sprite_size)
 {
 	// Iterate timing data passed
-	for (float timing : animation_data) {
-		if (timing > 0.0) {
-			m_timings.push_back(timing);
+	for (float frame_time : animation_data) {
+		// If its a valid time value
+		if (frame_time > 0.0) {
+			m_FrameTimes.push_back(frame_time);
 		}
+		// Otherwise increment starting index (since values of 0 indicate a sprite is not included in the animation)
 		else {
-			m_start_index++;
+			m_StartIndex++;
 		}
 	}
 
-	// Calculate dimensions of atlas (in terms of sprites)
-	m_atlas_dim_relative = Vector2<int>(atlas->width / m_size.x, atlas->height / m_size.y);
-
-	// Add ourselves to animation manager
-	AnimationManager::animations.Push(this);
+	m_Construct();
 }
 
 Animation::~Animation()
 {
 	// Remove ourselves from animation manager
-	AnimationManager::animations.Remove(this);
+	Utils::Remove(AnimationManager::animations, this);
 }
 
 void Animation::Update(float current_time)
 {
-	float elapsed = current_time - m_time; // Calculate deltatime
+	float elapsed = current_time - m_Time; // Calculate deltatime
 
 	// Add delta time to time spent on current frame
-	m_frame_time += elapsed;
+	m_FrameTime += elapsed;
 
 	// Get time that is meant to be spent on this frame
-	float this_frame_timing = m_timings[m_current_frame];
+	float this_frame_timing = m_FrameTimes[m_FrameIndex];
 	
 	// If we have spent enough time on this frame
-	if (m_frame_time > this_frame_timing) {
+	if (m_FrameTime > this_frame_timing) {
 		// Increment frame counter
-		m_current_frame++;
+		m_FrameIndex++;
 		// If frame counter is more than amount of key frames, roll over
-		if (m_current_frame >= m_keyframes) {
-			m_current_frame = m_keyframes % m_current_frame;
+		if (m_FrameIndex >= m_FrameCount) {
+			m_FrameIndex = m_FrameCount % m_FrameIndex;
 		}
 		// Reset current frame time
-		m_frame_time -= this_frame_timing;
+		m_FrameTime -= this_frame_timing;
 		// Change texture coordinates
-		quad->SetTextureCoords(*m_atlas, m_GetIndex(), m_size);
+		quad->SetTextureCoords(*m_Atlas, m_GetIndex(), m_SpriteSize);
 	}
 
 	// Update my time
-	m_time = current_time;
+	m_Time = current_time;
 }

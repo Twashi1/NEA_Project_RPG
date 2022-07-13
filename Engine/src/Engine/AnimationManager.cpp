@@ -1,7 +1,7 @@
 #include "AnimationManager.h"
 #include "Animation.h"
 
-Utils::List<Animation*> AnimationManager::animations = {};
+std::vector<Animation*> AnimationManager::animations = {};
 
 void AnimationManager::Update(float current_time)
 {

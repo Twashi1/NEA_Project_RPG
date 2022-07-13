@@ -50,3 +50,4 @@
 - Animation class fixes
 - Fix input boxes and add features
 - Entire codebase needs a big cleanup
+- Fix camera

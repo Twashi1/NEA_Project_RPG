@@ -5,7 +5,7 @@
 class Game {
 private:
 	static World* m_World;
-	static Engine* m_Engine;
+	//static Engine* m_Engine;
 
 	enum class Scene : uint16_t {
 		TITLE,

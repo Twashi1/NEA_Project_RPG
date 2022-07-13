@@ -44,7 +44,7 @@ World::World(const std::string& world_name)
 		m_LoadWorld(fullpath);
 	}
 	else {
-		Log("Directory didn't exist, world hasn't been generated yet?", LOG::FATAL);
+		ENG_LogFatal("Directory didn't exist, world hasn't been generated yet?");
 	}
 }
 
@@ -153,7 +153,7 @@ void World::m_LoadWorld(const std::string& fullpath)
 	if (serialised_version != m_version)
 	{
 		// We can't interpret this data so log fatal error
-		Log(std::format("World version is {}, but we're on version {}", to_string(serialised_version), to_string(m_version)), LOG::FATAL);
+		ENG_LogFatal("World version is {}, but we're on version {}", to_string(serialised_version), to_string(m_version));
 	}
 
 	// Get seed

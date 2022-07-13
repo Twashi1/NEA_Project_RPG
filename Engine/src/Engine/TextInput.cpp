@@ -70,7 +70,7 @@ void TextInput::m_Construct()
 	m_Text = new Text(empty_text, pos, m_TextShader, m_DefaultScale);
 
 	// Push ourselves to GUIManager
-	GUIManager::text_inputs.Push(this);
+	GUIManager::text_inputs.push_back(this);
 }
 
 void TextInput::m_UpdateText()
@@ -245,5 +245,5 @@ TextInput::~TextInput() {
 	delete m_Text;
 
 	// Remove ourselves from GUIManager
-	GUIManager::text_inputs.Remove(this);
+	Utils::Remove(GUIManager::text_inputs, this);
 }

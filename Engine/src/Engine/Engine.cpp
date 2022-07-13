@@ -1,11 +1,32 @@
 #include "Engine.h"
 
-std::string Engine::GENERAL_DATA_PATH = "../Resources/saves/general.txt";
+double Engine::m_Time = 0.0;
 
-void Engine::m_OnWindowResize(int nwidth, int nheight)
+int Engine::m_FPS = 0;
+double Engine::m_TimePerFrame = 0.0;
+
+std::unordered_map<std::string, Text> Engine::m_DebugStatsText{};
+unsigned int Engine::m_FramesProcessed = 0;
+double Engine::m_ProcessingTime = 0.0;
+bool Engine::isStatsEnabled = true;
+
+VersionNumber Engine::m_VersionNumber = "v0.0.2";
+Texture* Engine::m_IconsTexture = nullptr;
+
+GLFWwindow* Engine::window = nullptr;
+GLFWcursor* Engine::cursor = nullptr;
+int Engine::width = 0;
+int Engine::height = 0;
+
+glm::mat4 Engine::proj = glm::mat4(1.0f);
+
+Physics* Engine::physics = nullptr;
+Camera* Engine::camera = nullptr;
+
+
+void ENGINE_API Engine::m_OnWindowResize(int nwidth, int nheight)
 {
-    std::string text = std::format("Window dimensions changed to {}, {}", to_string(nwidth), to_string(nheight));
-    Log(text, LOG::INFO);
+    ENG_LogInfo("Window dimensions changed to {}, {}", nwidth, nheight);
 
     // Update window dimensions
     width = nwidth; height = nheight;
@@ -19,45 +40,82 @@ void Engine::m_OnWindowResize(int nwidth, int nheight)
     // Update viewport
     GlCall(glViewport(0, 0, width, height));
 
-    // Update camera offset
-    camera.offset = Vector2<float>(width, height) * 0.5f;
+    // Update camera offset (Not needed anymore)
+    camera->offset = Vector2<float>(width, height) * 0.5f;
 }
 
-void Engine::m_DeserialiseGeneralData()
+void ENGINE_API Engine::BeginFrame()
 {
-    // First check if file exists
-    if (Utils::CheckFileExists(GENERAL_DATA_PATH)) {
-        general_data.BeginRead(GENERAL_DATA_PATH.c_str());
+    // Record time of frame beginning
+    m_Time = Utils::Timer::GetTime();
 
-        // Deserialise VersionNumber object
-        VersionNumber serialised_version;
-        Deserialise<VersionNumber>(general_data, &serialised_version);
+    // Clear the screen
+    GlCall(glClear(GL_COLOR_BUFFER_BIT));
 
-        // Ensure serialised version number is the same as current version number
-        // Otherwise, let the general data be initialised to generic values
-        if (version_number == serialised_version) {
-            // NOTE: maybe i should be using decltype(play_time) instead of explicity defining the type,
-            // but it kinda looks ugly and it takes longer to type
-            // Deserialise play time
-            Deserialise<double>(general_data, &play_time);
-            /* ... */
+    // Update Input
+    Input::Update(Utils::Timer::GetTime());
 
-            general_data.EndRead();
-            // Exit here so we don't overwrite the values we read from the file
-            return;
-        }
+    // Update GUI
+    GUIManager::Update();
 
-        // File exists but is on a different version, so just let program continue and initialise with generic values
-        general_data.EndRead();
+    // TODO: SLOW?
+    glfwSetCursor(window, cursor);
+
+    // Update animations
+    AnimationManager::Update(Utils::Timer::GetTime());
+
+    // Update shaders
+    ShaderManager::UpdateShaders(*camera);
+
+    // Update physics
+    physics->Update(Utils::Timer::GetTime());
+
+    // Poll and process events
+    glfwPollEvents();
+}
+
+void ENGINE_API Engine::EndFrame()
+{
+    // Update the screen from all the draw calls
+    glfwSwapBuffers(window);
+
+    // Update window width/height if changed
+    int nwidth, nheight;
+    glfwGetWindowSize(window, &nwidth, &nheight);
+
+    // If something has changed
+    if (nwidth != width || nheight != height) {
+        m_OnWindowResize(nwidth, nheight);
     }
 
-    // If file doesn't exist, or has different version number, fill in some generic values
-    play_time = 0.0;
+    double end = Utils::Timer::GetTime();
+    double elapsed = end - m_Time;
+
+    // Update performance tracking variables and display warning if running behind
+    PollPerformance(elapsed);
+
+    // TODO: this is bad probably
+    while (elapsed < m_TimePerFrame) { elapsed = Utils::Timer::GetTime() - m_Time; }
 }
 
-void Engine::m_Start()
+bool ENGINE_API Engine::IsRunning()
 {
-    Log("Program starting", LOG::INFO);
+    return !glfwWindowShouldClose(window);
+}
+
+void Engine::SetBGColor(const Vector3<float>& color)
+{
+    GlCall(glClearColor(color.x, color.y, color.z, 1.0f));
+}
+
+void ENGINE_API Engine::Init(int nwidth, int nheight, int nfps, bool nisStatsEnabled)
+{
+    Engine::width = nwidth;
+    Engine::height = nheight;
+    Engine::m_FPS = nfps; Engine::m_TimePerFrame = 1.0 / double(m_FPS);
+    Engine::isStatsEnabled = nisStatsEnabled;
+
+    ENG_LogInfo("Program starting");
 
     // Set shader statics
     Shader::PATH = "../Resources/shaders/";
@@ -74,16 +132,16 @@ void Engine::m_Start()
 
     // Initialise glfw library, if it doesn't succeed, exit program
     if (!glfwInit())
-        Log("Couldn't initialise GLFW library", LOG::FATAL);
+        ENG_LogFatal("Couldn't initialise GLFW library");
 
     // Create window
-    std::string title = std::format("RPG Game {}", to_string(version_number));
+    std::string title = std::format("NEA Game {}", to_string(m_VersionNumber));
     window = glfwCreateWindow(width, height, title.c_str(), NULL, NULL);
 
     if (!window) {
         // Terminate glfw if window couldn't be created
         glfwTerminate();
-        Log("Window couldn't be created", LOG::FATAL);
+        ENG_LogFatal("Window couldn't be created");
     }
 
     // Make the window's context current
@@ -115,11 +173,11 @@ void Engine::m_Start()
     Quad::Init();
 
     // Construct physics object
-    physics = Physics();
+    physics = new Physics();
     // Construct camera
-    camera = Camera(Vector2<float>(width * 0.5f, height * 0.5f), {0.0f, 0.0f});
+    camera = new Camera(Vector2<float>(width * 0.5f, height * 0.5f), { 0.0f, 0.0f });
     // Set renderer's camera
-    Renderer::Init(&camera);
+    Renderer::Init(camera);
 
     // Create icons texture
     m_IconsTexture = new Texture("engine_icons.png");
@@ -145,118 +203,31 @@ void Engine::m_Start()
 
     glfwSetCursor(window, cursor);
 
-    // Deserialise general data about engine
-    m_DeserialiseGeneralData();
-
     // Allow transparency
     GlCall(glEnable(GL_BLEND));
     GlCall(glBlendFunc(GL_SRC_ALPHA, GL_ONE_MINUS_SRC_ALPHA));
 
     // Create all text renderables for stats
-    if (enable_stats) {
-        debug_stats_text.insert({ "Average TPF", Text("", Vector2<float>(5, height - 15), 0.25) });
-        debug_stats_text.insert({ "Percentage Processing", Text("", Vector2<float>(5, height - 30), 0.25) });
-        debug_stats_text.insert({ "Time", Text("", Vector2<float>(5, height - 45), 0.25) });
-        debug_stats_text.insert({ "Player pos", Text("", Vector2<float>(5, height - 100), 0.25) });
-        debug_stats_text.insert({ "Player vel", Text("", Vector2<float>(5, height - 115), 0.25) });
-        debug_stats_text.insert({ "Player acc", Text("", Vector2<float>(5, height - 130), 0.25) });
+    if (isStatsEnabled) {
+        m_DebugStatsText.insert({ "Average TPF", Text("", Vector2<float>(5, height - 15), 0.25) });
+        m_DebugStatsText.insert({ "Percentage Processing", Text("", Vector2<float>(5, height - 30), 0.25) });
+        m_DebugStatsText.insert({ "Player pos", Text("", Vector2<float>(5, height - 100), 0.25) });
+        m_DebugStatsText.insert({ "Player vel", Text("", Vector2<float>(5, height - 115), 0.25) });
+        m_DebugStatsText.insert({ "Player acc", Text("", Vector2<float>(5, height - 130), 0.25) });
     }
 
     // Finished loading
-    Log(std::format("Loaded engine on version: {}", to_string(version_number)), LOG::INFO);
+    ENG_LogInfo("Loaded engine on version: {}", to_string(m_VersionNumber));
 }
 
-void Engine::SerialiseGeneralData()
+void ENGINE_API Engine::Terminate()
 {
-    // Open file, creating new file if it doesn't exist already
-    general_data.BeginWrite(GENERAL_DATA_PATH.c_str());
-
-    // Serialise version number
-    Serialise<VersionNumber>(general_data, version_number);
-
-    // Serialise play time
-    Serialise<decltype(play_time)>(general_data, play_time);
-
-    /* ... */
-
-    general_data.EndWrite();
-}
-
-void Engine::BeginFrame()
-{
-    // Record time of frame beginning
-    m_frame_began_time = Utils::Timer::GetTime();
-
-    // Clear the screen
-    GlCall(glClear(GL_COLOR_BUFFER_BIT));
-
-    // Update Input
-    Input::Update(Utils::Timer::GetTime());
-
-    // Update GUI
-    GUIManager::Update();
-
-    // TODO: SLOW?
-    glfwSetCursor(window, cursor);
-
-    // Update animations
-    AnimationManager::Update(Utils::Timer::GetTime());
-
-    // Update shaders
-    ShaderManager::UpdateShaders(camera);
-
-    // Update physics
-    physics.Update(Utils::Timer::GetTime());
-
-    // Poll and process events
-    glfwPollEvents();
-}
-
-void Engine::EndFrame()
-{
-    // Update the screen from all the draw calls
-    glfwSwapBuffers(window);
-
-    // Update window width/height if changed
-    int nwidth, nheight;
-    glfwGetWindowSize(window, &nwidth, &nheight);
-
-    // If something has changed
-    if (nwidth != width || nheight != height) {
-        m_OnWindowResize(nwidth, nheight);
-    }
-
-    double end = Utils::Timer::GetTime();
-    double elapsed = end - m_frame_began_time;
-
-    // Update performance tracking variables and display warning if running behind
-    PollPerformance(elapsed);
-
-    // Stall for time
-    // TODO: this is bad probably
-    while (elapsed < tpf) { elapsed = Utils::Timer::GetTime() - m_frame_began_time; }
-
-    //std::cout << "Elapsed " << std::fixed << std::setprecision(17) << elapsed << std::endl;
-
-    play_time += tpf;
-}
-
-bool Engine::IsRunning()
-{
-    return !glfwWindowShouldClose(window);
-}
-
-Engine::Engine(int width, int height, int fps, bool enable_stats)
-    : width(width), height(height), fps(fps), tpf(1.0 / double(fps)), enable_stats(enable_stats)
-{
-    m_Start();
-}
-
-Engine::~Engine()
-{
-    Log("Engine shutting down", LOG::INFO);
-
-    SerialiseGeneralData();
+    ENG_LogInfo("Engine shutting down");
+    
+    /*
+    delete physics;
+    delete camera;
+    */
 
     glfwDestroyWindow(window); window = nullptr;
 
@@ -265,41 +236,41 @@ Engine::~Engine()
     // TODO: fix the errors which happen when deconstructing engine
 }
 
-void Engine::PollPerformance(double dt)
+void ENGINE_API Engine::PollPerformance(double dt)
 {
     // Update performance tracking variables
-    frames_processed++;
-    processing_time += dt;
+    m_FramesProcessed++;
+    m_ProcessingTime += dt;
 
     // If 10 seconds have passed
-    if (frames_processed * tpf > POLL_INTERVAL) {
-        double average_tpf = processing_time / frames_processed; // Calculate average processing time taken per frame
+    if (m_FramesProcessed * m_TimePerFrame > POLL_INTERVAL) {
+        double average_tpf = m_ProcessingTime / m_FramesProcessed; // Calculate average processing time taken per frame
 
         // If average time per frame is more than max time per frame, we're running behind so display a message
-        if (average_tpf > tpf) {
-            std::string text = std::format("Running behind by {}ms", Utils::Round((average_tpf - tpf) * 1000, 3));
-            Log(text, LOG::WARNING);
+        if (average_tpf > m_TimePerFrame) {
+            ENG_LogWarn("Running behind by {}ms", Utils::Round((average_tpf - m_TimePerFrame) * 1000, 3));
         }
 
         // Reset trackers
-        frames_processed = 0;
-        processing_time = 0;
+        m_FramesProcessed = 0;
+        m_ProcessingTime = 0;
     }
 }
 
-void Engine::UpdateStats(const Body& player_body)
+void ENGINE_API Engine::UpdateStats(const Body& player_body)
 {
     {
-        double avg_tpf = (processing_time / frames_processed);
+        double avg_tpf = (m_ProcessingTime / m_FramesProcessed);
         double avg_tpf_ms = Utils::Round(avg_tpf * 1000.0, 3);
 
         Vector3<float> color = COLORS::WHITE;
-        if (avg_tpf > tpf) { color = COLORS::RED; }
-        else if (avg_tpf > tpf * 0.7) { color = COLORS::YELLOW; }
+        if (avg_tpf > m_TimePerFrame) { color = COLORS::RED; }
+        else if (avg_tpf > m_TimePerFrame * 0.7) { color = COLORS::YELLOW; }
 
         std::string text = std::format("Average time per frame: {}ms", to_string(avg_tpf_ms));
 
-        Text& t = debug_stats_text["Average TPF"];
+        Text& t = m_DebugStatsText["Average TPF"];
+        t.shader->Bind(); t.shader->SetUniform3f("u_TextColor", color);
         t.text = text;
         t.pos = Vector2<float>(-(width / 2.0f) + 5, (height / 2.0f) - 15);
 
@@ -307,7 +278,7 @@ void Engine::UpdateStats(const Body& player_body)
     }
 
     {
-        double percentage_processing = Utils::Round((processing_time / (tpf * frames_processed)) * 100.0f, 2);
+        double percentage_processing = Utils::Round((m_ProcessingTime / (m_TimePerFrame * m_FramesProcessed)) * 100.0f, 2);
 
         Vector3<float> color = COLORS::WHITE;
         if (percentage_processing > 100) { color = COLORS::RED; }
@@ -315,31 +286,10 @@ void Engine::UpdateStats(const Body& player_body)
 
         std::string text = std::format("Processing time: {}%", to_string(percentage_processing));
 
-        Text& t = debug_stats_text["Percentage Processing"];
+        Text& t = m_DebugStatsText["Percentage Processing"];
+        t.shader->Bind(); t.shader->SetUniform3f("u_TextColor", color);
         t.text = text;
         t.pos = Vector2<float>(-(width / 2.0f) + 5, (height / 2.0f) - 30);
-
-        Renderer::Schedule(&t);
-    }
-
-    {
-        // Convert play time to hh:mm:ss and display
-        int seconds = floor(play_time);
-        int minutes = (seconds / 60);
-        int hours = minutes / 60;
-
-        seconds %= 60;
-        minutes %= 60;
-
-        std::stringstream time_str;
-        time_str << "Time played: " <<
-            std::setw(2) << std::setfill('0') << hours << ":" <<
-            std::setw(2) << std::setfill('0') << minutes << ":" <<
-            std::setw(2) << std::setfill('0') << seconds;
-
-        Text& t = debug_stats_text["Time"];
-        t.text = time_str.str();
-        t.pos = Vector2<float>(-(width / 2.0f) + 5, (height / 2.0f) - 45);
 
         Renderer::Schedule(&t);
     }
@@ -349,7 +299,8 @@ void Engine::UpdateStats(const Body& player_body)
 
         std::string text = std::format("Player position: {}", to_string(player_position));
 
-        Text& t = debug_stats_text["Player pos"];
+        Text& t = m_DebugStatsText["Player pos"];
+        t.shader->Bind(); t.shader->SetUniform3f("u_TextColor", COLORS::WHITE);
         t.text = text;
         t.pos = Vector2<float>(-(width / 2.0f) + 5, (height / 2.0f) - 100);
 
@@ -361,7 +312,8 @@ void Engine::UpdateStats(const Body& player_body)
 
         std::string text = std::format("Player velocity: {}", to_string(player_velocity));
 
-        Text& t = debug_stats_text["Player vel"];
+        Text& t = m_DebugStatsText["Player vel"];
+        t.shader->Bind(); t.shader->SetUniform3f("u_TextColor", COLORS::WHITE);
         t.text = text;
         t.pos = Vector2<float>(-(width / 2.0f) + 5, (height / 2.0f) - 115);
 
@@ -373,7 +325,8 @@ void Engine::UpdateStats(const Body& player_body)
 
         std::string text = std::format("Player acceleration: {}", to_string(player_acceleration));
 
-        Text& t = debug_stats_text["Player acc"];
+        Text& t = m_DebugStatsText["Player acc"];
+        t.shader->Bind(); t.shader->SetUniform3f("u_TextColor", COLORS::WHITE);
         t.text = text;
         t.pos = Vector2<float>(-(width / 2.0f) + 5, (height / 2.0f) - 130);
 

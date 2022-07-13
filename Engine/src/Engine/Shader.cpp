@@ -79,13 +79,13 @@ Shader::Shader(const char* vs_file, const char* fs_file)
     Bind();
 
     // Add ourselves to the shader manager
-    ShaderManager::shaders.Push(this);
+    ShaderManager::shaders.push_back(this);
 }
 
 Shader::~Shader()
 {
     // Remove ourselves from shader manager
-    ShaderManager::shaders.Remove(this);
+    Utils::Remove(ShaderManager::shaders, this);
     
     // Delete program
     GlCall(glDeleteProgram(id));

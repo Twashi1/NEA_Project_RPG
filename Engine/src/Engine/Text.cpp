@@ -12,7 +12,7 @@ void Text::Init()
 Font* Text::GetDefaultFont()
 {
     if (m_DefaultFont == nullptr) {
-        Log("Default font not initialised yet", LOG::WARNING);
+        ENG_LogWarn("Default font not initialised yet");
     }
 
     return m_DefaultFont;
@@ -21,7 +21,7 @@ Font* Text::GetDefaultFont()
 Text::Text()
     : text(""), pos(0), font(nullptr), shader(nullptr), scale(0.0f)
 {
-    Log("Default constructor called! Values will not be properly initialised", LOG::WARNING);
+    ENG_LogWarn("Default constructor called! Values will not be properly initialised");
 }
 
 Text::Text(const Text& other)

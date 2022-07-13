@@ -2,8 +2,8 @@
 #include "Button.h"
 #include "TextInput.h"
 
-Utils::List<Button*> GUIManager::buttons{};
-Utils::List<TextInput*> GUIManager::text_inputs{};
+std::vector<Button*> GUIManager::buttons{};
+std::vector<TextInput*> GUIManager::text_inputs{};
 
 void GUIManager::Update()
 {

@@ -64,6 +64,6 @@ void VertexBuffer::SetTex(const std::vector<float>& tex_coords)
 		GlCall(glVertexAttribPointer(1, 2, GL_FLOAT, GL_FALSE, 2 * sizeof(float), 0));
 	}
 	else {
-		Log("Attempting to set texture coordinates for VertexBuffer that has no texture coordinates", LOG::WARNING);
+		ENG_LogWarn("Attempting to set texture coordinates for VertexBuffer that has no texture coordinates");
 	}
 }

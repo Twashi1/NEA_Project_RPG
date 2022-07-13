@@ -3,14 +3,14 @@
 void Serialiser::BeginRead(const char* path)
 {
 	// If instream is not a nullptr, the instream hasn't been closed yet
-	if (instream != nullptr) Log("Serialiser file not closed before opening new one", LOG::WARNING);
+	if (instream != nullptr) ENG_LogWarn("Serialiser file not closed before opening new one");
 	instream = new std::ifstream(path, std::ios::binary);
 }
 
 void Serialiser::BeginWrite(const char* path)
 {
 	// If outstream is not a nullptr, the outstream hasn't been closedyet
-	if (outstream != nullptr) Log("Serialiser file not closed before opening new one", LOG::WARNING);
+	if (outstream != nullptr) ENG_LogWarn("Serialiser file not closed before opening new one");
 	outstream = new std::ofstream(path, std::ios::binary | std::ofstream::trunc);
 }
 

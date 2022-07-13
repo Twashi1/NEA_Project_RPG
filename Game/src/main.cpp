@@ -17,17 +17,17 @@ void tester_callback(Button* button_pressed) {
     seed++;
     i->SetSeed(seed);
     seedChanged = true;
-    Log(std::format("Changing seed to {}", seed), LOG::INFO);
+    ENG_LogInfo("Changing seed to {}", seed);
 }
 
 void text_callback(TextInput* text_input) {
-    Log(std::format("Submitted text: {}", text_input->typed_text), LOG::INFO);
+    ENG_LogInfo("Submitted text: {}", text_input->typed_text);
 }
 
 int main(void)
 {
     // Construct engine instance
-    Engine engine(WIDTH, HEIGHT, FPS, true);
+    Engine::Init(WIDTH, HEIGHT, FPS, true);
 
     // DEBUG: shaders
     Shader texture_shader("texture_vertex", "texture_frag");
@@ -42,13 +42,13 @@ int main(void)
     World::texture_shader = &texture_shader;
 
     // Test construct world
-    Log("Loading world...", LOG::INFO);
+    ENG_LogInfo("Loading world...");
     World world(0, "testworld");
-    Log("Loading textures...", LOG::INFO);
+    ENG_LogInfo("Loading textures...");
     World::LoadTextures("tile_atlas.png");
-    Log("Updating world...", LOG::INFO);
+    ENG_LogInfo("Updating world...");
     world.Update(Vector2<int>(0, 0));
-    Log("Finished initialising world", LOG::INFO);
+    ENG_LogInfo("Finished initialising world");
 
     // DEBUG: quads
     Quad wall = Quad(500, 500, 100, 500, 0.5 * PI_CONST);
@@ -85,22 +85,20 @@ int main(void)
     // DEBUG: Animation object
     Animation animation(std::shared_ptr<Quad>(&dummy), std::shared_ptr<Shader>(&texture_shader), std::shared_ptr<Texture>(&atlas_test), {64, 64}, "data");
 
-    Player player = Player(engine.proj);
-    engine.physics.Register(player.body, 0);
+    Player player = Player(Engine::proj);
+    Engine::physics->Register(player.body, 0);
 
     // DEBUG: add to physics system
     Body wallbody = Body(wall, true, 0.0f, 999);
-    engine.physics.Register(std::shared_ptr<Body>(&wallbody), 0);
+    Engine::physics->Register(std::shared_ptr<Body>(&wallbody), 0);
 
     TextInput text_input(textbox, &text_callback);
 
-    ShaderManager::UpdateProjectionMatrix(engine.proj);
+    ShaderManager::UpdateProjectionMatrix(Engine::proj);
 
     // Loop until window is closed by user
-    while (engine.IsRunning())
+    while (Engine::IsRunning())
     {
-        ShaderManager::UpdateProjectionMatrix(engine.proj);
-
         if (seedChanged) {
             seedChanged = false;
 
@@ -121,8 +119,8 @@ int main(void)
 
         // TODO better API for this? client has to do too much
 
-        engine.camera.pos = player.quad.GetCenter(); // Update camera
-        engine.BeginFrame();
+        Engine::camera->pos = player.quad.GetCenter(); // Update camera
+        Engine::BeginFrame();
 
         player.Update(); // Update player
 
@@ -137,9 +135,9 @@ int main(void)
         Renderer::Schedule(&text_input);
         Renderer::Schedule(&player.quad, player.shader);
 
-        if (engine.enable_stats) engine.UpdateStats(*player.body); // Draw stats information
+        if (Engine::isStatsEnabled) Engine::UpdateStats(*player.body); // Draw stats information
         
-        engine.EndFrame();
+        Engine::EndFrame();
 
         // DEGUG: Rotate our example wall
         wallbody.angular_acc = 1.0f;
@@ -149,11 +147,11 @@ int main(void)
         wall.SetAngle(wall.GetAngle());
     }
 
-    Log("Window closed", LOG::INFO);
+    ENG_LogInfo("Window closed");
 
-    engine.SerialiseGeneralData();
+    Engine::Terminate();
 
-    Log("Ending program", LOG::INFO);
+    ENG_LogInfo("Ending program");
 
     // TODO: still have to forcibly exit since deconstructors aren't being called properly
     // maybe something to do with order?

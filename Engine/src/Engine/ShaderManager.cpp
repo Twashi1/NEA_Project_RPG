@@ -1,7 +1,7 @@
 #include "ShaderManager.h"
 #include "Shader.h"
 
-Utils::List<Shader*> ShaderManager::shaders = Utils::List<Shader*>();
+std::vector<Shader*> ShaderManager::shaders{};
 std::string ShaderManager::projmat_name = "u_projMat";
 std::string ShaderManager::offset_name = "u_Offset";
 

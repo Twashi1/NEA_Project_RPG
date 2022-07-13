@@ -7,6 +7,7 @@
 #include <iostream>
 #include <format>
 #include <chrono>
+#include <memory>
 
 #ifdef ENGINE_BUILD_DLL
 #define ENGINE_API __declspec(dllexport)
@@ -14,7 +15,9 @@
 #define ENGINE_API __declspec(dllimport)
 #endif
 
-#define Log(msg, error_type) m_Log(msg, error_type, __FUNCSIG__, __LINE__);
+#define ENG_LogInfo(msg, ...) m_Log(std::format(msg, __VA_ARGS__), LOG::INFO, __FUNCSIG__, __LINE__)
+#define ENG_LogWarn(msg, ...) m_Log(std::format(msg, __VA_ARGS__), LOG::WARNING, __FUNCSIG__, __LINE__);
+#define ENG_LogFatal(msg, ...) m_Log(std::format(msg, __VA_ARGS__), LOG::FATAL, __FUNCSIG__, __LINE__);
 
 using std::to_string;
 
@@ -47,54 +50,33 @@ enum class ENGINE_API LOG : uint8_t {
 ENGINE_API std::ostream& operator<<(std::ostream& os, const LOG& error);
 
 namespace Utils {
+	// TODO: update classes to use Timer::GetElapsed();
 	class ENGINE_API Timer {
+		static const long double m_NsToS; // Nanoseconds to seconds
+		double m_Time;
+
 	public:
 		static const std::chrono::system_clock::time_point compile_time;
 
 		static double GetTime();
 		static std::string GetTimeString();
+
+		Timer();
+		Timer(double start_time);
+
+		// Gets time since last GetElapsed() call
+		double GetElapsed();
 	};
 
-	// A wrapper for std::vector which implements simplified remove and erase methods
 	template <typename T>
-	struct ENGINE_API List {
-	private:
-		using ListData_t = std::vector<T>;
+	void Remove(std::vector<T>& data, const T& object)
+	{
+		// Remove all occurences of object from data, and return new end of list
+		auto new_end = std::remove(data.begin(), data.end(), object);
 
-		ListData_t m_data;
-
-	public:
-		// Adds on object to the list
-		void Push(const T& object) { m_data.push_back(object); }
-		// Removes all occurences of the object from the list
-		void Remove(const T& object)
-		{
-			// Remove all occurences of shader from m_Shaders, and return new end of list
-			auto new_end = std::remove(m_data.begin(), m_data.end(), object);
-
-			// Erase all elements from the new end of the list to the old end of the list
-			m_data.erase(new_end, m_data.end());
-		}
-		// Removes the index from the list
-		void Erase(unsigned int index)
-		{
-			if (index < m_data.size()) {
-				m_data.erase(m_data.begin() + index);
-			}
-			else {
-				std::string text = std::format("Index out of bounds: {} > {}", to_string(index), to_string(m_data.size()));
-				Log(text, LOG::FATAL);
-			}
-		}
-		// Reserves size to fit n objects
-		void Reserve(unsigned int n) { m_data.reserve(n * sizeof(T)); }
-		// Returns size of object
-		unsigned int Size() { return m_data.size(); }
-
-		/* Iterator functions */
-		ListData_t::iterator begin() { return m_data.begin(); }
-		ListData_t::iterator end() { return m_data.end(); }
-	};
+		// Erase all elements from the new end of the list to the old end of the list
+		data.erase(new_end, data.end());
+	}
 
 	ENGINE_API bool CheckFileExists(const std::string& path);
 	ENGINE_API bool CheckDirectoryExists(const std::string& path);

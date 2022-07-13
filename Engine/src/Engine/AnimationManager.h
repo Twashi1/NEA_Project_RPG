@@ -6,7 +6,7 @@ class Animation;
 
 class ENGINE_API AnimationManager {
 public:
-	static Utils::List<Animation*> animations;
+	static std::vector<Animation*> animations;
 
 	static void Update(float current_time);
 

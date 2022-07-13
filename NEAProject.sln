@@ -63,34 +63,20 @@ Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "_animationfiles", "_animati
 EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
-		Debug|x64 = Debug|x64
 		Debug|x86 = Debug|x86
-		Release|x64 = Release|x64
 		Release|x86 = Release|x86
 	EndGlobalSection
 	GlobalSection(ProjectConfigurationPlatforms) = postSolution
-		{1E425948-947D-4653-A577-FB24BF7D8CCE}.Debug|x64.ActiveCfg = Debug|x64
-		{1E425948-947D-4653-A577-FB24BF7D8CCE}.Debug|x64.Build.0 = Debug|x64
 		{1E425948-947D-4653-A577-FB24BF7D8CCE}.Debug|x86.ActiveCfg = Debug|Win32
 		{1E425948-947D-4653-A577-FB24BF7D8CCE}.Debug|x86.Build.0 = Debug|Win32
-		{1E425948-947D-4653-A577-FB24BF7D8CCE}.Release|x64.ActiveCfg = Release|x64
-		{1E425948-947D-4653-A577-FB24BF7D8CCE}.Release|x64.Build.0 = Release|x64
 		{1E425948-947D-4653-A577-FB24BF7D8CCE}.Release|x86.ActiveCfg = Release|Win32
 		{1E425948-947D-4653-A577-FB24BF7D8CCE}.Release|x86.Build.0 = Release|Win32
-		{2E05089D-8F1B-4F1F-9B82-E37B1E84C4F2}.Debug|x64.ActiveCfg = Debug|x64
-		{2E05089D-8F1B-4F1F-9B82-E37B1E84C4F2}.Debug|x64.Build.0 = Debug|x64
 		{2E05089D-8F1B-4F1F-9B82-E37B1E84C4F2}.Debug|x86.ActiveCfg = Debug|Win32
 		{2E05089D-8F1B-4F1F-9B82-E37B1E84C4F2}.Debug|x86.Build.0 = Debug|Win32
-		{2E05089D-8F1B-4F1F-9B82-E37B1E84C4F2}.Release|x64.ActiveCfg = Release|x64
-		{2E05089D-8F1B-4F1F-9B82-E37B1E84C4F2}.Release|x64.Build.0 = Release|x64
 		{2E05089D-8F1B-4F1F-9B82-E37B1E84C4F2}.Release|x86.ActiveCfg = Release|Win32
 		{2E05089D-8F1B-4F1F-9B82-E37B1E84C4F2}.Release|x86.Build.0 = Release|Win32
-		{67F6C795-CBCE-4093-AF64-26F031417902}.Debug|x64.ActiveCfg = Debug|x64
-		{67F6C795-CBCE-4093-AF64-26F031417902}.Debug|x64.Build.0 = Debug|x64
 		{67F6C795-CBCE-4093-AF64-26F031417902}.Debug|x86.ActiveCfg = Debug|Win32
 		{67F6C795-CBCE-4093-AF64-26F031417902}.Debug|x86.Build.0 = Debug|Win32
-		{67F6C795-CBCE-4093-AF64-26F031417902}.Release|x64.ActiveCfg = Release|x64
-		{67F6C795-CBCE-4093-AF64-26F031417902}.Release|x64.Build.0 = Release|x64
 		{67F6C795-CBCE-4093-AF64-26F031417902}.Release|x86.ActiveCfg = Release|Win32
 		{67F6C795-CBCE-4093-AF64-26F031417902}.Release|x86.Build.0 = Release|Win32
 	EndGlobalSection

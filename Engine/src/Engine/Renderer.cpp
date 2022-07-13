@@ -23,13 +23,14 @@ bool GlLogCall(const char* function, const char* file, int line) {
 	return true;
 }
 
-std::queue<uint8_t> Renderer::available_slots = std::queue<uint8_t>({ 0, 1, 2, 3, 4, 5, 6, 7, 8, 9, 10, 11, 12, 13, 14, 15 });
+std::vector<uint8_t> Renderer::available_slots = std::vector<uint8_t>({ 0, 1, 2, 3, 4, 5, 6, 7, 8, 9, 10, 11, 12, 13, 14, 15 });
 Shader* Renderer::texture_shader = nullptr;
 Camera* Renderer::camera = nullptr;
 
 void Renderer::Init(Camera* camera)
 {
 	Renderer::camera = camera;
+	// TODO: Move to ShaderManager
 	Renderer::texture_shader = new Shader("texture_vertex", "texture_frag");
 }
 
@@ -39,19 +40,19 @@ ENGINE_API uint8_t Renderer::GetTextureSlot()
 		// Get front of queue and store it
 		uint8_t id = available_slots.front();
 		// Remove that id from list
-		available_slots.pop();
+		available_slots.pop_back();
 		// Return that id
 		return id;
 	}
 
-	Log("Ran out of texture slots (MAX 16 concurrent)", LOG::WARNING);
+	ENG_LogInfo("Ran out of texture slots (MAX 16 concurrent)");
 	return Renderer::m_INVALID_TEXTURE_SLOT;
 }
 
 ENGINE_API void Renderer::FreeTextureSlot(uint8_t slot)
 {
 	if (slot != Renderer::m_INVALID_TEXTURE_SLOT) {
-		available_slots.push(slot);
+		available_slots.emplace_back(slot);
 	}
 }
 

@@ -120,7 +120,7 @@ Input::State Input::GetKeyState(int key)
 		return it->second.state;
 	}
 
-	Log(std::format("Couldn't find key {}", to_string(key)), LOG::WARNING);
+	ENG_LogWarn("Couldn't find key {}", to_string(key));
 
 	return State::NONE;
 }
@@ -136,7 +136,7 @@ Input::State Input::GetMouseState(int button)
 		return it->second.state;
 	}
 
-	Log(std::format("Couldn't find button {}", to_string(button)), LOG::WARNING);
+	ENG_LogWarn("Couldn't find button {}", to_string(button));
 
 	return State::NONE;
 }

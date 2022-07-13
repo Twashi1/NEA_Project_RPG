@@ -35,7 +35,7 @@ private:
 public:
 	static Camera* camera; // Camera currently being used on all Renderable objects
 	static Shader* texture_shader; // Default shader used for textures
-	static std::queue<uint8_t> available_slots; // Available slots on GPU for texture
+	static std::vector<uint8_t> available_slots; // Available slots on GPU for texture
 
 	static void Init(Camera* camera);
 
