@@ -39,6 +39,8 @@ int main(void)
     Shader static_color = Shader("button_vertex", "button_frag");
     static_color.SetUniform4f("u_Color", COLORS::BLUE.x, COLORS::BLUE.y, COLORS::BLUE.z, 1.0f);
 
+    Shader static_texture = Shader("static_texture_vertex", "static_texture_frag");
+
     World::texture_shader = &texture_shader;
 
     // Test construct world
@@ -55,7 +57,7 @@ int main(void)
     Quad btn_quad = Quad(-400, -300, 150, 50, 0);
     Quad dummy = Quad(-100, -100, 150, 150, 0);
     Quad noisequad = Quad(-500, 500, 256, 256, 0);
-    Quad textbox = Quad(300, 300, 200, 100, 0);
+    Quad textbox = Quad(300, 300, 96*3, 96, 0);
 
     // DEBUG: buttons
     Button btn = Button(btn_quad, &tester_callback, "Change seed", "Change seed");
@@ -92,7 +94,8 @@ int main(void)
     Body wallbody = Body(wall, true, 0.0f, 999);
     Engine::physics->Register(std::shared_ptr<Body>(&wallbody), 0);
 
-    TextInput text_input(textbox, &text_callback);
+    textbox.SetTextureCoords(*Engine::engine_icons, { 2, 7 }, { 4, 7 }, { 16, 16 });
+    TextInput text_input(textbox, &text_callback, std::shared_ptr<Shader>(&static_texture), Engine::engine_icons, 30);
 
     ShaderManager::UpdateProjectionMatrix(Engine::proj);
 

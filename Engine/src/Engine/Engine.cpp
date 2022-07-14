@@ -12,7 +12,7 @@ double Engine::m_ProcessingTime = 0.0;
 bool Engine::isStatsEnabled = true;
 
 VersionNumber Engine::m_VersionNumber = "v0.0.2";
-ENG_Ptr(Texture) Engine::m_IconsTexture = nullptr;
+ENG_Ptr(Texture) Engine::engine_icons = nullptr;
 
 GLFWwindow* Engine::window = nullptr;
 GLFWcursor* Engine::cursor = nullptr;
@@ -181,7 +181,7 @@ void ENGINE_API Engine::Init(int nwidth, int nheight, int nfps, bool nisStatsEna
     Renderer::Init(camera);
 
     // Create icons texture
-    m_IconsTexture = ENG_MakePtr(Texture, "engine_icons.png");
+    engine_icons = ENG_MakePtr(Texture, "engine_icons.png");
 
     // Initialise input system
     Input::Init(window, &width, &height);
@@ -196,7 +196,7 @@ void ENGINE_API Engine::Init(int nwidth, int nheight, int nfps, bool nisStatsEna
     Button::Init();
 
     // Initialise text input class
-    TextInput::Init(m_IconsTexture);
+    TextInput::Init(engine_icons);
 
     // Update projection uniform for all shaders
     // NOTE: all shader initialisation should come before this function, unless we're setting the projection matrix ourselves

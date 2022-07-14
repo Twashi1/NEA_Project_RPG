@@ -46,6 +46,8 @@ private:
 
 	CallbackFunc_t callback;
 
+	int m_Offset;
+
 public:
 	std::string typed_text = ""; // Text that user has typed/is typing in
 
@@ -60,12 +62,12 @@ public:
 
 	static void Init(ENG_Ptr(Texture) engine_icons);
 
-	TextInput(const Quad& quad, CallbackFunc_t callback);
-	TextInput(const Quad& quad, CallbackFunc_t callback, ENG_Ptr(Shader) bg_shader);
-	TextInput(const Quad& quad, CallbackFunc_t callback, ENG_Ptr(Shader) bg_shader, ENG_Ptr(Texture) bg_texture);
-	TextInput(const Quad& quad, CallbackFunc_t callback, const Vector3<float>& typed_color, const Vector3<float>& empty_color);
-	TextInput(const Quad& quad, CallbackFunc_t callback, const Vector3<float>& typed_color, const Vector3<float>& empty_color, ENG_Ptr(Shader) bg_shader);
-	TextInput(const Quad& quad, CallbackFunc_t callback, const Vector3<float>& typed_color, const Vector3<float>& empty_color, ENG_Ptr(Shader) bg_shader, ENG_Ptr(Texture) bg_texture);
+	TextInput(const Quad& quad, CallbackFunc_t callback, int offset = 0);
+	TextInput(const Quad& quad, CallbackFunc_t callback, ENG_Ptr(Shader) bg_shader, int offset = 0);
+	TextInput(const Quad& quad, CallbackFunc_t callback, ENG_Ptr(Shader) bg_shader, ENG_Ptr(Texture) bg_texture, int offset = 0);
+	TextInput(const Quad& quad, CallbackFunc_t callback, const Vector3<float>& typed_color, const Vector3<float>& empty_color, int offset = 0);
+	TextInput(const Quad& quad, CallbackFunc_t callback, const Vector3<float>& typed_color, const Vector3<float>& empty_color, ENG_Ptr(Shader) bg_shader, int offset = 0);
+	TextInput(const Quad& quad, CallbackFunc_t callback, const Vector3<float>& typed_color, const Vector3<float>& empty_color, ENG_Ptr(Shader) bg_shader, ENG_Ptr(Texture) bg_texture, int offset = 0);
 	~TextInput();
 
 	void CheckClicked(const Input::State& lmb_state, const Vector2<float>& cursor_pos);

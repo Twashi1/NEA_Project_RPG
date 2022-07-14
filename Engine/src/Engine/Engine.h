@@ -40,8 +40,6 @@ private:
     // Maps a name for each debug stat to a text renderable object
     static std::unordered_map<std::string, Text> m_DebugStatsText;
 
-    static ENG_Ptr(Texture) m_IconsTexture;
-
     static int m_FPS;    // Frames per second
     static double m_TimePerFrame;          // Time per frame (1 / fps)
 
@@ -54,6 +52,8 @@ private:
 
 public:
     static bool isStatsEnabled;                 // Determines if framerate, average tpf, etc. should be displayed on screen
+
+    static ENG_Ptr(Texture) engine_icons;
 
     static GLFWwindow* window;  // Pointer to GLFW window
     static GLFWcursor* cursor;  // Pointer to GLFW cursor

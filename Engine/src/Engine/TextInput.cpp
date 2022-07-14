@@ -61,7 +61,7 @@ void TextInput::CheckClicked(const Input::State& lmb_state, const Vector2<float>
 
 void TextInput::m_Construct()
 {
-	Vector2<float> pos = Vector2<float>(quad.GetX() - quad.GetWidth() / 2.0f, quad.GetY());
+	Vector2<float> pos = Vector2<float>(quad.GetX() - (quad.GetWidth() / 2.0f) + m_Offset, quad.GetY());
 	m_Text = ENG_MakePtr(Text, empty_text, pos, m_TextShader, m_DefaultScale);
 
 	// Push ourselves to GUIManager
@@ -159,44 +159,44 @@ void TextInput::Update()
 	}
 }
 
-TextInput::TextInput(const Quad& quad, CallbackFunc_t callback)
+TextInput::TextInput(const Quad& quad, CallbackFunc_t callback, int offset)
 	: quad(quad), callback(callback), bg_shader(m_DefaultBgShader), bg_texture(nullptr), empty_text(m_DefaultEmptyText),
-	m_EmptyColor(m_DefaultEmptyColor), m_TypedColor(m_DefaultTypedColor)
+	m_EmptyColor(m_DefaultEmptyColor), m_TypedColor(m_DefaultTypedColor), m_Offset(offset)
 {
 	m_Construct();
 }
 
-TextInput::TextInput(const Quad& quad, CallbackFunc_t callback, ENG_Ptr(Shader) bg_shader)
+TextInput::TextInput(const Quad& quad, CallbackFunc_t callback, ENG_Ptr(Shader) bg_shader, int offset)
 	: quad(quad), callback(callback), bg_shader(bg_shader), bg_texture(nullptr), empty_text(m_DefaultEmptyText),
-	m_EmptyColor(m_DefaultEmptyColor), m_TypedColor(m_DefaultTypedColor)
+	m_EmptyColor(m_DefaultEmptyColor), m_TypedColor(m_DefaultTypedColor), m_Offset(offset)
 {
 	m_Construct();
 }
 
-TextInput::TextInput(const Quad& quad, CallbackFunc_t callback, ENG_Ptr(Shader) bg_shader, ENG_Ptr(Texture) bg_texture)
+TextInput::TextInput(const Quad& quad, CallbackFunc_t callback, ENG_Ptr(Shader) bg_shader, ENG_Ptr(Texture) bg_texture, int offset)
 	: quad(quad), callback(callback), bg_shader(bg_shader), bg_texture(bg_texture), empty_text(m_DefaultEmptyText),
-	m_EmptyColor(m_DefaultEmptyColor), m_TypedColor(m_DefaultTypedColor)
+	m_EmptyColor(m_DefaultEmptyColor), m_TypedColor(m_DefaultTypedColor), m_Offset(offset)
 {
 	m_Construct();
 }
 
-TextInput::TextInput(const Quad& quad, CallbackFunc_t callback, const Vector3<float>& typed_color, const Vector3<float>& empty_color)
+TextInput::TextInput(const Quad& quad, CallbackFunc_t callback, const Vector3<float>& typed_color, const Vector3<float>& empty_color, int offset)
 	: quad(quad), callback(callback), bg_shader(m_DefaultBgShader), bg_texture(nullptr), empty_text(m_DefaultEmptyText),
-	m_EmptyColor(empty_color), m_TypedColor(typed_color)
+	m_EmptyColor(empty_color), m_TypedColor(typed_color), m_Offset(offset)
 {
 	m_Construct();
 }
 
-TextInput::TextInput(const Quad& quad, CallbackFunc_t callback, const Vector3<float>& typed_color, const Vector3<float>& empty_color, ENG_Ptr(Shader) bg_shader)
+TextInput::TextInput(const Quad& quad, CallbackFunc_t callback, const Vector3<float>& typed_color, const Vector3<float>& empty_color, ENG_Ptr(Shader) bg_shader, int offset)
 	: quad(quad), callback(callback), bg_shader(bg_shader), bg_texture(nullptr), empty_text(m_DefaultEmptyText),
-	m_EmptyColor(empty_color), m_TypedColor(typed_color)
+	m_EmptyColor(empty_color), m_TypedColor(typed_color), m_Offset(offset)
 {
 	m_Construct();
 }
 
-TextInput::TextInput(const Quad& quad, CallbackFunc_t callback, const Vector3<float>& typed_color, const Vector3<float>& empty_color, ENG_Ptr(Shader) bg_shader, ENG_Ptr(Texture) bg_texture)
+TextInput::TextInput(const Quad& quad, CallbackFunc_t callback, const Vector3<float>& typed_color, const Vector3<float>& empty_color, ENG_Ptr(Shader) bg_shader, ENG_Ptr(Texture) bg_texture, int offset)
 	: quad(quad), callback(callback), bg_shader(bg_shader), bg_texture(bg_texture), empty_text(m_DefaultEmptyText),
-	m_EmptyColor(empty_color), m_TypedColor(typed_color)
+	m_EmptyColor(empty_color), m_TypedColor(typed_color), m_Offset(offset)
 {
 	m_Construct();
 }
@@ -218,7 +218,7 @@ ENG_Ptr(Animation) TextInput::GetTypingBar()
 
 	float left = quad.GetX() - (quad.GetWidth() / 2.0f) + (char_x * m_TypingIndex * m_DefaultScale) + (m_TypingBar->quad->GetWidth() / 2.0f);
 	Vector2<float> pos = Vector2<float>(
-		left,
+		left + m_Offset,
 		quad.GetY() + m_TypingBar->quad->GetHeight() / 2.0f - (size * 0.2)
 		);
 

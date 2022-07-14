@@ -74,6 +74,7 @@ public:
 	// Changes texture coordinates so a specific texture from a texture atlas can be loaded
 	// Takes the atlas being loaded, the index of the image within the atlas, and the size (in px) of each image in the atlas
 	void SetTextureCoords(const Texture& atlas, const Vector2<int>& index, const Vector2<int>& size);
+	void SetTextureCoords(const Texture& atlas, const Vector2<int>& top_left, const Vector2<int>& bottom_right, const Vector2<int>& size);
 
 	friend bool operator==(const Quad& a, const Quad& b);
 	friend std::string to_string(const Quad& quad);

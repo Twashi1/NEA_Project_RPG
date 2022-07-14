@@ -147,6 +147,30 @@ void Quad::SetTextureCoords(const Texture& atlas, const Vector2<int>& index, con
 	vb->SetTex(m_TexCoords);
 }
 
+void Quad::SetTextureCoords(const Texture& atlas, const Vector2<int>& top_left, const Vector2<int>& bottom_right, const Vector2<int>& size)
+{
+	// Inverse width and height of atlas
+	float inv_width = 1.0f / atlas.width;
+	float inv_height = 1.0f / atlas.height;
+
+	// Calculate faces
+	float left = top_left.x * inv_width * size.x;
+	float right = (bottom_right.x + 1)* inv_width * size.x;
+	float bottom = bottom_right.y * inv_height * size.y;
+	float top = (top_left.y + 1) * inv_height * size.y;
+
+	// Create tex coords list
+	m_TexCoords = {
+			left, bottom,
+			right, bottom,
+			right, top,
+			left, top
+	};
+
+	// Update VertexBuffer coords
+	vb->SetTex(m_TexCoords);
+}
+
 const VertexBuffer& Quad::GetVertexBuffer() const
 {
 	return *vb;
