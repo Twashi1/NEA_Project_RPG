@@ -1,8 +1,8 @@
 #include "Button.h"
 
-Shader* Button::m_DefaultIdleShader = nullptr;
-Shader* Button::m_DefaultPressedShader = nullptr;
-Font* Button::m_DefaultFont = nullptr;
+ENG_Ptr(Shader) Button::m_DefaultIdleShader = nullptr;
+ENG_Ptr(Shader) Button::m_DefaultPressedShader = nullptr;
+ENG_Ptr(Font) Button::m_DefaultFont = nullptr;
 
 void Button::m_Construct()
 {
@@ -33,17 +33,17 @@ void Button::Init()
 	}
 
 	// Construct default shaders
-	m_DefaultIdleShader = new Shader("button_vertex", "button_frag");
+	m_DefaultIdleShader = ENG_MakePtr(Shader, "button_vertex", "button_frag");
 	m_DefaultIdleShader->SetUniform4f("u_Color", COLORS::GRAY.x, COLORS::GRAY.y, COLORS::GRAY.z, Button::m_DefaultScale);
 
-	m_DefaultPressedShader = new Shader("button_vertex", "button_frag");
+	m_DefaultPressedShader = ENG_MakePtr(Shader, "button_vertex", "button_frag");
 	m_DefaultPressedShader->SetUniform4f("u_Color", COLORS::DARKGRAY.x, COLORS::DARKGRAY.y, COLORS::DARKGRAY.z, Button::m_DefaultScale);
 
 	// Construct default font
 	m_DefaultFont = Text::GetDefaultFont();
 }
 
-Button::Button(const Quad& quad, CallbackFunc_t callback, const std::string& idle_text, const std::string& pressed_text, Shader* idle_shader, Shader* pressed_shader, Texture* idle_texture, Texture* pressed_texture)
+Button::Button(const Quad& quad, CallbackFunc_t callback, const std::string& idle_text, const std::string& pressed_text, ENG_Ptr(Shader) idle_shader, ENG_Ptr(Shader) pressed_shader, ENG_Ptr(Texture) idle_texture, ENG_Ptr(Texture) pressed_texture)
 	: quad(quad),
 	callback(callback),
 	idle_text(idle_text), pressed_text(pressed_text),
@@ -53,7 +53,7 @@ Button::Button(const Quad& quad, CallbackFunc_t callback, const std::string& idl
 	m_Construct();
 }
 
-Button::Button(const Quad& quad, CallbackFunc_t callback, const std::string& idle_text, const std::string& pressed_text, Shader* idle_shader, Shader* pressed_shader)
+Button::Button(const Quad& quad, CallbackFunc_t callback, const std::string& idle_text, const std::string& pressed_text, ENG_Ptr(Shader) idle_shader, ENG_Ptr(Shader) pressed_shader)
 	: quad(quad),
 	callback(callback), 
 	idle_text(idle_text), pressed_text(pressed_text),
@@ -62,7 +62,7 @@ Button::Button(const Quad& quad, CallbackFunc_t callback, const std::string& idl
 	m_Construct();
 }
 
-Button::Button(const Quad& quad, CallbackFunc_t callback, const std::string& idle_text, const std::string& pressed_text, Texture* idle_texture, Texture* pressed_texture)
+Button::Button(const Quad& quad, CallbackFunc_t callback, const std::string& idle_text, const std::string& pressed_text, ENG_Ptr(Texture) idle_texture, ENG_Ptr(Texture) pressed_texture)
 	: quad(quad),
 	callback(callback),
 	idle_text(idle_text), pressed_text(pressed_text),
@@ -135,12 +135,12 @@ void Button::CheckPressed(const Vector2<float>& cursor_pos)
 	}
 }
 
-Shader* Button::CurrentShader()
+ENG_Ptr(Shader) Button::CurrentShader()
 {
 	return isPressed ? pressed_shader : idle_shader;
 }
 
-Texture* Button::CurrentTexture()
+ENG_Ptr(Texture) Button::CurrentTexture()
 {
 	return isPressed ? pressed_texture : idle_texture;
 }

@@ -55,9 +55,6 @@
     <ClCompile Include="src\Engine\VersionNumber.cpp">
       <Filter>Source\Miscellaneous</Filter>
     </ClCompile>
-    <ClCompile Include="src\Engine\LevelEditor.cpp">
-      <Filter>Source\Engine</Filter>
-    </ClCompile>
     <ClCompile Include="src\Engine\Text.cpp">
       <Filter>Source\Rendering</Filter>
     </ClCompile>

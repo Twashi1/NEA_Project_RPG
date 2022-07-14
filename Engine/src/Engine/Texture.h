@@ -16,7 +16,7 @@ struct ENGINE_API Texture {
 	
 	unsigned int width;					// Width of texture
 	unsigned int height;				// Height of texture
-	std::shared_ptr<uint8_t[]> buffer;	// Buffer of colour data for texture
+	ENG_Ptr(uint8_t[]) buffer;	// Buffer of colour data for texture
 
 	static void Unbind();
 	void Bind(uint8_t slot) const;
@@ -26,7 +26,7 @@ struct ENGINE_API Texture {
 	void Update(); // Deletes, then Creates texture to update it with new buffer data
 
 	// Construct from colour data (3 bytes per pixel), and width/height of image
-	Texture(std::shared_ptr<uint8_t[]> buffer, unsigned int width, unsigned int height);
+	Texture(ENG_Ptr(uint8_t[]) buffer, unsigned int width, unsigned int height);
 	// Construct from png
 	Texture(std::string filename);
 	~Texture();

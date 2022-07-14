@@ -28,7 +28,6 @@
     <ClCompile Include="src\Engine\GUIManager.cpp" />
     <ClCompile Include="src\Engine\IndexBuffer.cpp" />
     <ClCompile Include="src\Engine\Input.cpp" />
-    <ClCompile Include="src\Engine\LevelEditor.cpp" />
     <ClCompile Include="src\Engine\Noise.cpp" />
     <ClCompile Include="src\Engine\Physics.cpp" />
     <ClCompile Include="src\Engine\Quad.cpp" />

@@ -8,9 +8,9 @@
 
 class ENGINE_API Button {
 private:
-	static Shader* m_DefaultIdleShader; // Standard shader for when button is not pressed
-	static Shader* m_DefaultPressedShader; // Standard shader for when button is pressed
-	static Font* m_DefaultFont;
+	static ENG_Ptr(Shader) m_DefaultIdleShader; // Standard shader for when button is not pressed
+	static ENG_Ptr(Shader) m_DefaultPressedShader; // Standard shader for when button is pressed
+	static ENG_Ptr(Font) m_DefaultFont;
 
 	static constexpr float m_DefaultAlpha = 1.0f; // Standard alpha (transparency) for a button
 	static constexpr float m_DefaultScale = 0.25f; // Standard scaling factor for text (1/4 size)
@@ -28,11 +28,11 @@ public:
 	std::string pressed_text; // Text that displays when button is pressed
 
 	// TODO: std shaders can be exposed through these
-	Shader* idle_shader; // Shader used when button is not pressed
-	Shader* pressed_shader; // Shader used when button is pressed
+	ENG_Ptr(Shader) idle_shader; // Shader used when button is not pressed
+	ENG_Ptr(Shader) pressed_shader; // Shader used when button is pressed
 
-	Texture* idle_texture = nullptr;
-	Texture* pressed_texture = nullptr;
+	ENG_Ptr(Texture) idle_texture = nullptr;
+	ENG_Ptr(Texture) pressed_texture = nullptr;
 
 	bool isPressed = false; // If button is being pressed
 
@@ -43,9 +43,9 @@ public:
 	static void Init();
 
 	// TODO better constructor?
-	Button(const Quad& quad, CallbackFunc_t callback, const std::string& idle_text, const std::string& pressed_text, Shader* idle_shader, Shader* pressed_shader, Texture* idle_texture, Texture* pressed_texture);
-	Button(const Quad& quad, CallbackFunc_t callback, const std::string& idle_text, const std::string& pressed_text, Shader* idle_shader, Shader* pressed_shader);
-	Button(const Quad& quad, CallbackFunc_t callback, const std::string& idle_text, const std::string& pressed_text, Texture* idle_texture, Texture* pressed_texture);
+	Button(const Quad& quad, CallbackFunc_t callback, const std::string& idle_text, const std::string& pressed_text, ENG_Ptr(Shader) idle_shader, ENG_Ptr(Shader) pressed_shader, ENG_Ptr(Texture) idle_texture, ENG_Ptr(Texture) pressed_texture);
+	Button(const Quad& quad, CallbackFunc_t callback, const std::string& idle_text, const std::string& pressed_text, ENG_Ptr(Shader) idle_shader, ENG_Ptr(Shader) pressed_shader);
+	Button(const Quad& quad, CallbackFunc_t callback, const std::string& idle_text, const std::string& pressed_text, ENG_Ptr(Texture) idle_texture, ENG_Ptr(Texture) pressed_texture);
 	Button(const Quad& quad, CallbackFunc_t callback, const std::string& idle_text, const std::string& pressed_text);
 	Button(const Quad& quad, CallbackFunc_t callback, const std::string& text);
 	~Button();
@@ -53,8 +53,8 @@ public:
 	void CheckClicked(const Vector2<float>& cursor_pos);
 	void CheckPressed(const Vector2<float>& cursor_pos);
 
-	Shader* CurrentShader();
-	Texture* CurrentTexture();
+	ENG_Ptr(Shader) CurrentShader();
+	ENG_Ptr(Texture) CurrentTexture();
 	const std::string& CurrentText() const;
 
 	// Updates button's text position - Need to call this if you edit "quad"

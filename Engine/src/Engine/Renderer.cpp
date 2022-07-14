@@ -12,7 +12,8 @@
 
 void GlClearError() {
 	// While we have an error stay in function
-	while (glGetError() != GL_NO_ERROR);
+	int max = 0;
+	while (glGetError() != GL_NO_ERROR && max < 100) { max++; }
 }
 
 bool GlLogCall(const char* function, const char* file, int line) {
@@ -24,14 +25,14 @@ bool GlLogCall(const char* function, const char* file, int line) {
 }
 
 std::vector<uint8_t> Renderer::available_slots = std::vector<uint8_t>({ 0, 1, 2, 3, 4, 5, 6, 7, 8, 9, 10, 11, 12, 13, 14, 15 });
-Shader* Renderer::texture_shader = nullptr;
-Camera* Renderer::camera = nullptr;
+ENG_Ptr(Shader) Renderer::texture_shader = nullptr;
+ENG_Ptr(Camera) Renderer::camera = nullptr;
 
-void Renderer::Init(Camera* camera)
+void Renderer::Init(ENG_Ptr(Camera) camera)
 {
 	Renderer::camera = camera;
 	// TODO: Move to ShaderManager
-	Renderer::texture_shader = new Shader("texture_vertex", "texture_frag");
+	Renderer::texture_shader = ENG_MakePtr(Shader, "texture_vertex", "texture_frag");
 }
 
 ENGINE_API uint8_t Renderer::GetTextureSlot()
@@ -59,7 +60,7 @@ ENGINE_API void Renderer::FreeTextureSlot(uint8_t slot)
 ENGINE_API void Renderer::Schedule(const Quad* quad, Shader* shader)
 {
 	quad->GetVertexBuffer().Bind();
-	const IndexBuffer& ib = quad->GetIndexBuffer(); ib.Bind();
+	const IndexBuffer& ib = Quad::GetIndexBuffer(); ib.Bind();
 	shader->Bind();
 
 	GlCall(glDrawElements(GL_TRIANGLES, ib.count, ib.type, nullptr));
@@ -68,7 +69,7 @@ ENGINE_API void Renderer::Schedule(const Quad* quad, Shader* shader)
 ENGINE_API void Renderer::Schedule(const Quad* quad, const Texture* texture)
 {
 	quad->GetVertexBuffer().Bind();
-	const IndexBuffer& ib = quad->GetIndexBuffer(); ib.Bind();
+	const IndexBuffer& ib = Quad::GetIndexBuffer(); ib.Bind();
 
 	// Bind texture
 	uint8_t slot = GetTextureSlot();
@@ -87,7 +88,7 @@ ENGINE_API void Renderer::Schedule(const Quad* quad, const Texture* texture)
 ENGINE_API void Renderer::Schedule(const Quad* quad, const Texture* texture, uint8_t slot)
 {
 	quad->GetVertexBuffer().Bind();
-	const IndexBuffer& ib = quad->GetIndexBuffer(); ib.Bind();
+	const IndexBuffer& ib = Quad::GetIndexBuffer(); ib.Bind();
 
 	// Bind texture
 	texture->Bind(slot);
@@ -102,7 +103,7 @@ ENGINE_API void Renderer::Schedule(const Quad* quad, const Texture* texture, uin
 ENGINE_API void Renderer::Schedule(const Quad* quad, Shader* shader, const Texture* texture)
 {
 	quad->GetVertexBuffer().Bind();
-	const IndexBuffer& ib = quad->GetIndexBuffer(); ib.Bind();
+	const IndexBuffer& ib = Quad::GetIndexBuffer(); ib.Bind();
 
 	// Bind texture
 	uint8_t slot = GetTextureSlot();
@@ -178,14 +179,14 @@ ENGINE_API void Renderer::Schedule(const Text* text)
 ENGINE_API void Renderer::Schedule(Button* btn)
 {
 	// Get texture currently being used (if there is a texture)
-	const Texture* current_texture = btn->CurrentTexture();
+	const Texture* current_texture = btn->CurrentTexture().get();
 	if (current_texture != nullptr) {
 		// Render with texture
-		Renderer::Schedule(&btn->quad, btn->CurrentShader(), current_texture);
+		Renderer::Schedule(&btn->quad, btn->CurrentShader().get(), current_texture);
 	}
 	else {
 		// Render without texture
-		Renderer::Schedule(&btn->quad, btn->CurrentShader());
+		Renderer::Schedule(&btn->quad, btn->CurrentShader().get());
 	}
 	
 	// Render text of button
@@ -200,16 +201,16 @@ ENGINE_API void Renderer::Schedule(Animation* animation)
 ENGINE_API void Renderer::Schedule(TextInput* text_input)
 {
 	if (text_input->bg_texture != nullptr) {
-		Renderer::Schedule(&text_input->quad, text_input->bg_shader, text_input->bg_texture);
+		Renderer::Schedule(&text_input->quad, text_input->bg_shader.get(), text_input->bg_texture.get());
 	}
 	else {
-		Renderer::Schedule(&text_input->quad, text_input->bg_shader);
+		Renderer::Schedule(&text_input->quad, text_input->bg_shader.get());
 	}
 
-	Renderer::Schedule(text_input->GetText());
+	Renderer::Schedule(text_input->GetText().get());
 	
 	// Display typing bar
 	if (text_input->GetIsTyping()) {
-		Renderer::Schedule(text_input->GetTypingBar());
+		Renderer::Schedule(text_input->GetTypingBar().get());
 	}
 }

@@ -17,7 +17,7 @@ private:
 	Vector2<int> m_SpriteSize; // Size of one sprite
 
 	Vector2<int> m_AtlasDimRelative; // Dimensions of atlas in terms of sprites
-	std::shared_ptr<Texture> m_Atlas; // The texture atlas we got the sprites from
+	ENG_Ptr(Texture) m_Atlas; // The texture atlas we got the sprites from
 
 	// Parses some text to extract timtings and amount of keyframes
 	void m_ParseData(const std::string& data_filename);
@@ -34,10 +34,10 @@ private:
 public:
 	static std::string FILE_EXTENSION;
 
-	std::shared_ptr<Quad> quad;
-	std::shared_ptr<Shader> shader;
+	ENG_Ptr(Quad) quad;
+	ENG_Ptr(Shader) shader;
 
-	const std::shared_ptr<Texture> GetAtlas() const;
+	const ENG_Ptr(Texture) GetAtlas() const;
 
 	// NOTE: data_filename refers to the filename of the .animation data file for the texture atlas
 	Animation(const std::shared_ptr<Quad>& quad, const std::shared_ptr<Shader>& shader, const std::shared_ptr<Texture>& atlas, const Vector2<int>& sprite_size, const std::string& data_filename);

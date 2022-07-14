@@ -1,15 +1,15 @@
 #include "Text.h"
 
-Shader* Text::m_DefaultShader = nullptr;
-Font* Text::m_DefaultFont = nullptr;
+ENG_Ptr(Shader) Text::m_DefaultShader = nullptr;
+ENG_Ptr(Font) Text::m_DefaultFont = nullptr;
 
 void Text::Init()
 {
-    m_DefaultShader = new Shader("text_vertex", "text_frag");
-    m_DefaultFont = new Font("consola.ttf");
+    m_DefaultShader = ENG_MakePtr(Shader, "text_vertex", "text_frag");
+    m_DefaultFont = ENG_MakePtr(Font, "consola.ttf");
 }
 
-Font* Text::GetDefaultFont()
+ENG_Ptr(Font) Text::GetDefaultFont()
 {
     if (m_DefaultFont == nullptr) {
         ENG_LogWarn("Default font not initialised yet");
@@ -32,15 +32,15 @@ Text::Text(const std::string& text, const Vector2<float>&pos, float scale)
     : text(text), pos(pos), font(m_DefaultFont), shader(m_DefaultShader), scale(scale)
 {}
 
-Text::Text(const std::string& text, const Vector2<float>& pos, Font* font, float scale)
+Text::Text(const std::string& text, const Vector2<float>& pos, ENG_Ptr(Font) font, float scale)
 	: text(text), pos(pos), font(font), shader(m_DefaultShader), scale(scale)
 {}
 
-Text::Text(const std::string& text, const Vector2<float>& pos, Shader* shader, float scale)
+Text::Text(const std::string& text, const Vector2<float>& pos, ENG_Ptr(Shader) shader, float scale)
     : text(text), pos(pos), font(m_DefaultFont), shader(shader), scale(scale)
 {}
 
-Text::Text(const std::string& text, const Vector2<float>& pos, Font* font, Shader* shader, float scale)
+Text::Text(const std::string& text, const Vector2<float>& pos, ENG_Ptr(Font) font, ENG_Ptr(Shader) shader, float scale)
     : text(text), pos(pos), font(font), shader(shader), scale(scale)
 {}
 

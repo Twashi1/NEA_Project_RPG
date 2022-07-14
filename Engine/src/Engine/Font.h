@@ -16,6 +16,8 @@ class ENGINE_API Font {
 public:
 	static std::string PATH;
 
+	uint32_t max_height = 0;
+
 	struct Character {
 		uint32_t texture_id;  // ID of glyph
 		Vector2<int> size;	  // Size of glyph

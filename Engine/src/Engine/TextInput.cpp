@@ -1,26 +1,23 @@
 #include "TextInput.h"
 
-Animation* TextInput::m_TypingBar = nullptr;
+ENG_Ptr(Animation) TextInput::m_TypingBar = nullptr;
 Vector3<float> TextInput::m_DefaultEmptyColor = Vector3<float>(0.0, 0.0, 0.0);
 Vector3<float> TextInput::m_DefaultTypedColor = Vector3<float>(0.0, 0.0, 0.0);
 std::string TextInput::m_DefaultEmptyText = "";
-Font* TextInput::m_DefaultFont = nullptr;
-Shader* TextInput::m_DefaultBgShader = nullptr;
-Shader* TextInput::m_TextShader = nullptr;
-GLFWcursor* TextInput::m_Cursor = nullptr;
-Shader* TextInput::m_TypingBarShader = nullptr;
+ENG_Ptr(Font) TextInput::m_DefaultFont = nullptr;
+ENG_Ptr(Shader) TextInput::m_DefaultBgShader = nullptr;
+ENG_Ptr(Shader) TextInput::m_TextShader = nullptr;
+ENG_Ptr(Shader) TextInput::m_TypingBarShader = nullptr;
 
-void TextInput::Init(Texture* engine_icons, GLFWcursor* cursor)
+void TextInput::Init(ENG_Ptr(Texture) engine_icons)
 {
-	m_Cursor = cursor;
+	m_TypingBarShader = ENG_MakePtr(Shader, "static_texture_vertex", "static_texture_frag");
 
-	m_TypingBarShader = new Shader("static_texture_vertex", "static_texture_frag");
-
-	m_TypingBar = new Animation(
-		std::shared_ptr<Quad>(new Quad(150, 150, 128, 128, 0)),
-		std::shared_ptr<Shader>(m_TypingBarShader),
-		std::shared_ptr<Texture>(engine_icons),
-		{16, 16},
+	m_TypingBar = ENG_MakePtr(Animation,
+		ENG_MakePtr(Quad, 150, 150, 128, 128, 0),
+		m_TypingBarShader,
+		engine_icons,
+		Vector2<int>(16, 16),
 		"engine_icons"
 	);
 
@@ -29,10 +26,10 @@ void TextInput::Init(Texture* engine_icons, GLFWcursor* cursor)
 	m_DefaultEmptyText = "Type here...";
 	m_DefaultFont = Text::GetDefaultFont();
 
-	m_DefaultBgShader = new Shader("button_vertex", "button_frag");
+	m_DefaultBgShader = ENG_MakePtr(Shader, "button_vertex", "button_frag");
 	m_DefaultBgShader->Bind(); m_DefaultBgShader->SetUniform4f("u_Color", COLORS::WHITE.x, COLORS::WHITE.y, COLORS::WHITE.z, 0.9f);
 
-	m_TextShader = new Shader("text_vertex", "text_frag");
+	m_TextShader = ENG_MakePtr(Shader, "text_vertex", "text_frag");
 	m_TextShader->Bind(); m_TextShader->SetUniform3f("u_TextColor", m_DefaultEmptyColor);
 }
 
@@ -41,16 +38,14 @@ void TextInput::CheckClicked(const Input::State& lmb_state, const Vector2<float>
 	bool withinQuad = quad.Contains(cursor_pos);
 
 	// TODO: cursor changes
-	/*
-	if (withinQuad) {
-		glfwDestroyCursor(m_Cursor);
-		m_Cursor = glfwCreateStandardCursor(GLFW_IBEAM_CURSOR);
+	if (withinQuad || isTyping) {
+		glfwDestroyCursor(Engine::cursor);
+		Engine::cursor = glfwCreateStandardCursor(GLFW_IBEAM_CURSOR);
 	}
 	else {
-		glfwDestroyCursor(m_Cursor);
-		m_Cursor = glfwCreateStandardCursor(GLFW_ARROW_CURSOR);
+		glfwDestroyCursor(Engine::cursor);
+		Engine::cursor = glfwCreateStandardCursor(GLFW_ARROW_CURSOR);
 	}
-	*/
 
 	if (lmb_state == Input::State::RELEASE) {
 		// They clicked on us
@@ -67,7 +62,7 @@ void TextInput::CheckClicked(const Input::State& lmb_state, const Vector2<float>
 void TextInput::m_Construct()
 {
 	Vector2<float> pos = Vector2<float>(quad.GetX() - quad.GetWidth() / 2.0f, quad.GetY());
-	m_Text = new Text(empty_text, pos, m_TextShader, m_DefaultScale);
+	m_Text = ENG_MakePtr(Text, empty_text, pos, m_TextShader, m_DefaultScale);
 
 	// Push ourselves to GUIManager
 	GUIManager::text_inputs.push_back(this);
@@ -171,14 +166,14 @@ TextInput::TextInput(const Quad& quad, CallbackFunc_t callback)
 	m_Construct();
 }
 
-TextInput::TextInput(const Quad& quad, CallbackFunc_t callback, Shader* bg_shader)
+TextInput::TextInput(const Quad& quad, CallbackFunc_t callback, ENG_Ptr(Shader) bg_shader)
 	: quad(quad), callback(callback), bg_shader(bg_shader), bg_texture(nullptr), empty_text(m_DefaultEmptyText),
 	m_EmptyColor(m_DefaultEmptyColor), m_TypedColor(m_DefaultTypedColor)
 {
 	m_Construct();
 }
 
-TextInput::TextInput(const Quad& quad, CallbackFunc_t callback, Shader* bg_shader, Texture* bg_texture)
+TextInput::TextInput(const Quad& quad, CallbackFunc_t callback, ENG_Ptr(Shader) bg_shader, ENG_Ptr(Texture) bg_texture)
 	: quad(quad), callback(callback), bg_shader(bg_shader), bg_texture(bg_texture), empty_text(m_DefaultEmptyText),
 	m_EmptyColor(m_DefaultEmptyColor), m_TypedColor(m_DefaultTypedColor)
 {
@@ -192,38 +187,39 @@ TextInput::TextInput(const Quad& quad, CallbackFunc_t callback, const Vector3<fl
 	m_Construct();
 }
 
-TextInput::TextInput(const Quad& quad, CallbackFunc_t callback, const Vector3<float>& typed_color, const Vector3<float>& empty_color, Shader* bg_shader)
+TextInput::TextInput(const Quad& quad, CallbackFunc_t callback, const Vector3<float>& typed_color, const Vector3<float>& empty_color, ENG_Ptr(Shader) bg_shader)
 	: quad(quad), callback(callback), bg_shader(bg_shader), bg_texture(nullptr), empty_text(m_DefaultEmptyText),
 	m_EmptyColor(empty_color), m_TypedColor(typed_color)
 {
 	m_Construct();
 }
 
-TextInput::TextInput(const Quad& quad, CallbackFunc_t callback, const Vector3<float>& typed_color, const Vector3<float>& empty_color, Shader* bg_shader, Texture* bg_texture)
+TextInput::TextInput(const Quad& quad, CallbackFunc_t callback, const Vector3<float>& typed_color, const Vector3<float>& empty_color, ENG_Ptr(Shader) bg_shader, ENG_Ptr(Texture) bg_texture)
 	: quad(quad), callback(callback), bg_shader(bg_shader), bg_texture(bg_texture), empty_text(m_DefaultEmptyText),
 	m_EmptyColor(empty_color), m_TypedColor(typed_color)
 {
 	m_Construct();
 }
 
-Animation* TextInput::GetTypingBar()
+ENG_Ptr(Animation) TextInput::GetTypingBar()
 {
 	// TODO Function is 2 in 1 kinda ugly
 	// Update pos
 	// TODO: only works on monospace fonts
-	Font::Character& ch = TextInput::m_DefaultFont->character_map.at('a');
+	Font::Character& ch = TextInput::m_DefaultFont->character_map.at('|');
 	float char_x = ch.advance >> 6; // Convert advance to pixels
 
-	float size = 64 * m_DefaultScale;
+	// TODO
+	float size = m_DefaultFont->max_height * m_DefaultScale * 1.1;
 
 	m_TypingBar->quad->SetDim(Vector2<float>(size, size));
 
-	// TODO: figure out how to position the cursor
+	// TODO: figure out how to position the typing bar
 
 	float left = quad.GetX() - (quad.GetWidth() / 2.0f) + (char_x * m_TypingIndex * m_DefaultScale) + (m_TypingBar->quad->GetWidth() / 2.0f);
 	Vector2<float> pos = Vector2<float>(
 		left,
-		quad.GetY() + (size * 0.3)
+		quad.GetY() + m_TypingBar->quad->GetHeight() / 2.0f - (size * 0.2)
 		);
 
 	m_TypingBar->quad->SetCenter(pos);
@@ -236,14 +232,12 @@ bool TextInput::GetIsTyping()
 	return isTyping;
 }
 
-Text* TextInput::GetText()
+ENG_Ptr(Text) TextInput::GetText()
 {
 	return m_Text;
 }
 
 TextInput::~TextInput() {
-	delete m_Text;
-
 	// Remove ourselves from GUIManager
 	Utils::Remove(GUIManager::text_inputs, this);
 }

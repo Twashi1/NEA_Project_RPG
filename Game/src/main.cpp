@@ -83,7 +83,7 @@ int main(void)
     Texture noisetext = Texture(std::shared_ptr<uint8_t[]>(buffer), SIZE, SIZE);
 
     // DEBUG: Animation object
-    Animation animation(std::shared_ptr<Quad>(&dummy), std::shared_ptr<Shader>(&texture_shader), std::shared_ptr<Texture>(&atlas_test), {64, 64}, "data");
+    Animation animation(std::shared_ptr<Quad>(&dummy), std::shared_ptr<Shader>(&texture_shader), std::shared_ptr<Texture>(&atlas_test), { 64, 64 }, "data");
 
     Player player = Player(Engine::proj);
     Engine::physics->Register(player.body, 0);
@@ -126,7 +126,7 @@ int main(void)
 
         // Draw calls
         Vector2<int> update_pos = (player.quad.GetCenter() / World::scale).floor();
-        
+
         world.Update(update_pos);
         Renderer::Schedule(&wall, &colour_shader);
         Renderer::Schedule(&noisequad, &texture_shader, &noisetext);
@@ -136,7 +136,7 @@ int main(void)
         Renderer::Schedule(&player.quad, player.shader);
 
         if (Engine::isStatsEnabled) Engine::UpdateStats(*player.body); // Draw stats information
-        
+
         Engine::EndFrame();
 
         // DEGUG: Rotate our example wall
@@ -153,7 +153,6 @@ int main(void)
 
     ENG_LogInfo("Ending program");
 
-    // TODO: still have to forcibly exit since deconstructors aren't being called properly
-    // maybe something to do with order?
+    // TODO: program still doesn't exit properly
     exit(EXIT_SUCCESS);
 }

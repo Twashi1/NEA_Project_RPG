@@ -33,11 +33,11 @@ private:
 	static constexpr uint8_t m_INVALID_TEXTURE_SLOT = 255; // Constant to represent an invalid texture slot
 
 public:
-	static Camera* camera; // Camera currently being used on all Renderable objects
-	static Shader* texture_shader; // Default shader used for textures
+	static ENG_Ptr(Camera) camera; // Camera currently being used on all Renderable objects
+	static ENG_Ptr(Shader) texture_shader; // Default shader used for textures
 	static std::vector<uint8_t> available_slots; // Available slots on GPU for texture
 
-	static void Init(Camera* camera);
+	static void Init(ENG_Ptr(Camera) camera);
 
 	// Gives a free texture slot
 	static uint8_t GetTextureSlot();

@@ -44,6 +44,11 @@ void Quad::Init()
 	ib = new IndexBuffer({ 0, 1, 2, 2, 3, 0 });
 }
 
+void Quad::Terminate()
+{
+	delete ib;
+}
+
 void Quad::SetCenter(float nx, float ny)
 {
 	x = nx;
@@ -147,7 +152,7 @@ const VertexBuffer& Quad::GetVertexBuffer() const
 	return *vb;
 }
 
-const IndexBuffer& Quad::GetIndexBuffer() const
+const IndexBuffer& Quad::GetIndexBuffer()
 {
 	return *ib;
 }

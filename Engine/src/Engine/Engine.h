@@ -6,6 +6,7 @@
 #include <fstream>
 #include <chrono>
 #include <algorithm>
+#include <memory>
 
 #include "Renderer.h"
 #include "IndexBuffer.h"
@@ -27,7 +28,6 @@
 #include "AnimationManager.h"
 #include "Animation.h"
 #include "Noise.h"
-#include "TextInput.h"
 
 // TODO: shouldn't engine be full static?
 
@@ -40,7 +40,7 @@ private:
     // Maps a name for each debug stat to a text renderable object
     static std::unordered_map<std::string, Text> m_DebugStatsText;
 
-    static Texture* m_IconsTexture;
+    static ENG_Ptr(Texture) m_IconsTexture;
 
     static int m_FPS;    // Frames per second
     static double m_TimePerFrame;          // Time per frame (1 / fps)
@@ -62,8 +62,8 @@ public:
 
     static glm::mat4 proj;      // Projection matrix
 
-    static Physics* physics;     // Physics system
-    static Camera* camera;       // Camera currently being used
+    static ENG_Ptr(Physics) physics;     // Physics system
+    static ENG_Ptr(Camera) camera;       // Camera currently being used
 
     static void SetBGColor(const Vector3<float>& color);
 

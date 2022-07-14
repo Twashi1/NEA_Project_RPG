@@ -46,7 +46,7 @@ Player::Player(const glm::mat4& proj)
 {
     // Setup player quad and body
     quad = Quad(0.0f, 0.0f, 100.0f, 100.0f, 0.0f);
-    body = std::shared_ptr<Body>(new Body(&quad, true, 0.0f, 1.0f));
+    body = std::shared_ptr<Body>(new Body(std::shared_ptr<Quad>(&quad), true, 0.0f, 1.0f));
 
     // Setup shader and uniforms
     shader = new Shader("player_vertex", "player_frag");

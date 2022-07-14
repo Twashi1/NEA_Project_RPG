@@ -15,16 +15,18 @@ void Physics::Update(float new_time) {
 				if (i == j) continue;
 
 				// Get pointers to bodies
-				std::shared_ptr<Body> a = layer[i];
-				std::shared_ptr<Body> b = layer[j];
+				ENG_Ptr(Body) a = layer[i];
+				ENG_Ptr(Body) b = layer[j];
 
 				// Calculate future positions of bodies
 				Quad future_quad_a = a->Peek(elapsed);
 				Quad future_quad_b = b->Peek(elapsed);
 
+				// TODO: might be laggy here since we're making copies of the quad twice?
+				// TODO: maybe make a move constructor for the quad to fix it?
 				// Create two bodies to represent bodies in future
-				Body future_a = *a; future_a.quad = &future_quad_a;
-				Body future_b = *b; future_b.quad = &future_quad_b;
+				Body future_a = *a; future_a.quad = ENG_MakePtr(Quad, future_quad_a);
+				Body future_b = *b; future_b.quad = ENG_MakePtr(Quad, future_quad_b);
 
 				// Create collision object
 				Collision collision = Collision(&future_a, &future_b);
@@ -56,7 +58,7 @@ void Physics::Update(float new_time) {
 	}
 }
 
-void Physics::Register(const std::shared_ptr<Body>& body, int layer_index)
+void Physics::Register(ENG_Ptr(Body) body, int layer_index)
 {
 	// If layers already contains index
 	if (layers.contains(layer_index)) {
@@ -69,7 +71,7 @@ void Physics::Register(const std::shared_ptr<Body>& body, int layer_index)
 	}
 }
 
-void Physics::Unregister(const std::shared_ptr<Body>& body, int layer_index)
+void Physics::Unregister(ENG_Ptr(Body) body, int layer_index)
 {
 	// Get layer body is in
 	layer_t& layer = layers[layer_index];
@@ -79,7 +81,7 @@ void Physics::Unregister(const std::shared_ptr<Body>& body, int layer_index)
 	if (it != layer.end()) layer.erase(it);
 }
 
-void Physics::Unregister(const std::shared_ptr<Body>& body)
+void Physics::Unregister(ENG_Ptr(Body) body)
 {
 	// Iterate over each layer
 	for (auto& [layer_index, layer] : layers) {

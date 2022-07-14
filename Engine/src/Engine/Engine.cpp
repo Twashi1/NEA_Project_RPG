@@ -1,4 +1,5 @@
 #include "Engine.h"
+#include "TextInput.h"
 
 double Engine::m_Time = 0.0;
 
@@ -11,7 +12,7 @@ double Engine::m_ProcessingTime = 0.0;
 bool Engine::isStatsEnabled = true;
 
 VersionNumber Engine::m_VersionNumber = "v0.0.2";
-Texture* Engine::m_IconsTexture = nullptr;
+ENG_Ptr(Texture) Engine::m_IconsTexture = nullptr;
 
 GLFWwindow* Engine::window = nullptr;
 GLFWcursor* Engine::cursor = nullptr;
@@ -20,8 +21,8 @@ int Engine::height = 0;
 
 glm::mat4 Engine::proj = glm::mat4(1.0f);
 
-Physics* Engine::physics = nullptr;
-Camera* Engine::camera = nullptr;
+ENG_Ptr(Physics) Engine::physics = nullptr;
+ENG_Ptr(Camera) Engine::camera = nullptr;
 
 
 void ENGINE_API Engine::m_OnWindowResize(int nwidth, int nheight)
@@ -173,14 +174,14 @@ void ENGINE_API Engine::Init(int nwidth, int nheight, int nfps, bool nisStatsEna
     Quad::Init();
 
     // Construct physics object
-    physics = new Physics();
+    physics = std::make_shared<Physics>();
     // Construct camera
-    camera = new Camera(Vector2<float>(width * 0.5f, height * 0.5f), { 0.0f, 0.0f });
+    camera = std::make_shared<Camera>(Vector2<float>(width * 0.5f, height * 0.5f), Vector2<float>(0.0f, 0.0f));
     // Set renderer's camera
     Renderer::Init(camera);
 
     // Create icons texture
-    m_IconsTexture = new Texture("engine_icons.png");
+    m_IconsTexture = ENG_MakePtr(Texture, "engine_icons.png");
 
     // Initialise input system
     Input::Init(window, &width, &height);
@@ -195,7 +196,7 @@ void ENGINE_API Engine::Init(int nwidth, int nheight, int nfps, bool nisStatsEna
     Button::Init();
 
     // Initialise text input class
-    TextInput::Init(m_IconsTexture, cursor);
+    TextInput::Init(m_IconsTexture);
 
     // Update projection uniform for all shaders
     // NOTE: all shader initialisation should come before this function, unless we're setting the projection matrix ourselves
@@ -223,17 +224,13 @@ void ENGINE_API Engine::Init(int nwidth, int nheight, int nfps, bool nisStatsEna
 void ENGINE_API Engine::Terminate()
 {
     ENG_LogInfo("Engine shutting down");
-    
-    /*
-    delete physics;
-    delete camera;
-    */
 
-    glfwDestroyWindow(window); window = nullptr;
+    Quad::Terminate();
 
     glfwTerminate();
 
-    // TODO: fix the errors which happen when deconstructing engine
+    // TODO: program still doesn't exit properly
+    exit(EXIT_FAILURE);
 }
 
 void ENGINE_API Engine::PollPerformance(double dt)

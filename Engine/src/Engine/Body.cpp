@@ -1,7 +1,7 @@
 #include "Body.h"
 
 Body::Body(Quad& quad, bool isImmovable, float restitution, float mass)
-	: quad(&quad),
+	: quad(ENG_MakePtr(Quad, quad)),
 	isImmovable(isImmovable),
 	vel(Vector2<float>::ZERO), acc(Vector2<float>::ZERO),
 	restitution(restitution),
@@ -9,7 +9,7 @@ Body::Body(Quad& quad, bool isImmovable, float restitution, float mass)
 	angular_acc(0.0f), angular_vel(0.0f)
 {}
 
-Body::Body(Quad* quad, bool isImmovable, float restitution, float mass)
+Body::Body(ENG_Ptr(Quad) quad, bool isImmovable, float restitution, float mass)
 	: quad(quad),
 	isImmovable(isImmovable),
 	vel(Vector2<float>::ZERO), acc(Vector2<float>::ZERO),

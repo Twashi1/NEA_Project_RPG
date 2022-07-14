@@ -23,7 +23,7 @@ Font::Font(const char* font_path) {
 	}
 
 	// TODO: non-set font size
-	FT_Set_Pixel_Sizes(face, 0, 48); // Extract a font size of 48
+	FT_Set_Pixel_Sizes(face, 0, 64); // Extract a font size of 48
 
 	GlCall(glPixelStorei(GL_UNPACK_ALIGNMENT, 1)); // Disable byte-alignment restriction
 	
@@ -31,6 +31,10 @@ Font::Font(const char* font_path) {
 	for (unsigned char c = 0; c < 128; c++)
 	{
 		m_LoadChar(face, c);
+
+		uint32_t tmp_height = face->glyph->bitmap.rows;
+
+		if (tmp_height > max_height) max_height = tmp_height;
 
 		// Generate texture
 		uint32_t id;
@@ -62,6 +66,9 @@ Font::Font(const char* font_path) {
 		);
 		character_map[c] = character;
 	}
+
+	ENG_LogInfo("Max height is {}", max_height);
+
 	// Unbind texture
 	GlCall(glBindTexture(GL_TEXTURE_2D, 0));
 

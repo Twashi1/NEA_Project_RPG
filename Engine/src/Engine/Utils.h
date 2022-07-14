@@ -10,14 +10,18 @@
 #include <memory>
 
 #ifdef ENGINE_BUILD_DLL
-#define ENGINE_API __declspec(dllexport)
+	#define ENGINE_API __declspec(dllexport)
 #else
-#define ENGINE_API __declspec(dllimport)
+	#define ENGINE_API __declspec(dllimport)
 #endif
 
 #define ENG_LogInfo(msg, ...) m_Log(std::format(msg, __VA_ARGS__), LOG::INFO, __FUNCSIG__, __LINE__)
 #define ENG_LogWarn(msg, ...) m_Log(std::format(msg, __VA_ARGS__), LOG::WARNING, __FUNCSIG__, __LINE__);
 #define ENG_LogFatal(msg, ...) m_Log(std::format(msg, __VA_ARGS__), LOG::FATAL, __FUNCSIG__, __LINE__);
+
+// TODO: Make these only available in engine files
+#define ENG_Ptr(T) std::shared_ptr<T>
+#define ENG_MakePtr(T, ...) std::make_shared<T>(__VA_ARGS__)
 
 using std::to_string;
 
@@ -49,6 +53,8 @@ enum class ENGINE_API LOG : uint8_t {
 
 ENGINE_API std::ostream& operator<<(std::ostream& os, const LOG& error);
 
+ENGINE_API void m_Log(const std::string& message, LOG error_type, const char* function, int line);
+
 namespace Utils {
 	// TODO: update classes to use Timer::GetElapsed();
 	class ENGINE_API Timer {
@@ -71,6 +77,7 @@ namespace Utils {
 	template <typename T>
 	void Remove(std::vector<T>& data, const T& object)
 	{
+		if (data.size() == 0) { ENG_LogWarn("Erasing object from empty list"); return; }
 		// Remove all occurences of object from data, and return new end of list
 		auto new_end = std::remove(data.begin(), data.end(), object);
 
@@ -125,5 +132,3 @@ namespace Utils {
 	// Splits string by delimiter
 	ENGINE_API std::vector<std::string> SplitString(const std::string& s, const std::string& delim);
 }
-
-ENGINE_API void m_Log(const std::string& message, LOG error_type, const char* function, int line);

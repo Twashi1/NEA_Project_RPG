@@ -6,19 +6,20 @@
 #include "Text.h"
 #include "Font.h"
 #include "Animation.h"
+#include "Engine.h"
 
 class ENGINE_API TextInput {
 private:
 	typedef void (*CallbackFunc_t)(TextInput*); // Shorthand for a callback function pointer (takes the text input that was entered as a paramater)
 
-	static Animation* m_TypingBar; // Animation for the bar that shows where your cursor currently is
+	static ENG_Ptr(Animation) m_TypingBar; // Animation for the bar that shows where your cursor currently is
 	static Vector3<float> m_DefaultEmptyColor; // Default color for text that displays when input is empty
 	static Vector3<float> m_DefaultTypedColor; // Default color for text that user has typed in
 	static std::string m_DefaultEmptyText; // Default text that displays when box is empty
-	static Font* m_DefaultFont;
-	static Shader* m_DefaultBgShader;
-	static Shader* m_TextShader;
-	static Shader* m_TypingBarShader;
+	static ENG_Ptr(Font) m_DefaultFont;
+	static ENG_Ptr(Shader) m_DefaultBgShader;
+	static ENG_Ptr(Shader) m_TextShader;
+	static ENG_Ptr(Shader) m_TypingBarShader;
 
 	static GLFWcursor* m_Cursor;
 
@@ -36,7 +37,7 @@ private:
 	Vector3<float> m_EmptyColor;
 	Vector3<float> m_TypedColor;
 
-	Text* m_Text = nullptr;
+	ENG_Ptr(Text) m_Text = nullptr;
 
 	std::string empty_text;	// Text that displays when textinput is empty
 
@@ -48,23 +49,23 @@ private:
 public:
 	std::string typed_text = ""; // Text that user has typed/is typing in
 
-	Texture* bg_texture = nullptr;
-	Shader* bg_shader;
+	ENG_Ptr(Texture) bg_texture = nullptr;
+	ENG_Ptr(Shader) bg_shader;
 
 	Quad quad;
 
-	Animation* GetTypingBar();
+	ENG_Ptr(Animation) GetTypingBar();
 	bool GetIsTyping();
-	Text* GetText();
+	ENG_Ptr(Text) GetText();
 
-	static void Init(Texture* engine_icons, GLFWcursor* cursor);
+	static void Init(ENG_Ptr(Texture) engine_icons);
 
 	TextInput(const Quad& quad, CallbackFunc_t callback);
-	TextInput(const Quad& quad, CallbackFunc_t callback, Shader* bg_shader);
-	TextInput(const Quad& quad, CallbackFunc_t callback, Shader* bg_shader, Texture* bg_texture);
+	TextInput(const Quad& quad, CallbackFunc_t callback, ENG_Ptr(Shader) bg_shader);
+	TextInput(const Quad& quad, CallbackFunc_t callback, ENG_Ptr(Shader) bg_shader, ENG_Ptr(Texture) bg_texture);
 	TextInput(const Quad& quad, CallbackFunc_t callback, const Vector3<float>& typed_color, const Vector3<float>& empty_color);
-	TextInput(const Quad& quad, CallbackFunc_t callback, const Vector3<float>& typed_color, const Vector3<float>& empty_color, Shader* bg_shader);
-	TextInput(const Quad& quad, CallbackFunc_t callback, const Vector3<float>& typed_color, const Vector3<float>& empty_color, Shader* bg_shader, Texture* bg_texture);
+	TextInput(const Quad& quad, CallbackFunc_t callback, const Vector3<float>& typed_color, const Vector3<float>& empty_color, ENG_Ptr(Shader) bg_shader);
+	TextInput(const Quad& quad, CallbackFunc_t callback, const Vector3<float>& typed_color, const Vector3<float>& empty_color, ENG_Ptr(Shader) bg_shader, ENG_Ptr(Texture) bg_texture);
 	~TextInput();
 
 	void CheckClicked(const Input::State& lmb_state, const Vector2<float>& cursor_pos);

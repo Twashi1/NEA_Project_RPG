@@ -14,7 +14,7 @@ private:
 	static IndexBuffer* ib;
 
 	// Buffers
-	std::shared_ptr<VertexBuffer> vb;
+	ENG_Ptr(VertexBuffer) vb;
 
 	// Update vertex buffer
 	void m_UpdateVB();
@@ -24,6 +24,7 @@ private:
 
 public:
 	static void Init();
+	static void Terminate();
 
 	// Make methods public
 	using Rect::Contains;
@@ -35,7 +36,7 @@ public:
 	using Rect::GetVertices;
 
 	const VertexBuffer& GetVertexBuffer() const;
-	const IndexBuffer& GetIndexBuffer()   const;
+	static const IndexBuffer& GetIndexBuffer();
 
 	Quad();
 	Quad(float x, float y, float width, float height, float angle);
