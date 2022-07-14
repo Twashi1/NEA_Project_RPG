@@ -34,7 +34,6 @@ private:
 
 public:
 	static ENG_Ptr(Camera) camera; // Camera currently being used on all Renderable objects
-	static ENG_Ptr(Shader) texture_shader; // Default shader used for textures
 	static std::vector<uint8_t> available_slots; // Available slots on GPU for texture
 
 	static void Init(ENG_Ptr(Camera) camera);
@@ -45,9 +44,8 @@ public:
 	static void FreeTextureSlot(uint8_t slot);
 
 	static void Schedule(const Quad* quad, Shader* shader);
-	static void Schedule(const Quad* quad, const Texture* texture);
-	static void Schedule(const Quad* quad, const Texture* texture, uint8_t slot);
 	static void Schedule(const Quad* quad, Shader* shader, const Texture* texture);
+	static void Schedule(const Quad* quad, Shader* shader, const Texture* texture, uint8_t slot);
 	static void Schedule(const Text* text);
 	static void Schedule(Button* btn);
 	static void Schedule(Animation* animation);

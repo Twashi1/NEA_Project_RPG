@@ -62,16 +62,6 @@ Button::Button(const Quad& quad, CallbackFunc_t callback, const std::string& idl
 	m_Construct();
 }
 
-Button::Button(const Quad& quad, CallbackFunc_t callback, const std::string& idle_text, const std::string& pressed_text, ENG_Ptr(Texture) idle_texture, ENG_Ptr(Texture) pressed_texture)
-	: quad(quad),
-	callback(callback),
-	idle_text(idle_text), pressed_text(pressed_text),
-	idle_shader(Renderer::texture_shader), pressed_shader(Renderer::texture_shader),
-	idle_texture(idle_texture), pressed_texture(pressed_texture)
-{
-	m_Construct();
-}
-
 Button::Button(const Quad& quad, CallbackFunc_t callback, const std::string& idle_text, const std::string& pressed_text)
 	: quad(quad),
 	callback(callback),

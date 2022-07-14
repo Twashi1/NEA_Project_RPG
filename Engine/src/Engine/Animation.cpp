@@ -2,10 +2,27 @@
 
 std::string Animation::FILE_EXTENSION = "";
 
-void Animation::m_ParseData(const std::string& data_filename)
+Animation::Data::Data(const std::vector<float>& frame_timings)
 {
-	std::string* filetext = Utils::ReadFile(Texture::PATH + data_filename + Animation::FILE_EXTENSION);
+	// Iterate timing data passed
+	for (float frame_time : frame_timings) {
+		// If its a valid time value
+		if (frame_time > 0.0) {
+			this->frame_timings.push_back(frame_time);
+		}
+		// Otherwise increment starting index (since values of 0 indicate a sprite is not included in the animation)
+		else {
+			start_index++;
+		}
+	}
+}
 
+Animation::Data::Data(const std::string& animation_data_file)
+{
+	// Load text
+	std::string* filetext = Utils::ReadFile(Texture::PATH + animation_data_file + Animation::FILE_EXTENSION);
+
+	// Split by c
 	std::vector<std::string> parts = Utils::SplitString(*filetext, ",");
 
 	int loop_start = 0;
@@ -15,7 +32,7 @@ void Animation::m_ParseData(const std::string& data_filename)
 		// Erase first character (which is #)
 		parts[0].erase(parts[0].begin());
 		// Set our starting index to that value
-		m_StartIndex = std::stoi(parts[0]);
+		start_index = std::stoi(parts[0]);
 		// Start at next index since the first isn't a float value
 		loop_start = 1;
 	}
@@ -30,23 +47,23 @@ void Animation::m_ParseData(const std::string& data_filename)
 		}
 		// If animation file contains value that cannot be converted to float
 		catch (std::invalid_argument) {
-			ENG_LogWarn("Invalid value in {}.animation: {}", data_filename, parts[i]);
+			ENG_LogWarn("Invalid value in {}.animation: {}", animation_data_file, parts[i]);
 		}
 
 		// NOTE: Sometimes animations are included in larger texture atlases/multiple animations are in the same texture atlas,
 		//	so we can enter lots of 0s at the start of our animation.data file so we start at the first frame of our animation
-		
+
 		// If value is more than 0, add the timing to our timings
 		if (value > 0.0) {
-			m_FrameTimes.push_back(value);
+			frame_timings.push_back(value);
 		}
 		// Otherwise increase the starting index
 		else {
-			m_StartIndex++;
+			start_index++;
 		}
 	}
 
-	m_FrameCount = m_FrameTimes.size();
+	frame_count = frame_timings.size();
 
 	delete filetext;
 }
@@ -54,9 +71,9 @@ void Animation::m_ParseData(const std::string& data_filename)
 Vector2<int> Animation::m_GetIndex()
 {
 	// Calculate y index
-	int y = (m_FrameIndex + m_StartIndex) / m_AtlasDimRelative.x;
+	int y = (m_FrameIndex + m_AnimationData.start_index) / m_AtlasDimRelative.x;
 	// Calculate x index
-	int x = (m_FrameIndex + m_StartIndex) - (y * m_AtlasDimRelative.x);
+	int x = (m_FrameIndex + m_AnimationData.start_index) - (y * m_AtlasDimRelative.x);
 	// Invert y since we want to read top to bottom
 	y = (m_AtlasDimRelative.y - 1) - y;
 
@@ -78,30 +95,9 @@ const std::shared_ptr<Texture> Animation::GetAtlas() const
 	return m_Atlas;
 }
 
-Animation::Animation(const std::shared_ptr<Quad>& quad, const std::shared_ptr<Shader>& shader, const std::shared_ptr<Texture>& atlas, const Vector2<int>& sprite_size, const std::string& data_filename)
-	: quad(quad), shader(shader), m_Atlas(atlas), m_SpriteSize(sprite_size)
+Animation::Animation(ENG_Ptr(Quad) quad, ENG_Ptr(Shader) shader, ENG_Ptr(Texture) atlas, const Vector2<int>& sprite_size, const Animation::Data& animation_data)
+	: quad(quad), shader(shader), m_Atlas(atlas), m_SpriteSize(sprite_size), m_AnimationData(animation_data)
 {
-	// Parse animation file
-	m_ParseData(data_filename);
-
-	m_Construct();
-}
-
-Animation::Animation(const std::shared_ptr<Quad>& quad, const std::shared_ptr<Shader>& shader, const std::shared_ptr<Texture>& atlas, const Vector2<int>& sprite_size, const std::vector<float>& animation_data)
-	: quad(quad), shader(shader), m_Atlas(atlas), m_SpriteSize(sprite_size)
-{
-	// Iterate timing data passed
-	for (float frame_time : animation_data) {
-		// If its a valid time value
-		if (frame_time > 0.0) {
-			m_FrameTimes.push_back(frame_time);
-		}
-		// Otherwise increment starting index (since values of 0 indicate a sprite is not included in the animation)
-		else {
-			m_StartIndex++;
-		}
-	}
-
 	m_Construct();
 }
 
@@ -113,21 +109,22 @@ Animation::~Animation()
 
 void Animation::Update(float current_time)
 {
-	float elapsed = current_time - m_Time; // Calculate deltatime
+	// Calculate deltatime
+	float elapsed = current_time - m_Time;
 
 	// Add delta time to time spent on current frame
 	m_FrameTime += elapsed;
 
 	// Get time that is meant to be spent on this frame
-	float this_frame_timing = m_FrameTimes[m_FrameIndex];
+	float this_frame_timing = m_AnimationData.frame_timings[m_FrameIndex];
 	
 	// If we have spent enough time on this frame
 	if (m_FrameTime > this_frame_timing) {
 		// Increment frame counter
 		m_FrameIndex++;
 		// If frame counter is more than amount of key frames, roll over
-		if (m_FrameIndex >= m_FrameCount) {
-			m_FrameIndex = m_FrameCount % m_FrameIndex;
+		if (m_FrameIndex >= m_AnimationData.frame_count) {
+			m_FrameIndex = m_AnimationData.frame_count % m_FrameIndex;
 		}
 		// Reset current frame time
 		m_FrameTime -= this_frame_timing;

@@ -228,9 +228,6 @@ void ENGINE_API Engine::Terminate()
     Quad::Terminate();
 
     glfwTerminate();
-
-    // TODO: program still doesn't exit properly
-    exit(EXIT_FAILURE);
 }
 
 void ENGINE_API Engine::PollPerformance(double dt)

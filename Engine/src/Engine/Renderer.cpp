@@ -25,14 +25,11 @@ bool GlLogCall(const char* function, const char* file, int line) {
 }
 
 std::vector<uint8_t> Renderer::available_slots = std::vector<uint8_t>({ 0, 1, 2, 3, 4, 5, 6, 7, 8, 9, 10, 11, 12, 13, 14, 15 });
-ENG_Ptr(Shader) Renderer::texture_shader = nullptr;
 ENG_Ptr(Camera) Renderer::camera = nullptr;
 
 void Renderer::Init(ENG_Ptr(Camera) camera)
 {
 	Renderer::camera = camera;
-	// TODO: Move to ShaderManager
-	Renderer::texture_shader = ENG_MakePtr(Shader, "texture_vertex", "texture_frag");
 }
 
 ENGINE_API uint8_t Renderer::GetTextureSlot()
@@ -66,40 +63,6 @@ ENGINE_API void Renderer::Schedule(const Quad* quad, Shader* shader)
 	GlCall(glDrawElements(GL_TRIANGLES, ib.count, ib.type, nullptr));
 }
 
-ENGINE_API void Renderer::Schedule(const Quad* quad, const Texture* texture)
-{
-	quad->GetVertexBuffer().Bind();
-	const IndexBuffer& ib = Quad::GetIndexBuffer(); ib.Bind();
-
-	// Bind texture
-	uint8_t slot = GetTextureSlot();
-	texture->Bind(slot);
-
-	// Bind shader
-	Renderer::texture_shader->Bind();
-	Renderer::texture_shader->SetUniform1i("u_Texture", slot);
-
-	GlCall(glDrawElements(GL_TRIANGLES, ib.count, ib.type, nullptr));
-
-	// Free texture slot
-	FreeTextureSlot(slot);
-}
-
-ENGINE_API void Renderer::Schedule(const Quad* quad, const Texture* texture, uint8_t slot)
-{
-	quad->GetVertexBuffer().Bind();
-	const IndexBuffer& ib = Quad::GetIndexBuffer(); ib.Bind();
-
-	// Bind texture
-	texture->Bind(slot);
-
-	// Bind shader
-	Renderer::texture_shader->Bind();
-	Renderer::texture_shader->SetUniform1i("u_Texture", slot);
-
-	GlCall(glDrawElements(GL_TRIANGLES, ib.count, ib.type, nullptr));
-}
-
 ENGINE_API void Renderer::Schedule(const Quad* quad, Shader* shader, const Texture* texture)
 {
 	quad->GetVertexBuffer().Bind();
@@ -118,6 +81,21 @@ ENGINE_API void Renderer::Schedule(const Quad* quad, Shader* shader, const Textu
 	// Unbind texture
 	Texture::Unbind();
 	FreeTextureSlot(slot);
+}
+
+ENGINE_API void Renderer::Schedule(const Quad* quad, Shader* shader, const Texture* texture, uint8_t slot)
+{
+	quad->GetVertexBuffer().Bind();
+	const IndexBuffer& ib = Quad::GetIndexBuffer(); ib.Bind();
+
+	// Bind texture
+	texture->Bind(slot);
+
+	// Bind shader
+	shader->Bind();
+	shader->SetUniform1i("u_Texture", slot);
+
+	GlCall(glDrawElements(GL_TRIANGLES, ib.count, ib.type, nullptr));
 }
 
 ENGINE_API void Renderer::Schedule(const Text* text)

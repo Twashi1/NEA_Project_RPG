@@ -40,11 +40,17 @@ void Body::Update(float dt)
 
 Quad Body::Peek(float dt)
 {
-	Vector2<float> next_vel = vel + (acc * dt);	// Get future velocity
-	Vector2<float> next_pos = quad->GetCenter() + (next_vel * dt); // Get future position
-	float next_angular_vel = angular_vel + (angular_acc * dt); // Get future angular velocity
-	float next_angle = quad->GetAngle() + (next_angular_vel * dt); // Get future angle
+	// Calculate future velocity
+	Vector2<float> next_vel = vel + (acc * dt);
+	// Calculate future position
+	Vector2<float> next_pos = quad->GetCenter() + (next_vel * dt);
+	// Calculate future angular velocity
+	float next_angular_vel = angular_vel + (angular_acc * dt);
+	// Calculate future angle
+	float next_angle = quad->GetAngle() + (next_angular_vel * dt);
 
+	// Construct quad
+	// TODO: Slow since constructing vb
 	Quad next_shape = Quad(next_pos, quad->GetDim(), next_angle);
 
 	return next_shape;

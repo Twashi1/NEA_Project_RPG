@@ -1,13 +1,17 @@
 #pragma once
+
 #include <cmath>
 #include <string>
 #include <filesystem>
 #include <string>
 #include <fstream>
 #include <iostream>
+#include <iomanip>
 #include <format>
 #include <chrono>
 #include <memory>
+#include <algorithm>
+
 
 #ifdef ENGINE_BUILD_DLL
 	#define ENGINE_API __declspec(dllexport)
@@ -19,7 +23,6 @@
 #define ENG_LogWarn(msg, ...) m_Log(std::format(msg, __VA_ARGS__), LOG::WARNING, __FUNCSIG__, __LINE__);
 #define ENG_LogFatal(msg, ...) m_Log(std::format(msg, __VA_ARGS__), LOG::FATAL, __FUNCSIG__, __LINE__);
 
-// TODO: Make these only available in engine files
 #define ENG_Ptr(T) std::shared_ptr<T>
 #define ENG_MakePtr(T, ...) std::make_shared<T>(__VA_ARGS__)
 

@@ -13,15 +13,15 @@ static int seed = 0;
 static Noise::Interpolated* i = nullptr;
 static bool seedChanged = false;
 
-void tester_callback(Button* button_pressed) {
+void tester_callback(Button* ctx) {
     seed++;
     i->SetSeed(seed);
     seedChanged = true;
     ENG_LogInfo("Changing seed to {}", seed);
 }
 
-void text_callback(TextInput* text_input) {
-    ENG_LogInfo("Submitted text: {}", text_input->typed_text);
+void text_callback(TextInput* ctx) {
+    ENG_LogInfo("Submitted text: {}", ctx->typed_text);
 }
 
 int main(void)
@@ -82,22 +82,24 @@ int main(void)
         buffer[index + 3] = 0xff;
     }
 
-    Texture noisetext = Texture(std::shared_ptr<uint8_t[]>(buffer), SIZE, SIZE);
+    Texture noisetext = Texture(ENG_Ptr(uint8_t[])(buffer), SIZE, SIZE);
 
     // DEBUG: Animation object
-    Animation animation(std::shared_ptr<Quad>(&dummy), std::shared_ptr<Shader>(&texture_shader), std::shared_ptr<Texture>(&atlas_test), { 64, 64 }, "data");
+    Animation animation(ENG_Ptr(Quad)(&dummy), ENG_Ptr(Shader)(&texture_shader), ENG_Ptr(Texture)(&atlas_test), { 64, 64 }, Animation::Data("data"));
 
     Player player = Player(Engine::proj);
     Engine::physics->Register(player.body, 0);
 
     // DEBUG: add to physics system
     Body wallbody = Body(wall, true, 0.0f, 999);
-    Engine::physics->Register(std::shared_ptr<Body>(&wallbody), 0);
+    Engine::physics->Register(ENG_Ptr(Body)(&wallbody), 0);
 
     textbox.SetTextureCoords(*Engine::engine_icons, { 2, 7 }, { 4, 7 }, { 16, 16 });
-    TextInput text_input(textbox, &text_callback, std::shared_ptr<Shader>(&static_texture), Engine::engine_icons, 30);
+    TextInput text_input(textbox, &text_callback, ENG_Ptr(Shader)(&static_texture), Engine::engine_icons, 30);
 
     ShaderManager::UpdateProjectionMatrix(Engine::proj);
+
+    Engine::SetBGColor(COLORS::BLUE);
 
     // Loop until window is closed by user
     while (Engine::IsRunning())
@@ -145,9 +147,6 @@ int main(void)
         // DEGUG: Rotate our example wall
         wallbody.angular_acc = 1.0f;
         wallbody.angular_vel = std::min(wallbody.angular_vel, 3.0f);
-
-        // TODO find better way to update quads which have a physics object attached
-        wall.SetAngle(wall.GetAngle());
     }
 
     ENG_LogInfo("Window closed");

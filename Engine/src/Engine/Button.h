@@ -45,7 +45,6 @@ public:
 	// TODO better constructor?
 	Button(const Quad& quad, CallbackFunc_t callback, const std::string& idle_text, const std::string& pressed_text, ENG_Ptr(Shader) idle_shader, ENG_Ptr(Shader) pressed_shader, ENG_Ptr(Texture) idle_texture, ENG_Ptr(Texture) pressed_texture);
 	Button(const Quad& quad, CallbackFunc_t callback, const std::string& idle_text, const std::string& pressed_text, ENG_Ptr(Shader) idle_shader, ENG_Ptr(Shader) pressed_shader);
-	Button(const Quad& quad, CallbackFunc_t callback, const std::string& idle_text, const std::string& pressed_text, ENG_Ptr(Texture) idle_texture, ENG_Ptr(Texture) pressed_texture);
 	Button(const Quad& quad, CallbackFunc_t callback, const std::string& idle_text, const std::string& pressed_text);
 	Button(const Quad& quad, CallbackFunc_t callback, const std::string& text);
 	~Button();

@@ -18,7 +18,7 @@ void TextInput::Init(ENG_Ptr(Texture) engine_icons)
 		m_TypingBarShader,
 		engine_icons,
 		Vector2<int>(16, 16),
-		"engine_icons"
+		Animation::Data("engine_icons")
 	);
 
 	m_DefaultEmptyColor = COLORS::GRAY;

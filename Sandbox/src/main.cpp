@@ -71,7 +71,7 @@ int main(void)
     Texture noisetext = Texture(std::shared_ptr<uint8_t[]>(buffer), SIZE, SIZE);
 
     // DEBUG: Animation object
-    Animation animation(std::shared_ptr<Quad>(&dummy), std::shared_ptr<Shader>(&texture_shader), std::shared_ptr<Texture>(&atlas_test), { 64, 64 }, "data");
+    Animation animation(std::shared_ptr<Quad>(&dummy), std::shared_ptr<Shader>(&texture_shader), std::shared_ptr<Texture>(&atlas_test), { 64, 64 }, Animation::Data("data"));
 
     Player player = Player(Engine::proj);
     Engine::physics->Register(player.body, 0);
@@ -128,9 +128,6 @@ int main(void)
         // DEGUG: Rotate our example wall
         wallbody.angular_acc = 1.0f;
         wallbody.angular_vel = std::min(wallbody.angular_vel, 3.0f);
-
-        // TODO find better way to update quads which have a physics object attached
-        wall.SetAngle(wall.GetAngle());
     }
 
     ENG_LogInfo("Window closed");
