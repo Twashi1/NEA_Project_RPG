@@ -12,7 +12,7 @@
 
 #include "Serialiser.h"
 
-template <typename T>
+template <typename T> requires __Arithmetic<T>
 struct ENGINE_API Vector2 /*: public Serialiseable*/ {
 public:
 	T x, y;

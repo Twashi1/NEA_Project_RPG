@@ -29,14 +29,17 @@
 #define ENG_MakePtr(T, ...) std::make_shared<T>(__VA_ARGS__)
 
 template <typename T>
-concept __Integral = std::is_integral<T>::value;
+concept __Arithmetic = std::is_arithmetic_v<T>;
 
 template <typename T>
-concept __Signed = std::is_signed<T>::value;
+concept __Integral = std::is_integral_v<T>;
+
+template <typename T>
+concept __Signed = std::is_signed_v<T>;
 
 using std::to_string;
 
-template <typename T>
+template <typename T> requires __Arithmetic<T>
 struct Vector2;
 
 template <typename T>
