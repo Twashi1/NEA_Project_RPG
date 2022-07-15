@@ -102,26 +102,29 @@ void TextInput::m_UpdateText()
 
 		// If pressed backspace or delete
 		if (keypress.key == GLFW_KEY_BACKSPACE || keypress.key == GLFW_KEY_DELETE) {
-			// Ctrl + backspace should delete a whole word
-			if (keypress.mods & Input::Mod::CTRL) {
-				// Index we're deleting up to
-				int delete_end = m_TypingIndex - 1;
-				// Index of the first character after the last space before our cursor pos
-				int delete_start = typed_text.rfind(' ', delete_end - 1);
-				// Length of substring we're removing
-				int length = delete_end - delete_start;
+			// String is not empty (can't remove characters from an empty string
+			if (typed_text != "") {
+				// Ctrl + backspace should delete a whole word
+				if (keypress.mods & Input::Mod::CTRL) {
+					// Index we're deleting up to
+					int delete_end = m_TypingIndex - 1;
+					// Index of the first character after the last space before our cursor pos
+					int delete_start = typed_text.rfind(' ', delete_end - 1);
+					// Length of substring we're removing
+					int length = delete_end - delete_start;
 
-				// Erase length
-				typed_text.erase(delete_start + 1, length);
+					// Erase length
+					typed_text.erase(delete_start + 1, length);
 
-				// Subtract length from index we're typing at
-				m_TypingIndex -= length;
-				
-			}
-			// Just a normal backspace
-			else {
-				typed_text.pop_back(); // Remove last character
-				m_TypingIndex--; // Remove one from index we're typing at
+					// Subtract length from index we're typing at
+					m_TypingIndex -= length;
+
+				}
+				// Just a normal backspace
+				else {
+					typed_text.pop_back(); // Remove last character
+					m_TypingIndex--; // Remove one from index we're typing at
+				}
 			}
 		}
 		
