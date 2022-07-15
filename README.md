@@ -1,5 +1,5 @@
 ## About
-A 2D Top-down RPG built with C++ and OpenGL
+A 2D Top-down RPG + Game Engine built with C++ and OpenGL
 
 ## How to build
 - Load solution in VS 2022 (maybe VS 2019 works?)

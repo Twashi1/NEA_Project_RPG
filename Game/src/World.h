@@ -1,7 +1,5 @@
 #pragma once
 
-#include <Engine.h>
-
 #include "Region.h"
 
 class World {
@@ -46,8 +44,8 @@ private:
 
 	std::unordered_map<Vector2<int>, RenderedTile> rendered_tiles;
 
-	Vector2<int> last_render_pos = Vector2<int>(0);
-	Vector2<int> last_render_frame = Vector2<int>(0);
+	Vector2<int> last_render_pos;
+	Vector2<int> last_render_frame;
 
 	std::string m_ToRegionName(const Vector2<int>& index);
 

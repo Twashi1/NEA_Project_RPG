@@ -1,16 +1,6 @@
 #pragma once
 
-#include <cstddef>
-#include <cstdint>
-#include <string>
-#include <vector>
-#include <fstream>
-#include <iostream>
-#include <array>
-
-#include "VersionNumber.h"
-#include "Quad.h"
-#include "Rect.h"
+#include "Utils.h"
 
 class ENGINE_API Serialiser {
 public:
@@ -30,69 +20,20 @@ public:
 	~Serialiser();
 };
 
-/* Serialise functions */
+class ENGINE_API Serialiseable {
+protected:
+	virtual void Load(Serialiser& s);
+	virtual void Unload(Serialiser& s) const;
+};
 
-// Serialises an instance of object T
-template <typename T>
-extern ENGINE_API void Serialise(Serialiser& s, const T& data);
+// Serialises one instance of object
+template <typename T> ENGINE_API extern void Serialise(Serialiser& s, const T& data);
+template <> ENGINE_API void Serialise<std::string>(Serialiser& s, const std::string& data);
 
-// Template specialisation for std::string
-template <>
-void ENGINE_API Serialise<std::string>(Serialiser& s, const std::string& data);
-
-// Template specialisation for VersionNumber
-template <>
-void ENGINE_API Serialise<VersionNumber>(Serialiser& s, const VersionNumber& data);
-
-// Template specialisation for Rect
-template <>
-void ENGINE_API Serialise<Rect>(Serialiser& s, const Rect& data);
-
-// Template specialisation for Quad
-template <>
-void ENGINE_API Serialise<Quad>(Serialiser& s, const Quad& data);
-
-// Serialises a vector
-template <typename T>
-extern ENGINE_API void Serialise(Serialiser& s, const std::vector<T>& data);
-
-// Serialise an array, takes array and length of array
-template <typename T>
-extern ENGINE_API void Serialise(Serialiser& s, T* data, const uint32_t& length);
-
-/* Deserialise functions */
-
-template <typename T>
-extern ENGINE_API T Deserialise(const Serialiser& s);
+// Deserialises and returns one instance of type
+template <typename T> ENGINE_API extern T Deserialise(Serialiser& s);
+template <> ENGINE_API std::string Deserialise<std::string>(Serialiser& s);
 
 // Deserialise one instance of object type T and store in "memory" (assuming memory has already been allocated)
-template <typename T>
-extern ENGINE_API void Deserialise(const Serialiser& s, T* memory);
-
-// Template specialisation for VersionNumber
-template <>
-void ENGINE_API Deserialise<VersionNumber>(const Serialiser& s, VersionNumber* memory);
-
-// Template specialisation for std::string
-template <>
-void ENGINE_API Deserialise<std::string>(const Serialiser& s, std::string* memory);
-
-// Template specialisation for Rect
-template <>
-void ENGINE_API Deserialise<Rect>(const Serialiser& s, Rect* memory);
-
-// Template specialisation for Quad
-template <>
-void ENGINE_API Deserialise<Quad>(const Serialiser& s, Quad* memory);
-
-// Deserialises a vector and stores in "memory"
-template <typename T>
-extern ENGINE_API void Deserialise(const Serialiser& s, std::vector<T>* memory);
-
-// Deserialises an array of type T, storing it in buffer (which it returns) and storing amount of objects deserialised in length
-// NOTE: buffer is created on heap, delete once done with the data
-template <typename T>
-extern ENGINE_API T* DeserialiseArray(const Serialiser& s, uint32_t* length);
-
-template <typename T>
-extern ENGINE_API void DeserialiseArray(const Serialiser& s, T* memory);
+template <typename T> ENGINE_API extern void Deserialise(Serialiser& s, T* memory);
+template <> ENGINE_API void Deserialise<std::string>(Serialiser& s, std::string* memory);

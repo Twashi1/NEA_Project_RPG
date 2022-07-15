@@ -43,21 +43,3 @@ public:
 private:
 	static std::array<Properties, TOTAL_TILES> m_Properties;
 };
-
-template <>
-void Serialise<Tile>(Serialiser& s, const Tile& data);
-
-template <>
-void Deserialise<Tile>(const Serialiser& s, Tile* memory);
-
-template <>
-void Serialise<Tile>(Serialiser& s, Tile* data, const uint32_t& length);
-
-template <>
-void DeserialiseArray<Tile>(const Serialiser&, Tile*);
-
-template <>
-void Serialise<Tile::ID>(Serialiser& s, Tile::ID* data, const uint32_t& length);
-
-template <>
-void DeserialiseArray<Tile::ID>(const Serialiser&, Tile::ID*);

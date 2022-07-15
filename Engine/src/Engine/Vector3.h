@@ -6,11 +6,14 @@
 #include <sstream>
 #include <cmath>
 #include <functional>
+#include <type_traits>
+#include <concepts>
 
-template <typename T = int>
-struct ENGINE_API Vector3 {
-	static Vector3 ZERO;
+#include "Serialiser.h"
 
+template <typename T>
+struct ENGINE_API Vector3 /*: public Serialiseable */{
+public:
 	T x, y, z;
 
 	Vector3() : x(0), y(0), z(0) {}
@@ -19,7 +22,7 @@ struct ENGINE_API Vector3 {
 	Vector3(Vector3&& move) : x(std::move(move.x)), y(std::move(move.y)), z(std::move(move.z)) {}
 
 	// Negative operator (*-1)
-	Vector3 operator-(void) const { return Vector3(-x, -y, -z); }
+	Vector3 operator-(void) const requires __Signed<T> { return Vector3(-x, -y, -z); }
 
 	// Basic arithmetic
 	Vector3 operator+(const Vector3& other) const { return Vector3(x + other.x, y + other.y, z + other.z); }
@@ -33,8 +36,8 @@ struct ENGINE_API Vector3 {
 	void operator/=(const T& other) { x /= other; y /= other; z /= other; }
 
 	// Miscellaneous
-	Vector3 operator%(const T& other) const { return Vector3(x % other, y % other, z % other); }
-	void operator%=(const T& other) { x %= other; y %= other; z %= other; }
+	Vector3 operator%(const T& other) const requires __Integral<T> { return Vector3(x % other, y % other, z % other); }
+	void operator%=(const T& other) requires __Integral<T> { x %= other; y %= other; z %= other; }
 
 	Vector3& operator=(const Vector3& other) {
 		x = other.x;
@@ -91,6 +94,9 @@ struct ENGINE_API Vector3 {
 	operator Vector3<double>() { return Vector3<double>((double)x, (double)y, (double)z); }
 	operator Vector3<unsigned int>() { return Vector3<unsigned int>((unsigned int)x, (unsigned int)y, (unsigned int)z); }
 	operator Vector3<uint8_t>() { return Vector3<uint8_t>((uint8_t)x, (uint8_t)y, (uint8_t)z); }
+
+	/*void Load(Serialiser& s) override { Deserialise<T>(s, &x); Deserialise<T>(s, &y); Deserialise<T>(s, &z); };
+	void Unload(Serialiser& s) const override { Serialise<T>(s, x); Serialise<T>(s, y); Serialise<T>(s, z); }*/
 };
 
 template <typename T>
@@ -112,6 +118,3 @@ bool operator==(const Vector3<T>& a, const Vector3<T>& b) {
 
 template <typename T, typename ret_t = T>
 Vector3<T> abs(const Vector3<T>& vec) { return Vector3<ret_t>(abs(vec.x), abs(vec.y), abs(vec.z)); }
-
-template <typename T>
-Vector3<T> Vector3<T>::ZERO = Vector3<T>(T(), T(), T());

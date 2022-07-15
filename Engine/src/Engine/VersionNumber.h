@@ -2,8 +2,10 @@
 
 #include "Utils.h"
 
+#include "Serialiser.h"
+
 // Stores version number in format major.minor.patch
-struct ENGINE_API VersionNumber {
+struct ENGINE_API VersionNumber/* : public Serialiseable*/ {
 private:
     // Initialises major, minor, and patch from a version string
     void m_ConstructFromString(const char* string);
@@ -21,6 +23,9 @@ public:
 
     void operator=(const char* version_string);
     void operator=(const std::string& version_string);
+
+   /* void Load(Serialiser& s) override;
+    void Unload(Serialiser& s) const override;*/
 };
 
 std::string ENGINE_API to_string(const VersionNumber& version_number);

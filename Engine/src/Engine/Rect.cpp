@@ -76,6 +76,26 @@ Rect::Rect(const Rect& other)
 	: x(other.x), y(other.y), width(other.width), height(other.height), angle(other.angle)
 {}
 
+/*
+void Rect::Unload(Serialiser& s) const
+{
+	Serialise<decltype(x)>(s, x);
+	Serialise<decltype(y)>(s, y);
+	Serialise<decltype(width)>(s, width);
+	Serialise<decltype(height)>(s, height);
+	Serialise<decltype(angle)>(s, angle);
+}
+
+void Rect::Load(Serialiser& s)
+{
+	Deserialise<decltype(x)>(s, &x);
+	Deserialise<decltype(y)>(s, &y);
+	Deserialise<decltype(width)>(s, &width);
+	Deserialise<decltype(height)>(s, &height);
+	Deserialise<decltype(angle)>(s, &angle);
+}
+*/
+
 Rect::Rect(const Vector2<float>& center, const Vector2<float>& dim, float angle)
 	: center(center), dim(dim), angle(angle)
 {}

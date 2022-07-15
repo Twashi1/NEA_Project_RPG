@@ -1,6 +1,5 @@
 #pragma once
 
-#include <vector>
 #include "Renderer.h"
 
 struct ENGINE_API IndexBuffer {

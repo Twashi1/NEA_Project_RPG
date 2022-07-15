@@ -22,6 +22,8 @@ ENGINE_API std::ostream& operator<<(std::ostream& os, const LOG& error)
 		os << "WARNING"; break;
 	case LOG::FATAL:
 		os << "FATAL"; break;
+	default:
+		ENG_LogWarn("Invalid LOG type {}", (uint8_t)error); os << "INVALID"; break;
 	}
 
 	return os;
@@ -233,6 +235,18 @@ ENGINE_API void m_Log(const std::string& message, LOG error_type, const char* fu
 	std::cout << "[" << Utils::Timer::GetTimeString() << "] " << "(" << error_type << ") " << function_cleaned << ":" << line << " " << message << std::endl;
 	// Exit program if it was a fatal error
 	if (error_type == LOG::FATAL) exit(EXIT_FAILURE);
+}
+
+ENGINE_API void m_Assert(const std::string& message, const char* function, int line)
+{
+	std::string function_cleaned = function;
+	// TODO: generalise removing __xyz (probably use regex)
+	Utils::EraseSubstring(function_cleaned, "__cdecl ");
+	Utils::EraseSubstring(function_cleaned, "__thiscall ");
+
+	std::cout << "[" << Utils::Timer::GetTimeString() << "]" << "Assertion failed (" << line << "): " << message << std::endl;
+
+	exit(EXIT_FAILURE);
 }
 
 const long double Utils::Timer::m_NsToS = pow(10, -9);

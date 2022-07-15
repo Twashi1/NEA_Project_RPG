@@ -2,12 +2,13 @@
 ## Renderer
 - [ ] Post-processing
 - [ ] Framebuffers
+- [ ] Compute shader API
 
 ## GUI
 - [x] Buttons
-- [ ] Slides
-- [ ] Input boxes
-- [ ] Panels
+- [ ] Sliders
+- [x] Input boxes
+- [ ] Relative coordinates for GUI objects
 
 ## General
 - [ ] Pathfinding
@@ -41,11 +42,9 @@
 # Other
 - Still major CPU bottleneck
 - Sleep in engine EndFrame
-- Fix sandbox
 - Better link to Resources folder
 - Better name for class Text
-- Button class needs to be fixed up
-- Animation class fixes
-- Fix input boxes and add features
-- Entire codebase needs a big cleanup
-- Fix camera
+- Input box typing bar fix
+- Cleanup
+- Use proper camera instead of the hack
+- Consistency with ENGINE_API position

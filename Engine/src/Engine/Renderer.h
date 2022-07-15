@@ -26,7 +26,7 @@ class Button;
 class TextInput;
 class Animation;
 struct Quad;
-struct Texture;
+class Texture;
 
 class ENGINE_API Renderer {
 private:

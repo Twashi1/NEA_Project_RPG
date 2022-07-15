@@ -228,6 +228,7 @@ ENGINE_API std::string to_string(const Input::State& state)
 	case Input::State::NONE: return "None";
 	case Input::State::PRESS: return "Press";
 	case Input::State::RELEASE: return "Release";
+	default: ENG_LogWarn("Invalid input state {}", (uint8_t)state); return "Invalid";
 	}
 }
 
@@ -241,6 +242,7 @@ ENGINE_API std::string to_string(const Input::Mod& mod)
 	case Input::Mod::NUM_LOCK: return "Num lock";
 	case Input::Mod::SUPER: return "Super";
 	case Input::Mod::CTRL: return "Ctrl";
+	default: ENG_LogWarn("Invalid mod {}", (int)mod); return "Invalid";
 	}
 }
 

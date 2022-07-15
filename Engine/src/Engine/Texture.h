@@ -9,7 +9,8 @@
 
 #include "stb_image.h"
 
-struct ENGINE_API Texture {
+class ENGINE_API Texture {
+public:
 	static std::string PATH;
 
 	GLuint id;

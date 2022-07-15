@@ -7,23 +7,23 @@
 #include <cmath>
 #include <functional>
 #include <iomanip>
+#include <type_traits>
+#include <concepts>
 
-#include "Utils.h"
+#include "Serialiser.h"
 
 template <typename T>
-struct Vector2 {
-	static Vector2 ZERO;
-
+struct ENGINE_API Vector2 /*: public Serialiseable*/ {
+public:
 	T x, y;
 
 	Vector2() : x(0), y(0) {}
 	Vector2(T x) : x(x), y(x) {}
 	Vector2(T x, T y) : x(x), y(y) {}
 	Vector2(const Vector2& copy) : x(copy.x), y(copy.y) {}
-	Vector2(Vector2&& move) noexcept : x(std::move(move.x)), y(std::move(move.y)) {}
 
 	// Negative operator (*-1)
-	Vector2 operator-(void) const { return Vector2(-x, -y); }
+	Vector2 operator-(void) const requires __Signed<T> { return Vector2(-x, -y); }
 
 	// Basic arithmetic
 	Vector2 operator+(const Vector2& other) const { return Vector2(x + other.x, y + other.y); }
@@ -42,9 +42,6 @@ struct Vector2 {
 	void operator/=(const Vector2& other) { x /= other.x; y /= other.y; }
 
 	// Miscellaneous
-	Vector2 operator%(const T& other) const { return Vector2(x % other, y % other); }
-	void operator%=(const T& other) { x %= other; y %= other; }
-
 	Vector2& operator=(const Vector2& other) {
 		x = other.x;
 		y = other.y;
@@ -52,27 +49,30 @@ struct Vector2 {
 		return *this;
 	}
 
-	// Bitwise operations (vector)
-	Vector2 operator^(const Vector2& other) const { return Vector2(x ^ other.x, y ^ other.y); }
-	Vector2 operator&(const Vector2& other) const { return Vector2(x & other.x, y & other.y); }
-	Vector2 operator|(const Vector2& other) const { return Vector2(x | other.x, y | other.y); }
+	Vector2 operator%(const T& other) const requires __Integral<T> { return Vector2(x % other, y % other); }
+	void operator%=(const T& other) requires __Integral<T> { x %= other; y %= other; }
 
-	void operator^=(const Vector2& other) { x ^= other.x; y ^= other.y; }
-	void operator&=(const Vector2& other) { x &= other.x; y &= other.y; }
-	void operator|=(const Vector2& other) { x |= other.x; y |= other.y; }
+	// Bitwise operations (vector)
+	Vector2 operator^(const Vector2& other) const requires __Integral<T> { return Vector2(x ^ other.x, y ^ other.y); }
+	Vector2 operator&(const Vector2& other) const requires __Integral<T> { return Vector2(x & other.x, y & other.y); }
+	Vector2 operator|(const Vector2& other) const requires __Integral<T> { return Vector2(x | other.x, y | other.y); }
+
+	void operator^=(const Vector2& other) requires __Integral<T> { x ^= other.x; y ^= other.y; }
+	void operator&=(const Vector2& other) requires __Integral<T> { x &= other.x; y &= other.y; }
+	void operator|=(const Vector2& other) requires __Integral<T> { x |= other.x; y |= other.y; }
 
 	// Bitwise operations (scalar)
-	Vector2 operator^(const unsigned int other) const { return Vector2(x ^ other, y ^ other); }
-	Vector2 operator&(const unsigned int other) const { return Vector2(x & other, y & other); }
-	Vector2 operator|(const unsigned int other) const { return Vector2(x | other, y | other); }
+	Vector2 operator^(const unsigned int other) const requires __Integral<T> { return Vector2(x ^ other, y ^ other); }
+	Vector2 operator&(const unsigned int other) const requires __Integral<T> { return Vector2(x & other, y & other); }
+	Vector2 operator|(const unsigned int other) const requires __Integral<T> { return Vector2(x | other, y | other); }
 
-	void operator^=(const unsigned int other) { x ^= other; y ^= other; }
-	void operator&=(const unsigned int other) { x &= other; y &= other; }
-	void operator|=(const unsigned int other) { x |= other; y |= other; }
+	void operator^=(const unsigned int other) requires __Integral<T> { x ^= other; y ^= other; }
+	void operator&=(const unsigned int other) requires __Integral<T> { x &= other; y &= other; }
+	void operator|=(const unsigned int other) requires __Integral<T> { x |= other; y |= other; }
 
 	// Shifts
-	Vector2 operator<<(const unsigned int other) const { return Vector2(x << other, y << other); }
-	Vector2 operator>>(const unsigned int other) const { return Vector2(x >> other, y >> other); }
+	Vector2 operator<<(const unsigned int other) const requires __Integral<T> { return Vector2(x << other, y << other); }
+	Vector2 operator>>(const unsigned int other) const requires __Integral<T> { return Vector2(x >> other, y >> other); }
 
 	// Logical
 	bool operator<(const Vector2& other) const {
@@ -108,6 +108,9 @@ struct Vector2 {
 	operator Vector2<double>()		  { return Vector2<double>((double)x, (double)y);				       }
 	operator Vector2<unsigned int>()  { return Vector2<unsigned int>((unsigned int)x, (unsigned int)y);    }
 	operator Vector2<unsigned char>() { return Vector2<unsigned char>((unsigned char)x, (unsigned char)y); }
+
+	/*void Load(Serialiser& s) override { Deserialise<T>(s, &x); Deserialise<T>(s, &y); };
+	void Unload(Serialiser& s) const override { Serialise<T>(s, x); Serialise<T>(s, y); }*/
 };
 
 template <typename T>
@@ -140,10 +143,6 @@ namespace std {
 		}
 	};
 }
-
-// TODO make dll export
-template <typename T>
-Vector2<T> Vector2<T>::ZERO = Vector2<T>(T(), T());
 
 template <typename T>
 Vector2<T> cross(Vector2<T> v, T a) {

@@ -3,75 +3,55 @@
 #include "World.h"
 #include "Player.h"
 
-// TODO: should be Engine
-class SceneObject {
-public:
-	enum class Type : uint8_t {
-		SHADED_QUAD,
-		TEXTURED_QUAD,
-		ANIMATION,
-		BUTTON,
-		TEXT_INPUT,
-		TEXT
-	};
-
-private:
-	struct __shaded_quad { // SHADED_QUAD
-		ENG_Ptr(Quad) quad;
-		ENG_Ptr(Shader) shader;
-
-		__shaded_quad(ENG_Ptr(Quad) quad, ENG_Ptr(Shader) shader);
-	};
-
-	struct __textured_quad { // TEXTURED_QUAD
-		ENG_Ptr(Quad) quad;
-		ENG_Ptr(Shader) shader;
-		ENG_Ptr(Texture) texture;
-
-		__textured_quad(ENG_Ptr(Quad) quad, ENG_Ptr(Shader) shader, ENG_Ptr(Texture) texture);
-	};
-
-	union {
-		__shaded_quad shaded_quad;
-		__textured_quad textured_quad;
-		ENG_Ptr(Animation) animation;
-		ENG_Ptr(Button) button;
-		ENG_Ptr(TextInput) text_input;
-		ENG_Ptr(Text) text;
-	};
-
-	Type m_Type;
-
-public:
-	SceneObject(ENG_Ptr(Quad) quad, ENG_Ptr(Shader) shader, ENG_Ptr(Texture) texture);
-	SceneObject(ENG_Ptr(Quad) quad, ENG_Ptr(Shader) shader);
-	SceneObject(ENG_Ptr(Animation) animation);
-	SceneObject(ENG_Ptr(Button) button);
-	SceneObject(ENG_Ptr(TextInput) text_input);
-	SceneObject(ENG_Ptr(Text) text);
-
-	void Schedule();
-};
-
 class Game {
+public:
+	enum class SceneID : uint16_t {
+		TITLE,
+		SAVE_VIEWER,
+		WORLD_CREATION,
+		WORLD_LOADING,
+		OPTIONS,
+		GAME
+	};
+
 private:
 	static World* m_World;
 	static Player m_Player;
 
-	enum class Scene : uint16_t {
-		TITLE,
-			SAVE_VIEWER,
-				WORLD_CREATION,
-					WORLD_LOADING,
-			OPTIONS,
-		GAME
-	};
+	static std::unordered_map<SceneID, std::vector<SceneObject>> m_Scenes;
 
-	static Scene m_CurrentScene;
+	static std::vector<SceneID> m_CurrentScenes;
 
-	static void m_RenderTitleScene();
-	static void m_RenderGame();
+	static void m_LoadScene(SceneID scene);
+	static void m_LoadTitle() {};
+	static void m_LoadSaveViewer() {};
+	static void m_LoadWorldCreation() {};
+	static void m_LoadWorldLoading() {};
+	static void m_LoadOptions() {};
+	static void m_LoadGame() {};
+
+	static void m_UnloadScene(SceneID scene);
+	static void m_UnloadTitle() {};
+	static void m_UnloadSaveViewer() {};
+	static void m_UnloadWorldCreation() {};
+	static void m_UnloadWorldLoading() {};
+	static void m_UnloadOptions() {};
+	static void m_UnloadGame() {};
+
+	static void m_UpdateScene(SceneID scene);
+	static void m_UpdateTitle() {};
+	static void m_UpdateSaveViewer() {};
+	static void m_UpdateWorldCreation() {};
+	static void m_UpdateWorldLoading() {};
+	static void m_UpdateOptions() {};
+	static void m_UpdateGame() {};
+
 
 public:
+	static void ShowScene(SceneID scene);
+	static void HideScene(SceneID scene);
+
+	static void Update();
 	static void Init();
+	static void Terminate();
 };

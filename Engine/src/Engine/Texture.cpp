@@ -49,7 +49,7 @@ void Texture::Update()
 	Create();
 }
 
-Texture::Texture(std::shared_ptr<uint8_t[]> buffer, unsigned int width, unsigned int height)
+Texture::Texture(ENG_Ptr(uint8_t[]) buffer, unsigned int width, unsigned int height)
 	: width(width), height(height), id(0)
 {
 	this->buffer = buffer;

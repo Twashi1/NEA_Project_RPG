@@ -1,7 +1,7 @@
 #include "Camera.h"
 
 Camera::Camera()
-    : offset(Vector2<float>::ZERO), pos(Vector2<float>::ZERO) {}
+    : offset(), pos() {}
 
 Camera::Camera(Vector2<float> offset, Vector2<float> pos)
     : offset(offset), pos(pos) {}

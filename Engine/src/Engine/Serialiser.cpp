@@ -1,4 +1,6 @@
 #include "Serialiser.h"
+#include "Vector2.h"
+#include "Vector3.h"
 
 void Serialiser::BeginRead(const char* path)
 {
@@ -24,23 +26,22 @@ Serialiser::~Serialiser() {
 	if (outstream != nullptr) delete outstream;
 }
 
-template <typename T>
-void Serialise(Serialiser& s, const T& data)
+void Serialiseable::Load(Serialiser& s) { ENG_LogWarn("Serialiseable base function called - have you defined an override for Load(Serialiser& s)?"); };
+void Serialiseable::Unload(Serialiser& s) const { ENG_LogWarn("Serialiseable base function called - have you defined an override for Unload(Deserialiser& s)?"); };
+
+template <typename T> void Serialise(Serialiser& s, const T& data)
 {
 	s.outstream->write((char*)&data, sizeof(T));
 }
 
-template ENGINE_API void Serialise(Serialiser&, const int&);
+template ENGINE_API void Serialise(Serialiser&, const int8_t&);
 template ENGINE_API void Serialise(Serialiser&, const uint8_t&);
-template ENGINE_API void Serialise(Serialiser&, const unsigned char&);
-template ENGINE_API void Serialise(Serialiser&, const unsigned int&);
-template ENGINE_API void Serialise(Serialiser&, const double&);
-template ENGINE_API void Serialise(Serialiser&, const float&);
+template ENGINE_API void Serialise(Serialiser&, const int16_t&);
 template ENGINE_API void Serialise(Serialiser&, const uint16_t&);
-template ENGINE_API void Serialise(Serialiser&, const unsigned short&);
-template ENGINE_API void Serialise(Serialiser&, const Vector2<float>&);
-template ENGINE_API void Serialise(Serialiser&, const Vector2<int>&);
-template ENGINE_API void Serialise(Serialiser&, const Vector2<uint8_t>&);
+template ENGINE_API void Serialise(Serialiser&, const int&);
+template ENGINE_API void Serialise(Serialiser&, const uint32_t&);
+template ENGINE_API void Serialise(Serialiser&, const float&);
+template ENGINE_API void Serialise(Serialiser&, const double&);
 
 template <> void Serialise<std::string>(Serialiser& s, const std::string& data)
 {
@@ -48,111 +49,32 @@ template <> void Serialise<std::string>(Serialiser& s, const std::string& data)
 	s.outstream->put('\0'); // Write null termination character
 }
 
-template <> void Serialise<VersionNumber>(Serialiser& s, const VersionNumber& v)
-{
-	Serialise<uint16_t>(s, v.major);
-	Serialise<uint16_t>(s, v.minor);
-	Serialise<uint16_t>(s, v.patch);
-}
-
-template<> void Serialise(Serialiser& s, const Rect& data)
-{
-	Serialise<float>(s, data.x);
-	Serialise<float>(s, data.y);
-	Serialise<float>(s, data.width);
-	Serialise<float>(s, data.height);
-	Serialise<float>(s, data.angle);
-}
-
-template<> void Serialise(Serialiser& s, const Quad& data)
-{
-	Serialise<Rect>(s, data.GetRect());
-}
-
-template <typename T>
-void Serialise(Serialiser& s, const std::vector<T>& data)
-{
-	uint32_t length = data.size();
-	Serialise<T>(s, length); // Serialise length of list
-
-	// Serialise elements in list
-	for (const T& element : data) {
-		Serialise<T>(s, element);
-	}
-}
-
-template ENGINE_API void Serialise(Serialiser&, const std::vector<int>&);
-template ENGINE_API void Serialise(Serialiser&, const std::vector<uint8_t>&);
-template ENGINE_API void Serialise(Serialiser&, const std::vector<uint16_t>&);
-template ENGINE_API void Serialise(Serialiser&, const std::vector<uint32_t>&);
-template ENGINE_API void Serialise(Serialiser&, const std::vector<float>&);
-template ENGINE_API void Serialise(Serialiser&, const std::vector<double>&);
-template ENGINE_API void Serialise(Serialiser&, const std::vector<unsigned int>&);
-
-template <typename T>
-void Serialise(Serialiser& s, T* data, const uint32_t& length)
-{
-	Serialise<T>(s, length); // Serialise length of list
-
-	// Serialise each element in array
-	for (uint32_t i = 0; i < length; i++) {
-		Serialise<T>(s, data[i]);
-	}
-}
-
-template ENGINE_API void Serialise(Serialiser&, int*, const uint32_t&);
-template ENGINE_API void Serialise(Serialiser&, uint8_t*, const uint32_t&);
-template ENGINE_API void Serialise(Serialiser&, float*, const uint32_t&);
-template ENGINE_API void Serialise(Serialiser&, double*, const uint32_t&);
-template ENGINE_API void Serialise(Serialiser&, unsigned int*, const uint32_t&);
-template ENGINE_API void Serialise(Serialiser&, uint32_t*, const uint32_t&);
-
-template <typename T>
-T Deserialise(const Serialiser& s)
+template <typename T> T Deserialise(Serialiser& s)
 {
 	// T must have default constructor
-	assert(std::is_default_constructible<T>::value);
+	ENG_Assert(std::is_default_constructible<T>::value, "Type {} is not default constructible", typeid(T).name());
 
-	char* readbuff = new char[sizeof(T)]; // Allocate buffer for file data
-	s.instream->read(readbuff, sizeof(T)); // Read file data into buffer
+	char* read_buffer = new char[sizeof(T)]; // Allocate buffer for file data
+	s.instream->read(read_buffer, sizeof(T)); // Read file data into buffer
 
 	T instance;
-	memcpy(&instance, readbuff, sizeof(T)); // Copy data from buffer into pointer given
+	memcpy(&instance, read_buffer, sizeof(T)); // Copy data from buffer into pointer given
 
-	delete[] readbuff; // Delete buffer after copying the data
+	delete[] read_buffer; // Delete buffer after copying the data
 
 	return instance;
 }
 
-template ENGINE_API int Deserialise(const Serialiser&);
-template ENGINE_API uint8_t Deserialise(const Serialiser&);
-template ENGINE_API float Deserialise(const Serialiser&);
-template ENGINE_API double Deserialise(const Serialiser&);
-template ENGINE_API unsigned int Deserialise(const Serialiser&);
-template ENGINE_API Vector2<float> Deserialise(const Serialiser&);
-template ENGINE_API Vector2<int> Deserialise(const Serialiser&);
+template ENGINE_API int8_t			Deserialise(Serialiser&);
+template ENGINE_API uint8_t			Deserialise(Serialiser&);
+template ENGINE_API int16_t			Deserialise(Serialiser&);
+template ENGINE_API uint16_t		Deserialise(Serialiser&);
+template ENGINE_API int				Deserialise(Serialiser&);
+template ENGINE_API uint32_t		Deserialise(Serialiser&);
+template ENGINE_API float			Deserialise(Serialiser&);
+template ENGINE_API double			Deserialise(Serialiser&);
 
-template <typename T>
-void Deserialise(const Serialiser& s, T* memory)
-{
-	char* readbuff = new char[sizeof(T)]; // Allocate buffer for file data
-	s.instream->read(readbuff, sizeof(T)); // Read file data into buffer
-
-	memcpy(memory, readbuff, sizeof(T)); // Copy data from buffer into pointer given
-
-	delete[] readbuff; // Delete buffer after copying the data
-}
-
-template ENGINE_API void Deserialise(const Serialiser&, int*);
-template ENGINE_API void Deserialise(const Serialiser&, uint8_t*);
-template ENGINE_API void Deserialise(const Serialiser&, uint16_t*);
-template ENGINE_API void Deserialise(const Serialiser&, float*);
-template ENGINE_API void Deserialise(const Serialiser&, double*);
-template ENGINE_API void Deserialise(const Serialiser&, unsigned int*);
-template ENGINE_API void Deserialise(const Serialiser&, Vector2<float>*);
-template ENGINE_API void Deserialise(const Serialiser&, Vector2<int>*);
-
-template <> void Deserialise<std::string>(const Serialiser& s, std::string* memory)
+template <> std::string Deserialise<std::string>(Serialiser& s)
 {
 	std::string buffer = "";
 	char lastchar;
@@ -170,95 +92,41 @@ template <> void Deserialise<std::string>(const Serialiser& s, std::string* memo
 	}
 
 	// Copy buffer to memory 
-	*memory = buffer;
-}
-
-template<> void Deserialise(const Serialiser& s, Rect* memory)
-{
-	float x, y, width, height, angle;
-	Deserialise<float>(s, &x);
-	Deserialise<float>(s, &y);
-	Deserialise<float>(s, &width);
-	Deserialise<float>(s, &height);
-	Deserialise<float>(s, &angle);
-
-	*memory = Rect(x, y, width, height, angle);
-}
-
-template<> void Deserialise(const Serialiser& s, Quad* memory)
-{
-	Rect rect;
-	Deserialise<Rect>(s, &rect);
-
-	*memory = Quad(Rect(rect)); // Using a copy constructor to ensure everything is being properly initialised
-}
-
-template <> void Deserialise<VersionNumber>(const Serialiser& s, VersionNumber* memory)
-{
-	uint16_t major, minor, patch;
-	Deserialise<uint16_t>(s, &major);
-	Deserialise<uint16_t>(s, &minor);
-	Deserialise<uint16_t>(s, &patch);
-
-	*memory = VersionNumber(major, minor, patch);
-}
-
-template <typename T>
-void Deserialise(const Serialiser& s, std::vector<T>* memory)
-{
-	uint32_t length = Deserialise<uint32_t>(s); // Get length of vector
-	memory->reserve(length); // Reserve space needed for vector
-
-	for (uint32_t i = 0; i < length; i++) {
-		memory->push_back(Deserialise<T>(s)); // Deserialise and push to vector
-	}
-}
-
-template ENGINE_API void Deserialise(const Serialiser&, std::vector<int>*);
-template ENGINE_API void Deserialise(const Serialiser&, std::vector<uint8_t>*);
-template ENGINE_API void Deserialise(const Serialiser&, std::vector<float>*);
-template ENGINE_API void Deserialise(const Serialiser&, std::vector<double>*);
-template ENGINE_API void Deserialise(const Serialiser&, std::vector<unsigned int>*);
-
-template <typename T>
-T* DeserialiseArray(const Serialiser& s, uint32_t* length)
-{
-	Deserialise<uint32_t>(s, length); // Deserialise length of array
-
-	T* buffer = new T[*length]; // Create buffer of length on heap
-
-	for (uint32_t i = 0; i < *length; i++) {
-		buffer[i] = Deserialise<T>(s); // Deserialise and add to buffer
-	}
-
 	return buffer;
 }
 
-template ENGINE_API int* DeserialiseArray(const Serialiser&, uint32_t*);
-template ENGINE_API uint8_t* DeserialiseArray(const Serialiser&, uint32_t*);
-template ENGINE_API float* DeserialiseArray(const Serialiser&, uint32_t*);
-template ENGINE_API double* DeserialiseArray(const Serialiser&, uint32_t*);
-template ENGINE_API unsigned int* DeserialiseArray(const Serialiser&, uint32_t*);
-
-template <typename T>
-ENGINE_API void DeserialiseArray(const Serialiser& s, T* memory)
+template <typename T> void Deserialise(Serialiser& s, T* memory)
 {
-	// Get length of array
-	uint32_t length;
-	Deserialise<uint32_t>(s, &length);
+	char* readbuff = new char[sizeof(T)]; // Allocate buffer for file data
+	s.instream->read(readbuff, sizeof(T)); // Read file data into buffer
 
-	for (uint32_t i = 0; i < length; i++) {
-		// Deserialise each object
-		Deserialise<T>(s, &(memory[i]));
-	}
+	memcpy(memory, readbuff, sizeof(T)); // Copy data from buffer into pointer given
+
+	delete[] readbuff; // Delete buffer after copying the data
 }
 
-template ENGINE_API void DeserialiseArray(const Serialiser&, int*);
-template ENGINE_API void DeserialiseArray(const Serialiser&, uint8_t*);
-template ENGINE_API void DeserialiseArray(const Serialiser&, uint16_t*);
-template ENGINE_API void DeserialiseArray(const Serialiser&, unsigned int*);
-template ENGINE_API void DeserialiseArray(const Serialiser&, float*);
-template ENGINE_API void DeserialiseArray(const Serialiser&, double*);
-template ENGINE_API void DeserialiseArray(const Serialiser&, Vector2<float>*);
-template ENGINE_API void DeserialiseArray(const Serialiser&, Vector2<double>*);
-template ENGINE_API void DeserialiseArray(const Serialiser&, std::string*);
+template ENGINE_API void Deserialise(Serialiser&, int8_t*);
+template ENGINE_API void Deserialise(Serialiser&, uint8_t*);
+template ENGINE_API void Deserialise(Serialiser&, int16_t*);
+template ENGINE_API void Deserialise(Serialiser&, uint16_t*);
+template ENGINE_API void Deserialise(Serialiser&, int*);
+template ENGINE_API void Deserialise(Serialiser&, uint32_t*);
+template ENGINE_API void Deserialise(Serialiser&, float*);
+template ENGINE_API void Deserialise(Serialiser&, double*);
+
+template <> void Deserialise<std::string>(Serialiser& s, std::string* memory)
+{
+	char lastchar;
+
+	s.instream->get(lastchar); // Get first character
+	*memory += lastchar; // Add to memory
+
+	// While the last character is not null termination character
+	while (lastchar != '\0') {
+		s.instream->get(lastchar); // Get next character
+		*memory += lastchar; // Add next character to memory
+
+		// If character is null termination character, break
+		if (lastchar == '\0') break;
+	}
+}

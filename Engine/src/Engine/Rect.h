@@ -2,10 +2,11 @@
 
 #include "Vector2.h"
 #include "Utils.h"
+#include "Serialiser.h"
 
-struct ENGINE_API Rect {
+struct ENGINE_API Rect /* : public Serialiseable */ {
 protected:
-	static Vector2<float> m_Offsets[4];
+	static Vector2<float> m_Offsets[4]; // For calculating vertices
 
 public:
 	// For indexing the return value of GetVertices
@@ -54,6 +55,11 @@ public:
 		height = other.height;
 		angle = other.angle;
 	}
+
+	/*
+	void Load(Serialiser& s) override;
+	void Unload(Serialiser& s) const override;
+	*/
 };
 
 bool operator==(const Rect& a, const Rect& b);

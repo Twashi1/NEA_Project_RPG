@@ -7,7 +7,7 @@
 #include "Rect.h"
 #include "Texture.h"
 
-struct ENGINE_API Quad : private Rect {
+struct ENGINE_API Quad : private Rect/*, public Serialiseable*/ {
 private:
 	std::vector<float> m_TexCoords;
 
@@ -41,6 +41,8 @@ public:
 	Quad();
 	Quad(float x, float y, float width, float height, float angle);
 	Quad(const Vector2<float>& center, const Vector2<float>& dim, float angle);
+	Quad(float x, float y, float width, float height, float angle, const std::vector<float>& tex_coords);
+	Quad(const Vector2<float>& center, const Vector2<float>& dim, float angle, const std::vector<float>& tex_coords);
 	Quad(const Rect& rect);
 	Quad(const Quad& other);
 
@@ -68,6 +70,8 @@ public:
 
 	void SetRect(const Rect& nrect);
 
+	const std::vector<float>& GetTexCoords() const;
+
 	bool ContainsAnyOf(const Quad& quad) const;
 	bool IsIntersecting(const Quad& quad) const;
 
@@ -78,6 +82,9 @@ public:
 
 	friend bool operator==(const Quad& a, const Quad& b);
 	friend std::string to_string(const Quad& quad);
+
+	/*void Load(Serialiser& s) override;
+	void Unload(Serialiser& s) const override;*/
 };
 
 std::string to_string(const Quad& quad);

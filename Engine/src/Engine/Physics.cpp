@@ -38,8 +38,8 @@ void Physics::Update(float new_time) {
 					// If either quad contains any points of the other quad (intersecting)
 					if (future_quad_a.IsIntersecting(future_quad_b)) {
 						// TODO: impulse resolution
-						a->vel = 0; b->vel = 0;
-						a->acc = 0; b->acc = 0;
+						a->vel = Vector2<float>(); b->vel = Vector2<float>();
+						a->acc = Vector2<float>(); b->acc = Vector2<float>();
 						a->angular_acc = 0; b->angular_acc = 0;
 						a->angular_vel = 0; b->angular_vel = 0;
 					}

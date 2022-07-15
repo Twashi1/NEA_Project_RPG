@@ -20,6 +20,7 @@ void Quad::m_UpdateVB()
 void Quad::m_ConstructBuffers()
 {
 	std::vector<Vector2<float>> vertices = GetVertices();
+
 	m_TexCoords = {
 			0.0f, 0.0f,
 			1.0f, 0.0f,
@@ -113,6 +114,11 @@ void Quad::SetRect(const Rect& nrect)
 	m_UpdateVB();
 }
 
+const std::vector<float>& Quad::GetTexCoords() const
+{
+	return m_TexCoords;
+}
+
 bool Quad::ContainsAnyOf(const Quad& quad) const
 {
 	return ContainsAnyOf(quad.GetVertices());
@@ -171,6 +177,35 @@ void Quad::SetTextureCoords(const Texture& atlas, const Vector2<int>& top_left, 
 	vb->SetTex(m_TexCoords);
 }
 
+//void Quad::Unload(Serialiser& s) const
+//{
+//	Serialise<decltype(x)>(s, x);
+//	Serialise<decltype(y)>(s, y);
+//	Serialise<decltype(width)>(s, width);
+//	Serialise<decltype(height)>(s, height);
+//	Serialise<decltype(angle)>(s, angle);
+//
+//	for (float coord : m_TexCoords) {
+//		Serialise<float>(s, coord);
+//	}
+//}
+//
+//void Quad::Load(Serialiser& s)
+//{
+//	Deserialise<decltype(x)>(s, &x);
+//	Deserialise<decltype(y)>(s, &y);
+//	Deserialise<decltype(width)>(s, &width);
+//	Deserialise<decltype(height)>(s, &height);
+//	Deserialise<decltype(angle)>(s, &angle);
+//
+//	// Sets size of vector to 8, so vector correctly reads elements
+//	m_TexCoords.resize(8);
+//
+//	for (int i = 0; i < 8; i++) {
+//		Deserialise<float>(s, &m_TexCoords[i]);
+//	}
+//}
+
 const VertexBuffer& Quad::GetVertexBuffer() const
 {
 	return *vb;
@@ -204,6 +239,28 @@ Quad::Quad(const Vector2<float>& center, const Vector2<float>& dim, float angle)
 	this->dim = dim;
 	this->angle = angle;
 
+	m_ConstructBuffers();
+}
+
+Quad::Quad(float x, float y, float width, float height, float angle, const std::vector<float>& tex_coords)
+	: m_TexCoords(tex_coords)
+{
+	this->x = x;
+	this->y = y;
+	this->width = width;
+	this->height = height;
+	this->angle = angle;
+
+	m_ConstructBuffers();
+}
+
+Quad::Quad(const Vector2<float>& center, const Vector2<float>& dim, float angle, const std::vector<float>& tex_coords)
+	: m_TexCoords(tex_coords)
+{
+	this->center = center;
+	this->dim = dim;
+	this->angle = angle;
+	
 	m_ConstructBuffers();
 }
 

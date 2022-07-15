@@ -11,7 +11,8 @@
 #include <chrono>
 #include <memory>
 #include <algorithm>
-
+#include <vector>
+#include <array>
 
 #ifdef ENGINE_BUILD_DLL
 	#define ENGINE_API __declspec(dllexport)
@@ -22,9 +23,16 @@
 #define ENG_LogInfo(msg, ...) m_Log(std::format(msg, __VA_ARGS__), LOG::INFO, __FUNCSIG__, __LINE__)
 #define ENG_LogWarn(msg, ...) m_Log(std::format(msg, __VA_ARGS__), LOG::WARNING, __FUNCSIG__, __LINE__);
 #define ENG_LogFatal(msg, ...) m_Log(std::format(msg, __VA_ARGS__), LOG::FATAL, __FUNCSIG__, __LINE__);
+#define ENG_Assert(condition, msg, ...) if (condition) { m_Assert(std::format(msg, __VA_ARGS__), __FUNCSIG__, __LINE__); }
 
 #define ENG_Ptr(T) std::shared_ptr<T>
 #define ENG_MakePtr(T, ...) std::make_shared<T>(__VA_ARGS__)
+
+template <typename T>
+concept __Integral = std::is_integral<T>::value;
+
+template <typename T>
+concept __Signed = std::is_signed<T>::value;
 
 using std::to_string;
 
@@ -57,6 +65,7 @@ enum class ENGINE_API LOG : uint8_t {
 ENGINE_API std::ostream& operator<<(std::ostream& os, const LOG& error);
 
 ENGINE_API void m_Log(const std::string& message, LOG error_type, const char* function, int line);
+ENGINE_API void m_Assert(const std::string& message, const char* function, int line);
 
 namespace Utils {
 	// TODO: update classes to use Timer::GetElapsed();

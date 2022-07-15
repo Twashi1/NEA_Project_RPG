@@ -134,7 +134,7 @@ void World::m_DeserialiseRegion(const std::string& filename, const Vector2<int>&
 	Region region;
 
 	// Deserialise tiles
-	DeserialiseArray<Tile>(m_serialiser, region.tiles);
+	// DeserialiseArray<Tile>(m_serialiser, region.tiles);
 
 	m_serialiser.EndRead();
 
@@ -148,7 +148,7 @@ void World::m_LoadWorld(const std::string& fullpath)
 
 	// Get version number
 	VersionNumber serialised_version;
-	Deserialise<VersionNumber>(m_serialiser, &serialised_version);
+	// Deserialise<VersionNumber>(m_serialiser, &serialised_version);
 	// If version number is different
 	if (serialised_version != m_version)
 	{
@@ -157,16 +157,16 @@ void World::m_LoadWorld(const std::string& fullpath)
 	}
 
 	// Get seed
-	Deserialise<unsigned int>(m_serialiser, &m_seed);
+	// Deserialise<unsigned int>(m_serialiser, &m_seed);
 
 	// Get player position
-	Vector2<int> player_pos = Deserialise<Vector2<int>>(m_serialiser);
+	// Vector2<int> player_pos = Deserialise<Vector2<int>>(m_serialiser);
 
 	// End read
 	m_serialiser.EndRead();
 
 	// Load region around player pos
-	m_LoadRegions(player_pos, 1);
+	// m_LoadRegions(player_pos, 1);
 
 	// Construct noise generator
 	m_noise_terrain = new Noise::Interpolated(m_seed, m_amplitude, m_wavelength);
@@ -188,7 +188,7 @@ void World::m_SerialiseRegion(const Vector2<int>& index)
 	m_serialiser.BeginWrite(region_path.c_str());
 
 	// Serialise list of tiles
-	Serialise<Tile>(m_serialiser, region.tiles, Region::SIZE);
+	// Serialise<Tile>(m_serialiser, region.tiles, Region::SIZE);
 
 	m_serialiser.EndWrite();
 }
@@ -394,6 +394,7 @@ void World::m_RenderAround(const Vector2<int>& center, const Vector2<int>& frame
 
 void World::Update(const Vector2<int>& pos)
 {
+	// TODO: non-fixed render region
 	m_RenderAround(pos, {8, 6});
 }
 

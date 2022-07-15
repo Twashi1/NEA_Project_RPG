@@ -76,6 +76,18 @@
     <ClCompile Include="src\Engine\TextInput.cpp">
       <Filter>Source\GUI</Filter>
     </ClCompile>
+    <ClCompile Include="src\Engine\SceneObject.cpp">
+      <Filter>Source\Rendering</Filter>
+    </ClCompile>
+    <ClCompile Include="src\Engine\Scene.cpp">
+      <Filter>Source\Rendering</Filter>
+    </ClCompile>
+    <ClCompile Include="src\Engine\Vector2.cpp">
+      <Filter>Source\Miscellaneous</Filter>
+    </ClCompile>
+    <ClCompile Include="src\Engine\Vector3.cpp">
+      <Filter>Source\Miscellaneous</Filter>
+    </ClCompile>
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="src\Engine\Engine.h">
@@ -151,9 +163,6 @@
     <ClInclude Include="src\Engine\AnimationManager.h">
       <Filter>Headers\Rendering</Filter>
     </ClInclude>
-    <ClInclude Include="src\Engine\ComputeShader.h">
-      <Filter>Headers\Rendering</Filter>
-    </ClInclude>
     <ClInclude Include="src\Engine\GUIManager.h">
       <Filter>Headers\GUI</Filter>
     </ClInclude>
@@ -162,6 +171,12 @@
     </ClInclude>
     <ClInclude Include="src\Engine\TextInput.h">
       <Filter>Headers\GUI</Filter>
+    </ClInclude>
+    <ClInclude Include="src\Engine\SceneObject.h">
+      <Filter>Headers\Rendering</Filter>
+    </ClInclude>
+    <ClInclude Include="src\Engine\Scene.h">
+      <Filter>Headers\Rendering</Filter>
     </ClInclude>
   </ItemGroup>
   <ItemGroup>

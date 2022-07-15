@@ -60,3 +60,17 @@ void VersionNumber::operator=(const std::string& version_string)
 {
     m_ConstructFromString(version_string.c_str());
 }
+
+//void VersionNumber::Unload(Serialiser& s) const
+//{
+//    Serialise<decltype(major)>(s, major);
+//    Serialise<decltype(minor)>(s, minor);
+//    Serialise<decltype(patch)>(s, patch);
+//}
+//
+//void VersionNumber::Load(Serialiser& s)
+//{
+//    Deserialise<decltype(major)>(s, &major);
+//    Deserialise<decltype(minor)>(s, &minor);
+//    Deserialise<decltype(patch)>(s, &patch);
+//}

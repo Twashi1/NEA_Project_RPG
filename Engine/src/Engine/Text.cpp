@@ -19,7 +19,7 @@ ENG_Ptr(Font) Text::GetDefaultFont()
 }
 
 Text::Text()
-    : text(""), pos(0), font(nullptr), shader(nullptr), scale(0.0f)
+    : text(""), pos(), font(nullptr), shader(nullptr), scale(0.0f)
 {
     ENG_LogWarn("Default constructor called! Values will not be properly initialised");
 }

@@ -92,7 +92,7 @@ Font::Character::Character(uint32_t texture_id, Vector2<int> size, Vector2<int> 
 	: texture_id(texture_id), size(size), bearing(bearing), advance(advance) {}
 
 Font::Character::Character()
-	: texture_id(0), size(Vector2<int>::ZERO), bearing(Vector2<int>::ZERO), advance(0) {}
+	: texture_id(0), size(), bearing(), advance(0) {}
 
 Font::Character::Character(const Character& other)
 	: texture_id(other.texture_id), size(other.size), bearing(other.bearing), advance(other.advance) {}
