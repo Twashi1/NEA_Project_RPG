@@ -13,7 +13,7 @@
 #include "Serialiser.h"
 
 template <typename T> requires __Arithmetic<T>
-struct ENGINE_API Vector2 /*: public Serialiseable*/ {
+struct ENGINE_API Vector2 : public Serialiseable {
 public:
 	T x, y;
 
@@ -109,8 +109,9 @@ public:
 	operator Vector2<unsigned int>()  { return Vector2<unsigned int>((unsigned int)x, (unsigned int)y);    }
 	operator Vector2<unsigned char>() { return Vector2<unsigned char>((unsigned char)x, (unsigned char)y); }
 
-	/*void Load(Serialiser& s) override { Deserialise<T>(s, &x); Deserialise<T>(s, &y); };
-	void Unload(Serialiser& s) const override { Serialise<T>(s, x); Serialise<T>(s, y); }*/
+	// TODO is_serialiseable concept?
+	void Load(Serialiser& s) { Deserialise<T>(s, &x); Deserialise<T>(s, &y); }
+	void Unload(Serialiser& s) const { Serialise<T>(s, x); Serialise<T>(s, y); }
 };
 
 template <typename T>
@@ -144,6 +145,7 @@ namespace std {
 	};
 }
 
+// TODO: should be statics
 template <typename T>
 Vector2<T> cross(Vector2<T> v, T a) {
 	return Vector2<T>(a * v.y, -a * v.x);
@@ -155,11 +157,11 @@ Vector2<T> cross(T a, Vector2<T> v) {
 }
 
 template <typename T>
-T dot(const Vector2<T>& a, const Vector2<T>& b) {
-	return a.x * b.x + a.y * b.y;
+T cross(Vector2<T> a, Vector2<T> b) {
+	return (a.x * b.y) - (a.y * b.x);
 }
 
 template <typename T>
-T cross(Vector2<T> a, Vector2<T> b) {
-	return (a.x * b.y) - (a.y * b.x);
+T dot(const Vector2<T>& a, const Vector2<T>& b) {
+	return a.x * b.x + a.y * b.y;
 }

@@ -178,6 +178,9 @@
     <ClInclude Include="src\Engine\Scene.h">
       <Filter>Headers\Rendering</Filter>
     </ClInclude>
+    <ClInclude Include="src\Engine\Slider.h">
+      <Filter>Headers\GUI</Filter>
+    </ClInclude>
   </ItemGroup>
   <ItemGroup>
     <Filter Include="Headers">

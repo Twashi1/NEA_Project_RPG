@@ -4,7 +4,7 @@
 #include "Utils.h"
 #include "Serialiser.h"
 
-struct ENGINE_API Rect /* : public Serialiseable */ {
+struct ENGINE_API Rect : public Serialiseable {
 protected:
 	static Vector2<float> m_Offsets[4]; // For calculating vertices
 
@@ -56,10 +56,8 @@ public:
 		angle = other.angle;
 	}
 
-	/*
-	void Load(Serialiser& s) override;
-	void Unload(Serialiser& s) const override;
-	*/
+	void Load(Serialiser& s);
+	void Unload(Serialiser& s) const;
 };
 
 bool operator==(const Rect& a, const Rect& b);

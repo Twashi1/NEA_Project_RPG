@@ -26,8 +26,17 @@ Serialiser::~Serialiser() {
 	if (outstream != nullptr) delete outstream;
 }
 
-void Serialiseable::Load(Serialiser& s) { ENG_LogWarn("Serialiseable base function called - have you defined an override for Load(Serialiser& s)?"); };
-void Serialiseable::Unload(Serialiser& s) const { ENG_LogWarn("Serialiseable base function called - have you defined an override for Unload(Deserialiser& s)?"); };
+/*
+void Serialiseable::Load(Serialiser& s)
+{
+	ENG_LogWarn("Serialiseable load not overriden");
+}
+
+void Serialiseable::Unload(Serialiser& s) const
+{
+	ENG_LogWarn("Serialiseable unload not overriden");
+}
+*/
 
 template <typename T> void Serialise(Serialiser& s, const T& data)
 {
@@ -40,6 +49,7 @@ template ENGINE_API void Serialise(Serialiser&, const int16_t&);
 template ENGINE_API void Serialise(Serialiser&, const uint16_t&);
 template ENGINE_API void Serialise(Serialiser&, const int&);
 template ENGINE_API void Serialise(Serialiser&, const uint32_t&);
+template ENGINE_API void Serialise(Serialiser&, const long&);
 template ENGINE_API void Serialise(Serialiser&, const float&);
 template ENGINE_API void Serialise(Serialiser&, const double&);
 
@@ -71,6 +81,7 @@ template ENGINE_API int16_t			Deserialise(Serialiser&);
 template ENGINE_API uint16_t		Deserialise(Serialiser&);
 template ENGINE_API int				Deserialise(Serialiser&);
 template ENGINE_API uint32_t		Deserialise(Serialiser&);
+template ENGINE_API long			Deserialise(Serialiser&);
 template ENGINE_API float			Deserialise(Serialiser&);
 template ENGINE_API double			Deserialise(Serialiser&);
 
@@ -111,6 +122,7 @@ template ENGINE_API void Deserialise(Serialiser&, int16_t*);
 template ENGINE_API void Deserialise(Serialiser&, uint16_t*);
 template ENGINE_API void Deserialise(Serialiser&, int*);
 template ENGINE_API void Deserialise(Serialiser&, uint32_t*);
+template ENGINE_API void Deserialise(Serialiser&, long*);
 template ENGINE_API void Deserialise(Serialiser&, float*);
 template ENGINE_API void Deserialise(Serialiser&, double*);
 

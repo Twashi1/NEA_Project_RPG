@@ -74,50 +74,50 @@ void SceneObject::Schedule()
 	}
 }
 
-//void SceneObject::Load(Serialiser& s)
-//{
-//	// bad code but idgaf
-//	Deserialise<uint8_t>(s, (uint8_t*)&m_Type);
-//	
-//	switch (m_Type) {
-//	case Type::SHADED_QUAD:
-//	{
-//		// TODO: implement
-//		/*
-//		shaded_quad.quad = ENG_MakePtr(Quad, s);
-//		shaded_quad.shader = ENG_MakePtr(Shader, s);
-//		*/
-//		break;
-//	}
-//	case Type::TEXTURED_QUAD:
-//	{
-//		break;
-//	}
-//	case Type::ANIMATION:
-//	{
-//		break;
-//	}
-//	case Type::BUTTON:
-//	{
-//		break;
-//	}
-//	case Type::TEXT_INPUT:
-//	{
-//		break;
-//	}
-//	case Type::TEXT:
-//	{
-//		break;
-//	}
-//	default:
-//		ENG_LogWarn("SceneObject has invalid type {}", to_string(m_Type));
-//	}
-//}
-//
-//void SceneObject::Unload(Serialiser& s) const
-//{
-//	Serialise<uint8_t>(s, (uint8_t)m_Type);
-//}
+void SceneObject::Load(Serialiser& s)
+{
+	// bad code but idgaf
+	Deserialise<uint8_t>(s, (uint8_t*)&m_Type);
+	
+	switch (m_Type) {
+	case Type::SHADED_QUAD:
+	{
+		// TODO: implement
+		/*
+		shaded_quad.quad = ENG_MakePtr(Quad, s);
+		shaded_quad.shader = ENG_MakePtr(Shader, s);
+		*/
+		break;
+	}
+	case Type::TEXTURED_QUAD:
+	{
+		break;
+	}
+	case Type::ANIMATION:
+	{
+		break;
+	}
+	case Type::BUTTON:
+	{
+		break;
+	}
+	case Type::TEXT_INPUT:
+	{
+		break;
+	}
+	case Type::TEXT:
+	{
+		break;
+	}
+	default:
+		ENG_LogWarn("SceneObject has invalid type {}", to_string(m_Type));
+	}
+}
+
+void SceneObject::Unload(Serialiser& s) const
+{
+	Serialise<uint8_t>(s, (uint8_t)m_Type);
+}
 
 SceneObject::__shaded_quad::__shaded_quad(ENG_Ptr(Quad) quad, ENG_Ptr(Shader) shader)
 	: quad(quad), shader(shader)

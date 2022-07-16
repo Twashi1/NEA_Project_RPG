@@ -7,7 +7,7 @@
 #include "Rect.h"
 #include "Texture.h"
 
-struct ENGINE_API Quad : private Rect/*, public Serialiseable*/ {
+struct ENGINE_API Quad : public Serialiseable, private Rect {
 private:
 	std::vector<float> m_TexCoords;
 
@@ -83,8 +83,8 @@ public:
 	friend bool operator==(const Quad& a, const Quad& b);
 	friend std::string to_string(const Quad& quad);
 
-	/*void Load(Serialiser& s) override;
-	void Unload(Serialiser& s) const override;*/
+	void Load(Serialiser& s);
+	void Unload(Serialiser& s) const;
 };
 
 std::string to_string(const Quad& quad);

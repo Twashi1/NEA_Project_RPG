@@ -72,6 +72,7 @@
     <ClInclude Include="src\Engine\Shader.h" />
     <ClInclude Include="src\Engine\Font.h" />
     <ClInclude Include="src\Engine\ShaderManager.h" />
+    <ClInclude Include="src\Engine\Slider.h" />
     <ClInclude Include="src\Engine\Text.h" />
     <ClInclude Include="src\Engine\TextInput.h" />
     <ClInclude Include="src\Engine\Texture.h" />

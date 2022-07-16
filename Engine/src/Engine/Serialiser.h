@@ -21,9 +21,9 @@ public:
 };
 
 class ENGINE_API Serialiseable {
-protected:
-	virtual void Load(Serialiser& s);
-	virtual void Unload(Serialiser& s) const;
+public:
+	void Load(Serialiser& s);
+	void Unload(Serialiser& s) const;
 };
 
 // Serialises one instance of object

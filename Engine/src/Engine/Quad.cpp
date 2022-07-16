@@ -29,15 +29,15 @@ void Quad::m_ConstructBuffers()
 	};
 
 	// Generate vertex and texture coordinates
-	vb = std::shared_ptr<VertexBuffer>(new VertexBuffer(
-		{
+	vb = ENG_MakePtr(VertexBuffer,
+		std::vector<float>{
 			vertices[Rect::BOTTOMLEFT ].x, vertices[Rect::BOTTOMLEFT ].y,
 			vertices[Rect::BOTTOMRIGHT].x, vertices[Rect::BOTTOMRIGHT].y,
 			vertices[Rect::TOPRIGHT   ].x, vertices[Rect::TOPRIGHT	 ].y,
 			vertices[Rect::TOPLEFT	  ].x, vertices[Rect::TOPLEFT	 ].y
 		},
 		m_TexCoords
-	));
+	);
 }
 
 void Quad::Init()
@@ -177,34 +177,34 @@ void Quad::SetTextureCoords(const Texture& atlas, const Vector2<int>& top_left, 
 	vb->SetTex(m_TexCoords);
 }
 
-//void Quad::Unload(Serialiser& s) const
-//{
-//	Serialise<decltype(x)>(s, x);
-//	Serialise<decltype(y)>(s, y);
-//	Serialise<decltype(width)>(s, width);
-//	Serialise<decltype(height)>(s, height);
-//	Serialise<decltype(angle)>(s, angle);
-//
-//	for (float coord : m_TexCoords) {
-//		Serialise<float>(s, coord);
-//	}
-//}
-//
-//void Quad::Load(Serialiser& s)
-//{
-//	Deserialise<decltype(x)>(s, &x);
-//	Deserialise<decltype(y)>(s, &y);
-//	Deserialise<decltype(width)>(s, &width);
-//	Deserialise<decltype(height)>(s, &height);
-//	Deserialise<decltype(angle)>(s, &angle);
-//
-//	// Sets size of vector to 8, so vector correctly reads elements
-//	m_TexCoords.resize(8);
-//
-//	for (int i = 0; i < 8; i++) {
-//		Deserialise<float>(s, &m_TexCoords[i]);
-//	}
-//}
+void Quad::Unload(Serialiser& s) const
+{
+	Serialise<decltype(x)>(s, x);
+	Serialise<decltype(y)>(s, y);
+	Serialise<decltype(width)>(s, width);
+	Serialise<decltype(height)>(s, height);
+	Serialise<decltype(angle)>(s, angle);
+
+	for (float coord : m_TexCoords) {
+		Serialise<float>(s, coord);
+	}
+}
+
+void Quad::Load(Serialiser& s)
+{
+	Deserialise<decltype(x)>(s, &x);
+	Deserialise<decltype(y)>(s, &y);
+	Deserialise<decltype(width)>(s, &width);
+	Deserialise<decltype(height)>(s, &height);
+	Deserialise<decltype(angle)>(s, &angle);
+
+	// Sets size of vector to 8, so vector correctly reads elements
+	m_TexCoords.resize(8);
+
+	for (int i = 0; i < 8; i++) {
+		Deserialise<float>(s, &m_TexCoords[i]);
+	}
+}
 
 const VertexBuffer& Quad::GetVertexBuffer() const
 {
