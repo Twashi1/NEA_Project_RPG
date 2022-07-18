@@ -33,10 +33,10 @@ void Button::Init()
 	}
 
 	// Construct default shaders
-	m_DefaultIdleShader = ENG_MakePtr(Shader, "static_vertex", "color_frag");
+	m_DefaultIdleShader = ENG_MakePtr(Shader, "static_vertex", "transparency_frag");
 	m_DefaultIdleShader->SetUniform4f("u_Color", COLORS::GRAY.x, COLORS::GRAY.y, COLORS::GRAY.z, Button::m_DefaultScale);
 
-	m_DefaultPressedShader = ENG_MakePtr(Shader, "static_vertex", "color_frag");
+	m_DefaultPressedShader = ENG_MakePtr(Shader, "static_vertex", "transparency_frag");
 	m_DefaultPressedShader->SetUniform4f("u_Color", COLORS::DARKGRAY.x, COLORS::DARKGRAY.y, COLORS::DARKGRAY.z, Button::m_DefaultScale);
 
 	// Construct default font
