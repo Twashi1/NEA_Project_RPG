@@ -88,6 +88,18 @@ Button::~Button()
 	Utils::Remove(GUIManager::buttons, this);
 }
 
+void Button::Update(const Vector2<float>& cursor_pos, Input::State lmb_state)
+{
+	if (lmb_state == Input::State::RELEASE) {
+		CheckClicked(cursor_pos);
+	}
+	else if (lmb_state == Input::State::PRESS || lmb_state == Input::State::HOLD) {
+		CheckPressed(cursor_pos);
+	}
+
+	UpdatePos();
+}
+
 void Button::CheckClicked(const Vector2<float>& cursor_pos)
 {
 	// Reset back to default state, regardless if we specifically were the button pressed

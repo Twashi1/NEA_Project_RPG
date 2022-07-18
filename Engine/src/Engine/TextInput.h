@@ -70,6 +70,6 @@ public:
 	TextInput(const Quad& quad, CallbackFunc_t callback, const Vector3<float>& typed_color, const Vector3<float>& empty_color, ENG_Ptr(Shader) bg_shader, ENG_Ptr(Texture) bg_texture, int offset = 0);
 	~TextInput();
 
-	void CheckClicked(const Input::State& lmb_state, const Vector2<float>& cursor_pos);
-	void Update();
+	void CheckClicked(const Vector2<float>& cursor_pos, const Input::State& lmb_state);
+	void Update(Vector2<float> cursor_pos, Input::State lmb_state);
 };

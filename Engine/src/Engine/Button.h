@@ -49,6 +49,7 @@ public:
 	Button(const Quad& quad, CallbackFunc_t callback, const std::string& text);
 	~Button();
 
+	void Update(const Vector2<float>& cursor_pos, Input::State lmb_state);
 	void CheckClicked(const Vector2<float>& cursor_pos);
 	void CheckPressed(const Vector2<float>& cursor_pos);
 

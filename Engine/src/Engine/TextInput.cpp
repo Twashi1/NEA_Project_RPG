@@ -33,7 +33,7 @@ void TextInput::Init(ENG_Ptr(Texture) engine_icons)
 	m_TextShader->Bind(); m_TextShader->SetUniform3f("u_TextColor", m_DefaultEmptyColor);
 }
 
-void TextInput::CheckClicked(const Input::State& lmb_state, const Vector2<float>& cursor_pos)
+void TextInput::CheckClicked(const Vector2<float>& cursor_pos, const Input::State& lmb_state)
 {
 	bool withinQuad = quad.Contains(cursor_pos);
 
@@ -141,8 +141,10 @@ void TextInput::m_UpdateText()
 	}
 }
 
-void TextInput::Update()
+void TextInput::Update(Vector2<float> cursor_pos, Input::State lmb_state)
 {
+	CheckClicked(cursor_pos, lmb_state);
+
 	float current_time = Utils::Timer::GetTime();
 	float elapsed = current_time - m_Time;
 	m_Time = current_time;
