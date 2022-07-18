@@ -56,6 +56,8 @@ public:
 
 	Quad quad;
 
+	void SetPos(const Vector2<float>& new_pos);
+
 	ENG_Ptr(Animation) GetTypingBar();
 	bool GetIsTyping();
 	ENG_Ptr(Text) GetText();

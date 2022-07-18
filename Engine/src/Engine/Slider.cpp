@@ -44,24 +44,34 @@ float Slider::GetValue(float min, float max) const
 
 void Slider::SetValue(float value)
 {
-	// TODO lots of repeated code here
+	// TODO update slider subroutine?
 	m_Value = value;
-	float bar_left = m_BarQuad->Left();
-	m_SliderQuad->SetX(bar_left + m_BarQuad->GetWidth() * value);
+	m_SliderQuad->SetX(m_BarQuad->Left() + m_BarQuad->GetWidth() * value);
 }
 
 void Slider::SetValue(float value, float scale)
 {
 	m_Value = value / scale;
-	float bar_left = m_BarQuad->Left();
-	m_SliderQuad->SetX(bar_left + m_BarQuad->GetWidth() * m_Value);
+	m_SliderQuad->SetX(m_BarQuad->Left() + m_BarQuad->GetWidth() * m_Value);
 }
 
 void Slider::SetValue(float value, float min, float max)
 {
 	m_Value = (value - min) / (max - min);
-	float bar_left = m_BarQuad->Left();
-	m_SliderQuad->SetX(bar_left + m_BarQuad->GetWidth() * m_Value);
+	m_SliderQuad->SetX(m_BarQuad->Left() + m_BarQuad->GetWidth() * m_Value);
+}
+
+Vector2<float> Slider::GetPos() const
+{
+	return m_BarQuad->GetCenter();
+}
+
+void Slider::SetPos(const Vector2<float>& new_pos)
+{
+	m_BarQuad->SetCenter(new_pos);
+	// two UpdateVB calls
+	m_SliderQuad->SetX(m_BarQuad->Left() + m_BarQuad->GetWidth() * m_Value);
+	m_SliderQuad->SetY(m_BarQuad->GetY());
 }
 
 void Slider::Update(const Vector2<float>& cursor_pos, Input::State lmb_state)

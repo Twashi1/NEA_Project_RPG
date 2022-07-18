@@ -3,11 +3,14 @@
 #include "Renderer.h"
 #include "Font.h"
 #include "Shader.h"
+#include "GUIManager.h"
 
 struct ENGINE_API Text {
 private:
 	static ENG_Ptr(Shader) m_DefaultShader;
 	static ENG_Ptr(Font) m_DefaultFont;
+
+	void m_Construct();
 
 public:
 	std::string text;			// Text to render

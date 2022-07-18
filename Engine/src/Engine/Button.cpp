@@ -43,6 +43,12 @@ void Button::Init()
 	m_DefaultFont = Text::GetDefaultFont();
 }
 
+void Button::SetPos(const Vector2<float>& pos)
+{
+	quad.SetCenter(pos);
+	m_UpdatePos();
+}
+
 Button::Button(const Quad& quad, CallbackFunc_t callback, const std::string& idle_text, const std::string& pressed_text, ENG_Ptr(Shader) idle_shader, ENG_Ptr(Shader) pressed_shader, ENG_Ptr(Texture) idle_texture, ENG_Ptr(Texture) pressed_texture)
 	: quad(quad),
 	callback(callback),
@@ -97,7 +103,7 @@ void Button::Update(const Vector2<float>& cursor_pos, Input::State lmb_state)
 		CheckPressed(cursor_pos);
 	}
 
-	UpdatePos();
+	m_UpdatePos();
 }
 
 void Button::CheckClicked(const Vector2<float>& cursor_pos)
@@ -118,7 +124,7 @@ void Button::CheckClicked(const Vector2<float>& cursor_pos)
 		callback(this);
 
 		// Update position
-		UpdatePos();
+		m_UpdatePos();
 	}
 }
 
@@ -133,7 +139,7 @@ void Button::CheckPressed(const Vector2<float>& cursor_pos)
 		text->text = isPressed ? pressed_text : idle_text;
 
 		// Update position
-		UpdatePos();
+		m_UpdatePos();
 	}
 }
 
@@ -152,7 +158,7 @@ const std::string& Button::CurrentText() const
 	return isPressed ? pressed_text : idle_text;
 }
 
-void Button::UpdatePos()
+void Button::m_UpdatePos()
 {
 	// Subtracting half the size of the text being displayed
 	// from the center of the background so that the text is centered

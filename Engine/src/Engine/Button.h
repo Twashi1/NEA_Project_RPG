@@ -20,6 +20,9 @@ private:
 	// Gets width/height of text so that it can be centered on the button
 	Vector2<float> m_GetTextDim(const std::string& text);
 
+	// Updates button's text position - Need to call this if you edit "quad"
+	void m_UpdatePos();
+
 public:
 	typedef void (*CallbackFunc_t)(Button*); // Shorthand for a callback function pointer (takes the button that was pressed as a paramater)
 
@@ -42,6 +45,8 @@ public:
 	// Initialises standard shaders and Input listeners
 	static void Init();
 
+	void SetPos(const Vector2<float>& pos);
+
 	// TODO better constructor?
 	Button(const Quad& quad, CallbackFunc_t callback, const std::string& idle_text, const std::string& pressed_text, ENG_Ptr(Shader) idle_shader, ENG_Ptr(Shader) pressed_shader, ENG_Ptr(Texture) idle_texture, ENG_Ptr(Texture) pressed_texture);
 	Button(const Quad& quad, CallbackFunc_t callback, const std::string& idle_text, const std::string& pressed_text, ENG_Ptr(Shader) idle_shader, ENG_Ptr(Shader) pressed_shader);
@@ -56,7 +61,4 @@ public:
 	ENG_Ptr(Shader) CurrentShader();
 	ENG_Ptr(Texture) CurrentTexture();
 	const std::string& CurrentText() const;
-
-	// Updates button's text position - Need to call this if you edit "quad"
-	void UpdatePos();
 };

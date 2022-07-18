@@ -9,7 +9,6 @@
 - [x] Buttons
 - [x] Sliders
 - [x] Input boxes
-- [ ] Relative coordinates for GUI objects
 
 ## General
 - [ ] Pathfinding
@@ -42,13 +41,13 @@
 - [ ] Player sprites/animation
 
 # Other
+- Cleanup
 - Still major CPU bottleneck
 - Sleep in engine EndFrame
-- Better link to Resources folder
+- Better link to Resources folder/re-do file paths and file extension statics
 - Better name for class Text
 - Input box typing bar size is using magic numbers
-- Cleanup
 - Default statics are ugly
 - Use proper camera instead of the hack
 - Serialiser API still needs work
-- GUI API rework
+- SceneObjects fixed to window sides/center/none, and updating when window coordinates change

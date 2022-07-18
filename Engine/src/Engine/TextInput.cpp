@@ -206,6 +206,12 @@ TextInput::TextInput(const Quad& quad, CallbackFunc_t callback, const Vector3<fl
 	m_Construct();
 }
 
+void TextInput::SetPos(const Vector2<float>& new_pos)
+{
+	quad.SetCenter(new_pos);
+	m_Text->pos = Vector2<float>(new_pos.x - (quad.GetWidth() / 2.0f) + m_Offset, new_pos.y);
+}
+
 ENG_Ptr(Animation) TextInput::GetTypingBar()
 {
 	// TODO Function is 2 in 1 kinda ugly

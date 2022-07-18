@@ -42,6 +42,9 @@ public:
 	void SetValue(float value, float scale);
 	void SetValue(float value, float min, float max);
 
+	Vector2<float> GetPos() const;
+	void SetPos(const Vector2<float>& new_pos);
+
 	void Update(const Vector2<float>& cursor_pos, Input::State lmb_state);
 
 	Slider(ENG_Ptr(Quad) bar_quad, ENG_Ptr(Quad) slider_quad, CallbackFunc_t callback);
