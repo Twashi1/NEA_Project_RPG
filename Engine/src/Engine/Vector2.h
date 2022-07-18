@@ -112,7 +112,7 @@ public:
 	operator Vector2<unsigned char>() { return Vector2<unsigned char>((unsigned char)x, (unsigned char)y); }
 
 	// TODO is_serialiseable concept?
-	void Write(Serialiser::Stream& s) { ENG_LogInfo("Write vec2"); }
+	void Write(Serialiser::Stream& s) const { ENG_LogInfo("Write vec2"); }
 	void Read(Serialiser::Stream& s) { ENG_LogInfo("Read vec2"); }
 };
 #pragma pack(pop)

@@ -81,7 +81,7 @@ Rect::~Rect()
 {
 }
 
-void Rect::Write(Serialiser::Stream& s) { ENG_LogInfo("Serialise rect"); }
+void Rect::Write(Serialiser::Stream& s) const { ENG_LogInfo("Serialise rect"); }
 
 void Rect::Read(Serialiser::Stream& s) { ENG_LogInfo("Unserialise rect"); }
 

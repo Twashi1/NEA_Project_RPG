@@ -84,7 +84,7 @@ public:
 	friend bool operator==(const Quad& a, const Quad& b);
 	friend std::string to_string(const Quad& quad);
 
-	void Write(Serialiser::Stream& s);
+	void Write(Serialiser::Stream& s) const;
 	void Read(Serialiser::Stream& s);
 };
 

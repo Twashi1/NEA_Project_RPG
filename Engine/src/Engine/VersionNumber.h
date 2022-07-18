@@ -24,7 +24,7 @@ public:
     void operator=(const char* version_string);
     void operator=(const std::string& version_string);
 
-    void Write(Serialiser::Stream& s);
+    void Write(Serialiser::Stream& s) const;
     void Read(Serialiser::Stream& s);
 };
 

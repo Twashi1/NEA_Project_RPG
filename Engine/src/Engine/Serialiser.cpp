@@ -27,7 +27,7 @@ namespace Serialiser {
 		if (out != nullptr) delete out;
 	}
 
-	template <__Streamable T> void Serialise(Stream& s, const T& data)
+	template <typename T> void Serialise(Stream& s, const T& data)
 	{
 		s.out->write((char*)&data, sizeof(T));
 	}
@@ -48,7 +48,7 @@ namespace Serialiser {
 		s.out->put('\0'); // Write null termination character
 	}
 
-	template <__Streamable T> T Unserialise(Stream& s)
+	template <typename T> T Unserialise(Stream& s)
 	{
 		// T must have default constructor
 		ENG_Assert(std::is_default_constructible<T>::value, "Type {} is not default constructible", typeid(T).name());
@@ -95,7 +95,7 @@ namespace Serialiser {
 		return buffer;
 	}
 
-	template <__Streamable T> void Unserialise(Stream& s, T* memory)
+	template <typename T> void Unserialise(Stream& s, T* memory)
 	{
 		char* readbuff = new char[sizeof(T)]; // Allocate buffer for file data
 		s.in->read(readbuff, sizeof(T)); // Read file data into buffer
@@ -134,6 +134,6 @@ namespace Serialiser {
 
 	Streamable::Streamable() {}
 	Streamable::~Streamable() {}
-	void Streamable::Write(Stream& s) { ENG_LogInfo("Write streamable"); }
+	void Streamable::Write(Stream& s) const { ENG_LogInfo("Write streamable"); }
 	void Streamable::Read(Stream& s) { ENG_LogInfo("Read streamable"); }
 }

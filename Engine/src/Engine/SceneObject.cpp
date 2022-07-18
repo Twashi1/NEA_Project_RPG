@@ -94,7 +94,7 @@ void SceneObject::Read(Serialiser::Stream& s)
 	}
 }
 
-void SceneObject::Write(Serialiser::Stream& s)
+void SceneObject::Write(Serialiser::Stream& s) const
 {
 	Serialise<uint8_t>(s, (uint8_t)m_Type);
 }

@@ -61,7 +61,7 @@ void VersionNumber::operator=(const std::string& version_string)
     m_ConstructFromString(version_string.c_str());
 }
 
-void VersionNumber::Write(Serialiser::Stream& s)
+void VersionNumber::Write(Serialiser::Stream& s) const
 {
     Serialise<decltype(major)>(s, major);
     Serialise<decltype(minor)>(s, minor);

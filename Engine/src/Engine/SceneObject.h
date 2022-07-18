@@ -64,7 +64,7 @@ public:
 
 	Type GetType() const;
 
-	void Write(Serialiser::Stream& s);
+	void Write(Serialiser::Stream& s) const;
 	void Read(Serialiser::Stream& s);
 
 	friend Renderer;

@@ -177,7 +177,7 @@ void Quad::SetTextureCoords(const Texture& atlas, const Vector2<int>& top_left, 
 	vb->SetTex(m_TexCoords);
 }
 
-void Quad::Write(Serialiser::Stream& s)
+void Quad::Write(Serialiser::Stream& s) const
 {
 	ENG_LogInfo("Serialise quad");
 }
