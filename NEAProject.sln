@@ -21,24 +21,6 @@ Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "fonts", "fonts", "{FC4E52F9
 	EndProjectSection
 EndProject
 Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "shaders", "shaders", "{AD78A436-E971-44E3-A8A6-A5287D198026}"
-	ProjectSection(SolutionItems) = preProject
-		Resources\shaders\button_frag.glsl = Resources\shaders\button_frag.glsl
-		Resources\shaders\button_vertex.glsl = Resources\shaders\button_vertex.glsl
-		Resources\shaders\cellular_frag.glsl = Resources\shaders\cellular_frag.glsl
-		Resources\shaders\cellular_vertex.glsl = Resources\shaders\cellular_vertex.glsl
-		Resources\shaders\colour_frag.glsl = Resources\shaders\colour_frag.glsl
-		Resources\shaders\colour_vertex.glsl = Resources\shaders\colour_vertex.glsl
-		Resources\shaders\player_frag.glsl = Resources\shaders\player_frag.glsl
-		Resources\shaders\player_vertex.glsl = Resources\shaders\player_vertex.glsl
-		Resources\shaders\static_texture_frag.glsl = Resources\shaders\static_texture_frag.glsl
-		Resources\shaders\static_texture_vertex.glsl = Resources\shaders\static_texture_vertex.glsl
-		Resources\shaders\texture_frag.glsl = Resources\shaders\texture_frag.glsl
-		Resources\shaders\texture_vertex.glsl = Resources\shaders\texture_vertex.glsl
-		Resources\shaders\text_frag.glsl = Resources\shaders\text_frag.glsl
-		Resources\shaders\text_vertex.glsl = Resources\shaders\text_vertex.glsl
-		Resources\shaders\uv_frag.glsl = Resources\shaders\uv_frag.glsl
-		Resources\shaders\uv_vertex.glsl = Resources\shaders\uv_vertex.glsl
-	EndProjectSection
 EndProject
 Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "saves", "saves", "{E42AB3D6-99D8-4BBF-86EA-8511129968F3}"
 	ProjectSection(SolutionItems) = preProject
@@ -57,6 +39,24 @@ EndProject
 Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "_animationfiles", "_animationfiles", "{590723D0-7424-4DAF-8286-94C13FC15F88}"
 	ProjectSection(SolutionItems) = preProject
 		Resources\sprites\data.animation = Resources\sprites\data.animation
+	EndProjectSection
+EndProject
+Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "frag", "frag", "{E8A12835-60D9-4A96-B9BD-D867803098B4}"
+	ProjectSection(SolutionItems) = preProject
+		Resources\shaders\color_frag.glsl = Resources\shaders\color_frag.glsl
+		Resources\shaders\texture_frag.glsl = Resources\shaders\texture_frag.glsl
+		Resources\shaders\text_frag.glsl = Resources\shaders\text_frag.glsl
+		Resources\shaders\transparency_frag.glsl = Resources\shaders\transparency_frag.glsl
+		Resources\shaders\uv_frag.glsl = Resources\shaders\uv_frag.glsl
+	EndProjectSection
+EndProject
+Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "vertex", "vertex", "{7BBE11D5-A004-4A3D-AAFD-8FD8CD485B32}"
+	ProjectSection(SolutionItems) = preProject
+		Resources\shaders\static_texture_vertex.glsl = Resources\shaders\static_texture_vertex.glsl
+		Resources\shaders\static_vertex.glsl = Resources\shaders\static_vertex.glsl
+		Resources\shaders\texture_vertex.glsl = Resources\shaders\texture_vertex.glsl
+		Resources\shaders\text_vertex.glsl = Resources\shaders\text_vertex.glsl
+		Resources\shaders\world_vertex.glsl = Resources\shaders\world_vertex.glsl
 	EndProjectSection
 EndProject
 Global
@@ -85,6 +85,8 @@ Global
 		{09A99787-00EB-4920-AA8F-67E5B1B52DFA} = {8450CC3B-3D01-46B1-99CE-AD62BB93F784}
 		{279A77EC-76C2-4E6F-A014-FAFB36A16B4A} = {8450CC3B-3D01-46B1-99CE-AD62BB93F784}
 		{590723D0-7424-4DAF-8286-94C13FC15F88} = {09A99787-00EB-4920-AA8F-67E5B1B52DFA}
+		{E8A12835-60D9-4A96-B9BD-D867803098B4} = {AD78A436-E971-44E3-A8A6-A5287D198026}
+		{7BBE11D5-A004-4A3D-AAFD-8FD8CD485B32} = {AD78A436-E971-44E3-A8A6-A5287D198026}
 	EndGlobalSection
 	GlobalSection(ExtensibilityGlobals) = postSolution
 		SolutionGuid = {2AA395CE-ACD5-43DE-A8C5-164B98FFF289}

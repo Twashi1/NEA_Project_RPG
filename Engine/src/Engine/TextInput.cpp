@@ -11,7 +11,7 @@ ENG_Ptr(Shader) TextInput::m_TypingBarShader = nullptr;
 
 void TextInput::Init(ENG_Ptr(Texture) engine_icons)
 {
-	m_TypingBarShader = ENG_MakePtr(Shader, "static_texture_vertex", "static_texture_frag");
+	m_TypingBarShader = ENG_MakePtr(Shader, "static_texture_vertex", "texture_frag");
 
 	m_TypingBar = ENG_MakePtr(Animation,
 		ENG_MakePtr(Quad, 150, 150, 128, 128, 0),
@@ -26,7 +26,7 @@ void TextInput::Init(ENG_Ptr(Texture) engine_icons)
 	m_DefaultEmptyText = "Type here...";
 	m_DefaultFont = Text::GetDefaultFont();
 
-	m_DefaultBgShader = ENG_MakePtr(Shader, "button_vertex", "button_frag");
+	m_DefaultBgShader = ENG_MakePtr(Shader, "static_vertex", "transparency_frag");
 	m_DefaultBgShader->Bind(); m_DefaultBgShader->SetUniform4f("u_Color", COLORS::WHITE.x, COLORS::WHITE.y, COLORS::WHITE.z, 0.9f);
 
 	m_TextShader = ENG_MakePtr(Shader, "text_vertex", "text_frag");

@@ -8,6 +8,6 @@ uniform mat4 u_projMat;
 out vec2 v_texCoord;
 
 void main() {
-	gl_Position = u_projMat * vec4(position.xy, position.z, position.w);
+	gl_Position = u_projMat * position;
 	v_texCoord = texCoord;
 }

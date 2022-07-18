@@ -37,13 +37,13 @@ int main(void)
     Shader texture_shader("texture_vertex", "texture_frag");
     texture_shader.SetUniform1f("u_Scale", 1);
 
-    Shader colour_shader = Shader("colour_vertex", "colour_frag");
+    Shader colour_shader = Shader("world_vertex", "color_frag");
     colour_shader.SetUniform3f("u_Color", COLORS::RED);
 
-    Shader static_color = Shader("button_vertex", "button_frag");
-    static_color.SetUniform4f("u_Color", COLORS::BLUE.x, COLORS::BLUE.y, COLORS::BLUE.z, 1.0f);
+    Shader static_color = Shader("static_vertex", "color_frag");
+    static_color.SetUniform3f("u_Color", COLORS::BLUE);
 
-    Shader static_texture = Shader("static_texture_vertex", "static_texture_frag");
+    Shader static_texture = Shader("static_texture_vertex", "texture_frag");
 
     World::texture_shader = &texture_shader;
 

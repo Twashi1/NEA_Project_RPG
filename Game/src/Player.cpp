@@ -49,7 +49,7 @@ Player::Player(const glm::mat4& proj)
     body = ENG_MakePtr(Body, ENG_Ptr(Quad)(&quad), true, 0.0f, 1.0f);
 
     // Setup shader and uniforms
-    shader = new Shader("player_vertex", "player_frag");
+    shader = new Shader("world_vertex", "color_frag");
     shader->SetUniformMat4fv("u_projMat", proj);
     shader->SetUniform3f("u_Color", COLORS::YELLOW);
 }

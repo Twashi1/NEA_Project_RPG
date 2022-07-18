@@ -20,9 +20,9 @@ void Slider::m_Construct()
 
 void Slider::Init()
 {
-	m_DefaultBarShader = ENG_MakePtr(Shader, "button_vertex", "colour_frag");
+	m_DefaultBarShader = ENG_MakePtr(Shader, "static_vertex", "color_frag");
 	m_DefaultBarShader->SetUniform3f("u_Color", COLORS::GRAY);
-	m_DefaultSliderShader = ENG_MakePtr(Shader, "button_vertex", "colour_frag");
+	m_DefaultSliderShader = ENG_MakePtr(Shader, "static_vertex", "color_frag");
 	m_DefaultSliderShader->SetUniform3f("u_Color", COLORS::DARKGRAY);
 }
 
