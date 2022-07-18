@@ -44,6 +44,7 @@ EndProject
 Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "frag", "frag", "{E8A12835-60D9-4A96-B9BD-D867803098B4}"
 	ProjectSection(SolutionItems) = preProject
 		Resources\shaders\color_frag.glsl = Resources\shaders\color_frag.glsl
+		Resources\shaders\slider_frag.glsl = Resources\shaders\slider_frag.glsl
 		Resources\shaders\texture_frag.glsl = Resources\shaders\texture_frag.glsl
 		Resources\shaders\text_frag.glsl = Resources\shaders\text_frag.glsl
 		Resources\shaders\transparency_frag.glsl = Resources\shaders\transparency_frag.glsl

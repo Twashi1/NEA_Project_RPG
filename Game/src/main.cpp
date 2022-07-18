@@ -14,7 +14,7 @@ static bool seedChanged;
 static Text* slider_text_ptr;
 
 void SliderFunc(Slider* ctx) {
-    slider_text_ptr->text = std::format("Slider value: {}", Utils::Round(ctx->GetValue(1.0f, 10.0f), 3));
+    slider_text_ptr->text = std::format("Slider value: {}", Utils::Round(ctx->GetValue(5.0f, 10.0f), 3));
 }
 
 void TextFunc(TextInput* ctx) {
@@ -64,7 +64,7 @@ int main(void)
     Quad textbox = Quad(300, 300, 96*3, 96, 0);
 
     Quad bar_slider = Quad(300, 0, 200, 30, 0);
-    Quad slider_slider = Quad(300, 0, 20, 60, 0);
+    Quad slider_slider = Quad(300, 0, 10, 40, 0);
 
     Slider slider = Slider(ENG_Ptr(Quad)(&bar_slider), ENG_Ptr(Quad)(&slider_slider), &SliderFunc);
     Text slider_text = Text("Slider value: 0.5", {bar_slider.Left(), 70}, 0.3);
