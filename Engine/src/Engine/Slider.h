@@ -42,7 +42,7 @@ public:
 	void SetValue(float value, float scale);
 	void SetValue(float value, float min, float max);
 
-	void Update(const Vector2<float>& cursor_pos);
+	void Update(const Vector2<float>& cursor_pos, Input::State lmb_state);
 
 	Slider(ENG_Ptr(Quad) bar_quad, ENG_Ptr(Quad) slider_quad, CallbackFunc_t callback);
 	Slider(ENG_Ptr(Quad) bar_quad, ENG_Ptr(Quad) slider_quad, ENG_Ptr(Shader) bar_shader, ENG_Ptr(Shader) slider_shader, CallbackFunc_t callback);

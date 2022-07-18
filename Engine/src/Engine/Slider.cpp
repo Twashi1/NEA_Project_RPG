@@ -20,9 +20,10 @@ void Slider::m_Construct()
 
 void Slider::Init()
 {
-	m_DefaultBarShader = ENG_MakePtr(Shader, "static_vertex", "color_frag");
-	m_DefaultBarShader->SetUniform3f("u_Color", COLORS::GRAY);
-	m_DefaultSliderShader = ENG_MakePtr(Shader, "static_vertex", "color_frag");
+	m_DefaultBarShader = ENG_MakePtr(Shader, "static_texture_vertex", "slider_frag");
+	m_DefaultBarShader->SetUniform3f("u_BarColor", COLORS::GRAY);
+	m_DefaultBarShader->SetUniform3f("u_ShadedColor", COLORS::DARKGRAY);
+	m_DefaultSliderShader = ENG_MakePtr(Shader, "static_texture_vertex", "color_frag");
 	m_DefaultSliderShader->SetUniform3f("u_Color", COLORS::DARKGRAY);
 }
 
@@ -63,16 +64,14 @@ void Slider::SetValue(float value, float min, float max)
 	m_SliderQuad->SetX(bar_left + m_BarQuad->GetWidth() * m_Value);
 }
 
-void Slider::Update(const Vector2<float>& cursor_pos)
+void Slider::Update(const Vector2<float>& cursor_pos, Input::State lmb_state)
 {
 	// If our cursor is above the slider
-	if (isMovingSlider || m_SliderQuad->Contains(cursor_pos)) {
+	if (isMovingSlider || m_BarQuad->Contains(cursor_pos)) {
 		isMovingSlider = true;
 
-		Input::State state = Input::GetMouseState(GLFW_MOUSE_BUTTON_1);
-
 		// If pressing or holding slider
-		if (state == Input::State::PRESS || state == Input::State::HOLD) {
+		if (lmb_state == Input::State::PRESS || lmb_state == Input::State::HOLD) {
 			float new_pos = std::min(std::max(cursor_pos.x, m_BarQuad->Left()), m_BarQuad->Right());
 
 			m_SliderQuad->SetX(new_pos);
@@ -85,6 +84,9 @@ void Slider::Update(const Vector2<float>& cursor_pos)
 			isMovingSlider = false;
 		}
 	}
+
+	bar_shader->Bind();
+	bar_shader->SetUniform1f("u_Value", m_Value);
 }
 
 Slider::Slider(ENG_Ptr(Quad) bar_quad, ENG_Ptr(Quad) slider_quad, CallbackFunc_t callback)
