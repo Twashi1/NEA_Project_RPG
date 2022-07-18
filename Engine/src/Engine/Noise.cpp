@@ -219,7 +219,8 @@ Noise::__NoiseVirtual::~__NoiseVirtual() {}
 
 float Noise::Interpolated::Get(int x, int y)
 {
-    Vector2<float> p = Vector2<float>(x, y) / (float)wavelength; // Gives a decimal value and is the "real" coordinate of our point
+    // Get value relative to wavelength 
+    Vector2<float> p = Vector2<float>(x, y) / (float)wavelength;
 
     // Calculate surrounding points/lattice
     Vector2<float> l0 = p.floor();

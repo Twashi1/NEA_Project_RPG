@@ -67,8 +67,6 @@ Font::Font(const char* font_path) {
 		character_map[c] = character;
 	}
 
-	ENG_LogInfo("Max height is {}", max_height);
-
 	// Unbind texture
 	GlCall(glBindTexture(GL_TEXTURE_2D, 0));
 

@@ -66,7 +66,7 @@ void Slider::SetValue(float value, float min, float max)
 void Slider::Update(const Vector2<float>& cursor_pos)
 {
 	// If our cursor is above the slider
-	if (m_SliderQuad->Contains(cursor_pos) || isMovingSlider) {
+	if (isMovingSlider || m_SliderQuad->Contains(cursor_pos)) {
 		isMovingSlider = true;
 
 		Input::State state = Input::GetMouseState(GLFW_MOUSE_BUTTON_1);
