@@ -45,6 +45,26 @@ Vector2<float> Rect::TopLeft() const
 	return Utils::RotatePoint(center + (dim * 0.5f * m_Offsets[VERTEX::TOPLEFT]), center, angle);
 }
 
+float Rect::Left() const
+{
+	return x - width * 0.5f;
+}
+
+float Rect::Right() const
+{
+	return x + width * 0.5f;
+}
+
+float Rect::Bottom() const
+{
+	return y - height * 0.5f;
+}
+
+float Rect::Top() const
+{
+	return y + height * 0.5f;
+}
+
 bool Rect::Contains(const Vector2<float>& point) const
 {
 	const float epsilon = 0.1;

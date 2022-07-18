@@ -37,6 +37,12 @@ public:
 	Vector2<float> TopRight() const;
 	Vector2<float> TopLeft() const;
 
+	// NOTE: ignores rotation
+	float Left() const;
+	float Right() const;
+	float Bottom() const;
+	float Top() const;
+
 	bool ContainsAnyOf(const std::vector<Vector2<float>>& vertices) const;
 	bool ContainsAnyOf(const Rect& rect) const;
 	bool Contains(const Vector2<float>& point) const;

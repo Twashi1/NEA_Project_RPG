@@ -11,15 +11,16 @@
 
 #include "Serialiser.h"
 
-template <typename T>
-struct ENGINE_API Vector3 /*: public Serialiseable */{
+template <typename T> requires __Arithmetic<T>
+struct ENGINE_API Vector3 : public Serialiser::Streamable {
 public:
 	T x, y, z;
 
 	Vector3() : x(0), y(0), z(0) {}
+	Vector3(T x) : x(x), y(x), z(x) {}
 	Vector3(T x, T y, T z) : x(x), y(y), z(z) {}
 	Vector3(const Vector3& copy) : x(copy.x), y(copy.y), z(copy.z) {}
-	Vector3(Vector3&& move) : x(std::move(move.x)), y(std::move(move.y)), z(std::move(move.z)) {}
+	Vector3(Vector3&& move) noexcept : x(std::move(move.x)), y(std::move(move.y)), z(std::move(move.z)) {}
 
 	// Negative operator (*-1)
 	Vector3 operator-(void) const requires __Signed<T> { return Vector3(-x, -y, -z); }
@@ -95,8 +96,8 @@ public:
 	operator Vector3<unsigned int>() { return Vector3<unsigned int>((unsigned int)x, (unsigned int)y, (unsigned int)z); }
 	operator Vector3<uint8_t>() { return Vector3<uint8_t>((uint8_t)x, (uint8_t)y, (uint8_t)z); }
 
-	/*void Load(Serialiser& s) override { Deserialise<T>(s, &x); Deserialise<T>(s, &y); Deserialise<T>(s, &z); };
-	void Unload(Serialiser& s) const override { Serialise<T>(s, x); Serialise<T>(s, y); Serialise<T>(s, z); }*/
+	void Read(Serialiser::Stream& s) { Serialiser::Unserialise<T>(s, &x); Serialiser::Unserialise<T>(s, &y); Serialiser::Unserialise<T>(s, &z); };
+	void Write(Serialiser::Stream& s) const { Serialiser::Serialise<T>(s, x); Serialiser::Serialise<T>(s, y); Serialiser::Serialise<T>(s, z); }
 };
 
 template <typename T>

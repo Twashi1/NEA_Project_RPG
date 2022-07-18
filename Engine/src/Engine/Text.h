@@ -10,11 +10,11 @@ private:
 	static ENG_Ptr(Font) m_DefaultFont;
 
 public:
-	std::string text;      // Text to render
-	Vector2<float> pos;    // Position to render text
-	ENG_Ptr(Font) font;			   // Pointer to font
-	ENG_Ptr(Shader) shader;		   // Shader for text
-	float scale;		   // Scale for text
+	std::string text;			// Text to render
+	Vector2<float> pos;			// Position to render text
+	ENG_Ptr(Font) font;			// Pointer to font
+	ENG_Ptr(Shader) shader;		// Shader for text
+	float scale;				// Scale for text
 
 	static void Init();
 	static ENG_Ptr(Font) GetDefaultFont();

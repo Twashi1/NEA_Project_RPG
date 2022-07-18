@@ -40,6 +40,7 @@
     <ClCompile Include="src\Engine\Shader.cpp" />
     <ClCompile Include="src\Engine\Font.cpp" />
     <ClCompile Include="src\Engine\ShaderManager.cpp" />
+    <ClCompile Include="src\Engine\Slider.cpp" />
     <ClCompile Include="src\Engine\Text.cpp" />
     <ClCompile Include="src\Engine\TextInput.cpp" />
     <ClCompile Include="src\Engine\Texture.cpp" />

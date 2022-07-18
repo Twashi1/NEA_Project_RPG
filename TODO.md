@@ -3,10 +3,11 @@
 - [ ] Post-processing
 - [ ] Framebuffers
 - [ ] Compute shader API
+- [ ] Scene API
 
 ## GUI
 - [x] Buttons
-- [ ] Sliders
+- [x] Sliders
 - [x] Input boxes
 - [ ] Relative coordinates for GUI objects
 
@@ -16,6 +17,7 @@
 - [ ] Sound API
 - [ ] Physics system
 - [x] Input system
+- [x] Serialiser
 
 # Game
 ## World
@@ -44,7 +46,9 @@
 - Sleep in engine EndFrame
 - Better link to Resources folder
 - Better name for class Text
-- Input box typing bar fix
+- Input box typing bar size is using magic numbers
 - Cleanup
+- Default statics are ugly
 - Use proper camera instead of the hack
-- Consistency with ENGINE_API position
+- Serialiser API still needs work
+- GUI API rework

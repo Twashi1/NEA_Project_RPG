@@ -34,6 +34,10 @@ public:
 	using Rect::TopRight;
 	using Rect::TopLeft;
 	using Rect::GetVertices;
+	using Rect::Left;
+	using Rect::Right;
+	using Rect::Bottom;
+	using Rect::Top;
 
 	const VertexBuffer& GetVertexBuffer() const;
 	static const IndexBuffer& GetIndexBuffer();

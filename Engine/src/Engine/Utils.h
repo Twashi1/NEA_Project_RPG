@@ -42,7 +42,7 @@ using std::to_string;
 template <typename T> requires __Arithmetic<T>
 struct Vector2;
 
-template <typename T>
+template <typename T> requires __Arithmetic<T>
 struct Vector3;
 
 class ENGINE_API COLORS {

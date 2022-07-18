@@ -18,6 +18,7 @@
 #include "Button.h"
 #include "AnimationManager.h"
 #include "Animation.h"
+#include "Slider.h"
 
 class ENGINE_API Engine {
 private:

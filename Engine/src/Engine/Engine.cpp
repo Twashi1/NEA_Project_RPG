@@ -195,6 +195,9 @@ void ENGINE_API Engine::Init(int nwidth, int nheight, int nfps, bool nisStatsEna
     // Initialise button class
     Button::Init();
 
+    // Initialise slider class
+    Slider::Init();
+
     // Initialise text input class
     TextInput::Init(engine_icons);
 

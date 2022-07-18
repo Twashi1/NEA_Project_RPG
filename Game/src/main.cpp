@@ -8,20 +8,24 @@ const int WIDTH = 1080;
 const int HEIGHT = 720;
 const int FPS = 144;
 
-// For tester_callback
-static int seed = 0;
-static Noise::Interpolated* i = nullptr;
-static bool seedChanged = false;
+static int seed;
+static Noise::Interpolated* i;
+static bool seedChanged;
+static Text* slider_text_ptr;
 
-void tester_callback(Button* ctx) {
+void SliderFunc(Slider* ctx) {
+    slider_text_ptr->text = std::format("Slider value: {}", Utils::Round(ctx->GetValue(1.0f, 10.0f), 3));
+}
+
+void TextFunc(TextInput* ctx) {
+    ENG_LogInfo("Submitted text: {}", ctx->typed_text);
+}
+
+void ButtonFunc(Button* ctx) {
     seed++;
     i->SetSeed(seed);
     seedChanged = true;
     ENG_LogInfo("Changing seed to {}", seed);
-}
-
-void text_callback(TextInput* ctx) {
-    ENG_LogInfo("Submitted text: {}", ctx->typed_text);
 }
 
 int main(void)
@@ -59,8 +63,15 @@ int main(void)
     Quad noisequad = Quad(-500, 500, 256, 256, 0);
     Quad textbox = Quad(300, 300, 96*3, 96, 0);
 
+    Quad bar_slider = Quad(300, 0, 200, 30, 0);
+    Quad slider_slider = Quad(300, 0, 20, 60, 0);
+
+    Slider slider = Slider(ENG_Ptr(Quad)(&bar_slider), ENG_Ptr(Quad)(&slider_slider), &SliderFunc);
+    Text slider_text = Text("Slider value: 0.5", {bar_slider.Left(), 70}, 0.3);
+    slider_text_ptr = &slider_text;
+
     // DEBUG: buttons
-    Button btn = Button(btn_quad, &tester_callback, "Change seed", "Change seed");
+    Button btn = Button(btn_quad, &ButtonFunc, "Change seed", "Change seed");
 
     // DEBUG: atlas test
     Texture atlas_test = Texture("atlas.png"); // Create texture
@@ -95,7 +106,7 @@ int main(void)
     Engine::physics->Register(ENG_Ptr(Body)(&wallbody), 0);
 
     textbox.SetTextureCoords(*Engine::engine_icons, { 2, 7 }, { 4, 7 }, { 16, 16 });
-    TextInput text_input(textbox, &text_callback, ENG_Ptr(Shader)(&static_texture), Engine::engine_icons, 30);
+    TextInput text_input(textbox, &TextFunc, ENG_Ptr(Shader)(&static_texture), Engine::engine_icons, 30);
 
     ShaderManager::UpdateProjectionMatrix(Engine::proj);
 
@@ -139,6 +150,8 @@ int main(void)
         Renderer::Schedule(&btn);
         Renderer::Schedule(&text_input);
         Renderer::Schedule(&player.quad, player.shader);
+        Renderer::Schedule(&slider);
+        Renderer::Schedule(slider_text_ptr);
 
         if (Engine::isStatsEnabled) Engine::UpdateStats(*player.body); // Draw stats information
 

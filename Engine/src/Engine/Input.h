@@ -14,10 +14,10 @@
 class ENGINE_API Input {
 public:
 	ENGINE_API enum class State: uint8_t {
-		PRESS,   // If last action was RELEASE, and current action is PRESS, then PRESS
-		RELEASE, // If last action was PRESS/HOLD, and current action is RELEASE, then RELEASE
-		HOLD,    // If last action was PRESS, and current action is PRESS, then HOLD
-		NONE     // If last action was RELEASE, and current action is RELEASE, then NONE
+		NONE = 0,    // If last action was RELEASE, and current action is RELEASE, then NONE
+		PRESS = 1,   // If last action was RELEASE, and current action is PRESS, then PRESS
+		RELEASE = 2, // If last action was PRESS/HOLD, and current action is RELEASE, then RELEASE
+		HOLD = 4     // If last action was PRESS, and current action is PRESS, then HOLD
 	};
 
 	ENGINE_API enum class Mod : int {

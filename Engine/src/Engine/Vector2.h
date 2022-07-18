@@ -22,6 +22,7 @@ public:
 	Vector2(T x) : x(x), y(x) {}
 	Vector2(T x, T y) : x(x), y(y) {}
 	Vector2(const Vector2& copy) : x(copy.x), y(copy.y) {}
+	Vector2(Vector2&& move) noexcept : x(std::move(move.x)), y(std::move(move.y)) {}
 	~Vector2() {};
 
 	// Negative operator (*-1)
