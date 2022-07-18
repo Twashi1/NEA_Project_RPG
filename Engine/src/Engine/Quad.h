@@ -43,10 +43,10 @@ public:
 	static const IndexBuffer& GetIndexBuffer();
 
 	Quad();
-	Quad(float x, float y, float width, float height, float angle);
-	Quad(const Vector2<float>& center, const Vector2<float>& dim, float angle);
-	Quad(float x, float y, float width, float height, float angle, const std::vector<float>& tex_coords);
-	Quad(const Vector2<float>& center, const Vector2<float>& dim, float angle, const std::vector<float>& tex_coords);
+	Quad(float x, float y, float width, float height, float angle = 0.0f);
+	Quad(const Vector2<float>& center, const Vector2<float>& dim, float angle = 0.0f);
+	Quad(float x, float y, float width, float height, const std::vector<float>& tex_coords, float angle = 0.0f);
+	Quad(const Vector2<float>& center, const Vector2<float>& dim, const std::vector<float>& tex_coords, float angle = 0.0f);
 	Quad(const Rect& rect);
 	Quad(const Quad& other);
 	~Quad();

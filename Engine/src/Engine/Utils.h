@@ -26,7 +26,9 @@
 #define ENG_Assert(condition, msg, ...) if (condition) { m_Assert(std::format(msg, __VA_ARGS__), __FUNCSIG__, __LINE__); }
 
 #define ENG_Ptr(T) std::shared_ptr<T>
+#define ENG_UPtr(T) std::unique_ptr<T>
 #define ENG_MakePtr(T, ...) std::make_shared<T>(__VA_ARGS__)
+#define ENG_MakeUPtr(T, ...) std::make_unique<T>(__VA_ARGS__)
 
 template <typename T>
 concept __Arithmetic = std::is_arithmetic_v<T>;

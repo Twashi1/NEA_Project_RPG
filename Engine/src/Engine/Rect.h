@@ -50,8 +50,8 @@ public:
 	bool IsIntersecting(const Rect& rect) const;
 
 	Rect();
-	Rect(float x, float y, float width, float height, float angle);
-	Rect(const Vector2<float>& center, const Vector2<float>& dim, float angle);
+	Rect(float x, float y, float width, float height, float angle = 0.0f);
+	Rect(const Vector2<float>& center, const Vector2<float>& dim, float angle = 0.0f);
 	Rect(const Rect& other);
 	~Rect();
 	

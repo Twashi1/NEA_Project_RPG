@@ -179,44 +179,34 @@ void Quad::SetTextureCoords(const Texture& atlas, const Vector2<int>& top_left, 
 
 void Quad::Write(Serialiser::Stream& s) const
 {
-	ENG_LogInfo("Serialise quad");
-}
-
-void Quad::Read(Serialiser::Stream& s)
-{
-	ENG_LogInfo("Unserialise quad");
-}
-
-/*
-void Quad::Unload(Serialiser& s) const
-{
 	Serialise<decltype(x)>(s, x);
 	Serialise<decltype(y)>(s, y);
 	Serialise<decltype(width)>(s, width);
 	Serialise<decltype(height)>(s, height);
 	Serialise<decltype(angle)>(s, angle);
 
+	ENG_Assert(m_TexCoords.size() == 8, "Invalid amount of texCoords, was {}, expected {}", m_TexCoords.size(), 8);
+
 	for (float coord : m_TexCoords) {
 		Serialise<float>(s, coord);
 	}
 }
 
-void Quad::Load(Serialiser& s)
+void Quad::Read(Serialiser::Stream& s)
 {
-	Deserialise<decltype(x)>(s, &x);
-	Deserialise<decltype(y)>(s, &y);
-	Deserialise<decltype(width)>(s, &width);
-	Deserialise<decltype(height)>(s, &height);
-	Deserialise<decltype(angle)>(s, &angle);
+	Unserialise<decltype(x)>(s, &x);
+	Unserialise<decltype(y)>(s, &y);
+	Unserialise<decltype(width)>(s, &width);
+	Unserialise<decltype(height)>(s, &height);
+	Unserialise<decltype(angle)>(s, &angle);
 
 	// Sets size of vector to 8, so vector correctly reads elements
 	m_TexCoords.resize(8);
 
 	for (int i = 0; i < 8; i++) {
-		Deserialise<float>(s, &m_TexCoords[i]);
+		Unserialise<float>(s, &m_TexCoords[i]);
 	}
 }
-*/
 
 const VertexBuffer& Quad::GetVertexBuffer() const
 {
@@ -254,7 +244,7 @@ Quad::Quad(const Vector2<float>& center, const Vector2<float>& dim, float angle)
 	m_ConstructBuffers();
 }
 
-Quad::Quad(float x, float y, float width, float height, float angle, const std::vector<float>& tex_coords)
+Quad::Quad(float x, float y, float width, float height, const std::vector<float>& tex_coords, float angle)
 	: m_TexCoords(tex_coords)
 {
 	this->x = x;
@@ -266,7 +256,7 @@ Quad::Quad(float x, float y, float width, float height, float angle, const std::
 	m_ConstructBuffers();
 }
 
-Quad::Quad(const Vector2<float>& center, const Vector2<float>& dim, float angle, const std::vector<float>& tex_coords)
+Quad::Quad(const Vector2<float>& center, const Vector2<float>& dim, const std::vector<float>& tex_coords, float angle)
 	: m_TexCoords(tex_coords)
 {
 	this->center = center;
@@ -286,13 +276,11 @@ Quad::Quad(const Rect& rect)
 }
 
 Quad::Quad(const Quad& other)
-	:  vb(other.vb), m_TexCoords(other.m_TexCoords)
+	: vb(other.vb), m_TexCoords(other.m_TexCoords)
 {
 	x = other.x; y = other.y;
 	width = other.width; height = other.height;
 	angle = other.angle;
-
-	m_UpdateVB();
 }
 
 Quad::~Quad()

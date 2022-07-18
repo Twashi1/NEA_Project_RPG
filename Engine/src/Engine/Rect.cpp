@@ -101,13 +101,7 @@ Rect::~Rect()
 {
 }
 
-void Rect::Write(Serialiser::Stream& s) const { ENG_LogInfo("Serialise rect"); }
-
-void Rect::Read(Serialiser::Stream& s) { ENG_LogInfo("Unserialise rect"); }
-
-
-/*
-void Rect::Unload(Serialiser& s) const
+void Rect::Write(Serialiser::Stream& s) const
 {
 	Serialise<decltype(x)>(s, x);
 	Serialise<decltype(y)>(s, y);
@@ -116,15 +110,14 @@ void Rect::Unload(Serialiser& s) const
 	Serialise<decltype(angle)>(s, angle);
 }
 
-void Rect::Load(Serialiser& s)
+void Rect::Read(Serialiser::Stream& s)
 {
-	Deserialise<decltype(x)>(s, &x);
-	Deserialise<decltype(y)>(s, &y);
-	Deserialise<decltype(width)>(s, &width);
-	Deserialise<decltype(height)>(s, &height);
-	Deserialise<decltype(angle)>(s, &angle);
+	Unserialise<decltype(x)>(s, &x);
+	Unserialise<decltype(y)>(s, &y);
+	Unserialise<decltype(width)>(s, &width);
+	Unserialise<decltype(height)>(s, &height);
+	Unserialise<decltype(angle)>(s, &angle);
 }
-*/
 
 
 Rect::Rect(const Vector2<float>& center, const Vector2<float>& dim, float angle)
