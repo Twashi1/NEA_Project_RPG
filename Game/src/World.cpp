@@ -128,7 +128,7 @@ World::~World()
 
 void World::m_DeserialiseRegion(const std::string& filename, const Vector2<int>& index)
 {
-	m_serialiser.BeginRead((PATH + m_world_name + "/" + filename).c_str());
+	m_Stream.BeginRead((PATH + m_world_name + "/" + filename).c_str());
 
 	// Construct empty region object
 	Region region;
@@ -136,7 +136,7 @@ void World::m_DeserialiseRegion(const std::string& filename, const Vector2<int>&
 	// Deserialise tiles
 	// DeserialiseArray<Tile>(m_serialiser, region.tiles);
 
-	m_serialiser.EndRead();
+	m_Stream.EndRead();
 
 	// Add region to region map
 	regions[index] = region;
@@ -144,7 +144,7 @@ void World::m_DeserialiseRegion(const std::string& filename, const Vector2<int>&
 
 void World::m_LoadWorld(const std::string& fullpath)
 {
-	m_serialiser.BeginRead((fullpath + GENERAL_FILE + FILE_EXTENSION).c_str());
+	m_Stream.BeginRead((fullpath + GENERAL_FILE + FILE_EXTENSION).c_str());
 
 	// Get version number
 	VersionNumber serialised_version;
@@ -163,7 +163,7 @@ void World::m_LoadWorld(const std::string& fullpath)
 	// Vector2<int> player_pos = Deserialise<Vector2<int>>(m_serialiser);
 
 	// End read
-	m_serialiser.EndRead();
+	m_Stream.EndRead();
 
 	// Load region around player pos
 	// m_LoadRegions(player_pos, 1);
@@ -185,12 +185,12 @@ void World::m_SerialiseRegion(const Vector2<int>& index)
 	Region& region = regions[index];
 	std::string region_path = PATH + m_world_name + "/" + m_ToRegionName(index);
 
-	m_serialiser.BeginWrite(region_path.c_str());
+	m_Stream.BeginWrite(region_path.c_str());
 
 	// Serialise list of tiles
 	// Serialise<Tile>(m_serialiser, region.tiles, Region::SIZE);
 
-	m_serialiser.EndWrite();
+	m_Stream.EndWrite();
 }
 
 void World::m_GenerateRegion(const Vector2<int>& index)

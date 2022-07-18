@@ -9,7 +9,7 @@
 #include "Animation.h"
 #include "Serialiser.h"
 
-struct ENGINE_API SceneObject : public Serialiseable {
+struct ENGINE_API SceneObject : public Serialiser::Streamable {
 public:
 	enum class Type : uint8_t {
 		SHADED_QUAD,
@@ -63,10 +63,11 @@ public:
 	~SceneObject();
 
 	Type GetType() const;
-	void Schedule();
 
-	void Load(Serialiser& s);
-	void Unload(Serialiser& s) const;
+	void Write(Serialiser::Stream& s);
+	void Read(Serialiser::Stream& s);
+
+	friend Renderer;
 };
 
 std::string ENGINE_API to_string(const SceneObject::Type& type);

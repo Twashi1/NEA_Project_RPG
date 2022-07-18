@@ -4,7 +4,7 @@
 #include "Utils.h"
 #include "Serialiser.h"
 
-struct ENGINE_API Rect : public Serialiseable {
+struct ENGINE_API Rect : public Serialiser::Streamable {
 protected:
 	static Vector2<float> m_Offsets[4]; // For calculating vertices
 
@@ -47,6 +47,7 @@ public:
 	Rect(float x, float y, float width, float height, float angle);
 	Rect(const Vector2<float>& center, const Vector2<float>& dim, float angle);
 	Rect(const Rect& other);
+	~Rect();
 	
 	void operator=(const Rect& other) {
 		x = other.x;
@@ -56,8 +57,8 @@ public:
 		angle = other.angle;
 	}
 
-	void Load(Serialiser& s);
-	void Unload(Serialiser& s) const;
+	void Write(Serialiser::Stream& s);
+	void Read(Serialiser::Stream& s);
 };
 
 bool operator==(const Rect& a, const Rect& b);

@@ -54,30 +54,10 @@ SceneObject::Type SceneObject::GetType() const
 	return m_Type;
 }
 
-void SceneObject::Schedule()
-{
-	switch (m_Type) {
-	case Type::SHADED_QUAD:
-		Renderer::Schedule(shaded_quad.quad.get(), shaded_quad.shader.get()); break;
-	case Type::TEXTURED_QUAD:
-		Renderer::Schedule(textured_quad.quad.get(), textured_quad.shader.get(), textured_quad.texture.get()); break;
-	case Type::ANIMATION:
-		Renderer::Schedule(animation.get());  break;
-	case Type::BUTTON:
-		Renderer::Schedule(button.get()); break;
-	case Type::TEXT_INPUT:
-		Renderer::Schedule(text_input.get()); break;
-	case Type::TEXT:
-		Renderer::Schedule(text.get()); break;
-	default:
-		ENG_LogWarn("SceneObject has invalid type {}", to_string(m_Type));
-	}
-}
-
-void SceneObject::Load(Serialiser& s)
+void SceneObject::Read(Serialiser::Stream& s)
 {
 	// bad code but idgaf
-	Deserialise<uint8_t>(s, (uint8_t*)&m_Type);
+	Unserialise<uint8_t>(s, (uint8_t*)&m_Type);
 	
 	switch (m_Type) {
 	case Type::SHADED_QUAD:
@@ -114,7 +94,7 @@ void SceneObject::Load(Serialiser& s)
 	}
 }
 
-void SceneObject::Unload(Serialiser& s) const
+void SceneObject::Write(Serialiser::Stream& s)
 {
 	Serialise<uint8_t>(s, (uint8_t)m_Type);
 }

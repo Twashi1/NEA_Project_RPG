@@ -45,11 +45,11 @@ int main(void)
 
     // Test construct world
     ENG_LogInfo("Loading world...");
-    World world(0, "testworld");
+    //World world(0, "testworld");
     ENG_LogInfo("Loading textures...");
-    World::LoadTextures("tile_atlas.png");
+    //World::LoadTextures("tile_atlas.png");
     ENG_LogInfo("Updating world...");
-    world.Update(Vector2<int>(0, 0));
+    //world.Update(Vector2<int>(0, 0));
     ENG_LogInfo("Finished initialising world");
 
     // DEBUG: quads
@@ -66,7 +66,7 @@ int main(void)
     Texture atlas_test = Texture("atlas.png"); // Create texture
 
     // DEBUG: noise test
-    const int SIZE = 256;
+    const int SIZE = 8;
     Noise::Interpolated interp(seed, 1.0f, 64);
     i = &interp;
     std::uint8_t* buffer = new std::uint8_t[SIZE * SIZE * 4];
@@ -132,7 +132,7 @@ int main(void)
         // Draw calls
         Vector2<int> update_pos = (player.quad.GetCenter() / World::scale).floor();
 
-        world.Update(update_pos);
+        //world.Update(update_pos);
         Renderer::Schedule(&wall, &colour_shader);
         Renderer::Schedule(&noisequad, &texture_shader, &noisetext);
         Renderer::Schedule(&animation);

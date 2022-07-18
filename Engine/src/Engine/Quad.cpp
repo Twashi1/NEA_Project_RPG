@@ -177,6 +177,17 @@ void Quad::SetTextureCoords(const Texture& atlas, const Vector2<int>& top_left, 
 	vb->SetTex(m_TexCoords);
 }
 
+void Quad::Write(Serialiser::Stream& s)
+{
+	ENG_LogInfo("Serialise quad");
+}
+
+void Quad::Read(Serialiser::Stream& s)
+{
+	ENG_LogInfo("Unserialise quad");
+}
+
+/*
 void Quad::Unload(Serialiser& s) const
 {
 	Serialise<decltype(x)>(s, x);
@@ -205,6 +216,7 @@ void Quad::Load(Serialiser& s)
 		Deserialise<float>(s, &m_TexCoords[i]);
 	}
 }
+*/
 
 const VertexBuffer& Quad::GetVertexBuffer() const
 {
@@ -282,6 +294,9 @@ Quad::Quad(const Quad& other)
 
 	m_UpdateVB();
 }
+
+Quad::~Quad()
+{}
 
 Vector2<float> Quad::GetCenter() const
 {

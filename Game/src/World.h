@@ -23,7 +23,7 @@ private:
 
 	Noise::Interpolated* m_noise_terrain;
 	Noise::White* m_noise_trees;
-	Serialiser m_serialiser;
+	Serialiser::Stream m_Stream;
 	unsigned int m_seed;
 
 	std::string m_world_name;

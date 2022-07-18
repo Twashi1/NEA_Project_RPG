@@ -12,8 +12,9 @@
 
 #include "Serialiser.h"
 
+#pragma pack(push, 1)
 template <typename T> requires __Arithmetic<T>
-struct ENGINE_API Vector2 : public Serialiseable {
+struct ENGINE_API Vector2 : public Serialiser::Streamable {
 public:
 	T x, y;
 
@@ -21,6 +22,7 @@ public:
 	Vector2(T x) : x(x), y(x) {}
 	Vector2(T x, T y) : x(x), y(y) {}
 	Vector2(const Vector2& copy) : x(copy.x), y(copy.y) {}
+	~Vector2() {};
 
 	// Negative operator (*-1)
 	Vector2 operator-(void) const requires __Signed<T> { return Vector2(-x, -y); }
@@ -110,9 +112,10 @@ public:
 	operator Vector2<unsigned char>() { return Vector2<unsigned char>((unsigned char)x, (unsigned char)y); }
 
 	// TODO is_serialiseable concept?
-	void Load(Serialiser& s) { Deserialise<T>(s, &x); Deserialise<T>(s, &y); }
-	void Unload(Serialiser& s) const { Serialise<T>(s, x); Serialise<T>(s, y); }
+	void Write(Serialiser::Stream& s) { ENG_LogInfo("Write vec2"); }
+	void Read(Serialiser::Stream& s) { ENG_LogInfo("Read vec2"); }
 };
+#pragma pack(pop)
 
 template <typename T>
 std::string to_string(const Vector2<T>& v) {

@@ -27,6 +27,7 @@ class TextInput;
 class Animation;
 struct Quad;
 class Texture;
+struct SceneObject;
 
 class ENGINE_API Renderer {
 private:
@@ -50,4 +51,5 @@ public:
 	static void Schedule(Button* btn);
 	static void Schedule(Animation* animation);
 	static void Schedule(TextInput* text_input);
+	static void Schedule(SceneObject* scene_object);
 };

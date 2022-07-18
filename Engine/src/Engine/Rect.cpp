@@ -9,6 +9,7 @@ Vector2<float> Rect::m_Offsets[4] = {
 
 std::vector<Vector2<float>> Rect::GetVertices() const
 {
+	this;
 	std::vector<Vector2<float>> vertices(4);
 
 	Vector2<float> halfdim = dim * 0.5f; // half width/height
@@ -76,7 +77,16 @@ Rect::Rect(const Rect& other)
 	: x(other.x), y(other.y), width(other.width), height(other.height), angle(other.angle)
 {}
 
+Rect::~Rect()
+{
+}
 
+void Rect::Write(Serialiser::Stream& s) { ENG_LogInfo("Serialise rect"); }
+
+void Rect::Read(Serialiser::Stream& s) { ENG_LogInfo("Unserialise rect"); }
+
+
+/*
 void Rect::Unload(Serialiser& s) const
 {
 	Serialise<decltype(x)>(s, x);
@@ -94,6 +104,7 @@ void Rect::Load(Serialiser& s)
 	Deserialise<decltype(height)>(s, &height);
 	Deserialise<decltype(angle)>(s, &angle);
 }
+*/
 
 
 Rect::Rect(const Vector2<float>& center, const Vector2<float>& dim, float angle)

@@ -9,6 +9,7 @@
 #include "Quad.h"
 #include "Button.h"
 #include "TextInput.h"
+#include "SceneObject.h"
 
 void GlClearError() {
 	// While we have an error stay in function
@@ -190,5 +191,25 @@ ENGINE_API void Renderer::Schedule(TextInput* text_input)
 	// Display typing bar
 	if (text_input->GetIsTyping()) {
 		Renderer::Schedule(text_input->GetTypingBar().get());
+	}
+}
+
+void Renderer::Schedule(SceneObject* scene_object)
+{
+	switch (scene_object->m_Type) {
+	case SceneObject::Type::SHADED_QUAD:
+		Renderer::Schedule(scene_object->shaded_quad.quad.get(), scene_object->shaded_quad.shader.get()); break;
+	case SceneObject::Type::TEXTURED_QUAD:
+		Renderer::Schedule(scene_object->textured_quad.quad.get(), scene_object->textured_quad.shader.get(), scene_object->textured_quad.texture.get()); break;
+	case SceneObject::Type::ANIMATION:
+		Renderer::Schedule(scene_object->animation.get());  break;
+	case SceneObject::Type::BUTTON:
+		Renderer::Schedule(scene_object->button.get()); break;
+	case SceneObject::Type::TEXT_INPUT:
+		Renderer::Schedule(scene_object->text_input.get()); break;
+	case SceneObject::Type::TEXT:
+		Renderer::Schedule(scene_object->text.get()); break;
+	default:
+		ENG_LogWarn("SceneObject has invalid type {}", to_string(scene_object->m_Type));
 	}
 }
