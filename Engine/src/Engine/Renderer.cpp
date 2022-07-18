@@ -10,6 +10,7 @@
 #include "Button.h"
 #include "TextInput.h"
 #include "SceneObject.h"
+#include "Slider.h"
 
 void GlClearError() {
 	// While we have an error stay in function
@@ -194,7 +195,7 @@ ENGINE_API void Renderer::Schedule(TextInput* text_input)
 	}
 }
 
-void Renderer::Schedule(SceneObject* scene_object)
+ENGINE_API void Renderer::Schedule(SceneObject* scene_object)
 {
 	switch (scene_object->m_Type) {
 	case SceneObject::Type::SHADED_QUAD:
@@ -211,5 +212,22 @@ void Renderer::Schedule(SceneObject* scene_object)
 		Renderer::Schedule(scene_object->text.get()); break;
 	default:
 		ENG_LogWarn("SceneObject has invalid type {}", to_string(scene_object->m_Type));
+	}
+}
+
+ENGINE_API void Renderer::Schedule(Slider* slider)
+{
+	if (slider->bar_texture != nullptr) {
+		Renderer::Schedule(slider->m_BarQuad.get(), slider->bar_shader.get(), slider->bar_texture.get());
+	}
+	else {
+		Renderer::Schedule(slider->m_BarQuad.get(), slider->bar_shader.get());
+	}
+
+	if (slider->slider_texture != nullptr) {
+		Renderer::Schedule(slider->m_SliderQuad.get(), slider->slider_shader.get(), slider->slider_texture.get());
+	}
+	else {
+		Renderer::Schedule(slider->m_SliderQuad.get(), slider->slider_shader.get());
 	}
 }

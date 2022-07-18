@@ -1,9 +1,11 @@
 #include "GUIManager.h"
 #include "Button.h"
 #include "TextInput.h"
+#include "Slider.h"
 
 std::vector<Button*> GUIManager::buttons{};
 std::vector<TextInput*> GUIManager::text_inputs{};
+std::vector<Slider*> GUIManager::sliders{};
 
 void GUIManager::Update()
 {
@@ -36,5 +38,9 @@ void GUIManager::Update()
 	for (TextInput* text_input : text_inputs) {
 		text_input->CheckClicked(lmb_state, cursor_pos);
 		text_input->Update();
+	}
+
+	for (Slider* slider : sliders) {
+		slider->Update(cursor_pos);
 	}
 }
