@@ -62,6 +62,7 @@ public:
     static void Terminate();
 
     // Calculates average time per frame, and will display warning if engine is running behind
+    // TODO: should be private
     static void PollPerformance(double dt);
     // Updates all Text objects for stats to display correct information for that frame
     static void UpdateStats(const Body& player_body);

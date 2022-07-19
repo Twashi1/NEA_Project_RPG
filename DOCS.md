@@ -85,177 +85,109 @@ int main(void) {
 <a name="EngineClass"></a>
 ### Engine
 
-<details>
-<summary>Click to expand</summary>
-
 <p>Wraps window, camera, physics, start-of-frame operations and end-of-frame operations</p>
 
-</details>
+#### Functions
+
+Initialises all classes and creates a window. `fps` determines the maximum amount of frames to be displayed per second. `stats` will create text objects that show performance information that can later be displayed with `UpdateStats`
+>```c++
+>static void Init(int width, int height, int fps, bool stats)
+>```
+
+Terminates GLFW and all engine classes
+>```c++
+>static void Terminate()
+>```
+
+Changes background color
+>```c++
+>static void SetBGColor(const Vector3<float>&)
+>```
+
+Updates text objects for all stats information, using `player_body` to update various values such as the player's position, velocity, etc.
+>```c++
+>static void UpdateStats(const Body* player_body)
+>```
+
+Clears screen, and updates various manager classes with the time since the last update
+>```c++
+>static void BeginFrame()
+>```
+
+Checks if window has been resized, swaps window buffers, and polls performance
+>```c++
+>static void EndFrame()
+>```
+
+Returns if the window is still open, used for main game loop
+>```c++
+>static bool IsRunning()
+>```
 
 <a name="InputClass"></a>
 ### Input
 
-<details>
-<summary>Click to expand</summary>
-
-</details>
-
 <a name="NoiseClass"></a>
 ### Noise
 
-<details>
-<summary>Click to expand</summary>
-
-</details>
-
 <a name="SerialiserClass"></a>
 ### Serialiser
-
-<details>
-<summary>Click to expand</summary>
-
-</details>
 
 ## Maths
 
 <a name="UtilsClass"></a>
 ### Utils
 
-<details>
-<summary>Click to expand</summary>
-
-</details>
-
 <a name="RectClass"></a>
 ### Rect
-
-<details>
-<summary>Click to expand</summary>
-
-</details>
 
 <a name="Vector2Class"></a>
 ### Vector2
 
-<details>
-<summary>Click to expand</summary>
-
-</details>
-
 <a name="Vector3Class"></a>
 ### Vector3
-
-<details>
-<summary>Click to expand</summary>
-
-</details>
 
 ## Physics
 
 <a name="PhysicsClass"></a>
 ### Physics
 
-<details>
-<summary>Click to expand</summary>
-
-</details>
-
 <a name="BodyClass"></a>
 ### Body
-
-<details>
-<summary>Click to expand</summary>
-
-</details>
 
 ## GUI
 
 <a name="ButtonClass"></a>
 ### Button
 
-<details>
-<summary>Click to expand</summary>
-
-</details>
-
 <a name="SliderClass"></a>
 ### Slider
 
-<details>
-<summary>Click to expand</summary>
-
-</details>
-
 <a name="TextInputClass"></a>
 ### Text Input
-
-<details>
-<summary>Click to expand</summary>
-
-</details>
 
 ## Rendering
 
 <a name="RendererClass"></a>
 ### Renderer
 
-<details>
-<summary>Click to expand</summary>
-
-</details>
-
 <a name="AnimationClass"></a>
 ### Animation
-
-<details>
-<summary>Click to expand</summary>
-
-</details>
 
 <a name="CameraClass"></a>
 ### Camera
 
-<details>
-<summary>Click to expand</summary>
-
-</details>
-
 <a name="QuadClass"></a>
 ### Quad
-
-<details>
-<summary>Click to expand</summary>
-
-</details>
 
 <a name="SceneObjectClass"></a>
 ### Scene Object
 
-<details>
-<summary>Click to expand</summary>
-
-</details>
-
 <a name="ShaderClass"></a>
 ### Shader
-
-<details>
-<summary>Click to expand</summary>
-
-</details>
 
 <a name="TextClass"></a>
 ### Text
 
-<details>
-<summary>Click to expand</summary>
-
-</details>
-
 <a name="TextureClass"></a>
 ### Texture
-
-<details>
-<summary>Click to expand</summary>
-
-</details>
