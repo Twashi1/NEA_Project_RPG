@@ -140,9 +140,6 @@ namespace Utils {
 	ENGINE_API Vector2<float> Round(Vector2<float> val, int decimal_places);
 	ENGINE_API Vector2<double> Round(Vector2<double> val, int decimal_places);
 
-	// Linearly interpolate between two points at speed
-	ENGINE_API Vector2<float> Lerp(Vector2<float> start, Vector2<float> dest, float speed);
-
 	// Reads an entire file into one string on heap (NOTE: remember to delete the string once done with it)
 	ENGINE_API std::string* ReadFile(const std::string& path);
 

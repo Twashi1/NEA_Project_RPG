@@ -192,11 +192,6 @@ ENGINE_API Vector2<double> Utils::Round(Vector2<double> val, int decimal_places)
 	return tmp;
 }
 
-ENGINE_API Vector2<float> Utils::Lerp(Vector2<float> start, Vector2<float> dest, float speed)
-{
-	return start + ((dest - start) * speed);
-}
-
 ENGINE_API std::string* Utils::ReadFile(const std::string& path)
 {
 	std::ifstream file(path, std::ios::in); // Create file pointer

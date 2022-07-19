@@ -85,7 +85,7 @@ int main(void) {
 <a name="EngineClass"></a>
 ### Engine
 
-<p>Wraps window, camera, physics, start-of-frame operations and end-of-frame operations</p>
+Wraps window, camera, physics, start-of-frame operations and end-of-frame operations
 
 #### Functions
 
@@ -175,7 +175,7 @@ Gets cursor position in range `(0, 0)` to `(1, 1)`
 >```
 
 #### State
-<p>Enum to store current state of a key or mouse button</p>
+Enum to store current state of a key or mouse button
 
 - `NONE` Key is currently not pressed
 - `PRESS` Key is has just been pressed down
@@ -183,7 +183,7 @@ Gets cursor position in range `(0, 0)` to `(1, 1)`
 - `HOLD` Key is being held down
 
 #### Mod
-<p>Enum to store the modifiers that were held down last update</p>
+Enum to store the modifiers that were held down last update
 
 - `NONE` No modifiers were pressed
 - `SHIFT` Shift key was pressed down
@@ -194,7 +194,7 @@ Gets cursor position in range `(0, 0)` to `(1, 1)`
 - `NUM_LOCK` Num lock was pressed down
 
 #### KeypressLog
-<p>Struct to record one instance of a key being pressed and the modifiers that were held when that key was pressed</p>
+Struct to record one instance of a key being pressed and the modifiers that were held when that key was pressed
 
 - `int key` Stores the keycode for the key pressed
 - `int mods` Stores a bitmask for all modifiers pressed
@@ -205,7 +205,7 @@ Gets cursor position in range `(0, 0)` to `(1, 1)`
 >```
 
 #### Listener
-<p>Struct to record various data about a key or button</p>
+Struct to record various data about a key or button
 
 - `int last_action` Stores the GLFW code for the last action (press/release)  
 - `Input::State state` Stores the current state of the key  
@@ -220,7 +220,7 @@ Namespace that contains functions/classes to generate 1D and 2D noise
 - `int wavelength` determines how often a new noise value is generated (e.g., a wavelength of `3` will mean `Get(0)`, `Get(1)`, `Get(2)` will all return the same value
 
 #### White
-<p>Class to generate simple white noise based on a 1D or 2D coordinate</p>
+Class to generate simple white noise based on a 1D or 2D coordinate
 
 ##### Constructors
 >```c++
@@ -269,7 +269,7 @@ Get noise values for 2D area, with `(x, y)` as starting coordinates; returns a 2
 >>```
 
 #### Interpolated
-<p>For generating "smooth" noise</p>
+For generating "smooth" noise
 
 ##### Constructors
 >```c++
@@ -334,7 +334,7 @@ Unserialises one instance of a type, storing it in the pointer given. This has a
 >```
 
 #### Stream
-<p>Provides file opening/closing functions, and used in Serialise and Unserialise functions</p>
+Provides file opening/closing functions, and used in Serialise and Unserialise functions
 
 - `std::ofstream* out` Output filestream ptr
 - `std::ifstream* in` Input filestream ptr
@@ -367,7 +367,7 @@ Closes file for serialising
 >```
 
 #### Streamable
-<p>Base for all classes that should be able to be serialised/unserialised</p>
+Base for all classes that should be able to be serialised/unserialised
 
 ##### Functions
 
@@ -385,9 +385,239 @@ Reads (unserialises) data from stream
 
 <a name="UtilsClass"></a>
 ### Utils
+Provides colors, a timer, miscellaneous helper and maths functions
+
+#### Functions
+Removes every instance of `object` from `data`, then resizes `data`
+>```c++
+>template <typename T>
+>void Remove(std::vector<T>& data, const T& object)
+>```
+
+Returns true if the given path is a file
+>```c++
+>bool CheckFileExists(const std::string& path)
+>```
+
+Returns true if the given path is a directory
+>```c++
+>bool CheckDirectoryExists(const std::string& path)
+>```
+
+Creates directory at given path
+>```c++
+>void CreateDirectory(const std::string& path)
+>```
+
+Rotates a `point` about a `pivot`, counterclockwise by `angle` **radians**, returns rotated point
+>```c++
+>Vector2<float> RotatePoint(Vector2<float> point, Vector2<float> pivot, float angle)
+>```
+
+Rotates a `point` about a `pivot`, using cosine and sine of the angle, returns rotated point
+>```c++
+>Vector2<float> RotatePointPrecomp(Vector2<float> point, Vector2<float> pivot, float cos_angle, float sin_angle)
+>```
+
+Calculates factorial
+>```c++
+>uint32_t Factorial(uint32_t n)
+>```
+
+Calculates area of triangle `ABC`
+>```c++
+>float TriangleArea(Vector2<float> a, Vector2<float> b, Vector2<float> c)
+>```
+
+Limits value of `val` to `max`
+>```c++
+>Vector2<float> ClampMax(Vector2<float> val, float max)
+>```
+
+Limits value of `val` to `min`
+>```c++
+>Vector2<float> ClampMin(Vector2<float> val, float min)
+>```
+
+Limits value of `val` to `[max, min]`
+>```c++
+>Vector2<float> Clamp(Vector2<float> val, float min, float max)
+>```
+
+Removes a substring from a string, editing `str` to reflect new value
+> Takes substring as a `std::string`
+>>```c++
+>>void EraseSubstring(std::string& str, const std::string& substr)
+>>```
+> Takes substring as a `const char*`
+>>```c++
+>>void EraseSubstring(std::string& str, const char* substr)
+>>```
+
+Rounds value to given amount of decimal places
+> Rounds a `double`
+>>```c++
+>>double Round(double val, int decimal_places)
+>>```
+> Rounds a `Vector2<float>`
+>>```c++
+>>Vector2<float> Round(Vector2<float> val, int decimal_places)
+>>```
+> Rounds a `Vector2<double>`
+>>```c++
+>>Vector2<double> Round(Vector2<double> val, int decimal_places)
+>>```
+
+Reads all file data at path and stores in string on heap - must delete string after to prevent memory leak
+>```c++
+>std::string* ReadFile(const std::string& path)
+>```
+
+Splits a string by delimiter, returning vector of each split part of string
+>```c++
+>std::vector<std::string> SplitString(const std::string& s, const std::string& delim)
+>```
+
+#### Colors
+Singleton class that contains multiple `Vector3<float>` storing RGB data for colours. Not under `Utils` namespace
+
+Colours provided are:
+
+- `COLORS::BLACK` Black
+- `COLORS::WHITE` White
+- `COLORS::RED` Red
+- `COLORS::GREEN` Green
+- `COLORS::BLUE` Blue
+- `COLORS::YELLOW` Yellow
+- `COLORS::PURPLE` Purple
+- `COLORS::ORANGE` Orange
+- `COLORS::GRAY` Grey
+- `COLORS::DARKGRAY` Dark grey
+
+#### Timer
+Simple timer class to get elapsed time, current time, etc.
+
+- `static const std::chrono::system_clock::time_point compile_time` Stores the unix timestamp of when program was compiled
+
+##### Functions
+Get time in seconds since compilation
+>```c++
+>static double GetTime()
+>```
+
+Get current time as a string, format `hh:mm:ss`
+>```c++
+>static std::string GetTimeString()
+>```
+
+Get elapsed time since last `GetElapsed` call (requires you to construct a `Timer` object)
+>```c++
+>double GetElapsed()
+>```
+
+##### Constructors
+Constructs setting `m_Time` to the current time - thus the next `GetElapsed` call will return elapsed time from constructing object
+>```c++
+>Timer()
+>```
+
+Constructs setting `m_Time` to the given value - thus the next `GetElapsed` call will return elapsed time from `start_time`
+>```c++
+>Timer(double start_time)
+>```
 
 <a name="RectClass"></a>
 ### Rect
+
+- Center of rect is stored as a union of:
+    - `Vector2<float> center`
+    - `float x, y`
+
+- Dimensions of rect is stored as a union of:
+    - `Vector2<float> dim`
+    - `float width, height`
+
+- `float angle` Stores angle in radians
+
+#### Functions
+
+Gets list of vertices of `Rect`  
+Returns vertices in order:
+
+- `0` Bottom left
+- `1` Bottom right
+- `2` Top right
+- `3` Top left
+
+>```c++
+>std::vector<Vector2<float>> GetVertices() const
+>```
+
+Gets coordinates of bottom left vertex
+>```c++
+>Vector2<float> BottomLeft() const
+>```
+
+Gets coordinates of bottom right vertex
+>```c++
+>Vector2<float> BottomRight() const
+>```
+
+Gets coordinates of top right vertex
+>```c++
+>Vector2<float> TopRight() const
+>```
+
+Gets coordinates of top left vertex
+>```c++
+>Vector2<float> TopLeft() const
+>```
+
+Checks if any of the listed vertices are within the bounds of the rect
+>```c++
+>bool ContainsAnyOf(const std::vector<Vector2<float>>& vertices) const
+>```
+
+Checks if any of the vertices of the rect are within the bounds of the rect
+>```c++
+>bool ContainsAnyOf(const Rect& rect) const
+>```
+
+Checks if point is within the bounds of the rect
+>```c++
+>bool Contains(const Vector2<float>& point) const
+>```
+
+Checks if two rects are intersecting
+>```c++
+>bool IsIntersecting(const Rect& rect) const
+>```
+
+Streamable override for writing (serialising) to stream
+>```c++
+>void Write(Stream& s) const
+>```
+
+Streamable override for reading (unserialising) from stream
+>```c++
+>void Read(Stream& s)
+>```
+
+#### Constructors
+Creates `0` area rect at `(0, 0)`
+>```c++
+>Rect()
+>```
+
+Takes center and dimensions as `float`
+>```c++
+>Rect(float x, float y, float width, float height, float angle = 0.0f)
+>```
+
+Takes center and dimensions as `Vector2<float>`
+>```c++
+>Rect(const Vector2<float>& center, const Vector2<float>& dim, float angle = 0.0f)
+>```
 
 <a name="Vector2Class"></a>
 ### Vector2
