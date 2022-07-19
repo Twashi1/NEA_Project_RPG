@@ -124,11 +124,169 @@ Returns if the window is still open, used for main game loop
 >static bool IsRunning()
 >```
 
+#### Variables
+Window width
+> ```c++
+>static int width
+>```
+
+Window height
+>```c++
+>static int height
+>```
+
+Shared ptr to camera currently being used
+>```c++
+>ENG_Ptr(Camera) camera
+>```
+
+Shared ptr to physics system
+>```c++
+>ENG_Ptr(Physics) physics
+>```
+
 <a name="InputClass"></a>
 ### Input
+Singleton that handles all mouse/keyboard inputs
+
+Returns a list of character codes of all printable characters entered in the last update
+>```c++
+>static const std::vector<unsigned int>& GetLastChars()
+>```
+
+Gets state of a key, takes a GLFW key code
+>```c++
+>static Input::State GetKeyState(int key)
+>```
+
+Gets state of a mouse button, takes a GLFW key code
+>```c++
+>static Input::State GetMouseState(int button)
+>```
+
+Gets cursor position in range `(0, 0)` to the `(window width, window height)`
+>```c++
+>static Vector2<float> GetCursorPos()
+>```
+
+Gets cursor position in range `(0, 0)` to `(1, 1)`
+>```c++
+>static Vector2<float> GetCursorUVPos()
+>```
+
+#### State
+<p>Enum to store current state of a key or mouse button</p>
+
+- `NONE` Key is currently not pressed
+- `PRESS` Key is has just been pressed down
+- `RELEASE` Key has just been let go
+- `HOLD` Key is being held down
+
+#### Mod
+<p>Enum to store the modifiers that were held down last update</p>
+
+- `NONE` No modifiers were pressed
+- `SHIFT` Shift key was pressed down
+- `CTRL` Control key was pressed down
+- `ALT` Alt key was pressed down
+- `SUPER` Windows button (between ctrl and alt) key was pressed down
+- `CAPS_LOCK` Caps lock was pressed down
+- `NUM_LOCK` Num lock was pressed down
+
+#### KeypressLog
+<p>Struct to record one instance of a key being pressed and the modifiers that were held when that key was pressed</p>
+
+- `int key` Stores the keycode for the key pressed
+- `int mods` Stores a bitmask for all modifiers pressed
+
+##### Constructors
+>```c++
+>KeypressLog(int key, int mods);
+>```
+
+#### Listener
+<p>Struct to record various data about a key or button</p>
+
+- `int last_action` Stores the GLFW code for the last action (press/release)  
+- `Input::State state` Stores the current state of the key  
+- `float time_held` Stores the time the key has been held down for (if currently being held down)
 
 <a name="NoiseClass"></a>
 ### Noise
+Namespace that contains functions/classes to generate 1D and 2D noise
+
+- `unsigned int m_Seed` seed for the noise, using the same seed will generate the same noise pattern every time  
+- `float amplitude` fixed multiplier for every noise value generated  
+- `int wavelength` determines how often a new noise value is generated (e.g., a wavelength of `3` will mean `Get(0)`, `Get(1)`, `Get(2)` will all return the same value
+
+#### White
+<p>Class to generate simple white noise based on a 1D or 2D coordinate</p>
+
+##### Constructors
+>```c++
+>White(unsigned int seed, float amplitude, int wavelength)
+>```
+
+##### Functions
+Get white noise at a 1D coordinate
+> Get noise value as float from `0` to `1.0`
+>>```c++
+>>float Get(int x)
+> Get noise value as an unsigned byte from `0` to `255`
+>>```
+>>```c++
+>>uint8_t GetByte(int x)
+>>```
+
+Get white noise for 2D coordinate
+> Get noise value as float from `0` to `1.0`
+>>```c++
+>>float Get(int x, int y)
+>>```
+> Get noise value as an unsigned byte from `0` to `255`
+>>```c++
+>>uint8_t GetByte(int x, int y)
+>>```
+
+Get noise values from `x` to `x + length`; returns an array of floats, of length `length`
+> Get noise value as float from `0` to `1.0`
+>>```c++
+>>float* GetList(int x, unsigned int length)
+>>```
+> Get noise values as an unsigned bytes from `0` to `255`
+>>```c++
+>>uint8_t* GetByteList(int x, unsigned int length)
+>>```
+
+Get noise values for 2D area, with `(x, y)` as starting coordinates; returns a 2D array, with dimensions `(width, height)`
+> Get noise value as float from `0` to `1.0`
+>>```c++
+>>float** GetList(int x, int y, unsigned int width, unsigned int height)
+>>```
+> Get noise values as an unsigned bytes from `0` to `255`
+>>```c++
+>>uint8_t** GetByteList(int x, int y, unsigned int width, unsigned int height)
+>>```
+
+#### Interpolated
+<p>For generating "smooth" noise</p>
+
+##### Constructors
+>```c++
+>Interpolated(unsigned int seed, float amplitude, int wavelength)
+>```
+
+##### Functions
+
+Generate linearly interpolated noise for 1D coordinate
+> Get linearly interpolated noise value as float from `0` to `1.0`
+>>```c++
+>>float GetLinear(int x)
+>>```
+> Get linearly interpolated noise value as unsigned byte from `0` to `255`
+>>```c++
+>>uint8_t GetByteLinear(int x)
+>>```
 
 <a name="SerialiserClass"></a>
 ### Serialiser

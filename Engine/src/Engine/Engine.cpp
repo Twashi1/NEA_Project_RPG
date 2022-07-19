@@ -158,9 +158,6 @@ void ENGINE_API Engine::Init(int nwidth, int nheight, int nfps, bool nisStatsEna
         exit(EXIT_FAILURE);
     }
 
-    // Initialise projection matrix
-    proj = glm::ortho(-(width / 2.0f), width / 2.0f, -(height / 2.0f), height / 2.0f, -1.0f, 1.0f);
-
     // Set cursor
     cursor = glfwCreateStandardCursor(GLFW_ARROW_CURSOR);
 
