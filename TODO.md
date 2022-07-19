@@ -4,6 +4,7 @@
 - [ ] Framebuffers
 - [ ] Compute shader API
 - [ ] Scene API
+- [x] Camera
 
 ## GUI
 - [x] Buttons
@@ -48,6 +49,5 @@
 - Better name for class Text
 - Input box typing bar size is using magic numbers
 - Default statics are ugly
-- Use proper camera instead of the hack
 - Serialiser API still needs work
 - SceneObjects fixed to window sides/center/none, and updating when window coordinates change

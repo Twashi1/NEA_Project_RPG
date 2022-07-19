@@ -3,6 +3,7 @@
 #include <GL/glew.h>
 #include <glm.hpp>
 #include <gtc/matrix_transform.hpp>
+#include <gtx/rotate_vector.hpp>
 #include <string>
 #include <queue>
 #include <map>

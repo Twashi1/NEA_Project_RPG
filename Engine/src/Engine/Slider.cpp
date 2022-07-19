@@ -88,7 +88,7 @@ void Slider::Update(const Vector2<float>& cursor_pos, Input::State lmb_state)
 			// Update value
 			m_UpdateValue();
 			// Run callback
-			callback(this);
+			if (callback != nullptr) callback(this);
 		}
 		else {
 			isMovingSlider = false;

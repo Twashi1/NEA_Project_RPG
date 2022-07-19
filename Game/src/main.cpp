@@ -12,9 +12,14 @@ static int seed;
 static Noise::Interpolated* i;
 static bool seedChanged;
 static Text* slider_text_ptr;
+static Text* rotater_text_ptr;
 
 void SliderFunc(Slider* ctx) {
-    slider_text_ptr->text = std::format("Slider value: {}", Utils::Round(ctx->GetValue(5.0f, 10.0f), 3));
+    slider_text_ptr->text = std::format("Scale: {}", Utils::Round(ctx->GetValue(0.0f, 2.0f), 3));
+}
+
+void RotaterFunc(Slider* ctx) {
+    rotater_text_ptr->text = std::format("Rotation: {}", Utils::Round(ctx->GetValue(-180.0f, 180.0f), 3));
 }
 
 void TextFunc(TextInput* ctx) {
@@ -58,17 +63,23 @@ int main(void)
 
     // DEBUG: quads
     Quad wall = Quad(500, 500, 100, 500, 0.5 * PI_CONST);
-    Quad btn_quad = Quad(-400, -300, 150, 50, 0);
+    Quad btn_quad = Quad(100, 100, 150, 50, 0);
     Quad dummy = Quad(-100, -100, 150, 150, 0);
     Quad noisequad = Quad(-500, 500, 256, 256, 0);
-    Quad textbox = Quad(300, 300, 96*3, 96, 0);
+    Quad textbox = Quad(WIDTH - 100, HEIGHT - 96, 96*3, 96, 0);
 
-    Quad bar_slider = Quad(300, 0, 200, 30, 0);
-    Quad slider_slider = Quad(300, 0, 10, 40, 0);
+    Quad bar_slider = Quad(WIDTH - 150, HEIGHT - 300, 200, 30, 0);
+    Quad slider_slider = Quad(WIDTH - 150, HEIGHT - 300, 10, 40, 0);
 
-    Slider slider = Slider(ENG_Ptr(Quad)(&bar_slider), ENG_Ptr(Quad)(&slider_slider), &SliderFunc);
-    Text slider_text = Text("Slider value: 0.5", {bar_slider.Left(), 70}, 0.3);
+    Quad rot_bar = Quad(WIDTH - 150, HEIGHT - 450, 200, 30, 0);
+    Quad rot_slider = Quad(WIDTH - 150, HEIGHT - 450, 10, 40, 0);
+
+    Slider slider = Slider(ENG_Ptr(Quad)(&bar_slider), ENG_Ptr(Quad)(&slider_slider), &SliderFunc); slider.SetValue(1.0f, 0.0f, 2.0f);
+    Slider rotater = Slider(ENG_Ptr(Quad)(&rot_bar), ENG_Ptr(Quad)(&rot_slider), &RotaterFunc); rotater.SetValue(0.0f, -PI_CONST, PI_CONST);
+    Text slider_text = Text("Scale: 1.0", {bar_slider.Left(), bar_slider.Top() + 70}, 0.3);
+    Text rotater_text = Text("Rotation: 0", { rot_bar.Left(), rot_bar.Top() + 70 }, 0.3);
     slider_text_ptr = &slider_text;
+    rotater_text_ptr = &rotater_text;
 
     // DEBUG: buttons
     Button btn = Button(btn_quad, &ButtonFunc, "Change seed", "Change seed");
@@ -108,8 +119,6 @@ int main(void)
     textbox.SetTextureCoords(*Engine::engine_icons, { 2, 7 }, { 4, 7 }, { 16, 16 });
     TextInput text_input(textbox, &TextFunc, ENG_Ptr(Shader)(&static_texture), Engine::engine_icons, 30);
 
-    ShaderManager::UpdateProjectionMatrix(Engine::proj);
-
     Engine::SetBGColor(COLORS::BLUE);
 
     // Loop until window is closed by user
@@ -133,12 +142,24 @@ int main(void)
             noisetext.Update();
         }
 
-        // TODO better API for this? client has to do too much
+        // TODO better API for setting camera position
+        Vector2<float> camera_offset = Vector2<float>(Engine::width / 2.0f, Engine::height / 2.0f);
+        Vector2<float> camera_pos = player.quad.GetCenter();
+        float scale = slider.GetValue(0.0f, 2.0f);
+        float rotation = rotater.GetValue(-PI_CONST, PI_CONST);
 
-        Engine::camera->pos = player.quad.GetCenter(); // Update camera
+        Vector2<float> new_pos = camera_pos / scale;
+
+        glm::vec2 glm_pos = glm::rotate(glm::vec2(new_pos.x, new_pos.y), -rotation);
+
+        Engine::camera->SetPos(Vector2<float>(glm_pos.x, glm_pos.y) - camera_offset);
+        Engine::camera->SetScale(slider.GetValue(0.0f, 2.0f));
+        Engine::camera->SetRotation(rotater.GetValue(-PI_CONST, PI_CONST));
+
         Engine::BeginFrame();
 
-        player.Update(); // Update player
+        // Update player
+        player.Update();
 
         // Draw calls
         Vector2<int> update_pos = (player.quad.GetCenter() / World::scale).floor();
@@ -152,6 +173,8 @@ int main(void)
         Renderer::Schedule(&player.quad, player.shader);
         Renderer::Schedule(&slider);
         Renderer::Schedule(slider_text_ptr);
+        Renderer::Schedule(&rotater);
+        Renderer::Schedule(rotater_text_ptr);
 
         if (Engine::isStatsEnabled) Engine::UpdateStats(*player.body); // Draw stats information
 

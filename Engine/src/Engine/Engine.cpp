@@ -35,14 +35,14 @@ void ENGINE_API Engine::m_OnWindowResize(int nwidth, int nheight)
     // Update projection matrix
     proj = glm::ortho(-(width / 2.0f), width / 2.0f, -(height / 2.0f), height / 2.0f, -1.0f, 1.0f);
 
+    camera->SetProj(0.0f, (float)width, 0.0f, (float)height);
+
     // Update projection uniform for all shaders
-    ShaderManager::UpdateProjectionMatrix(proj);
+    // ShaderManager::UpdateProjectionMatrix(proj);
+    ShaderManager::UpdateShaders(camera);
 
     // Update viewport
     GlCall(glViewport(0, 0, width, height));
-
-    // Update camera offset (Not needed anymore)
-    camera->offset = Vector2<float>(width, height) * 0.5f;
 }
 
 void ENGINE_API Engine::BeginFrame()
@@ -66,7 +66,7 @@ void ENGINE_API Engine::BeginFrame()
     AnimationManager::Update(Utils::Timer::GetTime());
 
     // Update shaders
-    ShaderManager::UpdateShaders(*camera);
+    ShaderManager::UpdateShaders(camera);
 
     // Update physics
     physics->Update(Utils::Timer::GetTime());
@@ -176,7 +176,7 @@ void ENGINE_API Engine::Init(int nwidth, int nheight, int nfps, bool nisStatsEna
     // Construct physics object
     physics = std::make_shared<Physics>();
     // Construct camera
-    camera = std::make_shared<Camera>(Vector2<float>(width * 0.5f, height * 0.5f), Vector2<float>(0.0f, 0.0f));
+    camera = std::make_shared<Camera>(0.0f, (float)width, 0.0f, (float)height);
     // Set renderer's camera
     Renderer::Init(camera);
 
@@ -200,10 +200,6 @@ void ENGINE_API Engine::Init(int nwidth, int nheight, int nfps, bool nisStatsEna
 
     // Initialise text input class
     TextInput::Init(engine_icons);
-
-    // Update projection uniform for all shaders
-    // NOTE: all shader initialisation should come before this function, unless we're setting the projection matrix ourselves
-    ShaderManager::UpdateProjectionMatrix(proj);
 
     glfwSetCursor(window, cursor);
 
@@ -269,7 +265,7 @@ void ENGINE_API Engine::UpdateStats(const Body& player_body)
         Text& t = m_DebugStatsText["Average TPF"];
         t.shader->Bind(); t.shader->SetUniform3f("u_TextColor", color);
         t.text = text;
-        t.pos = Vector2<float>(-(width / 2.0f) + 5, (height / 2.0f) - 15);
+        t.pos = Vector2<float>(5, height - 15);
 
         Renderer::Schedule(&t);
     }
@@ -286,7 +282,7 @@ void ENGINE_API Engine::UpdateStats(const Body& player_body)
         Text& t = m_DebugStatsText["Percentage Processing"];
         t.shader->Bind(); t.shader->SetUniform3f("u_TextColor", color);
         t.text = text;
-        t.pos = Vector2<float>(-(width / 2.0f) + 5, (height / 2.0f) - 30);
+        t.pos = Vector2<float>(5, height - 30);
 
         Renderer::Schedule(&t);
     }
@@ -299,7 +295,7 @@ void ENGINE_API Engine::UpdateStats(const Body& player_body)
         Text& t = m_DebugStatsText["Player pos"];
         t.shader->Bind(); t.shader->SetUniform3f("u_TextColor", COLORS::WHITE);
         t.text = text;
-        t.pos = Vector2<float>(-(width / 2.0f) + 5, (height / 2.0f) - 100);
+        t.pos = Vector2<float>(5, height - 100);
 
         Renderer::Schedule(&t);
     }
@@ -312,7 +308,7 @@ void ENGINE_API Engine::UpdateStats(const Body& player_body)
         Text& t = m_DebugStatsText["Player vel"];
         t.shader->Bind(); t.shader->SetUniform3f("u_TextColor", COLORS::WHITE);
         t.text = text;
-        t.pos = Vector2<float>(-(width / 2.0f) + 5, (height / 2.0f) - 115);
+        t.pos = Vector2<float>(5, height - 115);
 
         Renderer::Schedule(&t);
     }
@@ -325,7 +321,7 @@ void ENGINE_API Engine::UpdateStats(const Body& player_body)
         Text& t = m_DebugStatsText["Player acc"];
         t.shader->Bind(); t.shader->SetUniform3f("u_TextColor", COLORS::WHITE);
         t.text = text;
-        t.pos = Vector2<float>(-(width / 2.0f) + 5, (height / 2.0f) - 130);
+        t.pos = Vector2<float>(5, height - 130);
 
         Renderer::Schedule(&t);
     }

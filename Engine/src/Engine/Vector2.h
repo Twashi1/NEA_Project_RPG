@@ -12,7 +12,6 @@
 
 #include "Serialiser.h"
 
-#pragma pack(push, 1)
 template <typename T> requires __Arithmetic<T>
 struct ENGINE_API Vector2 : public Serialiser::Streamable {
 public:
@@ -116,7 +115,6 @@ public:
 	void Write(Serialiser::Stream& s) const { ENG_LogInfo("Write vec2"); }
 	void Read(Serialiser::Stream& s) { ENG_LogInfo("Read vec2"); }
 };
-#pragma pack(pop)
 
 template <typename T>
 std::string to_string(const Vector2<T>& v) {

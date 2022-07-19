@@ -217,6 +217,9 @@ ENGINE_API void Renderer::Schedule(SceneObject* scene_object)
 
 ENGINE_API void Renderer::Schedule(Slider* slider)
 {
+	slider->bar_shader->Bind();
+	slider->bar_shader->SetUniform1f("u_Value", slider->GetValue());
+
 	if (slider->bar_texture != nullptr) {
 		Renderer::Schedule(slider->m_BarQuad.get(), slider->bar_shader.get(), slider->bar_texture.get());
 	}

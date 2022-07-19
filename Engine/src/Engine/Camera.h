@@ -5,15 +5,35 @@
 #include "Renderer.h"
 
 struct ENGINE_API Camera {
-    Vector2<float> offset; // A set offset that ensures the camera draws everything around the center of the screen
-    Vector2<float> pos;    // The position the camera is in, relative to the world (everything around this position is drawn)
+private:
+    glm::mat4 m_ProjMat;
+    glm::mat4 m_ViewMat;
+
+    glm::vec3 m_Scale = glm::vec3(1.0f);
+    glm::vec3 m_Pos;
+    float m_Rotation = 0.0f;
+
+    void m_UpdateMatrix();
+
+public:
+    void SetPos(const glm::vec3& pos);
+    void SetPos(const Vector2<float>& pos);
+
+    void SetScale(float scale);
+
+    void SetRotation(float rotation);
+
+    void SetProj(float left, float right, float bottom, float top);
+
+    const glm::vec3& GetPos() const;
+    const glm::vec3& GetScale() const;
+
+    float GetRotation() const;
+
+    const glm::mat4& GetProjMat() const;
+
+    const glm::mat4& GetViewMat() const;
 
     Camera();
-    Camera(Vector2<float> offset, Vector2<float> pos);
-
-    // Transforms a quad from world coordinates to screen coordinates
-    Quad Transform(const Quad& quad);
-
-    // Transforms a point from world coordinates to screen coordinates
-    Vector2<int> Transform(const Vector2<int>& vec);
+    Camera(float left, float right, float bottom, float top);
 };
