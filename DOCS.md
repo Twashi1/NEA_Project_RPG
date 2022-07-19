@@ -232,8 +232,8 @@ Get white noise at a 1D coordinate
 > Get noise value as float from `0` to `1.0`
 >>```c++
 >>float Get(int x)
-> Get noise value as an unsigned byte from `0` to `255`
 >>```
+> Get noise value as an unsigned byte from `0` to `255`
 >>```c++
 >>uint8_t GetByte(int x)
 >>```
