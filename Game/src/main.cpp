@@ -143,18 +143,12 @@ int main(void)
         }
 
         // TODO better API for setting camera position
-        Vector2<float> camera_offset = Vector2<float>(Engine::width / 2.0f, Engine::height / 2.0f);
-        Vector2<float> camera_pos = player.quad.GetCenter();
-        float scale = slider.GetValue(0.0f, 2.0f);
-        float rotation = rotater.GetValue(-PI_CONST, PI_CONST);
-
-        Vector2<float> new_pos = camera_pos / scale;
-
-        glm::vec2 glm_pos = glm::rotate(glm::vec2(new_pos.x, new_pos.y), -rotation);
-
-        Engine::camera->SetPos(Vector2<float>(glm_pos.x, glm_pos.y) - camera_offset);
-        Engine::camera->SetScale(slider.GetValue(0.0f, 2.0f));
-        Engine::camera->SetRotation(rotater.GetValue(-PI_CONST, PI_CONST));
+        Engine::camera->SetCamera(
+            player.quad.GetCenter(),
+            { Engine::width / 2.0f, Engine::height / 2.0f },
+            slider.GetValue(0.0f, 2.0f),
+            rotater.GetValue(-PI_CONST, PI_CONST)
+        );
 
         Engine::BeginFrame();
 

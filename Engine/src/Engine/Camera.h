@@ -19,6 +19,9 @@ public:
     void SetPos(const glm::vec3& pos);
     void SetPos(const Vector2<float>& pos);
 
+    void SetCamera(const Vector2<float>& pos, const Vector2<float>& offset, float scale = 1.0f, float rotation = 0.0f);
+    void SetCamera(const Vector2<float>& pos, const Vector2<float>& offset, const Vector2<float>& scale, float rotation = 0.0f);
+
     void SetScale(float scale);
 
     void SetRotation(float rotation);

@@ -21,6 +21,26 @@ void Camera::SetPos(const Vector2<float>& pos)
     m_UpdateMatrix();
 }
 
+void Camera::SetCamera(const Vector2<float>& pos, const Vector2<float>& offset, float scale, float rotation)
+{
+    m_Scale = glm::vec3(scale, scale, m_Scale.z);
+    m_Rotation = rotation;
+
+    Vector2<float> untransformed = Utils::RotatePoint(pos / scale, 0.0f, -rotation) - offset;
+    m_Pos = glm::vec3(untransformed.x, untransformed.y, m_Pos.z);
+    m_UpdateMatrix();
+}
+
+void Camera::SetCamera(const Vector2<float>& pos, const Vector2<float>& offset, const Vector2<float>& scale, float rotation)
+{
+    m_Scale = glm::vec3(scale.x, scale.y, m_Scale.z);
+    m_Rotation = rotation;
+
+    Vector2<float> untransformed = Utils::RotatePoint(pos / scale, 0.0f, -rotation) - offset;
+    m_Pos = glm::vec3(untransformed.x, untransformed.y, m_Pos.z);
+    m_UpdateMatrix();
+}
+
 void Camera::SetScale(float scale)
 {
     m_Scale.x = scale; m_Scale.y = scale;
