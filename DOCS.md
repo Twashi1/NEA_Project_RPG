@@ -278,7 +278,7 @@ Get noise values for 2D area, with `(x, y)` as starting coordinates; returns a 2
 
 ##### Functions
 
-Generate linearly interpolated noise for 1D coordinate
+Get linearly interpolated noise for 1D coordinate
 > Get linearly interpolated noise value as float from `0` to `1.0`
 >>```c++
 >>float GetLinear(int x)
@@ -287,6 +287,29 @@ Generate linearly interpolated noise for 1D coordinate
 >>```c++
 >>uint8_t GetByteLinear(int x)
 >>```
+
+Get linearly interpolated noise for 1D coordinate using smooth step interpolation
+> Get linearly interpolated noise value as float from `0` to `1.0`
+>>```c++
+>>float GetSmooth(int x)
+>>```
+> Get linearly interpolated noise value as unsigned byte from `0` to `255`
+>>```c++
+>>uint8_t GetByteSmooth(int x)
+>>```
+
+Get linearly interpolated noise for 2D coordinate as float
+>```c++
+>float Get(int x, int y)
+>```
+
+Get fractal noise for 2D coordinate as float
+
+- `octaves` determines how many layers of noise to generate and overlap
+
+>```c++
+>float GetFractal(int x, int y, int octaves)
+>```
 
 <a name="SerialiserClass"></a>
 ### Serialiser
