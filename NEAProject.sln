@@ -9,6 +9,7 @@ Project("{8BC9CEB8-8B4A-11D0-8D11-00A0C91BC942}") = "Game", "Game\Game.vcxproj",
 EndProject
 Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "Solution Items", "Solution Items", "{6FD0E3C2-547C-41AD-985F-1BB54B174BFB}"
 	ProjectSection(SolutionItems) = preProject
+		DOCS.md = DOCS.md
 		README.md = README.md
 		TODO.md = TODO.md
 	EndProjectSection
