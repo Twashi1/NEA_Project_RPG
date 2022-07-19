@@ -313,6 +313,73 @@ Get fractal noise for 2D coordinate as float
 
 <a name="SerialiserClass"></a>
 ### Serialiser
+Provides classes and functions for serialising/unserialising data under namespace `Serialiser`
+
+#### Functions
+Serialises one instance of a type by writing raw data - thus only works for very simple type. This has a specialisation allowing `std::string`
+>```c++
+>template <typename T>
+>void Serialise(Stream& s, const T& data)
+>```
+
+Unserialises one instance of a type, however type must have default constructor. This has a specialisation for `std::string`
+>```c++
+>template <typename T>
+>T Unserialise(Stream& s)
+>```
+
+Unserialises one instance of a type, storing it in the pointer given. This has a specialisation for `std::string`
+>```c++
+>void Unserialise(Stream& s, T* memory)
+>```
+
+#### Stream
+<p>Provides file opening/closing functions, and used in Serialise and Unserialise functions</p>
+
+- `std::ofstream* out` Output filestream ptr
+- `std::ifstream* in` Input filestream ptr
+
+##### Functions
+
+Opens file for unserialising
+>```c++
+>void BeginRead(const char* path)
+>```
+
+Opens file for serialising
+>```c++
+>void BeginWrite(const char* path)
+>```
+
+Closes file for unserialising
+>```c++
+>void EndRead()
+>```
+
+Closes file for serialising
+>```c++
+>void EndWrite()
+>```
+
+##### Constructors
+>```c++
+>Stream()
+>```
+
+#### Streamable
+<p>Base for all classes that should be able to be serialised/unserialised</p>
+
+##### Functions
+
+Writes (serialises) data to stream
+>```c++
+>void Write(Stream& s) const
+>```
+
+Reads (unserialises) data from stream
+>```c++
+>void Read(Stream& s)
+>```
 
 ## Maths
 

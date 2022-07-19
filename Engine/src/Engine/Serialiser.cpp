@@ -7,6 +7,7 @@ namespace Serialiser {
 	{
 		// If instream is not a nullptr, the instream hasn't been closed yet
 		if (in != nullptr) ENG_LogWarn("Serialiser file not closed before opening new one");
+		if (!Utils::CheckFileExists(path)) ENG_LogFatal("Couldn't find file at {}", path);
 		in = new std::ifstream(path, std::ios::binary);
 	}
 
@@ -14,6 +15,7 @@ namespace Serialiser {
 	{
 		// If outstream is not a nullptr, the outstream hasn't been closedyet
 		if (out != nullptr) ENG_LogWarn("Serialiser file not closed before opening new one");
+		if (!Utils::CheckFileExists(path)) ENG_LogFatal("Couldn't find file at {}", path);
 		out = new std::ofstream(path, std::ios::binary | std::ofstream::trunc);
 	}
 
