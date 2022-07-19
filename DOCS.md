@@ -87,6 +87,12 @@ int main(void) {
 
 Wraps window, camera, physics, start-of-frame operations and end-of-frame operations
 
+#### Properties
+- `static int width` Window width
+- `static int height` Window height
+- `ENG_Ptr(Camera)` Shared ptr to camera being used
+- `ENG_Ptr(Physics)` Shared ptr to physics system being used
+
 #### Functions
 
 Initialises all classes and creates a window. `fps` determines the maximum amount of frames to be displayed per second. `stats` will create text objects that show performance information that can later be displayed with `UpdateStats`
@@ -122,27 +128,6 @@ Checks if window has been resized, swaps window buffers, and polls performance
 Returns if the window is still open, used for main game loop
 >```c++
 >static bool IsRunning()
->```
-
-#### Variables
-Window width
-> ```c++
->static int width
->```
-
-Window height
->```c++
->static int height
->```
-
-Shared ptr to camera currently being used
->```c++
->ENG_Ptr(Camera) camera
->```
-
-Shared ptr to physics system
->```c++
->ENG_Ptr(Physics) physics
 >```
 
 <a name="InputClass"></a>
@@ -207,6 +192,7 @@ Struct to record one instance of a key being pressed and the modifiers that were
 #### Listener
 Struct to record various data about a key or button
 
+##### Properties
 - `int last_action` Stores the GLFW code for the last action (press/release)  
 - `Input::State state` Stores the current state of the key  
 - `float time_held` Stores the time the key has been held down for (if currently being held down)
@@ -215,17 +201,13 @@ Struct to record various data about a key or button
 ### Noise
 Namespace that contains functions/classes to generate 1D and 2D noise
 
+#### Properties
 - `unsigned int m_Seed` seed for the noise, using the same seed will generate the same noise pattern every time  
 - `float amplitude` fixed multiplier for every noise value generated  
 - `int wavelength` determines how often a new noise value is generated (e.g., a wavelength of `3` will mean `Get(0)`, `Get(1)`, `Get(2)` will all return the same value
 
 #### White
 Class to generate simple white noise based on a 1D or 2D coordinate
-
-##### Constructors
->```c++
->White(unsigned int seed, float amplitude, int wavelength)
->```
 
 ##### Functions
 Get white noise at a 1D coordinate
@@ -268,13 +250,13 @@ Get noise values for 2D area, with `(x, y)` as starting coordinates; returns a 2
 >>uint8_t** GetByteList(int x, int y, unsigned int width, unsigned int height)
 >>```
 
-#### Interpolated
-For generating "smooth" noise
-
 ##### Constructors
 >```c++
->Interpolated(unsigned int seed, float amplitude, int wavelength)
+>White(unsigned int seed, float amplitude, int wavelength)
 >```
+
+#### Interpolated
+For generating "smooth" noise
 
 ##### Functions
 
@@ -311,6 +293,11 @@ Get fractal noise for 2D coordinate as float
 >float GetFractal(int x, int y, int octaves)
 >```
 
+##### Constructors
+>```c++
+>Interpolated(unsigned int seed, float amplitude, int wavelength)
+>```
+
 <a name="SerialiserClass"></a>
 ### Serialiser
 Provides classes and functions for serialising/unserialising data under namespace `Serialiser`
@@ -336,6 +323,7 @@ Unserialises one instance of a type, storing it in the pointer given. This has a
 #### Stream
 Provides file opening/closing functions, and used in Serialise and Unserialise functions
 
+##### Properties
 - `std::ofstream* out` Output filestream ptr
 - `std::ifstream* in` Input filestream ptr
 
@@ -497,6 +485,7 @@ Colours provided are:
 #### Timer
 Simple timer class to get elapsed time, current time, etc.
 
+##### Properties
 - `static const std::chrono::system_clock::time_point compile_time` Stores the unix timestamp of when program was compiled
 
 ##### Functions
@@ -529,6 +518,7 @@ Constructs setting `m_Time` to the given value - thus the next `GetElapsed` call
 <a name="RectClass"></a>
 ### Rect
 
+#### Properties
 - Center of rect is stored as a union of:
     - `Vector2<float> center`
     - `float x, y`
@@ -621,6 +611,52 @@ Takes center and dimensions as `Vector2<float>`
 
 <a name="Vector2Class"></a>
 ### Vector2
+Provides functions for performing mathematical operations on 2D vectors, can take any arithmetic type
+
+#### Properties
+- `T x` x value
+- `T y` y value
+
+#### Functions
+Returns distance from this point to another
+>```c++
+>T distance(const Vector2& other) const
+>```
+
+Returns dot product of `this` and `other`
+>```c++
+>T dot(const Vector2& other) const
+>```
+
+Returns cross product of `this` and `other`
+>```c++
+>T cross(const Vector2& other) const
+>```
+
+Returns magnitude of `this`
+>```c++
+>T magnitude() const
+>```
+
+Normalises `this`
+>```c++
+>void normalise()
+>```
+
+Returns floor of `this`
+>```c++
+>Vector2<T> floor() const
+>```
+
+Streamable override for writing (serialising) to stream
+>```c++
+>void Write(Stream& s) const
+>```
+
+Streamable override for reading (unserialising) from stream
+>```c++
+>void Read(Stream& s)
+>```
 
 <a name="Vector3Class"></a>
 ### Vector3
