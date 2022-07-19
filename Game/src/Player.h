@@ -20,6 +20,6 @@ public:
     // Update acceleration according to client inputs
     void Update();
 
-    Player(const glm::mat4& proj);
+    Player();
     ~Player();
 };

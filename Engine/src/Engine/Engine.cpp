@@ -19,8 +19,6 @@ GLFWcursor* Engine::cursor = nullptr;
 int Engine::width = 0;
 int Engine::height = 0;
 
-glm::mat4 Engine::proj = glm::mat4(1.0f);
-
 ENG_Ptr(Physics) Engine::physics = nullptr;
 ENG_Ptr(Camera) Engine::camera = nullptr;
 
@@ -31,9 +29,6 @@ void ENGINE_API Engine::m_OnWindowResize(int nwidth, int nheight)
 
     // Update window dimensions
     width = nwidth; height = nheight;
-
-    // Update projection matrix
-    proj = glm::ortho(-(width / 2.0f), width / 2.0f, -(height / 2.0f), height / 2.0f, -1.0f, 1.0f);
 
     camera->SetProj(0.0f, (float)width, 0.0f, (float)height);
 

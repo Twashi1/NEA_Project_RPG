@@ -109,7 +109,7 @@ int main(void)
     // DEBUG: Animation object
     Animation animation(ENG_Ptr(Quad)(&dummy), ENG_Ptr(Shader)(&texture_shader), ENG_Ptr(Texture)(&atlas_test), { 64, 64 }, Animation::Data("data"));
 
-    Player player = Player(Engine::proj);
+    Player player = Player();
     Engine::physics->Register(player.body, 0);
 
     // DEBUG: add to physics system

@@ -42,7 +42,7 @@ void Player::Update()
     body->vel = body->vel + (body->acc * elapsed);
 }
 
-Player::Player(const glm::mat4& proj)
+Player::Player()
 {
     // Setup player quad and body
     quad = Quad(0.0f, 0.0f, 100.0f, 100.0f, 0.0f);
@@ -50,7 +50,6 @@ Player::Player(const glm::mat4& proj)
 
     // Setup shader and uniforms
     shader = new Shader("world_vertex", "color_frag");
-    shader->SetUniformMat4fv("u_projMat", proj);
     shader->SetUniform3f("u_Color", COLORS::YELLOW);
 }
 
