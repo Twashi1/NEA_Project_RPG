@@ -50,4 +50,4 @@
 - Input box typing bar size is using magic numbers
 - Default statics are ugly
 - Serialiser API still needs work
-- SceneObjects fixed to window sides/center/none, and updating when window coordinates change
+- GUI objects fixed to panel, GUIObject virtual?

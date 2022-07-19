@@ -22,7 +22,8 @@
 
 class ENGINE_API Engine {
 private:
-    static double m_Time; // Stores time when last frame began
+    // Stores time last frame began, used for calculating elapsed time
+    static double m_Time;
 
     // Updates projection matrix, viewport, etc. when window dimensions are changed
     static void m_OnWindowResize(int nwidth, int nheight);
