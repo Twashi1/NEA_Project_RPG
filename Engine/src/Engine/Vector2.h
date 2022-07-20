@@ -18,7 +18,7 @@ public:
 	T x, y;
 
 	Vector2() : x(0), y(0) {}
-	Vector2(T x) : x(x), y(x) {}
+	Vector2(T value) : x(value), y(value) {}
 	Vector2(T x, T y) : x(x), y(y) {}
 	Vector2(const Vector2& copy) : x(copy.x), y(copy.y) {}
 	Vector2(Vector2&& move) noexcept : x(std::move(move.x)), y(std::move(move.y)) {}

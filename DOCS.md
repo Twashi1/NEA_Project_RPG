@@ -130,6 +130,9 @@ Returns if the window is still open, used for main game loop
 >static bool IsRunning()
 >```
 
+#### Example usage
+*See [hello world](#HelloWorldExample) example*
+
 <a name="InputClass"></a>
 ### Input
 Singleton that handles all mouse/keyboard inputs
@@ -196,6 +199,76 @@ Struct to record various data about a key or button
 - `int last_action` Stores the GLFW code for the last action (press/release)  
 - `Input::State state` Stores the current state of the key  
 - `float time_held` Stores the time the key has been held down for (if currently being held down)
+
+#### Example usage
+
+<details>
+<summary>Simple character controller</summary>
+
+```c++
+/* Snippet from Game/src/Player.cpp */
+
+// Get key states and store them
+Input::State w = Input::GetKeyState(GLFW_KEY_W);
+Input::State s = Input::GetKeyState(GLFW_KEY_S);
+Input::State a = Input::GetKeyState(GLFW_KEY_A);
+Input::State d = Input::GetKeyState(GLFW_KEY_D);
+
+// If W key pressed or held
+if (w == Input::State::PRESS || w == Input::State::HOLD) {
+    body->acc.y = MAXACCEL;
+}
+// If S key pressed or held
+else if (s == Input::State::PRESS || s == Input::State::HOLD) {
+    body->acc.y = -MAXACCEL;
+}
+// If D key pressed or held
+if (d == Input::State::PRESS || d == Input::State::HOLD) {
+    body->acc.x = MAXACCEL;
+}
+// If A key pressed or held
+else if (a == Input::State::PRESS || a  == Input::State::HOLD) {
+    body->acc.x = -MAXACCEL;
+}
+// If W and S key aren't pressed, or both are pressed
+if ((w == Input::State::NONE && s == Input::State::NONE)
+    || w == Input::State::HOLD && s == Input::State::HOLD) {
+    body->acc.y = 0.0f;
+}
+// If D and A key aren't pressed, or both are pressed
+if ((d == Input::State::NONE && a == Input::State::NONE)
+    || d == Input::State::HOLD && a == Input::State::HOLD) {
+    body->acc.x = 0.0f;
+}
+
+body->acc -= body->vel * FRICTION;
+body->vel = body->vel + (body->acc * elapsed);
+```
+
+</details>
+
+<details>
+<summary>Clicking on a button</summary>
+
+```c++
+// Get mouse state and cursor position
+Input::State lmb_state = Input::GetMouseState(GLFW_MOUSE_BUTTON_1);
+Vector2<float> cursor_pos = Input::GetCursorPos();
+
+if (lmb_state == Input::State::RELEASE && rect.Contains(cursor_pos))
+{
+	// Changes color
+	shader->Bind();
+	shader->SetUniform3f("u_Color", COLORS::BLUE);
+} else
+{
+	// Set to default color
+	shader->Bind();
+	shader->SetUniform3f("u_Color", COLORS::WHITE);
+}
+```
+
+</details>
 
 <a name="NoiseClass"></a>
 ### Noise
@@ -658,16 +731,128 @@ Streamable override for reading (unserialising) from stream
 >void Read(Stream& s)
 >```
 
+#### Constructors
+
+Initialises both values to `0`
+>```c++
+>Vector2()
+>```
+
+Initialises both values to `value`
+>```c++
+>Vector2(T value)
+>```
+
+Standard constructor
+>```c++
+>Vector2(T x, T y)
+>```
+
 <a name="Vector3Class"></a>
 ### Vector3
+
+Provides functions for performing mathematical operations on 3D vectors, can take any arithmetic type
+
+#### Properties
+- `T x` x value
+- `T y` y value
+- `T z` z value
+
+#### Functions
+Returns distance from this point to another
+>```c++
+>T distance(const Vector3& other) const
+>```
+
+Returns dot product of `this` and `other`
+>```c++
+>T dot(const Vector3& other) const
+>```
+
+Returns magnitude of `this`
+>```c++
+>T magnitude() const
+>```
+
+Normalises `this`
+>```c++
+>void normalise()
+>```
+
+Streamable override for writing (serialising) to stream
+>```c++
+>void Write(Stream& s) const
+>```
+
+Streamable override for reading (unserialising) from stream
+>```c++
+>void Read(Stream& s)
+>```
+
+#### Constructors
+
+Initialises all values to `0`
+>```c++
+>Vector3()
+>```
+
+Initialises all values to `value`
+>```c++
+>Vector3(T value)
+>```
+
+Standard constructor
+>```c++
+>Vector3(T x, T y, T z)
+>```
 
 ## Physics
 
 <a name="PhysicsClass"></a>
 ### Physics
+System for storing all bodies and resolving collisions between them. Sorts the bodies into layers; bodies can only collide with other bodies in the same layer.
+
+#### Functions
+Adds `body` to physics system at the given `layer_index`
+>```c++
+>void Register(ENG_Ptr(Body) body, int layer_index)
+>```
+
+Removes `body` from physics system, so it will no longer interact with any other bodies
+> Remove `body` from one specific layer
+>>```c++
+>>void Unregister(ENG_Ptr(Body) body, int layer_index)
+>>```
+> Removes `body` from all layers
+>>```c++
+>>void Unregister(ENG_Ptr(Body) body)
+>>```
 
 <a name="BodyClass"></a>
 ### Body
+For creating physical objects that can collide and interact with each other
+
+#### Properties
+- `ENG_Ptr(Quad) quad` Shared pointer to the quad that represents the collider of the body
+- `bool isImmovable` If an object is immovable, collisions will not alter position or velocity of the body
+- `float restitution` WIP
+- `float mass` Mass of the body
+- `float imass` Inverse mass of body (TODO: private)
+- `Vector2<float> vel` Velocity of body
+- `Vector2<float> acc` Acceleration of body
+- `float angular_vel` Velocity in radians per second of body
+- `float angular_acc` Acceleration in radians per second per second of body
+
+#### Constructor
+Construct with reference to `quad` it will be editing
+>```c++
+>Body(Quad& quad, bool isImmovable, float restitution, float mass)
+>```
+
+Construct with shared ptr to `quad` it will be editing
+>```c++
+>Body(ENG_Ptr(Quad) quad, bool isImmovable, float restitution, float mass)
+>```
 
 ## GUI
 
