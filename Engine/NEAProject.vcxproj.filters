@@ -76,9 +76,6 @@
     <ClCompile Include="src\Engine\SceneObject.cpp">
       <Filter>Source\Rendering</Filter>
     </ClCompile>
-    <ClCompile Include="src\Engine\Scene.cpp">
-      <Filter>Source\Rendering</Filter>
-    </ClCompile>
     <ClCompile Include="src\Engine\Vector2.cpp">
       <Filter>Source\Miscellaneous</Filter>
     </ClCompile>
@@ -170,9 +167,6 @@
       <Filter>Headers\GUI</Filter>
     </ClInclude>
     <ClInclude Include="src\Engine\SceneObject.h">
-      <Filter>Headers\Rendering</Filter>
-    </ClInclude>
-    <ClInclude Include="src\Engine\Scene.h">
       <Filter>Headers\Rendering</Filter>
     </ClInclude>
     <ClInclude Include="src\Engine\Slider.h">

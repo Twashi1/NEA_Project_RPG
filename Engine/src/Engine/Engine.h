@@ -49,6 +49,8 @@ public:
     static int width;           // Width of window
     static int height;          // Height of window
 
+    static entt::registry registry;
+
     static ENG_Ptr(Physics) physics;
     static ENG_Ptr(Camera) camera;
 

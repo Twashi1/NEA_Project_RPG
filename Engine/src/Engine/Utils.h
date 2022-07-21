@@ -13,6 +13,11 @@
 #include <algorithm>
 #include <vector>
 #include <array>
+#include <queue>
+#include <map>
+#include <unordered_map>
+#include <bitset>
+#include <entt.hpp>
 
 #ifdef ENGINE_BUILD_DLL
 	#define ENGINE_API __declspec(dllexport)
