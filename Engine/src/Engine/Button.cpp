@@ -9,9 +9,6 @@ void Button::m_Construct()
 	// Construct text object
 	Vector2<float> pos = quad.GetCenter() - (m_GetTextDim(idle_text) * 0.5f);
 	text = new Text(idle_text, pos, Button::m_DefaultScale);
-
-	// Push ourselves to GUIManager
-	GUIManager::buttons.push_back(this);
 }
 
 Vector2<float> Button::m_GetTextDim(const std::string& text)
@@ -89,13 +86,13 @@ Button::Button(const Quad& quad, CallbackFunc_t callback, const std::string& tex
 Button::~Button()
 {
 	delete text;
-
-	// Remove ourselves from GUIManager
-	Utils::Remove(GUIManager::buttons, this);
 }
 
-void Button::Update(const Vector2<float>& cursor_pos, Input::State lmb_state)
+void Button::Update()
 {
+	Vector2<float> cursor_pos = Input::GetCursorPos();
+	Input::State lmb_state = Input::GetMouseState(GLFW_MOUSE_BUTTON_1);
+
 	if (lmb_state == Input::State::RELEASE) {
 		CheckClicked(cursor_pos);
 	}

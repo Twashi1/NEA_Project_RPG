@@ -63,9 +63,6 @@ void TextInput::m_Construct()
 {
 	Vector2<float> pos = Vector2<float>(quad.GetX() - (quad.GetWidth() / 2.0f) + m_Offset, quad.GetY());
 	m_Text = ENG_MakePtr(Text, empty_text, pos, m_TextShader, m_DefaultScale);
-
-	// Push ourselves to GUIManager
-	GUIManager::text_inputs.push_back(this);
 }
 
 void TextInput::m_UpdateText()
@@ -141,9 +138,9 @@ void TextInput::m_UpdateText()
 	}
 }
 
-void TextInput::Update(Vector2<float> cursor_pos, Input::State lmb_state)
+void TextInput::Update()
 {
-	CheckClicked(cursor_pos, lmb_state);
+	CheckClicked(Input::GetCursorPos(), Input::GetMouseState(GLFW_MOUSE_BUTTON_1));
 
 	float current_time = Utils::Timer::GetTime();
 	float elapsed = current_time - m_Time;
@@ -249,6 +246,4 @@ ENG_Ptr(Text) TextInput::GetText()
 }
 
 TextInput::~TextInput() {
-	// Remove ourselves from GUIManager
-	Utils::Remove(GUIManager::text_inputs, this);
 }

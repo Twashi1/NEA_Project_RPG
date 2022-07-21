@@ -14,8 +14,6 @@ void Slider::m_Construct()
 	float initial = (m_SliderQuad->GetX() - m_BarQuad->Left()) / m_BarQuad->GetWidth();
 	// Clamp it from 0 to 1 and set m_Value
 	SetValue(std::min(std::max(initial, 0.0f), 1.0f));
-	// Update GUI manager
-	GUIManager::sliders.push_back(this);
 }
 
 void Slider::Init()
@@ -74,13 +72,17 @@ void Slider::SetPos(const Vector2<float>& new_pos)
 	m_SliderQuad->SetY(m_BarQuad->GetY());
 }
 
-void Slider::Update(const Vector2<float>& cursor_pos, Input::State lmb_state)
+void Slider::Update()
 {
+	Vector2<float> cursor_pos = Input::GetCursorPos();
+
 	// If our cursor is above the slider
 	if (isMovingSlider || m_BarQuad->Contains(cursor_pos)) {
 		isMovingSlider = true;
 
 		// If pressing or holding slider
+		Input::State lmb_state = Input::GetMouseState(GLFW_MOUSE_BUTTON_1);
+
 		if (lmb_state == Input::State::PRESS || lmb_state == Input::State::HOLD) {
 			float new_pos = std::min(std::max(cursor_pos.x, m_BarQuad->Left()), m_BarQuad->Right());
 
@@ -119,5 +121,4 @@ Slider::Slider(ENG_Ptr(Quad) bar_quad, ENG_Ptr(Quad) slider_quad, ENG_Ptr(Shader
 
 Slider::~Slider()
 {
-	Utils::Remove(GUIManager::sliders, this);
 }

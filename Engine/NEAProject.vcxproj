@@ -25,7 +25,6 @@
     <ClCompile Include="src\Engine\Camera.cpp" />
     <ClCompile Include="src\Engine\Collision.cpp" />
     <ClCompile Include="src\Engine\Engine.cpp" />
-    <ClCompile Include="src\Engine\GUIManager.cpp" />
     <ClCompile Include="src\Engine\IndexBuffer.cpp" />
     <ClCompile Include="src\Engine\Input.cpp" />
     <ClCompile Include="src\Engine\Noise.cpp" />
@@ -58,7 +57,6 @@
     <ClInclude Include="src\Engine\Collision.h" />
     <ClInclude Include="src\Engine.h" />
     <ClInclude Include="src\Engine\Engine.h" />
-    <ClInclude Include="src\Engine\GUIManager.h" />
     <ClInclude Include="src\Engine\IndexBuffer.h" />
     <ClInclude Include="src\Engine\Input.h" />
     <ClInclude Include="src\Engine\Noise.h" />
@@ -77,6 +75,7 @@
     <ClInclude Include="src\Engine\Text.h" />
     <ClInclude Include="src\Engine\TextInput.h" />
     <ClInclude Include="src\Engine\Texture.h" />
+    <ClInclude Include="src\Engine\ToggleSwitch.h" />
     <ClInclude Include="src\Engine\Utils.h" />
     <ClInclude Include="src\Engine\Vector2.h" />
     <ClInclude Include="src\Engine\Vector3.h" />

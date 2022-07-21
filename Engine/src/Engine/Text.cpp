@@ -5,7 +5,6 @@ ENG_Ptr(Font) Text::m_DefaultFont = nullptr;
 
 void Text::m_Construct()
 {
-    GUIManager::text.push_back(this);
 }
 
 void Text::Init()
@@ -62,5 +61,4 @@ Text::Text(const std::string& text, const Vector2<float>& pos, ENG_Ptr(Font) fon
 
 Text::~Text()
 {
-    Utils::Remove(GUIManager::text, this);
 }

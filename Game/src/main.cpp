@@ -152,6 +152,12 @@ int main(void)
 
         Engine::BeginFrame();
 
+        // Update GUI objects
+        slider.Update();
+        rotater.Update();
+        btn.Update();
+        text_input.Update();
+
         // Update player
         player.Update();
 

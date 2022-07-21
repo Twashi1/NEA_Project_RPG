@@ -51,9 +51,6 @@ void ENGINE_API Engine::BeginFrame()
     // Update Input
     Input::Update(Utils::Timer::GetTime());
 
-    // Update GUI
-    GUIManager::Update();
-
     // TODO: SLOW?
     glfwSetCursor(window, cursor);
 

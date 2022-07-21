@@ -52,3 +52,4 @@
 - Serialiser API still needs work
 - GUI objects fixed to panel, GUIObject virtual?
 - Colors should be put under utils namespace
+- ECS

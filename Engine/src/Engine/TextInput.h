@@ -2,7 +2,6 @@
 
 #include "Utils.h"
 #include "Input.h"
-#include "GUIManager.h"
 #include "Text.h"
 #include "Font.h"
 #include "Animation.h"
@@ -73,5 +72,5 @@ public:
 	~TextInput();
 
 	void CheckClicked(const Vector2<float>& cursor_pos, const Input::State& lmb_state);
-	void Update(Vector2<float> cursor_pos, Input::State lmb_state);
+	void Update();
 };

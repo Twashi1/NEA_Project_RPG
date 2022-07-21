@@ -70,9 +70,6 @@
     <ClCompile Include="src\Engine\Button.cpp">
       <Filter>Source\GUI</Filter>
     </ClCompile>
-    <ClCompile Include="src\Engine\GUIManager.cpp">
-      <Filter>Source\GUI</Filter>
-    </ClCompile>
     <ClCompile Include="src\Engine\TextInput.cpp">
       <Filter>Source\GUI</Filter>
     </ClCompile>
@@ -166,9 +163,6 @@
     <ClInclude Include="src\Engine\AnimationManager.h">
       <Filter>Headers\Rendering</Filter>
     </ClInclude>
-    <ClInclude Include="src\Engine\GUIManager.h">
-      <Filter>Headers\GUI</Filter>
-    </ClInclude>
     <ClInclude Include="src\Engine\Button.h">
       <Filter>Headers\GUI</Filter>
     </ClInclude>
@@ -182,6 +176,9 @@
       <Filter>Headers\Rendering</Filter>
     </ClInclude>
     <ClInclude Include="src\Engine\Slider.h">
+      <Filter>Headers\GUI</Filter>
+    </ClInclude>
+    <ClInclude Include="src\Engine\ToggleSwitch.h">
       <Filter>Headers\GUI</Filter>
     </ClInclude>
   </ItemGroup>

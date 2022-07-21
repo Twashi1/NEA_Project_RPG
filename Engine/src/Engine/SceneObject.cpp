@@ -8,6 +8,11 @@ SceneObject::SceneObject(ENG_Ptr(Quad) quad, ENG_Ptr(Shader) shader)
 	: shaded_quad(quad, shader), m_Type(Type::SHADED_QUAD)
 {}
 
+SceneObject::SceneObject(ENG_Ptr(Slider) slider)
+	: slider(slider), m_Type(Type::SLIDER)
+{
+}
+
 SceneObject::SceneObject(ENG_Ptr(Animation) animation)
 	: animation(animation), m_Type(Type::ANIMATION)
 {}
@@ -62,7 +67,6 @@ void SceneObject::Read(Serialiser::Stream& s)
 	switch (m_Type) {
 	case Type::SHADED_QUAD:
 	{
-		// TODO: implement
 		/*
 		shaded_quad.quad = ENG_MakePtr(Quad, s);
 		shaded_quad.shader = ENG_MakePtr(Shader, s);

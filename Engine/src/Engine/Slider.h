@@ -5,7 +5,6 @@
 #include "Shader.h"
 #include "Text.h"
 #include "Input.h"
-#include "GUIManager.h"
 
 class ENGINE_API Slider {
 private:
@@ -45,7 +44,7 @@ public:
 	Vector2<float> GetPos() const;
 	void SetPos(const Vector2<float>& new_pos);
 
-	void Update(const Vector2<float>& cursor_pos, Input::State lmb_state);
+	void Update();
 
 	Slider(ENG_Ptr(Quad) bar_quad, ENG_Ptr(Quad) slider_quad, CallbackFunc_t callback);
 	Slider(ENG_Ptr(Quad) bar_quad, ENG_Ptr(Quad) slider_quad, ENG_Ptr(Shader) bar_shader, ENG_Ptr(Shader) slider_shader, CallbackFunc_t callback);

@@ -3,7 +3,6 @@
 #include "Renderer.h"
 #include "Font.h"
 #include "Shader.h"
-#include "GUIManager.h"
 
 struct ENGINE_API Text {
 private:

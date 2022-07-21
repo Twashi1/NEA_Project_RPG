@@ -14,7 +14,6 @@
 #include "Rect.h"
 #include "VersionNumber.h"
 #include "Text.h"
-#include "GUIManager.h"
 #include "Button.h"
 #include "AnimationManager.h"
 #include "Animation.h"
