@@ -159,6 +159,15 @@ void ENGINE_API Engine::Init(int nwidth, int nheight, int nfps, bool nisStatsEna
     // Allow transparency
     GlCall(glBlendFunc(GL_SRC_ALPHA, GL_ONE_MINUS_SRC_ALPHA));
 
+    if (false) {
+        // Wireframe mode
+        GlCall(glPolygonMode(GL_FRONT_AND_BACK, GL_LINE));
+    }
+    else {
+        // Normal
+        GlCall(glPolygonMode(GL_FRONT_AND_BACK, GL_FILL));
+    }
+
     // Initialise statics for Quad
     Quad::Init();
 
