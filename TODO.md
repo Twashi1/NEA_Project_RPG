@@ -10,6 +10,8 @@
 - [x] Buttons
 - [x] Sliders
 - [x] Input boxes
+- [ ] Toggle switches
+- [ ] Panels
 
 ## General
 - [ ] Pathfinding
@@ -52,4 +54,7 @@
 - Serialiser API still needs work
 - GUI objects fixed to panel, GUIObject virtual?
 - Colors should be put under utils namespace
-- ECS
+- Make functions private/only accessible in engine
+- First frame of animations shows entire texture atlas
+- Better api for shader/texture/texture-atlas (clump them into one struct?)
+- ToggleSwitch implementation

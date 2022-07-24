@@ -1,16 +1,9 @@
 #pragma once
 
-#include <glm.hpp>
-#include <gtc/matrix_transform.hpp>
-
 #include "Renderer.h"
-#include "ShaderManager.h"
 #include "Utils.h"
 #include "Vector3.h"
 #include "Vector2.h"
-
-// TODO: creating a shader will look in the Sandbox/res/shaders directory, however some shaders are used within Engine,
-// thus should have their resource files here as well
 
 class ENGINE_API Shader {
 private:

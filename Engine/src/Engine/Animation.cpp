@@ -85,9 +85,6 @@ void Animation::m_Construct()
 {
 	// Calculate dimensions of atlas (in terms of sprites)
 	m_AtlasDimRelative = Vector2<int>(m_Atlas->width / m_SpriteSize.x, m_Atlas->height / m_SpriteSize.y);
-
-	// Add ourselves to animation manager
-	AnimationManager::animations.push_back(this);
 }
 
 const std::shared_ptr<Texture> Animation::GetAtlas() const
@@ -103,14 +100,12 @@ Animation::Animation(ENG_Ptr(Quad) quad, ENG_Ptr(Shader) shader, ENG_Ptr(Texture
 
 Animation::~Animation()
 {
-	// Remove ourselves from animation manager
-	Utils::Remove(AnimationManager::animations, this);
 }
 
-void Animation::Update(float current_time)
+void Animation::Update()
 {
-	// Calculate deltatime
-	float elapsed = current_time - m_Time;
+	// Get elapsed time
+	float elapsed = m_Timer.GetElapsed();
 
 	// Add delta time to time spent on current frame
 	m_FrameTime += elapsed;
@@ -131,7 +126,4 @@ void Animation::Update(float current_time)
 		// Change texture coordinates
 		quad->SetTextureCoords(*m_Atlas, m_GetIndex(), m_SpriteSize);
 	}
-
-	// Update my time
-	m_Time = current_time;
 }

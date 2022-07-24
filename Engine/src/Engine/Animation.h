@@ -3,7 +3,6 @@
 #include "Texture.h"
 #include "Quad.h"
 #include "Vector2.h"
-#include "AnimationManager.h"
 
 // TODO: python scripting for animations? or python script to generate timings for animations?
 // TODO: better names
@@ -31,7 +30,7 @@ private:
 
 	void m_Construct();
 
-	float m_Time = 0.0;		 // Time of last update
+	Utils::Timer m_Timer;	 // Timer to track elapsed time between updates
 	float m_FrameTime = 0.0; // Time spent displaying the current frame
 	int m_FrameIndex = 0;	 // Index of frame of the animation we're currently displaying
 
@@ -48,5 +47,5 @@ public:
 	~Animation();
 
 	// Updates the animation, takes current time
-	void Update(float current_time);
+	void Update();
 };

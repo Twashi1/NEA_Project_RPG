@@ -17,7 +17,6 @@
 #include <map>
 #include <unordered_map>
 #include <bitset>
-#include <entt.hpp>
 
 #ifdef ENGINE_BUILD_DLL
 	#define ENGINE_API __declspec(dllexport)
@@ -78,7 +77,6 @@ ENGINE_API void m_Log(const std::string& message, LOG error_type, const char* fu
 ENGINE_API void m_Assert(const std::string& message, const char* function, int line);
 
 namespace Utils {
-	// TODO: update classes to use Timer::GetElapsed();
 	class ENGINE_API Timer {
 		static const long double m_NsToS; // Nanoseconds to seconds
 		double m_Time;
@@ -86,14 +84,16 @@ namespace Utils {
 	public:
 		static const std::chrono::system_clock::time_point compile_time;
 
-		static double GetTime();
+		static double GetTime(); // Get time since program compiled
 		static std::string GetTimeString();
 
 		Timer();
 		Timer(double start_time);
 
-		// Gets time since last GetElapsed() call
+		// Gets time since last GetElapsed or Start call
 		double GetElapsed();
+		// Start calculating elapsed time
+		void Start();
 	};
 
 	template <typename T>

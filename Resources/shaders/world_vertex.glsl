@@ -2,10 +2,9 @@
 
 layout(location = 0) in vec4 position;
 
-uniform mat4 u_projMat;
-uniform mat4 u_viewMat;
-uniform vec2 u_Offset;
+uniform mat4 u_ProjMat;
+uniform mat4 u_ViewMat;
 
 void main() {
-	gl_Position = u_projMat * u_viewMat * vec4(position.xy, position.z, position.w);
+	gl_Position = u_ProjMat * u_ViewMat * position;
 }

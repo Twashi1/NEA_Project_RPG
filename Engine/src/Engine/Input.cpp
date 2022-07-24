@@ -13,7 +13,7 @@ std::vector<unsigned int> Input::current_chars{};
 std::vector<Input::KeypressLog> Input::last_keypresses{};
 std::vector<Input::KeypressLog> Input::current_keypresses{};
 
-float Input::m_time = 0.0;
+Utils::Timer Input::m_Timer = Utils::Timer();
 
 int Input::m_GetKeyState(int key)
 {
@@ -161,9 +161,9 @@ Vector2<float> Input::GetCursorUVPos()
 	return Vector2<float>(xpos / (float)width, (height - ypos) / (float)height);
 }
 
-void Input::Update(float new_time)
+void Input::Update()
 {
-	float elapsed = new_time - m_time; m_time = new_time;
+	float elapsed = m_Timer.GetElapsed();
 
 	// Update each key listener
 	for (auto& [key, listener] : key_listeners) {

@@ -10,19 +10,17 @@
 #include "Input.h"
 #include "Font.h"
 #include "Camera.h"
-#include "ShaderManager.h"
 #include "Rect.h"
 #include "VersionNumber.h"
 #include "Text.h"
 #include "Button.h"
-#include "AnimationManager.h"
 #include "Animation.h"
 #include "Slider.h"
 
 class ENGINE_API Engine {
 private:
     // Stores time last frame began, used for calculating elapsed time
-    static double m_Time;
+    static Utils::Timer m_Timer;
 
     // Updates projection matrix, viewport, etc. when window dimensions are changed
     static void m_OnWindowResize(int nwidth, int nheight);
@@ -49,10 +47,7 @@ public:
     static int width;           // Width of window
     static int height;          // Height of window
 
-    static entt::registry registry;
-
     static ENG_Ptr(Physics) physics;
-    static ENG_Ptr(Camera) camera;
 
     // Set clear screen/background color
     static void SetBGColor(const Vector3<float>& color);

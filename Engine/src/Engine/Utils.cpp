@@ -252,6 +252,11 @@ ENGINE_API double Utils::Timer::GetTime()
 	return std::chrono::duration_cast<std::chrono::nanoseconds>(std::chrono::system_clock::now() - compile_time).count() * m_NsToS;
 }
 
+void Utils::Timer::Start()
+{
+	m_Time = GetTime();
+}
+
 ENGINE_API std::string Utils::Timer::GetTimeString()
 {
 	return std::format("{:%H:%M:%OS}", std::chrono::system_clock::now());

@@ -8,9 +8,6 @@ const int WIDTH = 1080;
 const int HEIGHT = 720;
 const int FPS = 144;
 
-static int seed;
-static Noise::Interpolated* i;
-static bool seedChanged;
 static Text* slider_text_ptr;
 static Text* rotater_text_ptr;
 
@@ -24,13 +21,6 @@ void RotaterFunc(Slider* ctx) {
 
 void TextFunc(TextInput* ctx) {
     ENG_LogInfo("Submitted text: {}", ctx->typed_text);
-}
-
-void ButtonFunc(Button* ctx) {
-    seed++;
-    i->SetSeed(seed);
-    seedChanged = true;
-    ENG_LogInfo("Changing seed to {}", seed);
 }
 
 int main(void)
@@ -61,9 +51,7 @@ int main(void)
     world.Update(Vector2<int>(0, 0));
     ENG_LogInfo("Finished initialising world");
 
-    // DEBUG: quads
     Quad wall = Quad(500, 500, 100, 500, 0.5 * PI_CONST);
-    Quad btn_quad = Quad(100, 100, 150, 50, 0);
     Quad dummy = Quad(-100, -100, 150, 150, 0);
     Quad noisequad = Quad(-500, 500, 256, 256, 0);
     Quad textbox = Quad(WIDTH - 100, HEIGHT - 96, 96*3, 96, 0);
@@ -81,32 +69,8 @@ int main(void)
     slider_text_ptr = &slider_text;
     rotater_text_ptr = &rotater_text;
 
-    // DEBUG: buttons
-    Button btn = Button(btn_quad, &ButtonFunc, "Change seed", "Change seed");
+    Texture atlas_test = Texture("atlas.png");
 
-    // DEBUG: atlas test
-    Texture atlas_test = Texture("atlas.png"); // Create texture
-
-    // DEBUG: noise test
-    const int SIZE = 48;
-    Noise::Interpolated interp(seed, 1.0f, 16);
-    i = &interp;
-    std::uint8_t* buffer = new std::uint8_t[SIZE * SIZE * 4];
-    for (int i = 0; i < SIZE * SIZE; i++) {
-        int index = i * 4;
-        int y = i / SIZE; int x = i - (y * SIZE);
-
-        uint8_t v = interp.GetFractal(x, y, 4) * 0xff;
-
-        buffer[index] = v;
-        buffer[index + 1] = v;
-        buffer[index + 2] = v;
-        buffer[index + 3] = 0xff;
-    }
-
-    Texture noisetext = Texture(ENG_Ptr(uint8_t[])(buffer), SIZE, SIZE);
-
-    // DEBUG: Animation object
     Animation animation(ENG_Ptr(Quad)(&dummy), ENG_Ptr(Shader)(&texture_shader), ENG_Ptr(Texture)(&atlas_test), { 64, 64 }, Animation::Data("data"));
 
     Player player = Player();
@@ -124,26 +88,8 @@ int main(void)
     // Loop until window is closed by user
     while (Engine::IsRunning())
     {
-        if (seedChanged) {
-            seedChanged = false;
-
-            for (int i = 0; i < SIZE * SIZE; i++) {
-                int index = i * 4;
-                int y = i / SIZE; int x = i - (y * SIZE);
-
-                uint8_t v = interp.GetFractal(x, y, 4) * 0xff;
-
-                buffer[index] = v;
-                buffer[index + 1] = v;
-                buffer[index + 2] = v;
-                buffer[index + 3] = 0xff;
-            }
-
-            noisetext.Update();
-        }
-
         // TODO better API for setting camera position
-        Engine::camera->SetCamera(
+        Renderer::camera->SetCamera(
             player.quad.GetCenter(),
             { Engine::width / 2.0f, Engine::height / 2.0f },
             slider.GetValue(0.0f, 2.0f),
@@ -155,8 +101,8 @@ int main(void)
         // Update GUI objects
         slider.Update();
         rotater.Update();
-        btn.Update();
         text_input.Update();
+        animation.Update();
 
         // Update player
         player.Update();
@@ -166,9 +112,7 @@ int main(void)
 
         world.Update(update_pos);
         Renderer::Schedule(&wall, &colour_shader);
-        Renderer::Schedule(&noisequad, &texture_shader, &noisetext);
         Renderer::Schedule(&animation);
-        Renderer::Schedule(&btn);
         Renderer::Schedule(&text_input);
         Renderer::Schedule(&player.quad, player.shader);
         Renderer::Schedule(&slider);
@@ -180,7 +124,6 @@ int main(void)
 
         Engine::EndFrame();
 
-        // DEGUG: Rotate our example wall
         wallbody.angular_acc = 1.0f;
         wallbody.angular_vel = std::min(wallbody.angular_vel, 3.0f);
     }

@@ -11,6 +11,7 @@
 #include "TextInput.h"
 #include "SceneObject.h"
 #include "Slider.h"
+#include "ToggleSwitch.h"
 
 void GlClearError() {
 	// While we have an error stay in function
@@ -26,21 +27,21 @@ bool GlLogCall(const char* function, const char* file, int line) {
 	return true;
 }
 
-std::vector<uint8_t> Renderer::available_slots = std::vector<uint8_t>({ 0, 1, 2, 3, 4, 5, 6, 7, 8, 9, 10, 11, 12, 13, 14, 15 });
+std::vector<uint8_t> Renderer::m_AvailableSlots = std::vector<uint8_t>({ 0, 1, 2, 3, 4, 5, 6, 7, 8, 9, 10, 11, 12, 13, 14, 15 });
 ENG_Ptr(Camera) Renderer::camera = nullptr;
 
-void Renderer::Init(ENG_Ptr(Camera) camera)
+void Renderer::Init()
 {
-	Renderer::camera = camera;
+	camera = ENG_MakePtr(Camera, 0.0f, (float)Engine::width, 0.0f, (float)Engine::height);
 }
 
 ENGINE_API uint8_t Renderer::GetTextureSlot()
 {
-	if (available_slots.size() > 1) {
+	if (m_AvailableSlots.size() > 1) {
 		// Get front of queue and store it
-		uint8_t id = available_slots.front();
+		uint8_t id = m_AvailableSlots.front();
 		// Remove that id from list
-		available_slots.pop_back();
+		m_AvailableSlots.pop_back();
 		// Return that id
 		return id;
 	}
@@ -52,7 +53,7 @@ ENGINE_API uint8_t Renderer::GetTextureSlot()
 ENGINE_API void Renderer::FreeTextureSlot(uint8_t slot)
 {
 	if (slot != Renderer::m_INVALID_TEXTURE_SLOT) {
-		available_slots.emplace_back(slot);
+		m_AvailableSlots.emplace_back(slot);
 	}
 }
 
@@ -61,6 +62,8 @@ ENGINE_API void Renderer::Schedule(const Quad* quad, Shader* shader)
 	quad->GetVertexBuffer().Bind();
 	const IndexBuffer& ib = Quad::GetIndexBuffer(); ib.Bind();
 	shader->Bind();
+	shader->SetUniformMat4fv("u_ProjMat", camera->GetProjMat());
+	shader->SetUniformMat4fv("u_ViewMat", camera->GetViewMat());
 
 	GlCall(glDrawElements(GL_TRIANGLES, ib.count, ib.type, nullptr));
 }
@@ -77,6 +80,8 @@ ENGINE_API void Renderer::Schedule(const Quad* quad, Shader* shader, const Textu
 	// Bind shader
 	shader->Bind();
 	shader->SetUniform1i("u_Texture", slot);
+	shader->SetUniformMat4fv("u_ProjMat", camera->GetProjMat());
+	shader->SetUniformMat4fv("u_ViewMat", camera->GetViewMat());
 
 	GlCall(glDrawElements(GL_TRIANGLES, ib.count, ib.type, nullptr));
 
@@ -96,6 +101,8 @@ ENGINE_API void Renderer::Schedule(const Quad* quad, Shader* shader, const Textu
 	// Bind shader
 	shader->Bind();
 	shader->SetUniform1i("u_Texture", slot);
+	shader->SetUniformMat4fv("u_ProjMat", camera->GetProjMat());
+	shader->SetUniformMat4fv("u_ViewMat", camera->GetViewMat());
 
 	GlCall(glDrawElements(GL_TRIANGLES, ib.count, ib.type, nullptr));
 }
@@ -107,6 +114,7 @@ ENGINE_API void Renderer::Schedule(const Text* text)
 	// Bind shader and set texture slot
 	text->shader->Bind();
 	text->shader->SetUniform1i("u_Texture", slot);
+	text->shader->SetUniformMat4fv("u_ProjMat", camera->GetProjMat());
 
 	// Bind texture to that slot
 	GlCall(glActiveTexture(GL_TEXTURE0 + slot));
@@ -232,5 +240,18 @@ ENGINE_API void Renderer::Schedule(Slider* slider)
 	}
 	else {
 		Renderer::Schedule(slider->m_SliderQuad.get(), slider->slider_shader.get());
+	}
+}
+
+ENGINE_API void Renderer::Schedule(ToggleSwitch* toggle_switch)
+{
+	Shader* shader = toggle_switch->GetShader();
+	Texture* texture = toggle_switch->GetTexture();
+
+	if (texture != nullptr) {
+		Renderer::Schedule(toggle_switch->quad.get(), shader, texture);
+	}
+	else {
+		Renderer::Schedule(toggle_switch->quad.get(), shader);
 	}
 }

@@ -1,7 +1,8 @@
 #include "Engine.h"
 #include "TextInput.h"
+#include "ToggleSwitch.h"
 
-double Engine::m_Time = 0.0;
+Utils::Timer Engine::m_Timer = Utils::Timer();
 
 int Engine::m_FPS = 0;
 double Engine::m_TimePerFrame = 0.0;
@@ -20,7 +21,6 @@ int Engine::width = 0;
 int Engine::height = 0;
 
 ENG_Ptr(Physics) Engine::physics = nullptr;
-ENG_Ptr(Camera) Engine::camera = nullptr;
 
 
 void ENGINE_API Engine::m_OnWindowResize(int nwidth, int nheight)
@@ -30,11 +30,8 @@ void ENGINE_API Engine::m_OnWindowResize(int nwidth, int nheight)
     // Update window dimensions
     width = nwidth; height = nheight;
 
-    camera->SetProj(0.0f, (float)width, 0.0f, (float)height);
-
-    // Update projection uniform for all shaders
-    // ShaderManager::UpdateProjectionMatrix(proj);
-    ShaderManager::UpdateShaders(camera);
+    // Update projection matrix for camera
+    Renderer::camera->SetProj(0.0f, (float)width, 0.0f, (float)height);
 
     // Update viewport
     GlCall(glViewport(0, 0, width, height));
@@ -43,22 +40,16 @@ void ENGINE_API Engine::m_OnWindowResize(int nwidth, int nheight)
 void ENGINE_API Engine::BeginFrame()
 {
     // Record time of frame beginning
-    m_Time = Utils::Timer::GetTime();
+    m_Timer.Start();
 
     // Clear the screen
     GlCall(glClear(GL_COLOR_BUFFER_BIT));
 
     // Update Input
-    Input::Update(Utils::Timer::GetTime());
+    Input::Update();
 
     // TODO: SLOW?
     glfwSetCursor(window, cursor);
-
-    // Update animations
-    AnimationManager::Update(Utils::Timer::GetTime());
-
-    // Update shaders
-    ShaderManager::UpdateShaders(camera);
 
     // Update physics
     physics->Update(Utils::Timer::GetTime());
@@ -81,14 +72,13 @@ void ENGINE_API Engine::EndFrame()
         m_OnWindowResize(nwidth, nheight);
     }
 
-    double end = Utils::Timer::GetTime();
-    double elapsed = end - m_Time;
+    double elapsed = m_Timer.GetElapsed();
 
     // Update performance tracking variables and display warning if running behind
     PollPerformance(elapsed);
 
     // TODO: this is bad probably
-    while (elapsed < m_TimePerFrame) { elapsed = Utils::Timer::GetTime() - m_Time; }
+    while (elapsed < m_TimePerFrame) { elapsed += m_Timer.GetElapsed(); }
 }
 
 bool ENGINE_API Engine::IsRunning()
@@ -173,10 +163,8 @@ void ENGINE_API Engine::Init(int nwidth, int nheight, int nfps, bool nisStatsEna
 
     // Construct physics object
     physics = std::make_shared<Physics>();
-    // Construct camera
-    camera = std::make_shared<Camera>(0.0f, (float)width, 0.0f, (float)height);
     // Set renderer's camera
-    Renderer::Init(camera);
+    Renderer::Init();
 
     // Create icons texture
     engine_icons = ENG_MakePtr(Texture, "engine_icons.png");
@@ -198,6 +186,8 @@ void ENGINE_API Engine::Init(int nwidth, int nheight, int nfps, bool nisStatsEna
 
     // Initialise text input class
     TextInput::Init(engine_icons);
+
+    ToggleSwitch::Init("engine_icons.png");
 
     glfwSetCursor(window, cursor);
 

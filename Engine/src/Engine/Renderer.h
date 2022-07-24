@@ -30,16 +30,17 @@ struct Quad;
 class Texture;
 struct SceneObject;
 class Slider;
+class ToggleSwitch;
 
 class ENGINE_API Renderer {
 private:
 	static constexpr uint8_t m_INVALID_TEXTURE_SLOT = 255; // Constant to represent an invalid texture slot
+	static std::vector<uint8_t> m_AvailableSlots; // Available slots on GPU for texture
 
 public:
 	static ENG_Ptr(Camera) camera; // Camera currently being used on all Renderable objects
-	static std::vector<uint8_t> available_slots; // Available slots on GPU for texture
 
-	static void Init(ENG_Ptr(Camera) camera);
+	static void Init();
 
 	// Gives a free texture slot
 	static uint8_t GetTextureSlot();
@@ -55,4 +56,5 @@ public:
 	static void Schedule(TextInput* text_input);
 	static void Schedule(SceneObject* scene_object);
 	static void Schedule(Slider* slider);
+	static void Schedule(ToggleSwitch* toggle_switch);
 };

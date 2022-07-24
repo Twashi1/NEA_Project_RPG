@@ -20,7 +20,6 @@
   </ItemGroup>
   <ItemGroup>
     <ClCompile Include="src\Engine\Animation.cpp" />
-    <ClCompile Include="src\Engine\AnimationManager.cpp" />
     <ClCompile Include="src\Engine\Body.cpp" />
     <ClCompile Include="src\Engine\Camera.cpp" />
     <ClCompile Include="src\Engine\Collision.cpp" />
@@ -37,11 +36,11 @@
     <ClCompile Include="src\Engine\Serialiser.cpp" />
     <ClCompile Include="src\Engine\Shader.cpp" />
     <ClCompile Include="src\Engine\Font.cpp" />
-    <ClCompile Include="src\Engine\ShaderManager.cpp" />
     <ClCompile Include="src\Engine\Slider.cpp" />
     <ClCompile Include="src\Engine\Text.cpp" />
     <ClCompile Include="src\Engine\TextInput.cpp" />
     <ClCompile Include="src\Engine\Texture.cpp" />
+    <ClCompile Include="src\Engine\ToggleSwitch.cpp" />
     <ClCompile Include="src\Engine\Utils.cpp" />
     <ClCompile Include="src\Engine\Vector2.cpp" />
     <ClCompile Include="src\Engine\Vector3.cpp" />
@@ -50,7 +49,6 @@
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="src\Engine\Animation.h" />
-    <ClInclude Include="src\Engine\AnimationManager.h" />
     <ClInclude Include="src\Engine\Body.h" />
     <ClInclude Include="src\Engine\Camera.h" />
     <ClInclude Include="src\Engine\Collision.h" />
@@ -68,7 +66,6 @@
     <ClInclude Include="src\Engine\Serialiser.h" />
     <ClInclude Include="src\Engine\Shader.h" />
     <ClInclude Include="src\Engine\Font.h" />
-    <ClInclude Include="src\Engine\ShaderManager.h" />
     <ClInclude Include="src\Engine\Slider.h" />
     <ClInclude Include="src\Engine\Text.h" />
     <ClInclude Include="src\Engine\TextInput.h" />

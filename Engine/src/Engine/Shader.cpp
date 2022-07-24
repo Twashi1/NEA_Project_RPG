@@ -77,16 +77,10 @@ Shader::Shader(const char* vs_file, const char* fs_file)
         (PATH + std::string(fs_file) + EXTENSION).c_str()
     );
     Bind();
-
-    // Add ourselves to the shader manager
-    ShaderManager::shaders.push_back(this);
 }
 
 Shader::~Shader()
 {
-    // Remove ourselves from shader manager
-    Utils::Remove(ShaderManager::shaders, this);
-    
     // Delete program
     GlCall(glDeleteProgram(id));
 }

@@ -43,9 +43,6 @@
     <ClCompile Include="src\Engine\Utils.cpp">
       <Filter>Source\Miscellaneous</Filter>
     </ClCompile>
-    <ClCompile Include="src\Engine\ShaderManager.cpp">
-      <Filter>Source\Rendering</Filter>
-    </ClCompile>
     <ClCompile Include="src\Engine\Quad.cpp">
       <Filter>Source\Rendering</Filter>
     </ClCompile>
@@ -59,9 +56,6 @@
       <Filter>Source\Rendering</Filter>
     </ClCompile>
     <ClCompile Include="src\Engine\Texture.cpp">
-      <Filter>Source\Rendering</Filter>
-    </ClCompile>
-    <ClCompile Include="src\Engine\AnimationManager.cpp">
       <Filter>Source\Rendering</Filter>
     </ClCompile>
     <ClCompile Include="src\Engine\Animation.cpp">
@@ -85,6 +79,7 @@
     <ClCompile Include="src\Engine\Slider.cpp">
       <Filter>Source\GUI</Filter>
     </ClCompile>
+    <ClCompile Include="src\Engine\ToggleSwitch.cpp" />
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="src\Engine\Engine.h">
@@ -116,9 +111,6 @@
     </ClInclude>
     <ClInclude Include="src\Engine\Utils.h">
       <Filter>Headers\Miscellaneous</Filter>
-    </ClInclude>
-    <ClInclude Include="src\Engine\ShaderManager.h">
-      <Filter>Headers\Rendering</Filter>
     </ClInclude>
     <ClInclude Include="src\Engine\Quad.h">
       <Filter>Headers\Rendering</Filter>
@@ -155,9 +147,6 @@
       <Filter>Headers\Miscellaneous</Filter>
     </ClInclude>
     <ClInclude Include="src\Engine\Animation.h">
-      <Filter>Headers\Rendering</Filter>
-    </ClInclude>
-    <ClInclude Include="src\Engine\AnimationManager.h">
       <Filter>Headers\Rendering</Filter>
     </ClInclude>
     <ClInclude Include="src\Engine\Button.h">

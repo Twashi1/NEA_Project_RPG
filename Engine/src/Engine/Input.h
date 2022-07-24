@@ -66,7 +66,7 @@ private:
 	// Updates a listener's state based on the GLFW action code and time since last update (GLFW_RELEASE/GLFW_PRESSED)
 	static void m_UpdateListener(Listener& listener, int current_action, float dt);
 
-	static float m_time;
+	static Utils::Timer m_Timer;
 
 	static int m_CurrentMods;
 
@@ -95,8 +95,8 @@ public:
 	// Get position of cursor within range (0.0, 0.0) -> (1.0, 1.0) in UV coordinates
 	static Vector2<float> GetCursorUVPos();
 
-	// Update all listener objects, takes time since last update
-	static void Update(float dt);
+	// Update all listener objects, keypress logs, etc.
+	static void Update();
 };
 
 ENGINE_API int operator|(const Input::Mod& a, const Input::Mod& b);
