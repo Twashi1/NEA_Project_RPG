@@ -159,6 +159,8 @@ void TextInput::Update()
 			m_Text->shader->Bind(); m_Text->shader->SetUniform3f("u_TextColor", m_EmptyColor);
 		}
 	}
+
+	m_TypingBar->Update();
 }
 
 TextInput::TextInput(const Quad& quad, CallbackFunc_t callback, int offset)
