@@ -57,6 +57,7 @@
     <ClInclude Include="src\Engine\IndexBuffer.h" />
     <ClInclude Include="src\Engine\Input.h" />
     <ClInclude Include="src\Engine\Noise.h" />
+    <ClInclude Include="src\Engine\Panel.h" />
     <ClInclude Include="src\Engine\Physics.h" />
     <ClInclude Include="src\Engine\Quad.h" />
     <ClInclude Include="src\Engine\Rect.h" />

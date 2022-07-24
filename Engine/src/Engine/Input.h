@@ -8,8 +8,7 @@
 
 #include "Utils.h"
 #include "Renderer.h"
-
-#include <GLFW/glfw3.h>
+#include "Engine.h"
 
 class ENGINE_API Input {
 public:
@@ -71,12 +70,7 @@ private:
 	static int m_CurrentMods;
 
 public:
-	static GLFWwindow* window;
-	// Pointers to window width/height which are stored in Engine class
-	static int* window_width;
-	static int* window_height;
-
-	static void Init(GLFWwindow* window, int* window_width, int* window_height);
+	static void Init();
 
 	static void AddKeyListener(int key);
 	static void AddMouseListener(int btn);

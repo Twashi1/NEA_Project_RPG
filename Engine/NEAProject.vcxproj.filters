@@ -79,7 +79,9 @@
     <ClCompile Include="src\Engine\Slider.cpp">
       <Filter>Source\GUI</Filter>
     </ClCompile>
-    <ClCompile Include="src\Engine\ToggleSwitch.cpp" />
+    <ClCompile Include="src\Engine\ToggleSwitch.cpp">
+      <Filter>Source\GUI</Filter>
+    </ClCompile>
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="src\Engine\Engine.h">
@@ -162,6 +164,9 @@
       <Filter>Headers\GUI</Filter>
     </ClInclude>
     <ClInclude Include="src\Engine\ToggleSwitch.h">
+      <Filter>Headers\GUI</Filter>
+    </ClInclude>
+    <ClInclude Include="src\Engine\Panel.h">
       <Filter>Headers\GUI</Filter>
     </ClInclude>
   </ItemGroup>

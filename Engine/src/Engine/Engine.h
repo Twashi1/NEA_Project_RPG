@@ -7,7 +7,6 @@
 #include "Quad.h"
 #include "Texture.h"
 #include "Physics.h"
-#include "Input.h"
 #include "Font.h"
 #include "Camera.h"
 #include "Rect.h"

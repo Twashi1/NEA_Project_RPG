@@ -9,16 +9,18 @@ Vector2<float> Rect::m_Offsets[4] = {
 
 std::vector<Vector2<float>> Rect::GetVertices() const
 {
-	this;
 	std::vector<Vector2<float>> vertices(4);
 
-	Vector2<float> halfdim = dim * 0.5f; // half width/height
+	Vector2<float> halfdim = dim * 0.5f; // Calculate half width and height
+
+	float cos_angle = cos(angle);
+	float sin_angle = sin(angle);
 	
 	for (int i = 0; i < 4; i++) {
-		vertices[i] = Utils::RotatePoint(
-			center + (halfdim * m_Offsets[i]), // Calculate vertex coordinates
+		vertices[i] = Utils::RotatePointPrecomp(
+			center + (halfdim * m_Offsets[i]),
 			center,
-			angle
+			cos_angle, sin_angle
 		);
 	}
 

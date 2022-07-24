@@ -1,6 +1,8 @@
 #include "Engine.h"
 #include "TextInput.h"
 #include "ToggleSwitch.h"
+#include "Panel.h"
+#include "Input.h"
 
 Utils::Timer Engine::m_Timer = Utils::Timer();
 
@@ -170,7 +172,7 @@ void ENGINE_API Engine::Init(int nwidth, int nheight, int nfps, bool nisStatsEna
     engine_icons = ENG_MakePtr(Texture, "engine_icons.png");
 
     // Initialise input system
-    Input::Init(window, &width, &height);
+    Input::Init();
 
     // Initialise static for Animation
     Animation::FILE_EXTENSION = ".animation";

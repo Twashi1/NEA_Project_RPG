@@ -1,8 +1,5 @@
 #include "Input.h"
 
-GLFWwindow* Input::window = nullptr;
-int* Input::window_width = nullptr;
-int* Input::window_height = nullptr;
 int Input::m_CurrentMods = (int)Input::Mod::NONE;
 
 std::unordered_map<int, Input::Listener> Input::key_listeners{};
@@ -17,12 +14,12 @@ Utils::Timer Input::m_Timer = Utils::Timer();
 
 int Input::m_GetKeyState(int key)
 {
-	return glfwGetKey(window, key);
+	return glfwGetKey(Engine::window, key);
 }
 
 int Input::m_GetMouseState(int mouse)
 {
-	return glfwGetMouseButton(window, mouse);
+	return glfwGetMouseButton(Engine::window, mouse);
 }
 
 void Input::m_CharCallback(GLFWwindow* window, unsigned int codepoint)
@@ -54,12 +51,8 @@ void Input::m_UpdateListener(Listener& listener, int current_action, float dt)
 	listener.last_action = current_action;
 }
 
-void Input::Init(GLFWwindow* window, int* window_width, int* window_height)
+void Input::Init()
 {
-	Input::window = window;
-	Input::window_width = window_width;
-	Input::window_height = window_height;
-
 	for (int i = GLFW_KEY_SPACE; i < GLFW_KEY_LAST; i++) {
 		key_listeners[i] = Listener();
 	}
@@ -68,8 +61,8 @@ void Input::Init(GLFWwindow* window, int* window_width, int* window_height)
 		mouse_listeners[i] = Listener();
 	}
 
-	glfwSetCharCallback(window, m_CharCallback);
-	glfwSetKeyCallback(window, m_KeyCallback);
+	glfwSetCharCallback(Engine::window, m_CharCallback);
+	glfwSetKeyCallback(Engine::window, m_KeyCallback);
 }
 
 void Input::AddKeyListener(int key)
@@ -144,18 +137,18 @@ Input::State Input::GetMouseState(int button)
 Vector2<float> Input::GetCursorPos()
 {
 	double xpos, ypos;
-	glfwGetCursorPos(window, &xpos, &ypos);
+	glfwGetCursorPos(Engine::window, &xpos, &ypos);
 
-	return Vector2<float>(xpos, *window_height - ypos);
+	return Vector2<float>(xpos, Engine::height - ypos);
 }
 
 Vector2<float> Input::GetCursorUVPos()
 {
 	double xpos, ypos;
-	glfwGetCursorPos(window, &xpos, &ypos);
+	glfwGetCursorPos(Engine::window, &xpos, &ypos);
 
-	float width = (float)*window_width;
-	float height = (float)*window_height;
+	float width = (float)Engine::width;
+	float height = (float)Engine::height;
 
 	// Divide by width and height, and invert height to convert to uv coordinates
 	return Vector2<float>(xpos / (float)width, (height - ypos) / (float)height);
