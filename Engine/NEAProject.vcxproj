@@ -27,6 +27,7 @@
     <ClCompile Include="src\Engine\IndexBuffer.cpp" />
     <ClCompile Include="src\Engine\Input.cpp" />
     <ClCompile Include="src\Engine\Noise.cpp" />
+    <ClCompile Include="src\Engine\Panel.cpp" />
     <ClCompile Include="src\Engine\Physics.cpp" />
     <ClCompile Include="src\Engine\Quad.cpp" />
     <ClCompile Include="src\Engine\Rect.cpp" />

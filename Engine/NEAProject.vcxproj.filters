@@ -82,6 +82,7 @@
     <ClCompile Include="src\Engine\ToggleSwitch.cpp">
       <Filter>Source\GUI</Filter>
     </ClCompile>
+    <ClCompile Include="src\Engine\Panel.cpp" />
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="src\Engine\Engine.h">

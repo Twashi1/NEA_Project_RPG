@@ -52,7 +52,7 @@
 - Input box typing bar size is using magic numbers
 - Default statics are ugly
 - Serialiser API still needs work
-- GUI objects fixed to panel, GUIObject virtual?
+- GUI objects fixed to panel
 - Colors should be put under utils namespace
 - Make functions private/only accessible in engine
 - First frame of animations shows entire texture atlas
