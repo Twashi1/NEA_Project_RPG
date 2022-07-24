@@ -142,9 +142,7 @@ void TextInput::Update()
 {
 	CheckClicked(Input::GetCursorPos(), Input::GetMouseState(GLFW_MOUSE_BUTTON_1));
 
-	float current_time = Utils::Timer::GetTime();
-	float elapsed = current_time - m_Time;
-	m_Time = current_time;
+	float elapsed = m_Timer.GetElapsed();
 
 	// If we're currently typing
 	if (isTyping) {

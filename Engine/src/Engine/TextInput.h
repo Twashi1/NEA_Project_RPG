@@ -27,8 +27,9 @@ private:
 	// Constructs the objects
 	void m_Construct();
 
+	// TODO implement stall time
 	float m_StallTime = 0.0; // After typing a letter, the typing bar stays visible for a small amount of time extra, this tracks how long it has to stall for
-	float m_Time = 0.0; // Time of last update of this instance
+	Utils::Timer m_Timer;
 
 	bool isTyping = false;
 	int m_TypingIndex = 0; // Current index of where we're typing in the string

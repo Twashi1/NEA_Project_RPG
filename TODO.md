@@ -58,3 +58,4 @@
 - First frame of animations shows entire texture atlas
 - Better api for shader/texture/texture-atlas (clump them into one struct?)
 - ToggleSwitch implementation
+- Cursor no longer switches when hovering text input box
