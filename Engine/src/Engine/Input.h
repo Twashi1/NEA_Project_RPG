@@ -1,14 +1,8 @@
 #pragma once
 
-#include <cstdint>
-#include <unordered_map>
-#include <vector>
-#include <unordered_map>
-#include <iostream>
-
 #include "Utils.h"
 #include "Renderer.h"
-#include "Engine.h"
+#include "Application.h"
 
 class ENGINE_API Input {
 public:

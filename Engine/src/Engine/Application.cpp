@@ -1,32 +1,32 @@
-#include "Engine.h"
+#include "Application.h"
 #include "TextInput.h"
 #include "ToggleSwitch.h"
 #include "Input.h"
 
-Utils::Timer Engine::m_Timer = Utils::Timer();
+Utils::Timer Application::m_Timer = Utils::Timer();
 
-int Engine::m_FPS = 0;
-double Engine::m_TimePerFrame = 0.0;
+int Application::m_FPS = 0;
+double Application::m_TimePerFrame = 0.0;
 
-std::unordered_map<std::string, Text> Engine::m_DebugStatsText{};
-unsigned int Engine::m_FramesProcessed = 0;
-double Engine::m_ProcessingTime = 0.0;
-bool Engine::isStatsEnabled = true;
+std::unordered_map<std::string, Text> Application::m_DebugStatsText{};
+unsigned int Application::m_FramesProcessed = 0;
+double Application::m_ProcessingTime = 0.0;
+bool Application::isStatsEnabled = true;
 
-VersionNumber Engine::m_VersionNumber = "v0.0.2";
-ENG_Ptr(Texture) Engine::engine_icons = nullptr;
+VersionNumber Application::m_VersionNumber = "v0.0.2";
+ENG_Ptr(Texture) Application::engine_icons = nullptr;
 
-GLFWwindow* Engine::window = nullptr;
-GLFWcursor* Engine::cursor = nullptr;
-int Engine::width = 0;
-int Engine::height = 0;
+GLFWwindow* Application::window = nullptr;
+GLFWcursor* Application::cursor = nullptr;
+int Application::width = 0;
+int Application::height = 0;
 
-ENG_Ptr(Physics) Engine::physics = nullptr;
+ENG_Ptr(Physics) Application::physics = nullptr;
 
-ENG_Ptr(Panel) Engine::window_panel = nullptr;
+ENG_Ptr(Panel) Application::window_panel = nullptr;
 
 
-void ENGINE_API Engine::m_OnWindowResize(int nwidth, int nheight)
+void ENGINE_API Application::m_OnWindowResize(int nwidth, int nheight)
 {
     ENG_LogInfo("Window dimensions changed to {}, {} from {}, {}", nwidth, nheight, width, height);
 
@@ -43,7 +43,7 @@ void ENGINE_API Engine::m_OnWindowResize(int nwidth, int nheight)
     GlCall(glViewport(0, 0, width, height));
 }
 
-void ENGINE_API Engine::BeginFrame()
+void ENGINE_API Application::BeginFrame()
 {
     // Record time of frame beginning
     m_Timer.Start();
@@ -58,13 +58,13 @@ void ENGINE_API Engine::BeginFrame()
     glfwSetCursor(window, cursor);
 
     // Update physics
-    physics->Update(Utils::Timer::GetTime());
+    physics->Update();
 
     // Poll and process events
     glfwPollEvents();
 }
 
-void ENGINE_API Engine::EndFrame()
+void ENGINE_API Application::EndFrame()
 {
     // Update the screen from all the draw calls
     glfwSwapBuffers(window);
@@ -87,22 +87,22 @@ void ENGINE_API Engine::EndFrame()
     while (elapsed < m_TimePerFrame) { elapsed += m_Timer.GetElapsed(); }
 }
 
-bool ENGINE_API Engine::IsRunning()
+bool ENGINE_API Application::IsRunning()
 {
     return !glfwWindowShouldClose(window);
 }
 
-void Engine::SetBGColor(const Vector3<float>& color)
+void Application::SetBGColor(const Vector3<float>& color)
 {
     GlCall(glClearColor(color.x, color.y, color.z, 1.0f));
 }
 
-void ENGINE_API Engine::Init(int nwidth, int nheight, int nfps, bool nisStatsEnabled)
+void ENGINE_API Application::Init(int nwidth, int nheight, int nfps, bool nisStatsEnabled)
 {
-    Engine::width = nwidth;
-    Engine::height = nheight;
-    Engine::m_FPS = nfps; Engine::m_TimePerFrame = 1.0 / double(m_FPS);
-    Engine::isStatsEnabled = nisStatsEnabled;
+    Application::width = nwidth;
+    Application::height = nheight;
+    Application::m_FPS = nfps; Application::m_TimePerFrame = 1.0 / double(m_FPS);
+    Application::isStatsEnabled = nisStatsEnabled;
 
     ENG_LogInfo("Program starting");
 
@@ -219,7 +219,7 @@ void ENGINE_API Engine::Init(int nwidth, int nheight, int nfps, bool nisStatsEna
     ENG_LogInfo("Loaded engine on version: {}", to_string(m_VersionNumber));
 }
 
-void ENGINE_API Engine::Terminate()
+void ENGINE_API Application::Terminate()
 {
     ENG_LogInfo("Engine shutting down");
 
@@ -228,7 +228,7 @@ void ENGINE_API Engine::Terminate()
     glfwTerminate();
 }
 
-void ENGINE_API Engine::PollPerformance(double dt)
+void ENGINE_API Application::PollPerformance(double dt)
 {
     // Update performance tracking variables
     m_FramesProcessed++;
@@ -249,7 +249,7 @@ void ENGINE_API Engine::PollPerformance(double dt)
     }
 }
 
-void ENGINE_API Engine::UpdateStats(const Body& player_body)
+void ENGINE_API Application::UpdateStats(const Body& player_body)
 {
     {
         double avg_tpf = (m_ProcessingTime / m_FramesProcessed);

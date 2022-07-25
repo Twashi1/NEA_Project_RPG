@@ -1,8 +1,7 @@
 #include "Physics.h"
 
-void Physics::Update(float new_time) {
-	float elapsed = new_time - m_time;
-	m_time = new_time;
+void Physics::Update() {
+	float elapsed = m_Timer.GetElapsed();
 
 	for (auto& [layer_index, layer] : layers) {
 		collisions_t collisions; // Store all collisions we've already checked
@@ -92,4 +91,6 @@ void Physics::Unregister(ENG_Ptr(Body) body)
 	}
 }
 
-Physics::Physics() {}
+Physics::Physics() {
+	m_Timer.Start();
+}

@@ -1,5 +1,3 @@
-#include <iostream>
-
 #include "World.h"
 #include "Player.h"
 
@@ -26,7 +24,7 @@ void TextFunc(TextInput* ctx) {
 int main(void)
 {
     // Construct engine instance
-    Engine::Init(WIDTH, HEIGHT, FPS, true);
+    Application::Init(WIDTH, HEIGHT, FPS, true);
 
     // DEBUG: shaders
     Shader texture_shader("texture_vertex", "texture_frag");
@@ -78,32 +76,32 @@ int main(void)
     Animation animation(ani_quad, ENG_Ptr(Shader)(&texture_shader), ENG_Ptr(Texture)(&atlas_test), { 64, 64 }, Animation::Data("data"));
 
     Player player = Player();
-    Engine::physics->Register(player.body, 0);
+    Application::physics->Register(player.body, 0);
 
     // DEBUG: add to physics system
     Body wallbody = Body(*wall, true, 0.0f, 999);
-    Engine::physics->Register(ENG_Ptr(Body)(&wallbody), 0);
+    Application::physics->Register(ENG_Ptr(Body)(&wallbody), 0);
 
-    textbox->SetTextureCoords(*Engine::engine_icons, { 2, 7 }, { 4, 7 }, { 16, 16 });
-    TextInput text_input(*textbox, &TextFunc, ENG_Ptr(Shader)(&static_texture), Engine::engine_icons, 30);
+    textbox->SetTextureCoords(*Application::engine_icons, { 2, 7 }, { 4, 7 }, { 16, 16 });
+    TextInput text_input(*textbox, &TextFunc, ENG_Ptr(Shader)(&static_texture), Application::engine_icons, 30);
 
-    Engine::SetBGColor(COLORS::BLUE);
+    Application::SetBGColor(COLORS::BLUE);
 
-    Engine::window_panel->Anchor(Panel::ANCHOR::RIGHT, Panel::ANCHOR::TOP, scale_bar);
-    Engine::window_panel->Anchor(Panel::ANCHOR::RIGHT, Panel::ANCHOR::TOP, scale_slider);
+    Application::window_panel->Anchor(Panel::ANCHOR::RIGHT, Panel::ANCHOR::TOP, scale_bar);
+    Application::window_panel->Anchor(Panel::ANCHOR::RIGHT, Panel::ANCHOR::TOP, scale_slider);
 
     // Loop until window is closed by user
-    while (Engine::IsRunning())
+    while (Application::IsRunning())
     {
         // TODO better API for setting camera position
         Renderer::camera->SetCamera(
             player.quad.GetCenter(),
-            { Engine::width / 2.0f, Engine::height / 2.0f },
+            { Application::width / 2.0f, Application::height / 2.0f },
             slider.GetValue(0.0f, 2.0f),
             rotater.GetValue(-PI_CONST, PI_CONST)
         );
 
-        Engine::BeginFrame();
+        Application::BeginFrame();
 
         // Update GUI objects
         slider.Update();
@@ -127,9 +125,9 @@ int main(void)
         Renderer::Schedule(&rotater);
         Renderer::Schedule(rotater_text_ptr);
 
-        if (Engine::isStatsEnabled) Engine::UpdateStats(*player.body); // Draw stats information
+        if (Application::isStatsEnabled) Application::UpdateStats(*player.body); // Draw stats information
 
-        Engine::EndFrame();
+        Application::EndFrame();
 
         wallbody.angular_acc = 1.0f;
         wallbody.angular_vel = std::min(wallbody.angular_vel, 3.0f);
@@ -137,7 +135,7 @@ int main(void)
 
     ENG_LogInfo("Window closed");
 
-    Engine::Terminate();
+    Application::Terminate();
 
     ENG_LogInfo("Ending program");
 

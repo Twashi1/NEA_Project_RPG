@@ -14,12 +14,12 @@ Utils::Timer Input::m_Timer = Utils::Timer();
 
 int Input::m_GetKeyState(int key)
 {
-	return glfwGetKey(Engine::window, key);
+	return glfwGetKey(Application::window, key);
 }
 
 int Input::m_GetMouseState(int mouse)
 {
-	return glfwGetMouseButton(Engine::window, mouse);
+	return glfwGetMouseButton(Application::window, mouse);
 }
 
 void Input::m_CharCallback(GLFWwindow* window, unsigned int codepoint)
@@ -61,8 +61,8 @@ void Input::Init()
 		mouse_listeners[i] = Listener();
 	}
 
-	glfwSetCharCallback(Engine::window, m_CharCallback);
-	glfwSetKeyCallback(Engine::window, m_KeyCallback);
+	glfwSetCharCallback(Application::window, m_CharCallback);
+	glfwSetKeyCallback(Application::window, m_KeyCallback);
 }
 
 void Input::AddKeyListener(int key)
@@ -137,18 +137,18 @@ Input::State Input::GetMouseState(int button)
 Vector2<float> Input::GetCursorPos()
 {
 	double xpos, ypos;
-	glfwGetCursorPos(Engine::window, &xpos, &ypos);
+	glfwGetCursorPos(Application::window, &xpos, &ypos);
 
-	return Vector2<float>(xpos, Engine::height - ypos);
+	return Vector2<float>(xpos, Application::height - ypos);
 }
 
 Vector2<float> Input::GetCursorUVPos()
 {
 	double xpos, ypos;
-	glfwGetCursorPos(Engine::window, &xpos, &ypos);
+	glfwGetCursorPos(Application::window, &xpos, &ypos);
 
-	float width = (float)Engine::width;
-	float height = (float)Engine::height;
+	float width = (float)Application::width;
+	float height = (float)Application::height;
 
 	// Divide by width and height, and invert height to convert to uv coordinates
 	return Vector2<float>(xpos / (float)width, (height - ypos) / (float)height);

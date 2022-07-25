@@ -12,7 +12,7 @@
 
 class ENGINE_API Physics {
 private:
-	double m_time = 0.0;  // Stores last time class was updated
+	Utils::Timer m_Timer;
 
 	// Shorthands for various types
 	typedef std::vector<ENG_Ptr(Body)> layer_t;
@@ -24,7 +24,7 @@ private:
 
 public:
 	// Update all bodies tracked, and resolve collisions
-	void Update(float current_time);
+	void Update();
 
 	void Register(ENG_Ptr(Body) body, int layer_index);
 	void Unregister(ENG_Ptr(Body) body, int layer_index);

@@ -7,7 +7,7 @@
 Panel p({200, 200, 300, 300});
 Button my_button(some_params); // the x and y given will be the offset from the anchor
 
-Engine::window_panel->Anchor(ANCHOR::RIGHT, ANCHOR::TOP, &p);
+Application::window_panel->Anchor(ANCHOR::RIGHT, ANCHOR::TOP, &p);
 
 p.Anchor(my_button); // This will edit multiple parameters in button class, since both text and quad has to be moved
 or

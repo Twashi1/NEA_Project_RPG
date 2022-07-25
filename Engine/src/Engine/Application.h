@@ -17,7 +17,7 @@
 #include "Slider.h"
 #include "Panel.h"
 
-class ENGINE_API Engine {
+class ENGINE_API Application {
 private:
     // Stores time last frame began, used for calculating elapsed time
     static Utils::Timer m_Timer;
@@ -35,7 +35,7 @@ private:
     static unsigned int m_FramesProcessed; // Tracks amount of frames that have been processed since the last poll
     static double m_ProcessingTime; // Tracks time spent processing since the last poll
 
-    static VersionNumber m_VersionNumber; // Engine version number
+    static VersionNumber m_VersionNumber; // Application version number
 
 public:
     static bool isStatsEnabled; // Determines if stats should be calculated and displayed

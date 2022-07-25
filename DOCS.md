@@ -24,7 +24,7 @@ const int FPS = 60;
 
 int main(void) {
 	// Initialise window, classes, etc.
-	Engine::Init(WIDTH, HEIGHT, FPS);
+	Application::Init(WIDTH, HEIGHT, FPS);
 
 	// Create a shader
 	// "static_vertex" means this is not affected by any cameras you have
@@ -37,19 +37,19 @@ int main(void) {
 	Quad my_quad = Quad(300, 300, 100, 200);
 
 	// Main game loop
-	while (Engine::IsRunning()) {
+	while (Application::IsRunning()) {
 		// Begin frame
-		Engine::BeginFrame();
+		Application::BeginFrame();
 
 		// Render our quad using the given shader to screen
 		Renderer::Schedule(&my_quad, &color_shader);
 
 		// End frame
-		Engine::EndFrame();
+		Application::EndFrame();
 	}
 
 	// End program
-	Engine::Terminate();
+	Application::Terminate();
 }
 ```
 

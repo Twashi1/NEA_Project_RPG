@@ -39,12 +39,12 @@ void TextInput::CheckClicked(const Vector2<float>& cursor_pos, const Input::Stat
 
 	// TODO: cursor changes
 	if (withinQuad || isTyping) {
-		glfwDestroyCursor(Engine::cursor);
-		Engine::cursor = glfwCreateStandardCursor(GLFW_IBEAM_CURSOR);
+		glfwDestroyCursor(Application::cursor);
+		Application::cursor = glfwCreateStandardCursor(GLFW_IBEAM_CURSOR);
 	}
 	else {
-		glfwDestroyCursor(Engine::cursor);
-		Engine::cursor = glfwCreateStandardCursor(GLFW_ARROW_CURSOR);
+		glfwDestroyCursor(Application::cursor);
+		Application::cursor = glfwCreateStandardCursor(GLFW_ARROW_CURSOR);
 	}
 
 	if (lmb_state == Input::State::RELEASE) {

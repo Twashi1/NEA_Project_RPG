@@ -32,7 +32,7 @@ ENG_Ptr(Camera) Renderer::camera = nullptr;
 
 void Renderer::Init()
 {
-	camera = ENG_MakePtr(Camera, 0.0f, (float)Engine::width, 0.0f, (float)Engine::height);
+	camera = ENG_MakePtr(Camera, 0.0f, (float)Application::width, 0.0f, (float)Application::height);
 }
 
 ENGINE_API uint8_t Renderer::GetTextureSlot()

@@ -5,7 +5,7 @@
 #include "Text.h"
 #include "Font.h"
 #include "Animation.h"
-#include "Engine.h"
+#include "Application.h"
 
 class ENGINE_API TextInput {
 private:

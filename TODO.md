@@ -65,3 +65,5 @@
 - Cursor no longer switches when hovering text input box
 - Update docs
 - Inconsistent data layout between GUI objects
+- Rename engine
+- Create global namespace
