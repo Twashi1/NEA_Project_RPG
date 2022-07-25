@@ -9,13 +9,15 @@
 ## GUI
 - [x] Buttons
 - [x] Sliders
+    - Add feature to make slide snap to intervals
 - [x] Input boxes
+    - Typing bar still weird
 - [ ] Toggle switches
-    * Implementation
+    - Implementation
 - [ ] Panels
-    * Add other GUI objects to Anchor overload
-    * Add resizing
-    * Add better rendering? (and bar on top?) (maybe use Panel as derived class for RenderablePanel)
+    - Add other GUI objects to Anchor overload
+    - Add resizing
+    - Add better rendering? (and bar on top?) (maybe use Panel as derived class for RenderablePanel)
 
 ## General
 - [ ] Pathfinding
@@ -24,6 +26,7 @@
 - [ ] Physics system
 - [x] Input system
 - [x] Serialiser
+    -  API still needs work
 
 # Game
 ## World
@@ -55,12 +58,10 @@
 - Better name for class Text
 - Input box typing bar size is using magic numbers
 - Default statics are ugly
-- Serialiser API still needs work
-- GUI objects fixed to panel
 - Colors should be put under utils namespace
 - Make functions private/only accessible in engine
 - First frame of animations shows entire texture atlas
 - Better api for shader/texture/texture-atlas (clump them into one struct?)
-- ToggleSwitch implementation
 - Cursor no longer switches when hovering text input box
 - Update docs
+- Inconsistent data layout between GUI objects
