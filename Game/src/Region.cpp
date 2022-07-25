@@ -16,7 +16,7 @@ Tile& Region::Index(int x, int y)
     return tiles[x + (y * Region::LENGTH)];
 }
 
-Tile& Region::Index(const Vector2<int>& pos)
+Tile& Region::Index(const CoolEngineName::Vector2<int>& pos)
 {
     // Check x, y within bounds
     if (pos.x >= Region::LENGTH || pos.y >= Region::LENGTH) ENG_LogInfo("Invalid index {}", to_string(pos));

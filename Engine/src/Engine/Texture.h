@@ -5,26 +5,28 @@
 
 #include "stb_image.h"
 
-class ENGINE_API Texture {
-public:
-	static std::string PATH;
+namespace CoolEngineName {
+	class ENGINE_API Texture {
+	public:
+		static std::string PATH;
 
-	GLuint id;
-	
-	unsigned int width;					// Width of texture
-	unsigned int height;				// Height of texture
-	ENG_Ptr(uint8_t[]) buffer;	// Buffer of colour data for texture
+		GLuint id;
 
-	static void Unbind();
-	void Bind(uint8_t slot) const;
+		unsigned int width;					// Width of texture
+		unsigned int height;				// Height of texture
+		ENG_Ptr(uint8_t[]) buffer;	// Buffer of colour data for texture
 
-	void Create();
-	void Delete();
-	void Update(); // Deletes, then Creates texture to update it with new buffer data
+		static void Unbind();
+		void Bind(uint8_t slot) const;
 
-	// Construct from colour data (3 bytes per pixel), and width/height of image
-	Texture(ENG_Ptr(uint8_t[]) buffer, unsigned int width, unsigned int height);
-	// Construct from png
-	Texture(std::string filename);
-	~Texture();
-};
+		void Create();
+		void Delete();
+		void Update(); // Deletes, then Creates texture to update it with new buffer data
+
+		// Construct from colour data (3 bytes per pixel), and width/height of image
+		Texture(ENG_Ptr(uint8_t[]) buffer, unsigned int width, unsigned int height);
+		// Construct from png
+		Texture(std::string filename);
+		~Texture();
+	};
+}

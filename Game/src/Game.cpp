@@ -2,7 +2,7 @@
 
 World* Game::m_World = nullptr;
 std::vector<Game::SceneID> Game::m_CurrentScenes{Game::SceneID::TITLE};
-std::unordered_map<Game::SceneID, std::vector<SceneObject>> Game::m_Scenes;
+std::unordered_map<Game::SceneID, std::vector<CoolEngineName::SceneObject>> Game::m_Scenes;
 
 void Game::m_UnloadScene(SceneID scene)
 {
@@ -33,7 +33,7 @@ void Game::ShowScene(SceneID scene)
 void Game::HideScene(SceneID scene)
 {
 	m_UnloadScene(scene);
-	Utils::Remove(m_CurrentScenes, scene);
+	CoolEngineName::Utils::Remove(m_CurrentScenes, scene);
 }
 
 void Game::Update()

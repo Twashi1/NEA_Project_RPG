@@ -13,79 +13,81 @@ p.Anchor(my_button); // This will edit multiple parameters in button class, sinc
 or
 p.Anchor(quad_ptr);
 */
-class ENGINE_API Panel {
-public:
-	enum class ENGINE_API ANCHOR : uint8_t {
-		LEFT, RIGHT,
-		BOTTOM, TOP,
-		CENTER
-	};
-
-private:
-	struct ENGINE_API Data {
-	private:
-		enum class ENGINE_API Type : uint8_t {
-			PANEL,
-			QUAD,
-			POINT
+namespace CoolEngineName {
+	class ENGINE_API Panel {
+	public:
+		enum class ENGINE_API ANCHOR : uint8_t {
+			LEFT, RIGHT,
+			BOTTOM, TOP,
+			CENTER
 		};
 
-		Type m_Type;
+	private:
+		struct ENGINE_API Data {
+		private:
+			enum class ENGINE_API Type : uint8_t {
+				PANEL,
+				QUAD,
+				POINT
+			};
+
+			Type m_Type;
+
+		public:
+			union {
+				ENG_Ptr(Panel) panel;
+				ENG_Ptr(Quad) quad;
+				ENG_Ptr(Vector2<float>) point;
+			};
+
+			Vector2<float> last_pos;
+			Vector2<float> offset;
+
+			void SetPos(const Vector2<float>& pos);
+			Vector2<float> GetPos() const;
+
+			// Assuming object passed has position relative to anchor coordinates
+			Data(ANCHOR x, ANCHOR y, ENG_Ptr(Quad) quad, const Vector2<float>& offset = Vector2<float>(FLT_MAX, FLT_MAX));
+			Data(ANCHOR x, ANCHOR y, ENG_Ptr(Vector2<float>) point, const Vector2<float>& offset = Vector2<float>(FLT_MAX, FLT_MAX));
+			Data(ANCHOR x, ANCHOR y, ENG_Ptr(Panel) panel, const Vector2<float>& offset = Vector2<float>(FLT_MAX, FLT_MAX));
+			Data(const Data& other);
+			~Data();
+
+			Data& operator=(const Data& other);
+
+			ANCHOR x_anchor, y_anchor;
+
+			friend Panel;
+		};
+
+		// All quads/points we're editing
+		::std::vector<Data*> m_PanelObjects;
+
+		Vector2<float> old_dim;
+		Vector2<float> old_pos;
+		ENG_Ptr(Quad) m_Quad;
+
+		void m_Update(Data& panel_object, const Rect& new_rect);
 
 	public:
-		union {
-			ENG_Ptr(Panel) panel;
-			ENG_Ptr(Quad) quad;
-			ENG_Ptr(Vector2<float>) point;
-		};
+		// Set panel coordinates/size
+		Panel(ENG_Ptr(Quad) quad);
+		Panel(const Quad& quad);
+		Panel(Quad* quad);
+		~Panel();
 
-		Vector2<float> last_pos;
-		Vector2<float> offset;
+		void SetPos(const Vector2<float>& new_pos);
+		void SetDim(const Vector2<float>& new_dim);
+		void SetRect(const Rect& new_rect);
 
-		void SetPos(const Vector2<float>& pos);
-		Vector2<float> GetPos() const;
+		void Anchor(ANCHOR x, ANCHOR y, ENG_Ptr(Quad) quad);
+		void Anchor(ANCHOR x, ANCHOR y, ENG_Ptr(Vector2<float>) point);
+		void Anchor(ANCHOR x, ANCHOR y, ENG_Ptr(Panel) panel);
 
-		// Assuming object passed has position relative to anchor coordinates
-		Data(ANCHOR x, ANCHOR y, ENG_Ptr(Quad) quad, const Vector2<float>& offset = Vector2<float>(FLT_MAX, FLT_MAX));
-		Data(ANCHOR x, ANCHOR y, ENG_Ptr(Vector2<float>) point, const Vector2<float>& offset = Vector2<float>(FLT_MAX, FLT_MAX));
-		Data(ANCHOR x, ANCHOR y, ENG_Ptr(Panel) panel, const Vector2<float>& offset = Vector2<float>(FLT_MAX, FLT_MAX));
-		Data(const Data& other);
-		~Data();
+		// For moving/resizing panels (although this requires the panel to be drawn through something)
+		void Update();
 
-		Data& operator=(const Data& other);
-
-		ANCHOR x_anchor, y_anchor;
-
-		friend Panel;
+		// Get quad for debug rendering
+		const Quad& GetQuad() const;
 	};
-
-	// All quads/points we're editing
-	std::vector<Data*> m_PanelObjects;
-
-	Vector2<float> old_dim;
-	Vector2<float> old_pos;
-	ENG_Ptr(Quad) m_Quad;
-
-	void m_Update(Data& panel_object, const Rect& new_rect);
-
-public:
-	// Set panel coordinates/size
-	Panel(ENG_Ptr(Quad) quad);
-	Panel(const Quad& quad);
-	Panel(Quad* quad);
-	~Panel();
-
-	void SetPos(const Vector2<float>& new_pos);
-	void SetDim(const Vector2<float>& new_dim);
-	void SetRect(const Rect& new_rect);
-
-	void Anchor(ANCHOR x, ANCHOR y, ENG_Ptr(Quad) quad);
-	void Anchor(ANCHOR x, ANCHOR y, ENG_Ptr(Vector2<float>) point);
-	void Anchor(ANCHOR x, ANCHOR y, ENG_Ptr(Panel) panel);
-
-	// For moving/resizing panels (although this requires the panel to be drawn through something)
-	void Update();
-
-	// Get quad for debug rendering
-	const Quad& GetQuad() const;
-};
+}

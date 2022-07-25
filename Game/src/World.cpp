@@ -5,21 +5,21 @@
 std::string World::PATH = "../Resources/saves/";
 std::string World::FILE_EXTENSION = ".data";
 std::string World::GENERAL_FILE = "general";
-VersionNumber World::m_version = VersionNumber(0, 0, 1);
+CoolEngineName::VersionNumber World::m_version = CoolEngineName::VersionNumber(0, 0, 1);
 World::TileMap_t World::m_tilemap = {};
-Texture* World::m_tile_atlas = nullptr;
-Vector2<int> World::m_tile_atlas_size = Vector2<int>(0, 0);
-Vector2<int> World::m_atlas_dim_relative = Vector2<int>(0, 0);
-Shader* World::texture_shader = nullptr;
+CoolEngineName::Texture* World::m_tile_atlas = nullptr;
+CoolEngineName::Vector2<int> World::m_tile_atlas_size = CoolEngineName::Vector2<int>(0, 0);
+CoolEngineName::Vector2<int> World::m_atlas_dim_relative = CoolEngineName::Vector2<int>(0, 0);
+CoolEngineName::Shader* World::texture_shader = nullptr;
 
 void World::LoadTextures(const std::string& atlas_file)
 {
 	constexpr int sprite_size = 64; // TODO
 
 	// Load atlas and various information about atlas
-	m_tile_atlas = new Texture(atlas_file);
-	m_tile_atlas_size = Vector2<int>(sprite_size, sprite_size); // TODO
-	m_atlas_dim_relative = Vector2<int>(m_tile_atlas->width / sprite_size, m_tile_atlas->height / sprite_size);
+	m_tile_atlas = new CoolEngineName::Texture(atlas_file);
+	m_tile_atlas_size = CoolEngineName::Vector2<int>(sprite_size, sprite_size); // TODO
+	m_atlas_dim_relative = CoolEngineName::Vector2<int>(m_tile_atlas->width / sprite_size, m_tile_atlas->height / sprite_size);
 
 	// Iterate over value of each tile id
 	for (int i = 0; i < (int)Tile::ID::MAX; i++) {
@@ -30,7 +30,7 @@ void World::LoadTextures(const std::string& atlas_file)
 		y = (m_atlas_dim_relative.y - 1) - y;
 
 		// Add to tilemap
-		m_tilemap[(Tile::ID)i] = Vector2<int>(x, y);
+		m_tilemap[(Tile::ID)i] = CoolEngineName::Vector2<int>(x, y);
 	}
 }
 
@@ -39,7 +39,7 @@ World::World(const std::string& world_name)
 {
 	std::string fullpath = PATH + world_name + "/";
 
-	if (Utils::CheckDirectoryExists(fullpath)) {
+	if (CoolEngineName::Utils::CheckDirectoryExists(fullpath)) {
 		// Load world
 		m_LoadWorld(fullpath);
 	}
@@ -54,47 +54,47 @@ World::World(const uint32_t& seed, const std::string& world_name)
 	std::string fullpath = PATH + world_name + "/";
 
 	// Create folder for our world
-	Utils::CreateDirectory(fullpath);
+	CoolEngineName::Utils::CreateDirectory(fullpath);
 	// Generate world
 	m_GenWorld(fullpath);
 
 }
 
-Vector2<int> World::m_GetRegionIndex(const Vector2<int>& pos)
+CoolEngineName::Vector2<int> World::m_GetRegionIndex(const CoolEngineName::Vector2<int>& pos)
 {
-	return Vector2<int>(
+	return CoolEngineName::Vector2<int>(
 		std::floor((double)pos.x / (double)Region::LENGTH),
 		std::floor((double)pos.y / (double)Region::LENGTH)
 	);
 }
 
-Vector2<int> World::m_GetRegionIndex(int x, int y)
+CoolEngineName::Vector2<int> World::m_GetRegionIndex(int x, int y)
 {
-	return Vector2<int>(
+	return CoolEngineName::Vector2<int>(
 		std::floor((double)x / (double)Region::LENGTH),
 		std::floor((double)y / (double)Region::LENGTH)
 		);
 }
 
-std::string World::m_ToRegionName(const Vector2<int>& index)
+std::string World::m_ToRegionName(const CoolEngineName::Vector2<int>& index)
 {
-	return std::format("region{}_{}{}", to_string(index.x), to_string(index.y), FILE_EXTENSION);
+	return std::format("region{}_{}{}", index.x, index.y, FILE_EXTENSION);
 }
 
-void World::m_LoadRegions(const Vector2<int>& center, int radius)
+void World::m_LoadRegions(const CoolEngineName::Vector2<int>& center, int radius)
 {
 	// TODO: doesn't delete old regions
 	for (int y = center.y - radius; y < center.y + radius + 1; y++) {
 		for (int x = center.x - radius; x < center.x + radius + 1; x++) {
 			// Get index
-			Vector2<int> index = Vector2<int>(x, y);
+			CoolEngineName::Vector2<int> index(x, y);
 			// Load region
 			m_LoadRegion(index);
 		}
 	}
 }
 
-Region& World::m_LoadRegion(const Vector2<int>& index)
+Region& World::m_LoadRegion(const CoolEngineName::Vector2<int>& index)
 {
 	// Try find region in region map
 	auto it = regions.find(index);
@@ -108,7 +108,7 @@ Region& World::m_LoadRegion(const Vector2<int>& index)
 	// Since that region doesn't exist already, try load from serialised file
 	std::string region_name = m_ToRegionName(index);
 	// Checks if region is serialised
-	if (Utils::CheckFileExists(m_ToRegionName(index))) {
+	if (CoolEngineName::Utils::CheckFileExists(m_ToRegionName(index))) {
 		// File exists lets deserialise it
 		m_DeserialiseRegion(region_name, index);
 		// Exit
@@ -126,7 +126,7 @@ World::~World()
 	delete m_noise_trees;
 }
 
-void World::m_DeserialiseRegion(const std::string& filename, const Vector2<int>& index)
+void World::m_DeserialiseRegion(const std::string& filename, const CoolEngineName::Vector2<int>& index)
 {
 	m_Stream.BeginRead((PATH + m_world_name + "/" + filename).c_str());
 
@@ -147,7 +147,7 @@ void World::m_LoadWorld(const std::string& fullpath)
 	m_Stream.BeginRead((fullpath + GENERAL_FILE + FILE_EXTENSION).c_str());
 
 	// Get version number
-	VersionNumber serialised_version;
+	CoolEngineName::VersionNumber serialised_version;
 	// Deserialise<VersionNumber>(m_serialiser, &serialised_version);
 	// If version number is different
 	if (serialised_version != m_version)
@@ -169,8 +169,8 @@ void World::m_LoadWorld(const std::string& fullpath)
 	// m_LoadRegions(player_pos, 1);
 
 	// Construct noise generator
-	m_noise_terrain = new Noise::Interpolated(m_seed, m_amplitude, m_wavelength);
-	m_noise_trees = new Noise::White(m_seed, m_amplitude, 1);
+	m_noise_terrain = new CoolEngineName::Noise::Interpolated(m_seed, m_amplitude, m_wavelength);
+	m_noise_trees = new CoolEngineName::Noise::White(m_seed, m_amplitude, 1);
 }
 
 void World::m_SaveWorld()
@@ -180,7 +180,7 @@ void World::m_SaveWorld()
 	}
 }
 
-void World::m_SerialiseRegion(const Vector2<int>& index)
+void World::m_SerialiseRegion(const CoolEngineName::Vector2<int>& index)
 {
 	Region& region = regions[index];
 	std::string region_path = PATH + m_world_name + "/" + m_ToRegionName(index);
@@ -193,7 +193,7 @@ void World::m_SerialiseRegion(const Vector2<int>& index)
 	m_Stream.EndWrite();
 }
 
-void World::m_GenerateRegion(const Vector2<int>& index)
+void World::m_GenerateRegion(const CoolEngineName::Vector2<int>& index)
 {
 	Region region;
 
@@ -225,7 +225,7 @@ void World::m_GenerateRegion(const Vector2<int>& index)
 void World::m_RenderTile(int x, int y)
 {
 	// Calculate region index
-	Vector2<int> region_index = m_GetRegionIndex(x, y);
+	CoolEngineName::Vector2<int> region_index = m_GetRegionIndex(x, y);
 	// Calculate relative coords
 	int rx = x - (region_index.x * Region::LENGTH);
 	int ry = y - (region_index.y * Region::LENGTH);
@@ -241,29 +241,30 @@ void World::m_RenderTile(int x, int y)
 	float dy = y * scale;
 
 	// Construct quad
-	std::shared_ptr<Quad> quad = std::shared_ptr<Quad>(new Quad(dx, dy, scale, scale, 0));
+	// TODO: make shared
+	std::shared_ptr<CoolEngineName::Quad> quad = std::shared_ptr<CoolEngineName::Quad>(new CoolEngineName::Quad(dx, dy, scale, scale, 0));
 
 	// Iterate over each tile id
 	for (const Tile::ID& id : tile.ids) {
 		// Get index in atlas
-		Vector2<int> atlas_index = m_tilemap[id];
+		CoolEngineName::Vector2<int> atlas_index = m_tilemap[id];
 
 		// Set texture coords
 		quad->SetTextureCoords(*m_tile_atlas, atlas_index, m_tile_atlas_size);
 		// Schedule to renderer
-		Renderer::Schedule(quad.get(), texture_shader, m_tile_atlas);
+		CoolEngineName::Renderer::Schedule(quad.get(), texture_shader, m_tile_atlas);
 	}
 
 	// Add ourselves to rendered_tiles
 	rendered_tiles[{x, y}] = RenderedTile(quad, tile);
 }
 
-void World::m_RenderTile(const Vector2<int>& pos)
+void World::m_RenderTile(const CoolEngineName::Vector2<int>& pos)
 {
 	// Calculate region index
-	Vector2<int> region_index = m_GetRegionIndex(pos);
+	CoolEngineName::Vector2<int> region_index = m_GetRegionIndex(pos);
 	// Calculate relative coords
-	Vector2<int> relative_coords = pos - (region_index * (int)Region::LENGTH);
+	CoolEngineName::Vector2<int> relative_coords = pos - (region_index * (int)Region::LENGTH);
 
 	// Get region
 	Region& region = m_LoadRegion(region_index); // NOTE: m_LoadRegion not really needed, since regions should always already be loaded
@@ -272,20 +273,21 @@ void World::m_RenderTile(const Vector2<int>& pos)
 	Tile& tile = region.Index(relative_coords);
 
 	// Calculate draw coords
-	Vector2<float> draw_coords = Vector2<float>(pos.x * scale, pos.y * scale);
+	CoolEngineName::Vector2<float> draw_coords = CoolEngineName::Vector2<float>(pos.x * scale, pos.y * scale);
 
 	// Construct quad
-	std::shared_ptr<Quad> quad = std::shared_ptr<Quad>(new Quad(draw_coords, Vector2<float>(scale, scale), 3.14159 * 0.5));
+	// TODO this might be slightly legacy? i saw a rotation added to the quad for no apparent reason
+	std::shared_ptr<CoolEngineName::Quad> quad = std::shared_ptr<CoolEngineName::Quad>(new CoolEngineName::Quad(draw_coords, CoolEngineName::Vector2<float>(scale, scale)));
 
 	// Iterate over each tile id
 	for (const Tile::ID& id : tile.ids) {
 		// Get index in atlas
-		Vector2<int> atlas_index = m_tilemap[id];
+		CoolEngineName::Vector2<int> atlas_index = m_tilemap[id];
 
 		// Set texture coords
 		quad->SetTextureCoords(*m_tile_atlas, atlas_index, m_tile_atlas_size);
 		// Schedule to renderer
-		Renderer::Schedule(quad.get(), texture_shader, m_tile_atlas);
+		CoolEngineName::Renderer::Schedule(quad.get(), texture_shader, m_tile_atlas);
 	}
 
 	// Add ourselves to rendered_tiles
@@ -297,25 +299,25 @@ void World::m_RenderTile(const RenderedTile& rendered_tile)
 	// Iterate over each tile id
 	for (const Tile::ID& id : rendered_tile.tile.ids) {
 		// Get index in atlas
-		Vector2<int> atlas_index = m_tilemap[id];
+		CoolEngineName::Vector2<int> atlas_index = m_tilemap[id];
 
 		// Set texture coords
 		rendered_tile.quad->SetTextureCoords(*m_tile_atlas, atlas_index, m_tile_atlas_size);
 		// Schedule to renderer
-		Renderer::Schedule(rendered_tile.quad.get(), texture_shader, m_tile_atlas);
+		CoolEngineName::Renderer::Schedule(rendered_tile.quad.get(), texture_shader, m_tile_atlas);
 	}
 }
 
 void World::m_GenWorld(const std::string& fullpath)
 {
 	// TODO
-	m_noise_terrain = new Noise::Interpolated(m_seed, m_amplitude, m_wavelength);
-	m_noise_trees = new Noise::White(m_seed, 1.0f, 1);
+	m_noise_terrain = new CoolEngineName::Noise::Interpolated(m_seed, m_amplitude, m_wavelength);
+	m_noise_trees = new CoolEngineName::Noise::White(m_seed, 1.0f, 1);
 	
-	m_LoadRegions(Vector2<int>(0, 0), 3);
+	m_LoadRegions(CoolEngineName::Vector2<int>(0, 0), 3);
 }
 
-void World::m_RenderAround(const Vector2<int>& center, const Vector2<int>& frame)
+void World::m_RenderAround(const CoolEngineName::Vector2<int>& center, const CoolEngineName::Vector2<int>& frame)
 {
 	/*
 	* Short explanation of logic behind this function:
@@ -392,7 +394,7 @@ void World::m_RenderAround(const Vector2<int>& center, const Vector2<int>& frame
 	last_render_frame = frame;
 }
 
-void World::Update(const Vector2<int>& pos)
+void World::Update(const CoolEngineName::Vector2<int>& pos)
 {
 	// TODO: non-fixed render region
 	m_RenderAround(pos, {8, 6});
@@ -402,6 +404,6 @@ World::RenderedTile::RenderedTile()
 	: quad(nullptr), tile(Tile::ID::VOID)
 {}
 
-World::RenderedTile::RenderedTile(const std::shared_ptr<Quad>& quad, const Tile& tile)
+World::RenderedTile::RenderedTile(const std::shared_ptr<CoolEngineName::Quad>& quad, const Tile& tile)
 	: quad(quad), tile(tile)
 {}
