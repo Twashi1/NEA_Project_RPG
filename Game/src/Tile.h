@@ -9,6 +9,8 @@ public:
 		GROUND,
 		GRASS,
 		TREE,
+		SAND,
+		WATER,
 		MAX
 	};
 

@@ -10,7 +10,7 @@ private:
 
 	// Some constants for noise
 	static constexpr float m_amplitude = 1.0f;
-	static constexpr int m_wavelength = 1;
+	static constexpr int m_wavelength = 4;
 	static constexpr int m_octaves = 1;
 
 	static CoolEngineName::VersionNumber m_version;
@@ -75,7 +75,7 @@ public:
 
 	static CoolEngineName::Shader* texture_shader;
 
-	RegionMap_t regions;			// Maps a region index to a Region object
+	RegionMap_t regions; // Maps a region index to a Region object
 
 	// Loads all tile::ids into textures
 	static void LoadTextures(const std::string& atlas_file);

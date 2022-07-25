@@ -199,7 +199,7 @@ void World::m_GenerateRegion(const CoolEngineName::Vector2<int>& index)
 
 	for (int y = 0; y < Region::LENGTH; y++) {
 		for (int x = 0; x < Region::LENGTH; x++) {
-			float noise_value = m_noise_terrain->GetFractal(x, y, m_octaves); // Returns noise value from 0 - 1
+			float noise_value = m_noise_terrain->Get(x, y); // Returns noise value from 0 - 1
 
 			Tile tile;
 
@@ -207,13 +207,15 @@ void World::m_GenerateRegion(const CoolEngineName::Vector2<int>& index)
 
 			// TODO
 
-			if (noise_value > 0.5) { tile_id = Tile::ID::GROUND;}
+			if (noise_value < 0.6) { tile_id = Tile::ID::GROUND; }
+			if (noise_value < 0.5) { tile_id = Tile::ID::SAND; }
+			if (noise_value < 0.2) { tile_id = Tile::ID::WATER; }
 
 			tile.ids.push_back(tile_id);
 
 			float tree_noise = m_noise_trees->Get(x + y * Region::LENGTH);
 
-			if (tree_noise > 0.9) tile.ids.push_back(Tile::ID::TREE);
+			if (tree_noise > 0.8 && noise_value > 0.6) tile.ids.push_back(Tile::ID::TREE);
 
 			region.Index(x, y) = tile;
 		}
@@ -331,8 +333,8 @@ void World::m_RenderAround(const CoolEngineName::Vector2<int>& center, const Coo
 	* However ALL tiles in the new region should be rendered, not just tiles that overlap with both regions, thus we find all the tiles within the new region
 			that do not overlap with the old region (since those tiles are already drawn), and we create quads for them, add them to rendered_tiles, and draw
 			them
-	* This should have a time complexity of O(n) in an average case (unordered_map::erase, at, and insert are constant on average, but can be n in worst case,
-			thus worst case is O(n^2)
+	* This should have a time complexity O(n) in average case (unordered_map::erase, at, and insert are constant on average, but can be n in worst case,
+			and worst case O(n^2)
 	*/
 
 	// TODO: fix
