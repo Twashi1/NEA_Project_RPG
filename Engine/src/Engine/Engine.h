@@ -15,6 +15,7 @@
 #include "Button.h"
 #include "Animation.h"
 #include "Slider.h"
+#include "Panel.h"
 
 class ENGINE_API Engine {
 private:
@@ -47,6 +48,8 @@ public:
     static int height;          // Height of window
 
     static ENG_Ptr(Physics) physics;
+
+    static ENG_Ptr(Panel) window_panel;  // For attaching things to the window
 
     // Set clear screen/background color
     static void SetBGColor(const Vector3<float>& color);

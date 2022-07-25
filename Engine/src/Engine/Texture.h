@@ -2,10 +2,6 @@
 
 #include "Renderer.h"
 #include "Utils.h"
-#include <iostream>
-#include <array>
-#include <vector>
-#include <memory>
 
 #include "stb_image.h"
 

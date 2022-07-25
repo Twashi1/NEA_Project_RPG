@@ -11,7 +11,11 @@
 - [x] Sliders
 - [x] Input boxes
 - [ ] Toggle switches
+    * Implementation
 - [ ] Panels
+    * Add other GUI objects to Anchor overload
+    * Add resizing
+    * Add better rendering? (and bar on top?) (maybe use Panel as derived class for RenderablePanel)
 
 ## General
 - [ ] Pathfinding
@@ -59,3 +63,4 @@
 - Better api for shader/texture/texture-atlas (clump them into one struct?)
 - ToggleSwitch implementation
 - Cursor no longer switches when hovering text input box
+- Update docs

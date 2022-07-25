@@ -67,7 +67,7 @@ Vector2<float> Slider::GetPos() const
 void Slider::SetPos(const Vector2<float>& new_pos)
 {
 	m_BarQuad->SetCenter(new_pos);
-	// two UpdateVB calls
+	// TODO: two UpdateVB calls
 	m_SliderQuad->SetX(m_BarQuad->Left() + m_BarQuad->GetWidth() * m_Value);
 	m_SliderQuad->SetY(m_BarQuad->GetY());
 }

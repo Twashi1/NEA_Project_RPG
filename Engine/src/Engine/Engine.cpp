@@ -1,7 +1,6 @@
 #include "Engine.h"
 #include "TextInput.h"
 #include "ToggleSwitch.h"
-#include "Panel.h"
 #include "Input.h"
 
 Utils::Timer Engine::m_Timer = Utils::Timer();
@@ -24,16 +23,21 @@ int Engine::height = 0;
 
 ENG_Ptr(Physics) Engine::physics = nullptr;
 
+ENG_Ptr(Panel) Engine::window_panel = nullptr;
+
 
 void ENGINE_API Engine::m_OnWindowResize(int nwidth, int nheight)
 {
-    ENG_LogInfo("Window dimensions changed to {}, {}", nwidth, nheight);
+    ENG_LogInfo("Window dimensions changed to {}, {} from {}, {}", nwidth, nheight, width, height);
 
     // Update window dimensions
     width = nwidth; height = nheight;
 
     // Update projection matrix for camera
     Renderer::camera->SetProj(0.0f, (float)width, 0.0f, (float)height);
+
+    // TODO: update window panel
+    window_panel->SetRect({width * 0.5f, height * 0.5f, (float)width, (float)height });
 
     // Update viewport
     GlCall(glViewport(0, 0, width, height));
@@ -190,6 +194,11 @@ void ENGINE_API Engine::Init(int nwidth, int nheight, int nfps, bool nisStatsEna
     TextInput::Init(engine_icons);
 
     ToggleSwitch::Init("engine_icons.png");
+
+    // TODO Panel::Init(width, height)
+    // Construct window panel
+    ENG_Ptr(Quad) panel_quad = ENG_MakePtr(Quad, width * 0.5f, height * 0.5f, (float)width, (float)height);
+    window_panel = ENG_MakePtr(Panel, panel_quad);
 
     glfwSetCursor(window, cursor);
 

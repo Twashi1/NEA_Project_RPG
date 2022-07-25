@@ -35,6 +35,12 @@ int main(void)
     Shader colour_shader = Shader("world_vertex", "color_frag");
     colour_shader.SetUniform3f("u_Color", COLORS::RED);
 
+    Shader grey_shader = Shader("static_vertex", "transparency_frag");
+    grey_shader.SetUniform4f("u_Color", COLORS::GRAY.x, COLORS::GRAY.y, COLORS::GRAY.z, 0.4f);
+
+    Shader red_shader = Shader("static_vertex", "transparency_frag");
+    red_shader.SetUniform4f("u_Color", COLORS::RED.x, COLORS::RED.y, COLORS::RED.z, 0.6f);
+
     Shader static_color = Shader("static_vertex", "color_frag");
     static_color.SetUniform3f("u_Color", COLORS::BLUE);
 
@@ -45,45 +51,46 @@ int main(void)
     // Test construct world
     ENG_LogInfo("Loading world...");
     World world(0, "testworld");
-    ENG_LogInfo("Loading textures...");
     World::LoadTextures("tile_atlas.png");
-    ENG_LogInfo("Updating world...");
     world.Update(Vector2<int>(0, 0));
     ENG_LogInfo("Finished initialising world");
 
-    Quad wall = Quad(500, 500, 100, 500, 0.5 * PI_CONST);
-    Quad dummy = Quad(-100, -100, 150, 150, 0);
-    Quad noisequad = Quad(-500, 500, 256, 256, 0);
-    Quad textbox = Quad(WIDTH - 100, HEIGHT - 96, 96*3, 96, 0);
+    ENG_Ptr(Quad) wall =            ENG_MakePtr(Quad, 500, 500, 100, 500, 0.5 * PI_CONST);
+    ENG_Ptr(Quad) ani_quad =        ENG_MakePtr(Quad, -100, -100, 150, 150);
+    ENG_Ptr(Quad) noisequad =       ENG_MakePtr(Quad, -500, 500, 256, 256);
+    ENG_Ptr(Quad) textbox =         ENG_MakePtr(Quad, WIDTH - 100, HEIGHT - 96, 96*3, 96);
 
-    Quad bar_slider = Quad(WIDTH - 150, HEIGHT - 300, 200, 30, 0);
-    Quad slider_slider = Quad(WIDTH - 150, HEIGHT - 300, 10, 40, 0);
+    ENG_Ptr(Quad) scale_bar =       ENG_MakePtr(Quad, -150, -200, 200, 30);
+    ENG_Ptr(Quad) scale_slider =    ENG_MakePtr(Quad, -150, -200, 10, 40);
 
-    Quad rot_bar = Quad(WIDTH - 150, HEIGHT - 450, 200, 30, 0);
-    Quad rot_slider = Quad(WIDTH - 150, HEIGHT - 450, 10, 40, 0);
+    ENG_Ptr(Quad) rot_bar =         ENG_MakePtr(Quad, WIDTH - 150, HEIGHT - 450, 200, 30);
+    ENG_Ptr(Quad) rot_slider =      ENG_MakePtr(Quad, WIDTH - 150, HEIGHT - 450, 10, 40);
 
-    Slider slider = Slider(ENG_Ptr(Quad)(&bar_slider), ENG_Ptr(Quad)(&slider_slider), &SliderFunc); slider.SetValue(1.0f, 0.0f, 2.0f);
-    Slider rotater = Slider(ENG_Ptr(Quad)(&rot_bar), ENG_Ptr(Quad)(&rot_slider), &RotaterFunc); rotater.SetValue(0.0f, -PI_CONST, PI_CONST);
-    Text slider_text = Text("Scale: 1.0", {bar_slider.Left(), bar_slider.Top() + 70}, 0.3);
-    Text rotater_text = Text("Rotation: 0", { rot_bar.Left(), rot_bar.Top() + 70 }, 0.3);
+    Slider slider = Slider(scale_bar, scale_slider, &SliderFunc); slider.SetValue(1.0f, 0.0f, 2.0f);
+    Slider rotater = Slider(rot_bar, rot_slider, &RotaterFunc); rotater.SetValue(0.0f, -PI_CONST, PI_CONST);
+    Text slider_text = Text("Scale: 1.0", {scale_bar->Left(), scale_bar->Top() + 70}, 0.3);
+    Text rotater_text = Text("Rotation: 0.0", { rot_bar->Left(), rot_bar->Top() + 70 }, 0.3);
     slider_text_ptr = &slider_text;
     rotater_text_ptr = &rotater_text;
 
     Texture atlas_test = Texture("atlas.png");
 
-    Animation animation(ENG_Ptr(Quad)(&dummy), ENG_Ptr(Shader)(&texture_shader), ENG_Ptr(Texture)(&atlas_test), { 64, 64 }, Animation::Data("data"));
+    Animation animation(ani_quad, ENG_Ptr(Shader)(&texture_shader), ENG_Ptr(Texture)(&atlas_test), { 64, 64 }, Animation::Data("data"));
 
     Player player = Player();
     Engine::physics->Register(player.body, 0);
 
     // DEBUG: add to physics system
-    Body wallbody = Body(wall, true, 0.0f, 999);
+    Body wallbody = Body(*wall, true, 0.0f, 999);
     Engine::physics->Register(ENG_Ptr(Body)(&wallbody), 0);
 
-    textbox.SetTextureCoords(*Engine::engine_icons, { 2, 7 }, { 4, 7 }, { 16, 16 });
-    TextInput text_input(textbox, &TextFunc, ENG_Ptr(Shader)(&static_texture), Engine::engine_icons, 30);
+    textbox->SetTextureCoords(*Engine::engine_icons, { 2, 7 }, { 4, 7 }, { 16, 16 });
+    TextInput text_input(*textbox, &TextFunc, ENG_Ptr(Shader)(&static_texture), Engine::engine_icons, 30);
 
     Engine::SetBGColor(COLORS::BLUE);
+
+    Engine::window_panel->Anchor(Panel::ANCHOR::RIGHT, Panel::ANCHOR::TOP, scale_bar);
+    Engine::window_panel->Anchor(Panel::ANCHOR::RIGHT, Panel::ANCHOR::TOP, scale_slider);
 
     // Loop until window is closed by user
     while (Engine::IsRunning())
@@ -111,7 +118,7 @@ int main(void)
         Vector2<int> update_pos = (player.quad.GetCenter() / World::scale).floor();
 
         world.Update(update_pos);
-        Renderer::Schedule(&wall, &colour_shader);
+        Renderer::Schedule(wall.get(), &colour_shader);
         Renderer::Schedule(&animation);
         Renderer::Schedule(&text_input);
         Renderer::Schedule(&player.quad, player.shader);
