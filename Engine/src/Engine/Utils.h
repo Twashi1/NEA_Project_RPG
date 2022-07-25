@@ -17,6 +17,7 @@
 #include <map>
 #include <unordered_map>
 #include <bitset>
+#include <regex>
 
 #ifdef ENGINE_BUILD_DLL
 	#define ENGINE_API __declspec(dllexport)

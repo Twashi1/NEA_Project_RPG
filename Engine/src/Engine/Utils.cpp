@@ -223,11 +223,10 @@ ENGINE_API std::vector<std::string> Utils::SplitString(const std::string& s, con
 
 ENGINE_API void m_Log(const std::string& message, LOG error_type, const char* function, int line)
 {
-	std::string function_cleaned = function;
-	// TODO: generalise removing __xyz (probably use regex)
-	Utils::EraseSubstring(function_cleaned, "__cdecl ");
-	Utils::EraseSubstring(function_cleaned, "__thiscall ");
-	
+	// Matches __something and the whitespace after
+	const std::regex cleaner("__\\S+\\s");
+	std::string function_cleaned = std::regex_replace(function, cleaner, "");
+
 	std::cout << "[" << Utils::Timer::GetTimeString() << "] " << "(" << error_type << ") " << function_cleaned << ":" << line << " " << message << std::endl;
 	// Exit program if it was a fatal error
 	if (error_type == LOG::FATAL) exit(EXIT_FAILURE);
@@ -235,10 +234,9 @@ ENGINE_API void m_Log(const std::string& message, LOG error_type, const char* fu
 
 ENGINE_API void m_Assert(const std::string& message, const char* function, int line)
 {
-	std::string function_cleaned = function;
-	// TODO: generalise removing __xyz (probably use regex)
-	Utils::EraseSubstring(function_cleaned, "__cdecl ");
-	Utils::EraseSubstring(function_cleaned, "__thiscall ");
+	// Matches __something and the whitespace after
+	const std::regex cleaner("__\\S+\\s");
+	std::string function_cleaned = std::regex_replace(function, cleaner, "");
 
 	std::cout << "[" << Utils::Timer::GetTimeString() << "]" << "Assertion failed (" << line << "): " << message << std::endl;
 
