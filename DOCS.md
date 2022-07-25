@@ -9,7 +9,8 @@
 - [ Noise guide ](#NoiseGuide)
 
 # Guides
-## Startup guide{#StartupGuide}
+<a name="StartupGuide"></a>
+## Startup guide
 
 ### Hello world
 
@@ -52,9 +53,15 @@ int main(void) {
 }
 ```
 
-## Rendering guide{#RenderingGuide}
-## GUI guide{#GUIGuide}
-## Physics guide{#PhysicsGuide}
-## Serialising guide{#SerialisingGuide}
-## Input guide{#InputGuide}
-## Noise guide{#NoiseGuide}
+<a name="RenderingGuide"></a>
+## Rendering guide
+<a name="GUIGuide"></a>
+## GUI guide
+<a name="PhysicsGuide"></a>
+## Physics guide
+<a name="SerialisingGuide"></a>
+## Serialising guide
+<a name="InputGuide"></a>
+## Input guide
+<a name="NoiseGuide"></a>
+## Noise guide
