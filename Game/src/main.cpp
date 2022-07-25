@@ -56,10 +56,11 @@ int main(void)
     ENG_Ptr(CoolEngineName::Quad) wall =            ENG_MakePtr(CoolEngineName::Quad, 500, 500, 100, 500, 0.5 * PI_CONST);
     ENG_Ptr(CoolEngineName::Quad) ani_quad =        ENG_MakePtr(CoolEngineName::Quad, -100, -100, 150, 150);
     ENG_Ptr(CoolEngineName::Quad) noisequad =       ENG_MakePtr(CoolEngineName::Quad, -500, 500, 256, 256);
+
     ENG_Ptr(CoolEngineName::Quad) textbox =         ENG_MakePtr(CoolEngineName::Quad, WIDTH - 100, HEIGHT - 96, 96*3, 96);
 
-    ENG_Ptr(CoolEngineName::Quad) scale_bar =       ENG_MakePtr(CoolEngineName::Quad, -150, -200, 200, 30);
-    ENG_Ptr(CoolEngineName::Quad) scale_slider =    ENG_MakePtr(CoolEngineName::Quad, -150, -200, 10, 40);
+    ENG_Ptr(CoolEngineName::Quad) scale_bar =       ENG_MakePtr(CoolEngineName::Quad, -150, -300, 200, 30);
+    ENG_Ptr(CoolEngineName::Quad) scale_slider =    ENG_MakePtr(CoolEngineName::Quad, -150, -300, 10, 40);
 
     ENG_Ptr(CoolEngineName::Quad) rot_bar =         ENG_MakePtr(CoolEngineName::Quad, WIDTH - 150, HEIGHT - 450, 200, 30);
     ENG_Ptr(CoolEngineName::Quad) rot_slider =      ENG_MakePtr(CoolEngineName::Quad, WIDTH - 150, HEIGHT - 450, 10, 40);
