@@ -67,3 +67,4 @@
 - Inconsistent data layout between GUI objects
 - Rename engine
 - Create global namespace
+- Interpolated 2D noise seems to break on region boundaries?

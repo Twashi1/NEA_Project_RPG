@@ -9,12 +9,20 @@ const int FPS = 144;
 static CoolEngineName::Text* slider_text_ptr;
 static CoolEngineName::Text* rotater_text_ptr;
 
+static CoolEngineName::Shader* ground_shader_ptr;
+
 void SliderFunc(CoolEngineName::Slider* ctx) {
     slider_text_ptr->text = std::format("Scale: {}", CoolEngineName::Utils::Round(ctx->GetValue(0.0f, 2.0f), 3));
 }
 
 void RotaterFunc(CoolEngineName::Slider* ctx) {
     rotater_text_ptr->text = std::format("Rotation: {}", CoolEngineName::Utils::Round(ctx->GetValue(-180.0f, 180.0f), 3));
+}
+
+void PixelationSliderFunc(CoolEngineName::Slider* ctx) {
+    ENG_LogInfo("New pixelation value: {}", int(ctx->GetValue(1, 1000)));
+    ground_shader_ptr->Bind();
+    ground_shader_ptr->SetUniform1i("u_Pixelation", int(ctx->GetValue(1, 1000)));
 }
 
 void TextFunc(CoolEngineName::TextInput* ctx) {
@@ -65,12 +73,19 @@ int main(void)
     ENG_Ptr(CoolEngineName::Quad) rot_bar =         ENG_MakePtr(CoolEngineName::Quad, WIDTH - 150, HEIGHT - 450, 200, 30);
     ENG_Ptr(CoolEngineName::Quad) rot_slider =      ENG_MakePtr(CoolEngineName::Quad, WIDTH - 150, HEIGHT - 450, 10, 40);
 
+    ENG_Ptr(CoolEngineName::Quad) ground_quad =     ENG_MakePtr(CoolEngineName::Quad, -600, 600, 800, 800);
+
+    ENG_Ptr(CoolEngineName::Quad) pixel_bar = ENG_MakePtr(CoolEngineName::Quad, -150, -600, 200, 30);
+    ENG_Ptr(CoolEngineName::Quad) pixel_slider = ENG_MakePtr(CoolEngineName::Quad, -150, -600, 10, 40);
+
     CoolEngineName::Slider slider = CoolEngineName::Slider(scale_bar, scale_slider, &SliderFunc); slider.SetValue(1.0f, 0.0f, 2.0f);
     CoolEngineName::Slider rotater = CoolEngineName::Slider(rot_bar, rot_slider, &RotaterFunc); rotater.SetValue(0.0f, -PI_CONST, PI_CONST);
     CoolEngineName::Text slider_text = CoolEngineName::Text("Scale: 1.0", {scale_bar->Left(), scale_bar->Top() + 70}, 0.3);
     CoolEngineName::Text rotater_text = CoolEngineName::Text("Rotation: 0.0", { rot_bar->Left(), rot_bar->Top() + 70 }, 0.3);
     slider_text_ptr = &slider_text;
     rotater_text_ptr = &rotater_text;
+
+    CoolEngineName::Slider pixelator = CoolEngineName::Slider(pixel_bar, pixel_slider, &PixelationSliderFunc); pixelator.SetValue(1, 1, 1000);
 
     CoolEngineName::Texture atlas_test("atlas.png");
 
@@ -90,6 +105,15 @@ int main(void)
 
     CoolEngineName::Application::window_panel->Anchor(CoolEngineName::Panel::ANCHOR::RIGHT, CoolEngineName::Panel::ANCHOR::TOP, scale_bar);
     CoolEngineName::Application::window_panel->Anchor(CoolEngineName::Panel::ANCHOR::RIGHT, CoolEngineName::Panel::ANCHOR::TOP, scale_slider);
+    CoolEngineName::Application::window_panel->Anchor(CoolEngineName::Panel::ANCHOR::RIGHT, CoolEngineName::Panel::ANCHOR::TOP, pixel_bar);
+    CoolEngineName::Application::window_panel->Anchor(CoolEngineName::Panel::ANCHOR::RIGHT, CoolEngineName::Panel::ANCHOR::TOP, pixel_slider);
+
+    CoolEngineName::Shader ground_shader("texture_vertex", "ground_frag");
+    ground_shader.SetUniform1f("u_Scale", 50.0f);
+    ground_shader.SetUniform1ui("u_Seed", 0);
+    ground_shader.SetUniform3f("u_StdBrown", 145/255.0, 55/255.0, 3/255.0);
+
+    ground_shader_ptr = &ground_shader;
 
     // Loop until window is closed by user
     while (CoolEngineName::Application::IsRunning())
@@ -109,6 +133,7 @@ int main(void)
         rotater.Update();
         text_input.Update();
         animation.Update();
+        pixelator.Update();
 
         // Update player
         player.Update();
@@ -120,11 +145,13 @@ int main(void)
         CoolEngineName::Renderer::Schedule(wall.get(), &colour_shader);
         CoolEngineName::Renderer::Schedule(&animation);
         CoolEngineName::Renderer::Schedule(&text_input);
+        CoolEngineName::Renderer::Schedule(ground_quad.get(), &ground_shader);
         CoolEngineName::Renderer::Schedule(&player.quad, player.shader);
         CoolEngineName::Renderer::Schedule(&slider);
         CoolEngineName::Renderer::Schedule(slider_text_ptr);
         CoolEngineName::Renderer::Schedule(&rotater);
         CoolEngineName::Renderer::Schedule(rotater_text_ptr);
+        CoolEngineName::Renderer::Schedule(&pixelator);
 
         if (CoolEngineName::Application::isStatsEnabled) CoolEngineName::Application::UpdateStats(*player.body); // Draw stats information
 

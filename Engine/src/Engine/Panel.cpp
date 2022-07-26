@@ -73,6 +73,77 @@ namespace CoolEngineName {
 		last_pos = this->offset;
 	}
 
+	Panel::Data::Data(ANCHOR x, ANCHOR y, ENG_Ptr(Slider) slider, const Vector2<float>& offset)
+		: x_anchor(x), y_anchor(y), slider(slider), m_Type(Type::SLIDER), offset(offset)
+	{
+		if (offset.x == FLT_MAX) {
+			this->offset.x = slider->GetPos().x;
+		}
+
+		if (offset.y == FLT_MAX) {
+			this->offset.y = slider->GetPos().y;
+		}
+
+		last_pos = this->offset;
+	}
+
+	Panel::Data::Data(ANCHOR x, ANCHOR y, ENG_Ptr(Button) button, const Vector2<float>& offset)
+		: x_anchor(x), y_anchor(y), button(button), m_Type(Type::BUTTON), offset(offset)
+	{
+		if (offset.x == FLT_MAX) {
+			this->offset.x = button->quad.GetX();
+		}
+
+		if (offset.y == FLT_MAX) {
+			this->offset.y = button->quad.GetY();
+		}
+
+		last_pos = this->offset;
+	}
+
+	Panel::Data::Data(ANCHOR x, ANCHOR y, ENG_Ptr(TextInput) text_input, const Vector2<float>& offset)
+		: x_anchor(x), y_anchor(y), text_input(text_input), m_Type(Type::TEXT_INPUT), offset(offset)
+	{
+		if (offset.x == FLT_MAX) {
+			this->offset.x = text_input->quad.GetX();
+		}
+
+		if (offset.y == FLT_MAX) {
+			this->offset.y = text_input->quad.GetY();
+		}
+
+		last_pos = this->offset;
+	}
+
+	Panel::Data::Data(ANCHOR x, ANCHOR y, ENG_Ptr(ToggleSwitch) toggle_switch, const Vector2<float>& offset)
+		: x_anchor(x), y_anchor(y), toggle_switch(toggle_switch), m_Type(Type::TOGGLE_SWITCH), offset(offset)
+	{
+		if (offset.x == FLT_MAX) {
+			this->offset.x = toggle_switch->quad->GetX();
+		}
+
+		if (offset.y == FLT_MAX) {
+			this->offset.y = toggle_switch->quad->GetY();
+		}
+
+		last_pos = this->offset;
+	}
+
+	Panel::Data::Data(ANCHOR x, ANCHOR y, ENG_Ptr(Text) text, const Vector2<float>& offset)
+		: x_anchor(x), y_anchor(y), text(text), m_Type(Type::TEXT), offset(offset)
+	{
+		// TODO not center
+		if (offset.x == FLT_MAX) {
+			this->offset.x = text->pos.x;
+		}
+
+		if (offset.y == FLT_MAX) {
+			this->offset.y = text->pos.y;
+		}
+
+		last_pos = this->offset;
+	}
+
 	Panel::Data::Data(const Data& other)
 		: x_anchor(other.x_anchor), y_anchor(other.y_anchor), m_Type(other.m_Type)
 	{

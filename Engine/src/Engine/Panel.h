@@ -2,6 +2,11 @@
 
 #include "Utils.h"
 #include "Quad.h"
+#include "Slider.h"
+#include "Button.h"
+#include "TextInput.h"
+#include "ToggleSwitch.h"
+#include "Text.h"
 
 /*
 Panel p({200, 200, 300, 300});
@@ -28,7 +33,12 @@ namespace CoolEngineName {
 			enum class ENGINE_API Type : uint8_t {
 				PANEL,
 				QUAD,
-				POINT
+				POINT,
+				BUTTON,
+				SLIDER,
+				TEXT_INPUT,
+				TOGGLE_SWITCH,
+				TEXT
 			};
 
 			Type m_Type;
@@ -38,11 +48,17 @@ namespace CoolEngineName {
 				ENG_Ptr(Panel) panel;
 				ENG_Ptr(Quad) quad;
 				ENG_Ptr(Vector2<float>) point;
+				ENG_Ptr(Slider) slider;
+				ENG_Ptr(Button) button;
+				ENG_Ptr(TextInput) text_input;
+				ENG_Ptr(ToggleSwitch) toggle_switch;
+				ENG_Ptr(Text) text;
 			};
 
 			Vector2<float> last_pos;
 			Vector2<float> offset;
 
+			// TODO implement for slider, button, etc.
 			void SetPos(const Vector2<float>& pos);
 			Vector2<float> GetPos() const;
 
@@ -50,6 +66,11 @@ namespace CoolEngineName {
 			Data(ANCHOR x, ANCHOR y, ENG_Ptr(Quad) quad, const Vector2<float>& offset = Vector2<float>(FLT_MAX, FLT_MAX));
 			Data(ANCHOR x, ANCHOR y, ENG_Ptr(Vector2<float>) point, const Vector2<float>& offset = Vector2<float>(FLT_MAX, FLT_MAX));
 			Data(ANCHOR x, ANCHOR y, ENG_Ptr(Panel) panel, const Vector2<float>& offset = Vector2<float>(FLT_MAX, FLT_MAX));
+			Data(ANCHOR x, ANCHOR y, ENG_Ptr(Slider) slider, const Vector2<float>& offset = Vector2<float>(FLT_MAX, FLT_MAX));
+			Data(ANCHOR x, ANCHOR y, ENG_Ptr(Button) button, const Vector2<float>& offset = Vector2<float>(FLT_MAX, FLT_MAX));
+			Data(ANCHOR x, ANCHOR y, ENG_Ptr(TextInput) text_input, const Vector2<float>& offset = Vector2<float>(FLT_MAX, FLT_MAX));
+			Data(ANCHOR x, ANCHOR y, ENG_Ptr(ToggleSwitch) toggle_switch, const Vector2<float>& offset = Vector2<float>(FLT_MAX, FLT_MAX));
+			Data(ANCHOR x, ANCHOR y, ENG_Ptr(Text) text, const Vector2<float>& offset = Vector2<float>(FLT_MAX, FLT_MAX));
 			Data(const Data& other);
 			~Data();
 
@@ -61,7 +82,7 @@ namespace CoolEngineName {
 		};
 
 		// All quads/points we're editing
-		::std::vector<Data*> m_PanelObjects;
+		std::vector<Data*> m_PanelObjects;
 
 		Vector2<float> old_dim;
 		Vector2<float> old_pos;

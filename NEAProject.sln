@@ -46,6 +46,7 @@ Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "frag", "frag", "{E8A12835-6
 	ProjectSection(SolutionItems) = preProject
 		Resources\shaders\color_frag.glsl = Resources\shaders\color_frag.glsl
 		Resources\shaders\slider_frag.glsl = Resources\shaders\slider_frag.glsl
+		Resources\shaders\ground_frag.glsl = Resources\shaders\ground_frag.glsl
 		Resources\shaders\texture_frag.glsl = Resources\shaders\texture_frag.glsl
 		Resources\shaders\text_frag.glsl = Resources\shaders\text_frag.glsl
 		Resources\shaders\transparency_frag.glsl = Resources\shaders\transparency_frag.glsl

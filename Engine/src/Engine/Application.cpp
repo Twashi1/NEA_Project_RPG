@@ -1,7 +1,7 @@
 #include "Application.h"
-#include "TextInput.h"
-#include "ToggleSwitch.h"
 #include "Input.h"
+#include "Sprite.h"
+#include "Panel.h"
 
 namespace CoolEngineName {
     Utils::Timer Application::m_Timer = Utils::Timer();
@@ -25,7 +25,6 @@ namespace CoolEngineName {
     ENG_Ptr(Physics) Application::physics = nullptr;
 
     ENG_Ptr(Panel) Application::window_panel = nullptr;
-
 
     void ENGINE_API Application::m_OnWindowResize(int nwidth, int nheight)
     {
@@ -181,6 +180,9 @@ namespace CoolEngineName {
 
         // Initialise static for Animation
         Animation::FILE_EXTENSION = ".animation";
+
+        // Init sprite class
+        Sprite::m_DefaultTextureShader = ENG_MakePtr(Shader, "world_vertex", "texture_frag");
 
         // Initialise text class
         Text::Init();

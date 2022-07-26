@@ -22,6 +22,7 @@ namespace CoolEngineName {
 		m_DefaultBarShader = ENG_MakePtr(Shader, "static_texture_vertex", "slider_frag");
 		m_DefaultBarShader->SetUniform3f("u_BarColor", COLORS::GRAY);
 		m_DefaultBarShader->SetUniform3f("u_ShadedColor", COLORS::DARKGRAY);
+
 		m_DefaultSliderShader = ENG_MakePtr(Shader, "static_texture_vertex", "color_frag");
 		m_DefaultSliderShader->SetUniform3f("u_Color", COLORS::DARKGRAY);
 	}
@@ -45,7 +46,7 @@ namespace CoolEngineName {
 	{
 		// TODO update slider subroutine?
 		m_Value = value;
-		m_SliderQuad->SetX(m_BarQuad->Left() + m_BarQuad->GetWidth() * value);
+		m_SliderQuad->SetX(m_BarQuad->Left() + m_BarQuad->GetWidth() * m_Value);
 	}
 
 	void Slider::SetValue(float value, float scale)
@@ -78,7 +79,7 @@ namespace CoolEngineName {
 		Vector2<float> cursor_pos = Input::GetCursorPos();
 
 		// If our cursor is above the slider
-		if (isMovingSlider || m_BarQuad->Contains(cursor_pos)) {
+		if (isMovingSlider || m_BarQuad->Contains(cursor_pos) || m_SliderQuad->Contains(cursor_pos)) {
 			isMovingSlider = true;
 
 			// If pressing or holding slider
@@ -87,8 +88,9 @@ namespace CoolEngineName {
 			if (lmb_state == Input::State::PRESS || lmb_state == Input::State::HOLD) {
 				float new_pos = std::min(std::max(cursor_pos.x, m_BarQuad->Left()), m_BarQuad->Right());
 
+				// Update position
 				m_SliderQuad->SetX(new_pos);
-				// Update value
+				// Update value based on new position
 				m_UpdateValue();
 				// Run callback
 				if (callback != nullptr) callback(this);

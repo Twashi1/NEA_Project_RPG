@@ -38,6 +38,7 @@
     <ClCompile Include="src\Engine\Shader.cpp" />
     <ClCompile Include="src\Engine\Font.cpp" />
     <ClCompile Include="src\Engine\Slider.cpp" />
+    <ClCompile Include="src\Engine\Sprite.cpp" />
     <ClCompile Include="src\Engine\Text.cpp" />
     <ClCompile Include="src\Engine\TextInput.cpp" />
     <ClCompile Include="src\Engine\Texture.cpp" />
@@ -69,6 +70,7 @@
     <ClInclude Include="src\Engine\Shader.h" />
     <ClInclude Include="src\Engine\Font.h" />
     <ClInclude Include="src\Engine\Slider.h" />
+    <ClInclude Include="src\Engine\Sprite.h" />
     <ClInclude Include="src\Engine\Text.h" />
     <ClInclude Include="src\Engine\TextInput.h" />
     <ClInclude Include="src\Engine\Texture.h" />

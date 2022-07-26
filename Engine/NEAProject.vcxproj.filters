@@ -85,6 +85,9 @@
     <ClCompile Include="src\Engine\Panel.cpp">
       <Filter>Source\GUI</Filter>
     </ClCompile>
+    <ClCompile Include="src\Engine\Sprite.cpp">
+      <Filter>Source\Rendering</Filter>
+    </ClCompile>
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="src\Engine\Application.h">
@@ -171,6 +174,9 @@
     </ClInclude>
     <ClInclude Include="src\Engine\Panel.h">
       <Filter>Headers\GUI</Filter>
+    </ClInclude>
+    <ClInclude Include="src\Engine\Sprite.h">
+      <Filter>Headers\Rendering</Filter>
     </ClInclude>
   </ItemGroup>
   <ItemGroup>

@@ -1,23 +1,15 @@
 #pragma once
 
-#include "Renderer.h"
-#include "IndexBuffer.h"
-#include "VertexBuffer.h"
-#include "Shader.h"
-#include "Quad.h"
-#include "Texture.h"
 #include "Physics.h"
-#include "Font.h"
 #include "Camera.h"
-#include "Rect.h"
 #include "VersionNumber.h"
-#include "Text.h"
 #include "Button.h"
 #include "Animation.h"
 #include "Slider.h"
-#include "Panel.h"
 
 namespace CoolEngineName {
+    class Panel;
+
     class ENGINE_API Application {
     private:
         // Stores time last frame began, used for calculating elapsed time
@@ -27,7 +19,7 @@ namespace CoolEngineName {
         static void m_OnWindowResize(int nwidth, int nheight);
         // TODO: ugly
         // Maps a name for each debug stat to a text renderable object
-        static ::std::unordered_map<::std::string, Text> m_DebugStatsText;
+        static std::unordered_map<::std::string, Text> m_DebugStatsText;
 
         static int m_FPS; // Frames per second
         static double m_TimePerFrame; // Time per frame in seconds
