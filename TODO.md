@@ -9,7 +9,7 @@
 ## GUI
 - [x] Buttons
 - [x] Sliders
-    - Add feature to make slide snap to intervals
+    - Add feature to make slider snap to intervals
 - [x] Input boxes
     - Typing bar still weird
 - [ ] Toggle switches
@@ -17,7 +17,7 @@
 - [ ] Panels
     - Add other GUI objects to Anchor overload
     - Add resizing
-    - Add better rendering? (and bar on top?) (maybe use Panel as derived class for RenderablePanel)
+    - Add better rendering? (and bar on top?) (maybe use Panel as base class for RenderablePanel)
 
 ## General
 - [ ] Pathfinding
@@ -68,3 +68,4 @@
 - Rename engine
 - Create global namespace
 - Interpolated 2D noise seems to break on region boundaries?
+- inl file for Vector2/3

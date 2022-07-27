@@ -14,7 +14,7 @@ CoolEngineName::Shader* World::texture_shader = nullptr;
 
 void World::LoadTextures(const std::string& atlas_file)
 {
-	constexpr int sprite_size = 64; // TODO
+	constexpr int sprite_size = 32; // TODO
 
 	// Load atlas and various information about atlas
 	m_tile_atlas = new CoolEngineName::Texture(atlas_file);

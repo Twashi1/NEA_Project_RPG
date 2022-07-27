@@ -88,6 +88,7 @@
     <ClCompile Include="src\Engine\Sprite.cpp">
       <Filter>Source\Rendering</Filter>
     </ClCompile>
+    <ClCompile Include="src\Engine\TextureAtlas.cpp" />
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="src\Engine\Application.h">
@@ -176,6 +177,9 @@
       <Filter>Headers\GUI</Filter>
     </ClInclude>
     <ClInclude Include="src\Engine\Sprite.h">
+      <Filter>Headers\Rendering</Filter>
+    </ClInclude>
+    <ClInclude Include="src\Engine\TextureAtlas.h">
       <Filter>Headers\Rendering</Filter>
     </ClInclude>
   </ItemGroup>

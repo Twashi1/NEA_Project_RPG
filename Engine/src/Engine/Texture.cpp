@@ -59,7 +59,7 @@ namespace CoolEngineName {
 		Unbind();
 	}
 
-	Texture::Texture(std::string filename)
+	Texture::Texture(const std::string& filename)
 		: id(0)
 	{
 		std::string full_path = PATH + filename;
@@ -78,6 +78,13 @@ namespace CoolEngineName {
 		// Create texture object
 		Create();
 		// Unbind it
+		Unbind();
+	}
+
+	Texture::Texture(const Texture& other)
+		: width(other.width), height(other.height), buffer(other.buffer)
+	{
+		Create();
 		Unbind();
 	}
 

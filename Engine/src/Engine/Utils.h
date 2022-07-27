@@ -20,6 +20,8 @@
 #include <bitset>
 #include <regex>
 
+#include <entt.hpp>
+
 #ifdef ENGINE_BUILD_DLL
 	#define ENGINE_API __declspec(dllexport)
 #else
@@ -72,10 +74,10 @@ namespace CoolEngineName {
 		FATAL // Fatal errors will terminate the program when logged
 	};
 
-	ENGINE_API::std::ostream& operator<<(::std::ostream& os, const LOG& error);
+	ENGINE_API::std::ostream& operator<<(std::ostream& os, const LOG& error);
 
-	ENGINE_API void m_Log(const ::std::string& message, LOG error_type, const char* function, int line);
-	ENGINE_API void m_Assert(const ::std::string& message, const char* function, int line);
+	ENGINE_API void m_Log(const std::string& message, LOG error_type, const char* function, int line);
+	ENGINE_API void m_Assert(const std::string& message, const char* function, int line);
 
 	namespace Utils {
 		class ENGINE_API Timer {
@@ -83,10 +85,10 @@ namespace CoolEngineName {
 			double m_Time;
 
 		public:
-			static const ::std::chrono::system_clock::time_point compile_time;
+			static const std::chrono::system_clock::time_point compile_time;
 
 			static double GetTime(); // Get time since program compiled
-			static ::std::string GetTimeString();
+			static std::string GetTimeString();
 
 			Timer();
 			Timer(double start_time);
