@@ -65,6 +65,7 @@ namespace CoolEngineName {
 		shader->Bind();
 		shader->SetUniformMat4fv("u_ProjMat", camera->GetProjMat());
 		shader->SetUniformMat4fv("u_ViewMat", camera->GetViewMat());
+		shader->SetUniform1f("u_Time", Utils::Timer::GetTime());
 
 		GlCall(glDrawElements(GL_TRIANGLES, ib.count, ib.type, nullptr));
 	}
@@ -83,6 +84,7 @@ namespace CoolEngineName {
 		shader->SetUniform1i("u_Texture", slot);
 		shader->SetUniformMat4fv("u_ProjMat", camera->GetProjMat());
 		shader->SetUniformMat4fv("u_ViewMat", camera->GetViewMat());
+		shader->SetUniform1f("u_Time", Utils::Timer::GetTime());
 
 		GlCall(glDrawElements(GL_TRIANGLES, ib.count, ib.type, nullptr));
 
@@ -104,6 +106,7 @@ namespace CoolEngineName {
 		shader->SetUniform1i("u_Texture", slot);
 		shader->SetUniformMat4fv("u_ProjMat", camera->GetProjMat());
 		shader->SetUniformMat4fv("u_ViewMat", camera->GetViewMat());
+		shader->SetUniform1f("u_Time", Utils::Timer::GetTime());
 
 		GlCall(glDrawElements(GL_TRIANGLES, ib.count, ib.type, nullptr));
 	}
@@ -116,6 +119,7 @@ namespace CoolEngineName {
 		text->shader->Bind();
 		text->shader->SetUniform1i("u_Texture", slot);
 		text->shader->SetUniformMat4fv("u_ProjMat", camera->GetProjMat());
+		text->shader->SetUniform1f("u_Time", Utils::Timer::GetTime());
 
 		// Bind texture to that slot
 		GlCall(glActiveTexture(GL_TEXTURE0 + slot));

@@ -6,6 +6,7 @@ uniform float u_Scale;
 uniform uint u_Seed = 0;
 uniform vec3 u_StdBrown = vec3(145/255, 55/255, 3/255);
 uniform int u_Pixelation = 150; // Somewhere between 50 and 200 seems to be an appropriate value
+uniform float u_Time;
 
 in vec2 v_texCoord;
 
@@ -52,8 +53,9 @@ vec2 voronoi_noise(int pixelation) {
     return m_point;
 }
 
-float cellular_noise() {
-    vec2 st = v_texCoord;
+float cellular_noise(int pixelation) {
+    ivec2 int_texCoord = ivec2(int(v_texCoord.x * pixelation), int(v_texCoord.y * pixelation));
+    vec2 st = floor(int_texCoord) / float(pixelation);
 
     // Scale
     st *= u_Scale;
@@ -88,8 +90,6 @@ float cellular_noise() {
 
 void main() {
     float ovalue = voronoi_noise(u_Pixelation).x;
-    if (ovalue < 0.3) { ovalue = 0; }
-
-    vec3 ccvalues = u_StdBrown * ovalue * max(v_texCoord.y - 0.3, 0.0);
-    color = vec4(ccvalues.xyz, 1.0);
+    vec3 ccvalues = u_StdBrown * ovalue;
+    color = vec4(ccvalues.xy, fract(u_Time), 1.0);
 }

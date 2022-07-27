@@ -111,7 +111,7 @@ int main(void)
     CoolEngineName::Shader ground_shader("texture_vertex", "ground_frag");
     ground_shader.SetUniform1f("u_Scale", 50.0f);
     ground_shader.SetUniform1ui("u_Seed", 0);
-    ground_shader.SetUniform3f("u_StdBrown", 145/255.0, 55/255.0, 3/255.0);
+    ground_shader.SetUniform3f("u_StdBrown", CoolEngineName::COLORS::GREEN);
 
     ground_shader_ptr = &ground_shader;
 
