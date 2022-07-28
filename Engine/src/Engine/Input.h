@@ -4,7 +4,7 @@
 #include "Renderer.h"
 #include "Application.h"
 
-namespace CoolEngineName {
+namespace Vivium {
 	class ENGINE_API Input {
 	public:
 		ENGINE_API enum class State : uint8_t {

@@ -1,5 +1,5 @@
 #include "Rect.h"
-namespace CoolEngineName {
+namespace Vivium {
 	Vector2<float> Rect::m_Offsets[4] = {
 		{-1.0f, -1.0f }, // Bottom left corner
 		{ 1.0f, -1.0f }, // Bottom right corner

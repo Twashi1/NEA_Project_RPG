@@ -2,7 +2,7 @@
 
 #include "Utils.h"
 
-namespace CoolEngineName {
+namespace Vivium {
 	namespace Serialiser {
 		class ENGINE_API Stream {
 		public:

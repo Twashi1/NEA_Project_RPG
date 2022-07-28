@@ -4,7 +4,7 @@
 #include "Utils.h"
 #include "Serialiser.h"
 
-namespace CoolEngineName {
+namespace Vivium {
 	struct ENGINE_API Rect : public Serialiser::Streamable {
 	protected:
 		static Vector2<float> m_Offsets[4]; // For calculating vertices

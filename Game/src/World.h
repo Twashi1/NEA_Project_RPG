@@ -5,25 +5,25 @@
 class World {
 private:
 	// Converts a coordinate in the world to the index of the chunk that coordinate is in
-	static CoolEngineName::Vector2<int> m_GetRegionIndex(const CoolEngineName::Vector2<int>& pos);
-	static CoolEngineName::Vector2<int> m_GetRegionIndex(int x, int y);
+	static Vivium::Vector2<int> m_GetRegionIndex(const Vivium::Vector2<int>& pos);
+	static Vivium::Vector2<int> m_GetRegionIndex(int x, int y);
 
 	// Some constants for noise
 	static constexpr float m_amplitude = 1.0f;
 	static constexpr int m_wavelength = 4;
 	static constexpr int m_octaves = 1;
 
-	static CoolEngineName::VersionNumber m_version;
+	static Vivium::VersionNumber m_version;
 
-	typedef std::unordered_map<Tile::ID, CoolEngineName::Vector2<int>> TileMap_t;
+	typedef std::unordered_map<Tile::ID, Vivium::Vector2<int>> TileMap_t;
 	static TileMap_t m_tilemap; // Maps a Tile::ID to its index into the atlas
-	static CoolEngineName::Texture* m_tile_atlas; // Atlas of all Tile textures
-	static CoolEngineName::Vector2<int> m_tile_atlas_size; // Size of each sprite in tile atlas
-	static CoolEngineName::Vector2<int> m_atlas_dim_relative; // Relative dimensions of tile atlas
+	static Vivium::Texture* m_tile_atlas; // Atlas of all Tile textures
+	static Vivium::Vector2<int> m_tile_atlas_size; // Size of each sprite in tile atlas
+	static Vivium::Vector2<int> m_atlas_dim_relative; // Relative dimensions of tile atlas
 
-	CoolEngineName::Noise::Interpolated* m_noise_terrain;
-	CoolEngineName::Noise::White* m_noise_trees;
-	CoolEngineName::Serialiser::Stream m_Stream;
+	Vivium::Noise::Interpolated* m_noise_terrain;
+	Vivium::Noise::White* m_noise_trees;
+	Vivium::Serialiser::Stream m_Stream;
 	unsigned int m_seed;
 
 	std::string m_world_name;
@@ -33,54 +33,54 @@ private:
 	static std::string GENERAL_FILE;
 
 	struct RenderedTile {
-		std::shared_ptr<CoolEngineName::Quad> quad;
+		std::shared_ptr<Vivium::Quad> quad;
 		Tile tile;
 
 		RenderedTile();
-		RenderedTile(const std::shared_ptr<CoolEngineName::Quad>& quad, const Tile& tile);
+		RenderedTile(const std::shared_ptr<Vivium::Quad>& quad, const Tile& tile);
 
 		bool operator==(const RenderedTile& other) { return tile.ids == other.tile.ids && quad == other.quad; }
 	};
 
-	std::unordered_map<CoolEngineName::Vector2<int>, RenderedTile> rendered_tiles;
+	std::unordered_map<Vivium::Vector2<int>, RenderedTile> rendered_tiles;
 
-	CoolEngineName::Vector2<int> last_render_pos;
-	CoolEngineName::Vector2<int> last_render_frame;
+	Vivium::Vector2<int> last_render_pos;
+	Vivium::Vector2<int> last_render_frame;
 
-	std::string m_ToRegionName(const CoolEngineName::Vector2<int>& index);
+	std::string m_ToRegionName(const Vivium::Vector2<int>& index);
 
-	void m_SerialiseRegion(const CoolEngineName::Vector2<int>& index);
+	void m_SerialiseRegion(const Vivium::Vector2<int>& index);
 
 	void m_SaveWorld();
 	void m_LoadWorld(const std::string& fullpath);
 	void m_GenWorld(const std::string& fullpath);
 
 	// TODO: m_LoadRegions just destroys the entire game for some reason
-	void m_LoadRegions(const CoolEngineName::Vector2<int>& center, int radius);
-	Region& m_LoadRegion(const CoolEngineName::Vector2<int>& index);
+	void m_LoadRegions(const Vivium::Vector2<int>& center, int radius);
+	Region& m_LoadRegion(const Vivium::Vector2<int>& index);
 
-	void m_DeserialiseRegion(const std::string& filename, const CoolEngineName::Vector2<int>& index);
-	void m_GenerateRegion(const CoolEngineName::Vector2<int>& index);
+	void m_DeserialiseRegion(const std::string& filename, const Vivium::Vector2<int>& index);
+	void m_GenerateRegion(const Vivium::Vector2<int>& index);
 
 	void m_RenderTile(int x, int y);
-	void m_RenderTile(const CoolEngineName::Vector2<int>& pos);
+	void m_RenderTile(const Vivium::Vector2<int>& pos);
 	void m_RenderTile(const RenderedTile& rendered_tile);
 
-	void m_RenderAround(const CoolEngineName::Vector2<int>& center, const CoolEngineName::Vector2<int>& frame);
+	void m_RenderAround(const Vivium::Vector2<int>& center, const Vivium::Vector2<int>& frame);
 
 public:
 	static constexpr float scale = 64.0;
 
-	typedef std::unordered_map<CoolEngineName::Vector2<int>, Region> RegionMap_t;
+	typedef std::unordered_map<Vivium::Vector2<int>, Region> RegionMap_t;
 
-	static CoolEngineName::Shader* texture_shader;
+	static Vivium::Shader* texture_shader;
 
 	RegionMap_t regions; // Maps a region index to a Region object
 
 	// Loads all tile::ids into textures
 	static void LoadTextures(const std::string& atlas_file);
 
-	void Update(const CoolEngineName::Vector2<int>& pos);
+	void Update(const Vivium::Vector2<int>& pos);
 	
 	// Loads from existing world
 	World(const std::string& world_name);

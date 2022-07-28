@@ -5,7 +5,7 @@
 #include "Vector3.h"
 #include "Vector2.h"
 
-namespace CoolEngineName {
+namespace Vivium {
     class ENGINE_API Shader {
     private:
         // Registers shader with opengl

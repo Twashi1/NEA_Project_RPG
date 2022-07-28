@@ -4,7 +4,7 @@
 
 #include "Serialiser.h"
 
-namespace CoolEngineName {
+namespace Vivium {
     // Stores version number in format major.minor.patch
     struct ENGINE_API VersionNumber : public Serialiser::Streamable {
     private:

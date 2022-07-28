@@ -18,7 +18,7 @@ private:
 	static World* m_World;
 	static Player m_Player;
 
-	static std::unordered_map<SceneID, std::vector<CoolEngineName::SceneObject>> m_Scenes;
+	static std::unordered_map<SceneID, std::vector<Vivium::SceneObject>> m_Scenes;
 
 	static std::vector<SceneID> m_CurrentScenes;
 

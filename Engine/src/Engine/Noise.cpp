@@ -1,6 +1,6 @@
 #include "Noise.h"
 
-namespace CoolEngineName {
+namespace Vivium {
     int Noise::Hash(unsigned int seed, int x) {
         // Forgot where I ripped this hashing algorithm from
         x ^= seed;

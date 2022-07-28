@@ -1,6 +1,6 @@
 #include "Shader.h"
 
-namespace CoolEngineName {
+namespace Vivium {
     std::string Shader::PATH = "";
     std::string Shader::EXTENSION = "";
 

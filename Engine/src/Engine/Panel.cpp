@@ -1,6 +1,6 @@
 #include "Panel.h"
 
-namespace CoolEngineName {
+namespace Vivium {
 	void Panel::Data::SetPos(const Vector2<float>& pos)
 	{
 		switch (m_Type) {
@@ -10,6 +10,16 @@ namespace CoolEngineName {
 			*point = pos; break;
 		case Type::PANEL:
 			panel->SetPos(pos); break;
+		case Type::BUTTON:
+			button->SetPos(pos); break;
+		case Type::SLIDER:
+			slider->SetPos(pos); break;
+		case Type::TEXT:
+			text->SetPos(pos); break;
+		case Type::TEXT_INPUT:
+			text_input->SetPos(pos); break;
+		case Type::TOGGLE_SWITCH:
+			toggle_switch->SetPos(pos); break;
 		}
 
 		last_pos = pos;
@@ -26,6 +36,16 @@ namespace CoolEngineName {
 			pos = *point; break;
 		case Type::PANEL:
 			pos = panel->GetQuad().GetCenter(); break;
+		case Type::BUTTON:
+			pos = button->GetPos(); break;
+		case Type::SLIDER:
+			pos = slider->GetPos(); break;
+		case Type::TEXT:
+			pos = text->GetPos(); break;
+		case Type::TEXT_INPUT:
+			pos = text_input->GetPos(); break;
+		case Type::TOGGLE_SWITCH:
+			pos = toggle_switch->GetPos(); break;
 		}
 
 		return pos;
@@ -280,6 +300,41 @@ namespace CoolEngineName {
 	void Panel::Anchor(ANCHOR x, ANCHOR y, ENG_Ptr(Panel) panel)
 	{
 		Data* new_data = new Data(x, y, panel);
+		m_Update(*new_data, m_Quad->GetRect());
+		m_PanelObjects.push_back(new_data);
+	}
+
+	void Panel::Anchor(ANCHOR x, ANCHOR y, ENG_Ptr(Button) button)
+	{
+		Data* new_data = new Data(x, y, button);
+		m_Update(*new_data, m_Quad->GetRect());
+		m_PanelObjects.push_back(new_data);
+	}
+
+	void Panel::Anchor(ANCHOR x, ANCHOR y, ENG_Ptr(Slider) slider)
+	{
+		Data* new_data = new Data(x, y, slider);
+		m_Update(*new_data, m_Quad->GetRect());
+		m_PanelObjects.push_back(new_data);
+	}
+
+	void Panel::Anchor(ANCHOR x, ANCHOR y, ENG_Ptr(Text) text)
+	{
+		Data* new_data = new Data(x, y, text);
+		m_Update(*new_data, m_Quad->GetRect());
+		m_PanelObjects.push_back(new_data);
+	}
+
+	void Panel::Anchor(ANCHOR x, ANCHOR y, ENG_Ptr(ToggleSwitch) toggle_switch)
+	{
+		Data* new_data = new Data(x, y, toggle_switch);
+		m_Update(*new_data, m_Quad->GetRect());
+		m_PanelObjects.push_back(new_data);
+	}
+
+	void Panel::Anchor(ANCHOR x, ANCHOR y, ENG_Ptr(TextInput) text_input)
+	{
+		Data* new_data = new Data(x, y, text_input);
 		m_Update(*new_data, m_Quad->GetRect());
 		m_PanelObjects.push_back(new_data);
 	}

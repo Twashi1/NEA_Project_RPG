@@ -7,7 +7,7 @@
 #include "Animation.h"
 #include "Application.h"
 
-namespace CoolEngineName {
+namespace Vivium {
 	class ENGINE_API TextInput {
 	private:
 		typedef void (*CallbackFunc_t)(TextInput*); // Shorthand for a callback function pointer (takes the text input that was entered as a paramater)
@@ -58,6 +58,7 @@ namespace CoolEngineName {
 		Quad quad;
 
 		void SetPos(const Vector2<float>& new_pos);
+		const Vector2<float>& GetPos() const;
 
 		ENG_Ptr(Animation) GetTypingBar();
 		bool GetIsTyping();

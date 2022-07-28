@@ -1,7 +1,7 @@
 #pragma once
 #include "Body.h"
 
-namespace CoolEngineName {
+namespace Vivium {
 	struct ENGINE_API Collision {
 		// Pointers to the two bodies involved in the collision
 		Body* a;

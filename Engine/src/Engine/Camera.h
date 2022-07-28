@@ -4,7 +4,7 @@
 #include "Quad.h"
 #include "Renderer.h"
 
-namespace CoolEngineName {
+namespace Vivium {
     struct ENGINE_API Camera {
     private:
         glm::mat4 m_ProjMat;

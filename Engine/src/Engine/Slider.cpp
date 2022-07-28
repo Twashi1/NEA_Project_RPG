@@ -1,6 +1,6 @@
 #include "Slider.h"
 
-namespace CoolEngineName {
+namespace Vivium {
 	ENG_Ptr(Shader) Slider::m_DefaultBarShader = nullptr;
 	ENG_Ptr(Shader) Slider::m_DefaultSliderShader = nullptr;
 
@@ -61,7 +61,7 @@ namespace CoolEngineName {
 		m_SliderQuad->SetX(m_BarQuad->Left() + m_BarQuad->GetWidth() * m_Value);
 	}
 
-	Vector2<float> Slider::GetPos() const
+	const Vector2<float>& Slider::GetPos() const
 	{
 		return m_BarQuad->GetCenter();
 	}

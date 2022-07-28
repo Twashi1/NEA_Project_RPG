@@ -1,6 +1,6 @@
 #include "Camera.h"
 
-namespace CoolEngineName {
+namespace Vivium {
     void Camera::m_UpdateMatrix()
     {
         glm::mat4 transform = glm::scale(glm::mat4(1.0f), m_Scale)

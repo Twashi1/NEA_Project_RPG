@@ -1,6 +1,6 @@
 #include "Vector2.h"
 
-namespace CoolEngineName {
+namespace Vivium {
 	template struct ENGINE_API Vector2<int8_t>;
 	template struct ENGINE_API Vector2<uint8_t>;
 	template struct ENGINE_API Vector2<int16_t>;

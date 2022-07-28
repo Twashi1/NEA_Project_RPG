@@ -10,7 +10,7 @@
 #include "Body.h"
 #include "Collision.h"
 
-namespace CoolEngineName {
+namespace Vivium {
 	class ENGINE_API Physics {
 	private:
 		Utils::Timer m_Timer;

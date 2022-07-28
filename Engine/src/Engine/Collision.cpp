@@ -1,6 +1,6 @@
 #include "Collision.h"
 
-namespace CoolEngineName {
+namespace Vivium {
 	Collision::Collision(Body* a, Body* b)
 		: a(a), b(b) {}
 }

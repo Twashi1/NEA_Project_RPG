@@ -7,7 +7,7 @@
 #include "Animation.h"
 #include "Slider.h"
 
-namespace CoolEngineName {
+namespace Vivium {
     class Panel;
 
     class ENGINE_API Application {

@@ -3,7 +3,7 @@
 #include "Sprite.h"
 #include "Panel.h"
 
-namespace CoolEngineName {
+namespace Vivium {
     Utils::Timer Application::m_Timer = Utils::Timer();
 
     int Application::m_FPS = 0;

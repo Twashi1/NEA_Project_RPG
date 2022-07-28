@@ -5,7 +5,7 @@
 
 #include "stb_image.h"
 
-namespace CoolEngineName {
+namespace Vivium {
 	class ENGINE_API Texture {
 	public:
 		static std::string PATH;

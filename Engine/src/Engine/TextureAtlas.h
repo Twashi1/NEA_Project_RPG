@@ -9,7 +9,7 @@
 
 */
 
-namespace CoolEngineName {
+namespace Vivium {
 	// Allows easy access to texture coordinates of a specific texture, or textures in an atlas
 	// Top left corner is (0,0), increasing as you go down and to the right
 	class ENGINE_API TextureAtlas {

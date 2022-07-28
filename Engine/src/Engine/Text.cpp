@@ -1,6 +1,6 @@
 #include "Text.h"
 
-namespace CoolEngineName {
+namespace Vivium {
     ENG_Ptr(Shader) Text::m_DefaultShader = nullptr;
     ENG_Ptr(Font) Text::m_DefaultFont = nullptr;
 
@@ -21,6 +21,16 @@ namespace CoolEngineName {
         }
 
         return m_DefaultFont;
+    }
+
+    void Text::SetPos(const Vector2<float>& pos)
+    {
+        this->pos = pos;
+    }
+
+    const Vector2<float>& Text::GetPos() const
+    {
+        return pos;
     }
 
     Text::Text()

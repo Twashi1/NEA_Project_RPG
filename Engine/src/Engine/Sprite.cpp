@@ -1,6 +1,6 @@
 #include "Sprite.h"
 
-namespace CoolEngineName {
+namespace Vivium {
 	ENG_Ptr(Shader) Sprite::m_DefaultTextureShader = nullptr;
 
 	Sprite::Sprite(ENG_Ptr(Quad) quad, ENG_Ptr(Shader) shader, ENG_Ptr(Texture) texture)

@@ -1,6 +1,6 @@
 #include "Vector3.h"
 
-namespace CoolEngineName {
+namespace Vivium {
 	template struct ENGINE_API Vector3<int8_t>;
 	template struct ENGINE_API Vector3<uint8_t>;
 	template struct ENGINE_API Vector3<int16_t>;

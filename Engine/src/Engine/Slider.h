@@ -6,7 +6,7 @@
 #include "Text.h"
 #include "Input.h"
 
-namespace CoolEngineName {
+namespace Vivium {
 	class ENGINE_API Slider {
 	private:
 		static ENG_Ptr(Shader) m_DefaultBarShader;
@@ -42,7 +42,7 @@ namespace CoolEngineName {
 		void SetValue(float value, float scale);
 		void SetValue(float value, float min, float max);
 
-		Vector2<float> GetPos() const;
+		const Vector2<float>& GetPos() const;
 		void SetPos(const Vector2<float>& new_pos);
 
 		void Update();

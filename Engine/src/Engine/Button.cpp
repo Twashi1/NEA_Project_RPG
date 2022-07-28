@@ -1,6 +1,6 @@
 #include "Button.h"
 
-namespace CoolEngineName {
+namespace Vivium {
 	ENG_Ptr(Shader) Button::m_DefaultIdleShader = nullptr;
 	ENG_Ptr(Shader) Button::m_DefaultPressedShader = nullptr;
 	ENG_Ptr(Font) Button::m_DefaultFont = nullptr;
@@ -45,6 +45,11 @@ namespace CoolEngineName {
 	{
 		quad.SetCenter(pos);
 		m_UpdatePos();
+	}
+
+	const Vector2<float>& Button::GetPos() const
+	{
+		return quad.GetCenter();
 	}
 
 	Button::Button(const Quad& quad, CallbackFunc_t callback, const std::string& idle_text, const std::string& pressed_text, ENG_Ptr(Shader) idle_shader, ENG_Ptr(Shader) pressed_shader, ENG_Ptr(Texture) idle_texture, ENG_Ptr(Texture) pressed_texture)

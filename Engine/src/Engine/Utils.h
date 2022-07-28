@@ -28,9 +28,9 @@
 	#define ENGINE_API __declspec(dllimport)
 #endif
 
-#define ENG_LogInfo(msg, ...) m_Log(std::format(msg, __VA_ARGS__), CoolEngineName::LOG::INFO, __FUNCSIG__, __LINE__)
-#define ENG_LogWarn(msg, ...) m_Log(std::format(msg, __VA_ARGS__), CoolEngineName::LOG::WARNING, __FUNCSIG__, __LINE__);
-#define ENG_LogFatal(msg, ...) m_Log(std::format(msg, __VA_ARGS__), CoolEngineName::LOG::FATAL, __FUNCSIG__, __LINE__);
+#define ENG_LogInfo(msg, ...) m_Log(std::format(msg, __VA_ARGS__), Vivium::LOG::INFO, __FUNCSIG__, __LINE__)
+#define ENG_LogWarn(msg, ...) m_Log(std::format(msg, __VA_ARGS__), Vivium::LOG::WARNING, __FUNCSIG__, __LINE__);
+#define ENG_LogFatal(msg, ...) m_Log(std::format(msg, __VA_ARGS__), Vivium::LOG::FATAL, __FUNCSIG__, __LINE__);
 #define ENG_Assert(condition, msg, ...) if (condition) { m_Assert(std::format(msg, __VA_ARGS__), __FUNCSIG__, __LINE__); }
 
 #define ENG_Ptr(T) std::shared_ptr<T>
@@ -38,7 +38,7 @@
 #define ENG_MakePtr(T, ...) std::make_shared<T>(__VA_ARGS__)
 #define ENG_MakeUPtr(T, ...) std::make_unique<T>(__VA_ARGS__)
 
-namespace CoolEngineName {
+namespace Vivium {
 	template <typename T>
 	concept __Arithmetic = std::is_arithmetic_v<T>;
 

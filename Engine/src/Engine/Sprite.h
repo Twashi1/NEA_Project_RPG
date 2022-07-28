@@ -6,7 +6,7 @@
 #include "Texture.h"
 #include "Application.h"
 
-namespace CoolEngineName {
+namespace Vivium {
 	class ENGINE_API Sprite {
 	private:
 		static ENG_Ptr(Shader) m_DefaultTextureShader;

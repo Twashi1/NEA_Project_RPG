@@ -11,7 +11,7 @@
 
 #include "Serialiser.h"
 
-namespace CoolEngineName {
+namespace Vivium {
 	template <typename T> requires __Arithmetic<T>
 	struct ENGINE_API Vector3 : public Serialiser::Streamable {
 	public:

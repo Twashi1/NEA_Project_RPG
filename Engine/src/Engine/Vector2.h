@@ -12,7 +12,7 @@
 
 #include "Serialiser.h"
 
-namespace CoolEngineName {
+namespace Vivium {
 	template <typename T> requires __Arithmetic<T>
 	struct ENGINE_API Vector2 : public Serialiser::Streamable {
 	public:
@@ -119,7 +119,7 @@ namespace CoolEngineName {
 
 	template <typename T>
 	std::string to_string(const Vector2<T>& v) {
-		return std::format("[{}, {}]", CoolEngineName::Utils::Round(v.x, 3), CoolEngineName::Utils::Round(v.y, 3));
+		return std::format("[{}, {}]", Vivium::Utils::Round(v.x, 3), Vivium::Utils::Round(v.y, 3));
 	}
 
 	template <typename T>
@@ -161,8 +161,8 @@ namespace CoolEngineName {
 
 namespace std {
 	template <>
-	struct hash<CoolEngineName::Vector2<int>> {
-		unsigned int operator()(const CoolEngineName::Vector2<int>& k) const noexcept {
+	struct hash<Vivium::Vector2<int>> {
+		unsigned int operator()(const Vivium::Vector2<int>& k) const noexcept {
 			unsigned int x_hash = std::hash<int>()(k.x);
 			unsigned int y_hash = std::hash<int>()(k.y) << 1;
 			return x_hash ^ y_hash;

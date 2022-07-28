@@ -1,6 +1,6 @@
 #include "IndexBuffer.h"
 
-namespace CoolEngineName {
+namespace Vivium {
 	IndexBuffer::IndexBuffer(const std::vector<unsigned short>& indices)
 		: id(0)
 	{

@@ -7,7 +7,7 @@
 // TODO: python scripting for animations? or python script to generate timings for animations?
 // TODO: better names
 
-namespace CoolEngineName {
+namespace Vivium {
 	class ENGINE_API Animation {
 	public:
 		struct ENGINE_API Data {

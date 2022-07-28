@@ -13,7 +13,7 @@
 #include "Slider.h"
 #include "ToggleSwitch.h"
 
-namespace CoolEngineName {
+namespace Vivium {
 	void GlClearError() {
 		// While we have an error stay in function
 		int max = 0;

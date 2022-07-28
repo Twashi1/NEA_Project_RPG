@@ -2,7 +2,7 @@
 
 #include "Renderer.h"
 
-namespace CoolEngineName {
+namespace Vivium {
 	struct ENGINE_API IndexBuffer {
 		GLuint id;
 		GLushort count;

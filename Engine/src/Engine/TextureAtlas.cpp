@@ -1,6 +1,6 @@
 #include "TextureAtlas.h"
 
-namespace CoolEngineName {
+namespace Vivium {
 	void TextureAtlas::m_Set(Quad& quad, const Vector2<int>& index) const
 	{
 

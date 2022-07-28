@@ -1,6 +1,6 @@
 #include "Body.h"
 
-namespace CoolEngineName {
+namespace Vivium {
 	Body::Body(Quad& quad, bool isImmovable, float restitution, float mass)
 		: quad(ENG_MakePtr(Quad, quad)),
 		isImmovable(isImmovable),

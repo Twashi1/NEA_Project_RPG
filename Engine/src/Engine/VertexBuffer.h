@@ -4,7 +4,7 @@
 #include <iostream>
 #include "Renderer.h"
 
-namespace CoolEngineName {
+namespace Vivium {
 	struct ENGINE_API VertexBuffer {
 		std::vector<GLuint> ids;
 

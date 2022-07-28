@@ -1,6 +1,6 @@
 #include "SceneObject.h"
 
-namespace CoolEngineName {
+namespace Vivium {
 	SceneObject::SceneObject(ENG_Ptr(Quad) quad, ENG_Ptr(Shader) shader, ENG_Ptr(Texture) texture)
 		: textured_quad(quad, shader, texture), m_Type(Type::TEXTURED_QUAD)
 	{}

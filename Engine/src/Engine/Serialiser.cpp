@@ -2,7 +2,7 @@
 #include "Vector2.h"
 #include "Vector3.h"
 
-namespace CoolEngineName {
+namespace Vivium {
 	namespace Serialiser {
 		void Stream::BeginRead(const char* path)
 		{

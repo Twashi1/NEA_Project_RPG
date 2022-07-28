@@ -1,7 +1,7 @@
 #define STB_IMAGE_IMPLEMENTATION
 #include "Texture.h"
 
-namespace CoolEngineName {
+namespace Vivium {
 	std::string Texture::PATH = "";
 
 	void Texture::Unbind()

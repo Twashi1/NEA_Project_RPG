@@ -1,5 +1,5 @@
 #include "Physics.h"
-namespace CoolEngineName {
+namespace Vivium {
 	void Physics::Update() {
 		float elapsed = m_Timer.GetElapsed();
 

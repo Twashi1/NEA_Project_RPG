@@ -3,7 +3,7 @@
 #include "Vector3.h"
 #include "Serialiser.h"
 
-namespace CoolEngineName {
+namespace Vivium {
 	Vector3<float> ENGINE_API COLORS::BLACK = { 0.00, 0.00, 0.00 };
 	Vector3<float> ENGINE_API COLORS::WHITE = { 1.00, 1.00, 1.00 };
 	Vector3<float> ENGINE_API COLORS::RED = { 1.00, 0.00, 0.00 };

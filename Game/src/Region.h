@@ -12,5 +12,5 @@ struct Region {
 	~Region();
 
 	Tile& Index(int x, int y);
-	Tile& Index(const CoolEngineName::Vector2<int>& pos);
+	Tile& Index(const Vivium::Vector2<int>& pos);
 };

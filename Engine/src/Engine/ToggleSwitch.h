@@ -7,7 +7,7 @@
 #include "Input.h"
 #include "Renderer.h"
 
-namespace CoolEngineName {
+namespace Vivium {
 	class ENGINE_API ToggleSwitch {
 	private:
 		// TODO: this is disgusting
@@ -36,6 +36,9 @@ namespace CoolEngineName {
 
 		Shader* GetShader();
 		Texture* GetTexture();
+
+		const Vector2<float>& GetPos() const;
+		void SetPos(const Vector2<float>& pos);
 
 		CallbackFunc_t callback;
 

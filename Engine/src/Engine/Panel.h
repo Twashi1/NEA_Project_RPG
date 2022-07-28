@@ -18,7 +18,7 @@ p.Anchor(my_button); // This will edit multiple parameters in button class, sinc
 or
 p.Anchor(quad_ptr);
 */
-namespace CoolEngineName {
+namespace Vivium {
 	class ENGINE_API Panel {
 	public:
 		enum class ENGINE_API ANCHOR : uint8_t {
@@ -104,6 +104,12 @@ namespace CoolEngineName {
 		void Anchor(ANCHOR x, ANCHOR y, ENG_Ptr(Quad) quad);
 		void Anchor(ANCHOR x, ANCHOR y, ENG_Ptr(Vector2<float>) point);
 		void Anchor(ANCHOR x, ANCHOR y, ENG_Ptr(Panel) panel);
+
+		void Anchor(ANCHOR x, ANCHOR y, ENG_Ptr(Button) button);
+		void Anchor(ANCHOR x, ANCHOR y, ENG_Ptr(Slider) slider);
+		void Anchor(ANCHOR x, ANCHOR y, ENG_Ptr(TextInput) text_input);
+		void Anchor(ANCHOR x, ANCHOR y, ENG_Ptr(ToggleSwitch) toggle_switch);
+		void Anchor(ANCHOR x, ANCHOR y, ENG_Ptr(Text) text);
 
 		// For moving/resizing panels (although this requires the panel to be drawn through something)
 		void Update();

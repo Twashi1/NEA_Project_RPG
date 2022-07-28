@@ -7,7 +7,7 @@
 #include "Rect.h"
 #include "Texture.h"
 
-namespace CoolEngineName {
+namespace Vivium {
 	struct ENGINE_API Quad : public Serialiser::Streamable, protected Rect {
 	private:
 		std::vector<float> m_TexCoords;

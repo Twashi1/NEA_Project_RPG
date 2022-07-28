@@ -1,6 +1,6 @@
 #include "TextInput.h"
 
-namespace CoolEngineName {
+namespace Vivium {
 	ENG_Ptr(Animation) TextInput::m_TypingBar = nullptr;
 	Vector3<float> TextInput::m_DefaultEmptyColor = Vector3<float>(0.0, 0.0, 0.0);
 	Vector3<float> TextInput::m_DefaultTypedColor = Vector3<float>(0.0, 0.0, 0.0);
@@ -239,6 +239,11 @@ namespace CoolEngineName {
 	bool TextInput::GetIsTyping()
 	{
 		return isTyping;
+	}
+
+	const Vector2<float>& TextInput::GetPos() const
+	{
+		return quad.GetCenter();
 	}
 
 	ENG_Ptr(Text) TextInput::GetText()

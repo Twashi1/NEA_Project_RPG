@@ -1,6 +1,6 @@
 #include "VersionNumber.h"
 
-namespace CoolEngineName {
+namespace Vivium {
     std::string to_string(const VersionNumber& version_number)
     {
         return std::format("v{}.{}.{}", version_number.major, version_number.minor, version_number.patch);

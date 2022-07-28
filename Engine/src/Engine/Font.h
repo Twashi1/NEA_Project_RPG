@@ -10,7 +10,7 @@
 // Following this tutorial for rendering text
 // https://learnopengl.com/In-Practice/Text-Rendering
 
-namespace CoolEngineName {
+namespace Vivium {
 	class ENGINE_API Font {
 		void m_LoadChar(const FT_Face& face, char character);
 

@@ -4,8 +4,8 @@
 #include "Font.h"
 #include "Shader.h"
 
-namespace CoolEngineName {
-	struct ENGINE_API Text {
+namespace Vivium {
+	class ENGINE_API Text {
 	private:
 		static ENG_Ptr(Shader) m_DefaultShader;
 		static ENG_Ptr(Font) m_DefaultFont;
@@ -21,6 +21,10 @@ namespace CoolEngineName {
 
 		static void Init();
 		static ENG_Ptr(Font) GetDefaultFont();
+
+		// TODO might need fixes
+		void SetPos(const Vector2<float>& pos);
+		const Vector2<float>& GetPos() const;
 
 		Text();
 		Text(const Text& other);

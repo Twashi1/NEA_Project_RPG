@@ -9,7 +9,7 @@
 #include "Animation.h"
 #include "Serialiser.h"
 
-namespace CoolEngineName {
+namespace Vivium {
 	struct ENGINE_API SceneObject : public Serialiser::Streamable {
 	public:
 		enum class Type : uint8_t {

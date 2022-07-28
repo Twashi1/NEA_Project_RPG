@@ -1,6 +1,6 @@
 #include "Quad.h"
 
-namespace CoolEngineName {
+namespace Vivium {
 	IndexBuffer* Quad::ib = nullptr;
 
 	void Quad::m_UpdateVB()

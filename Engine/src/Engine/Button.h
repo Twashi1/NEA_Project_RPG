@@ -6,7 +6,7 @@
 #include "Font.h"
 #include "Quad.h"
 
-namespace CoolEngineName {
+namespace Vivium {
 	class ENGINE_API Button {
 	private:
 		static ENG_Ptr(Shader) m_DefaultIdleShader; // Standard shader for when button is not pressed
@@ -47,6 +47,7 @@ namespace CoolEngineName {
 		static void Init();
 
 		void SetPos(const Vector2<float>& pos);
+		const Vector2<float>& GetPos() const;
 
 		// TODO better constructor?
 		Button(const Quad& quad, CallbackFunc_t callback, const ::std::string& idle_text, const ::std::string& pressed_text, ENG_Ptr(Shader) idle_shader, ENG_Ptr(Shader) pressed_shader, ENG_Ptr(Texture) idle_texture, ENG_Ptr(Texture) pressed_texture);

@@ -16,7 +16,7 @@
 	x;\
 	GlLogCall(#x, __FILE__, __LINE__)
 
-namespace CoolEngineName {
+namespace Vivium {
 	void GlClearError();
 	bool GlLogCall(const char* function, const char* file, int line);
 

@@ -1,6 +1,6 @@
 #include "Font.h"
 
-namespace CoolEngineName {
+namespace Vivium {
 	std::string Font::PATH = "";
 
 	void Font::m_LoadChar(const FT_Face& face, char character)

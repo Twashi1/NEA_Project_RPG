@@ -6,7 +6,7 @@
 
 // TODO: switch from using quads to rects
 
-namespace CoolEngineName {
+namespace Vivium {
 	struct ENGINE_API Body {
 	public:
 		ENG_Ptr(Quad) quad;	// Pointer to quad which describes location and dimensions of Body

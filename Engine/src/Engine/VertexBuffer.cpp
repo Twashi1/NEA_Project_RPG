@@ -1,6 +1,6 @@
 #include "VertexBuffer.h"
 
-namespace CoolEngineName {
+namespace Vivium {
 	VertexBuffer::VertexBuffer(const std::vector<float>& vertices)
 		: ids({ 0 })
 	{

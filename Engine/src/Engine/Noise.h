@@ -5,7 +5,7 @@
 
 // TODO: rework to use function pointers and enums to select functions/fractal/etc.
 
-namespace CoolEngineName {
+namespace Vivium {
     namespace Noise {
         // TODO: all these functions should probably be under Utitilies.h as Random namespace or something
         // Hash integer into integer

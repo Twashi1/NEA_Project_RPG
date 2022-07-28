@@ -1,6 +1,6 @@
 #include "Input.h"
 
-namespace CoolEngineName {
+namespace Vivium {
 	int Input::m_CurrentMods = (int)Input::Mod::NONE;
 
 	std::unordered_map<int, Input::Listener> Input::key_listeners{};

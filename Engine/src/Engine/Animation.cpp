@@ -1,5 +1,5 @@
 #include "Animation.h"
-namespace CoolEngineName {
+namespace Vivium {
 	std::string Animation::FILE_EXTENSION = "";
 
 	Animation::Data::Data(const std::vector<float>& frame_timings)

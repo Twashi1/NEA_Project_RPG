@@ -1,6 +1,6 @@
 #include "ToggleSwitch.h"
 
-namespace CoolEngineName {
+namespace Vivium {
 	ENG_Ptr(Shader) ToggleSwitch::m_DefaultShader;
 	ENG_Ptr(Texture) ToggleSwitch::m_DefaultOnTexture;
 	ENG_Ptr(Texture) ToggleSwitch::m_DefaultOffTexture;
@@ -50,6 +50,16 @@ namespace CoolEngineName {
 				return off_texture.get();
 			}
 		}
+	}
+
+	const Vector2<float>& ToggleSwitch::GetPos() const
+	{
+		return quad->GetCenter();
+	}
+
+	void ToggleSwitch::SetPos(const Vector2<float>& pos)
+	{
+		quad->SetCenter(pos);
 	}
 
 	void ToggleSwitch::Update()
