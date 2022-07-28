@@ -8,7 +8,7 @@
 
 namespace Vivium {
 	class ENGINE_API Slider {
-	private:
+	public:
 		static ENG_Ptr(Shader) m_DefaultBarShader;
 		static ENG_Ptr(Shader) m_DefaultSliderShader;
 

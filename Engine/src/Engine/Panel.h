@@ -33,12 +33,7 @@ namespace Vivium {
 			enum class ENGINE_API Type : uint8_t {
 				PANEL,
 				QUAD,
-				POINT,
-				BUTTON,
-				SLIDER,
-				TEXT_INPUT,
-				TOGGLE_SWITCH,
-				TEXT
+				POINT
 			};
 
 			Type m_Type;
@@ -48,11 +43,6 @@ namespace Vivium {
 				ENG_Ptr(Panel) panel;
 				ENG_Ptr(Quad) quad;
 				ENG_Ptr(Vector2<float>) point;
-				ENG_Ptr(Slider) slider;
-				ENG_Ptr(Button) button;
-				ENG_Ptr(TextInput) text_input;
-				ENG_Ptr(ToggleSwitch) toggle_switch;
-				ENG_Ptr(Text) text;
 			};
 
 			Vector2<float> last_pos;
@@ -66,11 +56,6 @@ namespace Vivium {
 			Data(ANCHOR x, ANCHOR y, ENG_Ptr(Quad) quad, const Vector2<float>& offset = Vector2<float>(FLT_MAX, FLT_MAX));
 			Data(ANCHOR x, ANCHOR y, ENG_Ptr(Vector2<float>) point, const Vector2<float>& offset = Vector2<float>(FLT_MAX, FLT_MAX));
 			Data(ANCHOR x, ANCHOR y, ENG_Ptr(Panel) panel, const Vector2<float>& offset = Vector2<float>(FLT_MAX, FLT_MAX));
-			Data(ANCHOR x, ANCHOR y, ENG_Ptr(Slider) slider, const Vector2<float>& offset = Vector2<float>(FLT_MAX, FLT_MAX));
-			Data(ANCHOR x, ANCHOR y, ENG_Ptr(Button) button, const Vector2<float>& offset = Vector2<float>(FLT_MAX, FLT_MAX));
-			Data(ANCHOR x, ANCHOR y, ENG_Ptr(TextInput) text_input, const Vector2<float>& offset = Vector2<float>(FLT_MAX, FLT_MAX));
-			Data(ANCHOR x, ANCHOR y, ENG_Ptr(ToggleSwitch) toggle_switch, const Vector2<float>& offset = Vector2<float>(FLT_MAX, FLT_MAX));
-			Data(ANCHOR x, ANCHOR y, ENG_Ptr(Text) text, const Vector2<float>& offset = Vector2<float>(FLT_MAX, FLT_MAX));
 			Data(const Data& other);
 			~Data();
 

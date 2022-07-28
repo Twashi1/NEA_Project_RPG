@@ -9,7 +9,7 @@
 
 namespace Vivium {
 	class ENGINE_API TextInput {
-	private:
+	public:
 		typedef void (*CallbackFunc_t)(TextInput*); // Shorthand for a callback function pointer (takes the text input that was entered as a paramater)
 
 		static ENG_Ptr(Animation) m_TypingBar; // Animation for the bar that shows where your cursor currently is
@@ -40,7 +40,7 @@ namespace Vivium {
 
 		ENG_Ptr(Text) m_Text = nullptr;
 
-		::std::string empty_text;	// Text that displays when textinput is empty
+		std::string empty_text;	// Text that displays when textinput is empty
 
 		// Updates the text based on user input
 		void m_UpdateText();

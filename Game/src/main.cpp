@@ -88,8 +88,8 @@ int main(void)
     Vivium::Application::window_panel->Anchor(Vivium::Panel::ANCHOR::RIGHT, Vivium::Panel::ANCHOR::TOP, pixelator);
     Vivium::Application::window_panel->Anchor(Vivium::Panel::ANCHOR::RIGHT, Vivium::Panel::ANCHOR::TOP, rotater);
 
-    Vivium::Application::window_panel->Anchor(Vivium::Panel::ANCHOR::RIGHT, Vivium::Panel::ANCHOR::TOP, ENG_Ptr(Vivium::Text)(&slider_text));
-    Vivium::Application::window_panel->Anchor(Vivium::Panel::ANCHOR::RIGHT, Vivium::Panel::ANCHOR::TOP, ENG_Ptr(Vivium::Text)(&rotater_text));
+    //Vivium::Application::window_panel->Anchor(Vivium::Panel::ANCHOR::RIGHT, Vivium::Panel::ANCHOR::TOP, ENG_Ptr(Vivium::Text)(&slider_text));
+    //Vivium::Application::window_panel->Anchor(Vivium::Panel::ANCHOR::RIGHT, Vivium::Panel::ANCHOR::TOP, ENG_Ptr(Vivium::Text)(&rotater_text));
 
     Vivium::Shader ground_shader("texture_vertex", "ground_frag");
     ground_shader.SetUniform1f("u_Scale", 50.0f);
