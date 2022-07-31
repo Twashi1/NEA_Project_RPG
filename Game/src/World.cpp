@@ -153,7 +153,7 @@ void World::m_LoadWorld(const std::string& fullpath)
 	if (serialised_version != m_version)
 	{
 		// We can't interpret this data so log fatal error
-		LogFatal("World version is {}, but we're on version {}", to_string(serialised_version), to_string(m_version));
+		LogFatal("World version is {}, but we're on version {}", serialised_version, m_version);
 	}
 
 	// Get seed

@@ -95,7 +95,7 @@ namespace Vivium {
 	VIVIUM_API int operator&(int a, const Input::Mod& b);
 	VIVIUM_API int operator&(const Input::Mod& a, int b);
 
-	VIVIUM_API std::string to_string(const Input::State& state);
+	// TODO add formatter to replace this
 	VIVIUM_API std::string to_string(const Input::Mod& mod);
 }
 

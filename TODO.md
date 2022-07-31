@@ -1,10 +1,15 @@
 # Vivium
 ## Renderer
-- [ ] Post-processing
-- [ ] Framebuffers
+- [x] Framebuffers
+    - Allow user to render to frame buffer
+    - Allow user to render from frame buffer
 - [ ] Compute shader API
 - [ ] Scene API
 - [x] Camera
+- [ ] Color type
+    - Should support RGB, HEX, HSV
+    - Shader SetUniform should support it
+    - Have statics for some common colours
 
 ## GUI
 - [x] Buttons
@@ -24,9 +29,13 @@
 - [ ] Ambient particles
 - [ ] Sound API
 - [ ] Physics system
+    - Impulse resolution
 - [x] Input system
+    - Some function names are pretty bad
 - [x] Serialiser
-    -  API still needs work
+    - Implement IStreamable overrides for some types (Rect, Quad, etc.)
+    - Add text serialisation (JSON? Custom format?)
+    - Add serialise helper functions for vectors, arrays, maybe even generalised for containers
 
 # Game
 ## World
@@ -51,21 +60,19 @@
 - [ ] Player sprites/animation
 
 # Other
-- Cleanup
+- ECS!!!!!!!
 - Still major CPU bottleneck
 - Sleep in engine EndFrame
 - Better link to Resources folder/re-do file paths and file extension statics
-- Better name for class Text
 - Input box typing bar size is using magic numbers
 - Default statics are ugly
-- Colors should be put under utils namespace
 - Make functions private/only accessible in engine
-- First frame of animations shows entire texture atlas
-- Better api for shader/texture/texture-atlas (clump them into one struct?)
+- Better api for shader/texture/texture-atlas
 - Cursor no longer switches when hovering text input box
 - Update docs
 - Inconsistent data layout between GUI objects
-- Rename engine
-- Create global namespace
-- Interpolated 2D noise seems to break on region boundaries?
 - inl file for Vector2/3
+
+# Bugs
+- First frame of animations shows entire texture atlas
+- (Unconfirmed) Interpolated 2D noise seems to break on region boundaries

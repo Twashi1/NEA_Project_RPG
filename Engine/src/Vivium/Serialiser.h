@@ -159,6 +159,19 @@ namespace Vivium {
 				}
 			}
 		}
+
+		// TODO: since im separating these functions only by concept, shouldn't there just be a conditional constexpr?
+		// Will run if T is not Streamable
+		template <typename T>
+		void Write(const T& object) {
+			LogError("Object type {} is not Streamable", typeid(T).name());
+		}
+
+		// Will run if T is not Streamable
+		template <typename T>
+		void Read(T* memory) {
+			LogError("Object type {} is not Streamable", typeid(T).name());
+		}
 	};
 
 	class VIVIUM_API IStreamable {

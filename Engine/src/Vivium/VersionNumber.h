@@ -26,10 +26,17 @@ namespace Vivium {
         void operator=(const std::string& version_string);
     };
 
-    // TODO make formatter
-    std::string VIVIUM_API to_string(const VersionNumber& version_number);
-
     bool VIVIUM_API operator==(const VersionNumber& a, const VersionNumber& b);
 
     std::ostream& operator<<(std::ostream& os, const VersionNumber& n);
+}
+
+namespace std {
+    template <>
+    struct formatter<Vivium::VersionNumber> : formatter<string> {
+        auto format(Vivium::VersionNumber version, format_context& ctx) {
+            return formatter<string>::format(
+                std::format("v{}.{}.{}", version.major, version.minor, version.patch), ctx);
+        }
+    };
 }
