@@ -61,6 +61,77 @@ int main(void) {
 ## Physics guide
 <a name="SerialisingGuide"></a>
 ## Serialising guide
+
+To make your own class serialisable, inherit from Vivium::IStreamable, and implement the following methods:
+>```c++
+>void Write(Vivium::Serialiser&) const
+>```
+
+>```c++
+>void Read(Vivium::Serialiser&) const
+>```
+
+A standard implementation could look like:
+```c++
+#include <Vivium.h>
+
+struct MyVector2 : Vivium::IStreamable {
+	int x, y;
+
+	void Write(Vivium::Serialiser& s) const override {
+		s.Write(x);
+		s.Write(y);
+	}
+
+	void Read(Vivium::Serialiser& s) override {
+		s.Read(&x);
+		s.Read(&y);
+	}
+}
+```
+
+1. To serialise objects first create an instance of `Vivium::Serialiser`, also giving the mode you want to serialse data in  
+*Using BINARY in this example, but TEXT is also available, so you can write data in a human-readable format*
+>```c++
+>Vivium::Serialiser my_serialiser(Vivium::Stream::Mode::BINARY);
+>```
+
+2. Open the file you will be writing to/reading from
+>```c++
+>my_serialiser.BeginWrite("my_file.txt");
+>```
+
+*OR*
+
+>```c++
+>my_serialiser.BeginRead("my_file.txt");
+>```
+
+3. Call `Serialiser::Write` or `Serialiser::Read` to serialise your data
+
+>```c++
+>my_serialiser.Write(8);
+>my_serialiser.Write("some text");
+>my_serialiser.Write(Vivium::Vector2<int>(5, 4));
+>```
+
+*OR*
+
+>```c++
+>int my_int;
+>my_serialiser.Read(&my_int);
+>std::string my_text;
+>my_serialiser.Read(&my_text);
+>Vivium::Vector2<int> my_vec2;
+>my_serialiser.Read(&my_vec2);
+>```
+
+4. Close the file
+>```c++
+>my_serialiser.EndWrite();
+>my_serialiser.EndRead();
+>```
+
 <a name="InputGuide"></a>
 ## Input guide
 <a name="NoiseGuide"></a>
