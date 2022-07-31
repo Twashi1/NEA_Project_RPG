@@ -1,4 +1,8 @@
 # Vivium
+## Application
+- Change `PollPerformance`
+- Initialisation functions for various classes should be private, and instead should make Application their friend
+
 ## Renderer
 - [x] Framebuffers
     - Allow user to render to frame buffer
@@ -61,15 +65,16 @@
 
 # Other
 - ECS!!!!!!!
+- Some files include more than they need to (like including `Utils.h` when all you need is `Core.h`)
 - Still major CPU bottleneck
-- Sleep in engine EndFrame
+- Sleep in engine `Application::EndFrame`
 - Better link to Resources folder/re-do file paths and file extension statics
 - Input box typing bar size is using magic numbers
 - Default statics are ugly
 - Make functions private/only accessible in engine
 - Better api for shader/texture/texture-atlas
 - Cursor no longer switches when hovering text input box
-- Update docs
+- docs docs docs docs docs docs docs docs
 - Inconsistent data layout between GUI objects
 - inl file for Vector2/3
 
