@@ -1,4 +1,4 @@
-# Engine
+# Vivium
 ## Renderer
 - [ ] Post-processing
 - [ ] Framebuffers

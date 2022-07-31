@@ -39,12 +39,12 @@ World::World(const std::string& world_name)
 {
 	std::string fullpath = PATH + world_name + "/";
 
-	if (Vivium::Utils::CheckDirectoryExists(fullpath)) {
+	if (std::filesystem::is_directory(fullpath)) {
 		// Load world
 		m_LoadWorld(fullpath);
 	}
 	else {
-		ENG_LogFatal("Directory didn't exist, world hasn't been generated yet?");
+		LogFatal("Directory didn't exist, world hasn't been generated yet?");
 	}
 }
 
@@ -54,7 +54,7 @@ World::World(const uint32_t& seed, const std::string& world_name)
 	std::string fullpath = PATH + world_name + "/";
 
 	// Create folder for our world
-	Vivium::Utils::CreateDirectory(fullpath);
+	std::filesystem::create_directory(fullpath);
 	// Generate world
 	m_GenWorld(fullpath);
 
@@ -108,7 +108,7 @@ Region& World::m_LoadRegion(const Vivium::Vector2<int>& index)
 	// Since that region doesn't exist already, try load from serialised file
 	std::string region_name = m_ToRegionName(index);
 	// Checks if region is serialised
-	if (Vivium::Utils::CheckFileExists(m_ToRegionName(index))) {
+	if (std::filesystem::exists(m_ToRegionName(index))) {
 		// File exists lets deserialise it
 		m_DeserialiseRegion(region_name, index);
 		// Exit
@@ -153,7 +153,7 @@ void World::m_LoadWorld(const std::string& fullpath)
 	if (serialised_version != m_version)
 	{
 		// We can't interpret this data so log fatal error
-		ENG_LogFatal("World version is {}, but we're on version {}", to_string(serialised_version), to_string(m_version));
+		LogFatal("World version is {}, but we're on version {}", to_string(serialised_version), to_string(m_version));
 	}
 
 	// Get seed

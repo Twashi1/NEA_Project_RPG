@@ -2,8 +2,8 @@
 
 void Player::Update()
 {
-    float current_time = Vivium::Utils::Timer::GetTime();
-    float elapsed = current_time - m_time; m_time = current_time;
+    float current = Vivium::Timer::GetTime();
+    float elapsed = current - m_Time; m_Time = current;
     // TODO: cleanup
 
     Vivium::Input::State w = Vivium::Input::GetKeyState(GLFW_KEY_W);
@@ -45,12 +45,14 @@ void Player::Update()
 Player::Player()
 {
     // Setup player quad and body
-    quad = Vivium::Quad(0.0f, 0.0f, 100.0f, 100.0f, 0.0f);
-    body = ENG_MakePtr(Vivium::Body, ENG_Ptr(Vivium::Quad)(&quad), true, 0.0f, 1.0f);
+    quad = Vivium::Quad(0.0f, 0.0f, 100.0f, 100.0f);
+    body = MakeRef(Vivium::Body, Ref(Vivium::Quad)(&quad), true, 0.0f, 1.0f);
 
     // Setup shader and uniforms
     shader = new Vivium::Shader("world_vertex", "color_frag");
-    shader->SetUniform3f("u_Color", Vivium::COLORS::YELLOW);
+    shader->SetUniform3f("u_Color", 1.0, 1.0, 0.0);
+
+    m_Time = Vivium::Timer::GetTime();
 }
 
 Player::~Player() { delete shader; }

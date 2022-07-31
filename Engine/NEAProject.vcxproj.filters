@@ -1,186 +1,206 @@
 ﻿<?xml version="1.0" encoding="utf-8"?>
 <Project ToolsVersion="4.0" xmlns="http://schemas.microsoft.com/developer/msbuild/2003">
   <ItemGroup>
-    <ClCompile Include="src\Engine\Application.cpp">
-      <Filter>Source\Engine</Filter>
+    <ClCompile Include="src\Vivium\Animation.cpp">
+      <Filter>Source</Filter>
     </ClCompile>
-    <ClCompile Include="src\Engine\Input.cpp">
-      <Filter>Source\Engine</Filter>
+    <ClCompile Include="src\Vivium\Application.cpp">
+      <Filter>Source</Filter>
     </ClCompile>
-    <ClCompile Include="src\Engine\IndexBuffer.cpp">
-      <Filter>Source\Rendering</Filter>
+    <ClCompile Include="src\Vivium\Body.cpp">
+      <Filter>Source</Filter>
     </ClCompile>
-    <ClCompile Include="src\Engine\Renderer.cpp">
-      <Filter>Source\Rendering</Filter>
+    <ClCompile Include="src\Vivium\Button.cpp">
+      <Filter>Source</Filter>
     </ClCompile>
-    <ClCompile Include="src\Engine\Shader.cpp">
-      <Filter>Source\Rendering</Filter>
+    <ClCompile Include="src\Vivium\Camera.cpp">
+      <Filter>Source</Filter>
     </ClCompile>
-    <ClCompile Include="src\Engine\VertexBuffer.cpp">
-      <Filter>Source\Rendering</Filter>
+    <ClCompile Include="src\Vivium\Collision.cpp">
+      <Filter>Source</Filter>
     </ClCompile>
-    <ClCompile Include="src\Engine\Font.cpp">
-      <Filter>Source\Rendering</Filter>
+    <ClCompile Include="src\Vivium\Font.cpp">
+      <Filter>Source</Filter>
     </ClCompile>
-    <ClCompile Include="src\Engine\Physics.cpp">
-      <Filter>Source\Physics</Filter>
+    <ClCompile Include="src\Vivium\Framebuffer.cpp">
+      <Filter>Source</Filter>
     </ClCompile>
-    <ClCompile Include="src\Engine\Body.cpp">
-      <Filter>Source\Physics</Filter>
+    <ClCompile Include="src\Vivium\IndexBuffer.cpp">
+      <Filter>Source</Filter>
     </ClCompile>
-    <ClCompile Include="src\Engine\Collision.cpp">
-      <Filter>Source\Physics</Filter>
+    <ClCompile Include="src\Vivium\Input.cpp">
+      <Filter>Source</Filter>
     </ClCompile>
-    <ClCompile Include="src\Engine\Camera.cpp">
-      <Filter>Source\Rendering</Filter>
+    <ClCompile Include="src\Vivium\Logger.cpp">
+      <Filter>Source</Filter>
     </ClCompile>
-    <ClCompile Include="src\Engine\Noise.cpp">
-      <Filter>Source\Miscellaneous</Filter>
+    <ClCompile Include="src\Vivium\Math.cpp">
+      <Filter>Source</Filter>
     </ClCompile>
-    <ClCompile Include="src\Engine\Serialiser.cpp">
-      <Filter>Source\Miscellaneous</Filter>
+    <ClCompile Include="src\Vivium\Noise.cpp">
+      <Filter>Source</Filter>
     </ClCompile>
-    <ClCompile Include="src\Engine\Utils.cpp">
-      <Filter>Source\Miscellaneous</Filter>
+    <ClCompile Include="src\Vivium\Panel.cpp">
+      <Filter>Source</Filter>
     </ClCompile>
-    <ClCompile Include="src\Engine\Quad.cpp">
-      <Filter>Source\Rendering</Filter>
+    <ClCompile Include="src\Vivium\Physics.cpp">
+      <Filter>Source</Filter>
     </ClCompile>
-    <ClCompile Include="src\Engine\Rect.cpp">
-      <Filter>Source\Miscellaneous</Filter>
+    <ClCompile Include="src\Vivium\Quad.cpp">
+      <Filter>Source</Filter>
     </ClCompile>
-    <ClCompile Include="src\Engine\VersionNumber.cpp">
-      <Filter>Source\Miscellaneous</Filter>
+    <ClCompile Include="src\Vivium\Rect.cpp">
+      <Filter>Source</Filter>
     </ClCompile>
-    <ClCompile Include="src\Engine\Text.cpp">
-      <Filter>Source\Rendering</Filter>
+    <ClCompile Include="src\Vivium\Renderer.cpp">
+      <Filter>Source</Filter>
     </ClCompile>
-    <ClCompile Include="src\Engine\Texture.cpp">
-      <Filter>Source\Rendering</Filter>
+    <ClCompile Include="src\Vivium\Serialiser.cpp">
+      <Filter>Source</Filter>
     </ClCompile>
-    <ClCompile Include="src\Engine\Animation.cpp">
-      <Filter>Source\Rendering</Filter>
+    <ClCompile Include="src\Vivium\Shader.cpp">
+      <Filter>Source</Filter>
     </ClCompile>
-    <ClCompile Include="src\Engine\Button.cpp">
-      <Filter>Source\GUI</Filter>
+    <ClCompile Include="src\Vivium\Slider.cpp">
+      <Filter>Source</Filter>
     </ClCompile>
-    <ClCompile Include="src\Engine\TextInput.cpp">
-      <Filter>Source\GUI</Filter>
+    <ClCompile Include="src\Vivium\Sprite.cpp">
+      <Filter>Source</Filter>
     </ClCompile>
-    <ClCompile Include="src\Engine\SceneObject.cpp">
-      <Filter>Source\Rendering</Filter>
+    <ClCompile Include="src\Vivium\Text.cpp">
+      <Filter>Source</Filter>
     </ClCompile>
-    <ClCompile Include="src\Engine\Vector2.cpp">
-      <Filter>Source\Miscellaneous</Filter>
+    <ClCompile Include="src\Vivium\TextInput.cpp">
+      <Filter>Source</Filter>
     </ClCompile>
-    <ClCompile Include="src\Engine\Vector3.cpp">
-      <Filter>Source\Miscellaneous</Filter>
+    <ClCompile Include="src\Vivium\Texture.cpp">
+      <Filter>Source</Filter>
     </ClCompile>
-    <ClCompile Include="src\Engine\Slider.cpp">
-      <Filter>Source\GUI</Filter>
+    <ClCompile Include="src\Vivium\TextureAtlas.cpp">
+      <Filter>Source</Filter>
     </ClCompile>
-    <ClCompile Include="src\Engine\ToggleSwitch.cpp">
-      <Filter>Source\GUI</Filter>
+    <ClCompile Include="src\Vivium\Timer.cpp">
+      <Filter>Source</Filter>
     </ClCompile>
-    <ClCompile Include="src\Engine\Panel.cpp">
-      <Filter>Source\GUI</Filter>
+    <ClCompile Include="src\Vivium\ToggleSwitch.cpp">
+      <Filter>Source</Filter>
     </ClCompile>
-    <ClCompile Include="src\Engine\Sprite.cpp">
-      <Filter>Source\Rendering</Filter>
+    <ClCompile Include="src\Vivium\Utils.cpp">
+      <Filter>Source</Filter>
     </ClCompile>
-    <ClCompile Include="src\Engine\TextureAtlas.cpp" />
+    <ClCompile Include="src\Vivium\Vector2.cpp">
+      <Filter>Source</Filter>
+    </ClCompile>
+    <ClCompile Include="src\Vivium\VersionNumber.cpp">
+      <Filter>Source</Filter>
+    </ClCompile>
+    <ClCompile Include="src\Vivium\VertexBuffer.cpp">
+      <Filter>Source</Filter>
+    </ClCompile>
+    <ClCompile Include="src\Vivium\Core.cpp">
+      <Filter>Source</Filter>
+    </ClCompile>
   </ItemGroup>
   <ItemGroup>
-    <ClInclude Include="src\Engine\Application.h">
-      <Filter>Headers\Engine</Filter>
+    <ClInclude Include="src\Vivium.h" />
+    <ClInclude Include="src\Vivium\Animation.h">
+      <Filter>Headers</Filter>
     </ClInclude>
-    <ClInclude Include="src\Engine\Input.h">
-      <Filter>Headers\Engine</Filter>
+    <ClInclude Include="src\Vivium\Application.h">
+      <Filter>Headers</Filter>
     </ClInclude>
-    <ClInclude Include="src\Engine\Renderer.h">
-      <Filter>Headers\Rendering</Filter>
+    <ClInclude Include="src\Vivium\Body.h">
+      <Filter>Headers</Filter>
     </ClInclude>
-    <ClInclude Include="src\Engine\Body.h">
-      <Filter>Headers\Physics</Filter>
+    <ClInclude Include="src\Vivium\Button.h">
+      <Filter>Headers</Filter>
     </ClInclude>
-    <ClInclude Include="src\Engine\Physics.h">
-      <Filter>Headers\Physics</Filter>
+    <ClInclude Include="src\Vivium\Camera.h">
+      <Filter>Headers</Filter>
     </ClInclude>
-    <ClInclude Include="src\Engine\Collision.h">
-      <Filter>Headers\Physics</Filter>
+    <ClInclude Include="src\Vivium\Collision.h">
+      <Filter>Headers</Filter>
     </ClInclude>
-    <ClInclude Include="src\Engine\Camera.h">
-      <Filter>Headers\Rendering</Filter>
+    <ClInclude Include="src\Vivium\Core.h">
+      <Filter>Headers</Filter>
     </ClInclude>
-    <ClInclude Include="src\Engine\Noise.h">
-      <Filter>Headers\Miscellaneous</Filter>
+    <ClInclude Include="src\Vivium\Font.h">
+      <Filter>Headers</Filter>
     </ClInclude>
-    <ClInclude Include="src\Engine\Serialiser.h">
-      <Filter>Headers\Miscellaneous</Filter>
+    <ClInclude Include="src\Vivium\Framebuffer.h">
+      <Filter>Headers</Filter>
     </ClInclude>
-    <ClInclude Include="src\Engine\Utils.h">
-      <Filter>Headers\Miscellaneous</Filter>
+    <ClInclude Include="src\Vivium\IndexBuffer.h">
+      <Filter>Headers</Filter>
     </ClInclude>
-    <ClInclude Include="src\Engine\Quad.h">
-      <Filter>Headers\Rendering</Filter>
+    <ClInclude Include="src\Vivium\Input.h">
+      <Filter>Headers</Filter>
     </ClInclude>
-    <ClInclude Include="src\Engine\VersionNumber.h">
-      <Filter>Headers\Miscellaneous</Filter>
+    <ClInclude Include="src\Vivium\Logger.h">
+      <Filter>Headers</Filter>
     </ClInclude>
-    <ClInclude Include="src\Engine.h" />
-    <ClInclude Include="src\Engine\VertexBuffer.h">
-      <Filter>Headers\Rendering</Filter>
+    <ClInclude Include="src\Vivium\Math.h">
+      <Filter>Headers</Filter>
     </ClInclude>
-    <ClInclude Include="src\Engine\Font.h">
-      <Filter>Headers\Rendering</Filter>
+    <ClInclude Include="src\Vivium\Noise.h">
+      <Filter>Headers</Filter>
     </ClInclude>
-    <ClInclude Include="src\Engine\IndexBuffer.h">
-      <Filter>Headers\Rendering</Filter>
+    <ClInclude Include="src\Vivium\Panel.h">
+      <Filter>Headers</Filter>
     </ClInclude>
-    <ClInclude Include="src\Engine\Shader.h">
-      <Filter>Headers\Rendering</Filter>
+    <ClInclude Include="src\Vivium\Physics.h">
+      <Filter>Headers</Filter>
     </ClInclude>
-    <ClInclude Include="src\Engine\Texture.h">
-      <Filter>Headers\Rendering</Filter>
+    <ClInclude Include="src\Vivium\Quad.h">
+      <Filter>Headers</Filter>
     </ClInclude>
-    <ClInclude Include="src\Engine\Text.h">
-      <Filter>Headers\Rendering</Filter>
+    <ClInclude Include="src\Vivium\Rect.h">
+      <Filter>Headers</Filter>
     </ClInclude>
-    <ClInclude Include="src\Engine\Vector3.h">
-      <Filter>Headers\Miscellaneous</Filter>
+    <ClInclude Include="src\Vivium\Renderer.h">
+      <Filter>Headers</Filter>
     </ClInclude>
-    <ClInclude Include="src\Engine\Rect.h">
-      <Filter>Headers\Miscellaneous</Filter>
+    <ClInclude Include="src\Vivium\Serialiser.h">
+      <Filter>Headers</Filter>
     </ClInclude>
-    <ClInclude Include="src\Engine\Vector2.h">
-      <Filter>Headers\Miscellaneous</Filter>
+    <ClInclude Include="src\Vivium\Shader.h">
+      <Filter>Headers</Filter>
     </ClInclude>
-    <ClInclude Include="src\Engine\Animation.h">
-      <Filter>Headers\Rendering</Filter>
+    <ClInclude Include="src\Vivium\Slider.h">
+      <Filter>Headers</Filter>
     </ClInclude>
-    <ClInclude Include="src\Engine\Button.h">
-      <Filter>Headers\GUI</Filter>
+    <ClInclude Include="src\Vivium\Sprite.h">
+      <Filter>Headers</Filter>
     </ClInclude>
-    <ClInclude Include="src\Engine\TextInput.h">
-      <Filter>Headers\GUI</Filter>
+    <ClInclude Include="src\Vivium\Text.h">
+      <Filter>Headers</Filter>
     </ClInclude>
-    <ClInclude Include="src\Engine\SceneObject.h">
-      <Filter>Headers\Rendering</Filter>
+    <ClInclude Include="src\Vivium\TextInput.h">
+      <Filter>Headers</Filter>
     </ClInclude>
-    <ClInclude Include="src\Engine\Slider.h">
-      <Filter>Headers\GUI</Filter>
+    <ClInclude Include="src\Vivium\Texture.h">
+      <Filter>Headers</Filter>
     </ClInclude>
-    <ClInclude Include="src\Engine\ToggleSwitch.h">
-      <Filter>Headers\GUI</Filter>
+    <ClInclude Include="src\Vivium\TextureAtlas.h">
+      <Filter>Headers</Filter>
     </ClInclude>
-    <ClInclude Include="src\Engine\Panel.h">
-      <Filter>Headers\GUI</Filter>
+    <ClInclude Include="src\Vivium\Timer.h">
+      <Filter>Headers</Filter>
     </ClInclude>
-    <ClInclude Include="src\Engine\Sprite.h">
-      <Filter>Headers\Rendering</Filter>
+    <ClInclude Include="src\Vivium\ToggleSwitch.h">
+      <Filter>Headers</Filter>
     </ClInclude>
-    <ClInclude Include="src\Engine\TextureAtlas.h">
-      <Filter>Headers\Rendering</Filter>
+    <ClInclude Include="src\Vivium\Utils.h">
+      <Filter>Headers</Filter>
+    </ClInclude>
+    <ClInclude Include="src\Vivium\Vector2.h">
+      <Filter>Headers</Filter>
+    </ClInclude>
+    <ClInclude Include="src\Vivium\VersionNumber.h">
+      <Filter>Headers</Filter>
+    </ClInclude>
+    <ClInclude Include="src\Vivium\VertexBuffer.h">
+      <Filter>Headers</Filter>
     </ClInclude>
   </ItemGroup>
   <ItemGroup>
@@ -192,36 +212,6 @@
     </Filter>
     <Filter Include="Resources">
       <UniqueIdentifier>{bc1d066e-beb9-4581-b5a4-d43716b5fd69}</UniqueIdentifier>
-    </Filter>
-    <Filter Include="Headers\Rendering">
-      <UniqueIdentifier>{53823cab-cf2c-4b7a-9509-59ea88c18c56}</UniqueIdentifier>
-    </Filter>
-    <Filter Include="Source\Rendering">
-      <UniqueIdentifier>{28132a6a-30bf-4623-99a7-83f23bf1df8a}</UniqueIdentifier>
-    </Filter>
-    <Filter Include="Source\Physics">
-      <UniqueIdentifier>{032f1ec0-a666-46af-b3c0-507af3422bc8}</UniqueIdentifier>
-    </Filter>
-    <Filter Include="Headers\Physics">
-      <UniqueIdentifier>{4cdd4b21-84c9-4d23-b9e9-6d48c7dc1b7a}</UniqueIdentifier>
-    </Filter>
-    <Filter Include="Headers\Miscellaneous">
-      <UniqueIdentifier>{8378132f-337a-42e4-b3ec-dcffc755d54f}</UniqueIdentifier>
-    </Filter>
-    <Filter Include="Source\Miscellaneous">
-      <UniqueIdentifier>{6a120f64-bd68-462b-86c8-2956923dd27d}</UniqueIdentifier>
-    </Filter>
-    <Filter Include="Source\Engine">
-      <UniqueIdentifier>{f107eccc-57fa-4f69-85f3-345ffa8d4dc5}</UniqueIdentifier>
-    </Filter>
-    <Filter Include="Headers\Engine">
-      <UniqueIdentifier>{c1afd999-a3bb-48dc-b61b-b639b9a4f14f}</UniqueIdentifier>
-    </Filter>
-    <Filter Include="Headers\GUI">
-      <UniqueIdentifier>{db9c9ca7-29ae-4fc8-87be-45283ec9faba}</UniqueIdentifier>
-    </Filter>
-    <Filter Include="Source\GUI">
-      <UniqueIdentifier>{328bd918-b946-41bb-bd80-72a0b5eb0c1b}</UniqueIdentifier>
     </Filter>
   </ItemGroup>
 </Project>

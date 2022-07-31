@@ -1,0 +1,95 @@
+#define STB_IMAGE_IMPLEMENTATION
+#include "Texture.h"
+
+namespace Vivium {
+	std::string Texture::PATH = "";
+
+	void Texture::Unbind()
+	{
+		glBindTexture(GL_TEXTURE_2D, 0);
+	}
+
+	void Texture::Bind(uint8_t slot) const
+	{
+		if (id != 0) {
+			glActiveTexture(GL_TEXTURE0 + slot);
+			glBindTexture(GL_TEXTURE_2D, id);
+		}
+		else {
+			LogWarn("Binding texture that has not been created");
+		}
+	}
+
+	void Texture::Create()
+	{
+		if (id == 0) {
+			glGenTextures(1, &id);
+			glBindTexture(GL_TEXTURE_2D, id);
+
+			glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_MIN_FILTER, GL_NEAREST);
+			glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_MAG_FILTER, GL_NEAREST);
+			glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_WRAP_S, GL_CLAMP_TO_BORDER);
+			glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_WRAP_T, GL_CLAMP_TO_BORDER);
+
+			glTexImage2D(GL_TEXTURE_2D, 0, GL_RGBA8, width, height, 0, GL_RGBA, GL_UNSIGNED_BYTE, buffer.get());
+		}
+		else {
+			LogWarn("Creating texture that has not been deleted properly");
+		}
+	}
+
+	void Texture::Delete()
+	{
+		glDeleteTextures(1, &id);
+		id = 0;
+	}
+
+	void Texture::Update()
+	{
+		Delete();
+		Create();
+	}
+
+	Texture::Texture(Ref(uint8_t[]) buffer, unsigned int width, unsigned int height)
+		: width(width), height(height), id(0)
+	{
+		this->buffer = buffer;
+
+		Create();
+		Unbind();
+	}
+
+	Texture::Texture(const std::string& filename)
+		: id(0)
+	{
+		std::string full_path = PATH + filename;
+
+		// Load pixel data into our buffer, and set width/height of image
+		int iwidth, iheight, bpp;
+		uint8_t* image_data = stbi_load(full_path.c_str(), &iwidth, &iheight, &bpp, STBI_rgb_alpha);
+
+		// Set image width/height
+		width = iwidth;
+		height = iheight;
+
+		// Set buffer as a shared ptr to that image data
+		buffer = std::shared_ptr<uint8_t[]>(image_data);
+
+		// Create texture object
+		Create();
+		// Unbind it
+		Unbind();
+	}
+
+	Texture::Texture(const Texture& other)
+		: width(other.width), height(other.height), buffer(other.buffer)
+	{
+		Create();
+		Unbind();
+	}
+
+	Texture::~Texture()
+	{
+		Delete();
+	}
+}

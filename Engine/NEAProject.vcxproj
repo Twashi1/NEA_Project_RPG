@@ -19,69 +19,75 @@
     </ProjectConfiguration>
   </ItemGroup>
   <ItemGroup>
-    <ClCompile Include="src\Engine\Animation.cpp" />
-    <ClCompile Include="src\Engine\Body.cpp" />
-    <ClCompile Include="src\Engine\Camera.cpp" />
-    <ClCompile Include="src\Engine\Collision.cpp" />
-    <ClCompile Include="src\Engine\Application.cpp" />
-    <ClCompile Include="src\Engine\IndexBuffer.cpp" />
-    <ClCompile Include="src\Engine\Input.cpp" />
-    <ClCompile Include="src\Engine\Noise.cpp" />
-    <ClCompile Include="src\Engine\Panel.cpp" />
-    <ClCompile Include="src\Engine\Physics.cpp" />
-    <ClCompile Include="src\Engine\Quad.cpp" />
-    <ClCompile Include="src\Engine\Rect.cpp" />
-    <ClCompile Include="src\Engine\Renderer.cpp" />
-    <ClCompile Include="src\Engine\Button.cpp" />
-    <ClCompile Include="src\Engine\SceneObject.cpp" />
-    <ClCompile Include="src\Engine\Serialiser.cpp" />
-    <ClCompile Include="src\Engine\Shader.cpp" />
-    <ClCompile Include="src\Engine\Font.cpp" />
-    <ClCompile Include="src\Engine\Slider.cpp" />
-    <ClCompile Include="src\Engine\Sprite.cpp" />
-    <ClCompile Include="src\Engine\Text.cpp" />
-    <ClCompile Include="src\Engine\TextInput.cpp" />
-    <ClCompile Include="src\Engine\Texture.cpp" />
-    <ClCompile Include="src\Engine\TextureAtlas.cpp" />
-    <ClCompile Include="src\Engine\ToggleSwitch.cpp" />
-    <ClCompile Include="src\Engine\Utils.cpp" />
-    <ClCompile Include="src\Engine\Vector2.cpp" />
-    <ClCompile Include="src\Engine\Vector3.cpp" />
-    <ClCompile Include="src\Engine\VersionNumber.cpp" />
-    <ClCompile Include="src\Engine\VertexBuffer.cpp" />
+    <ClCompile Include="src\Vivium\Animation.cpp" />
+    <ClCompile Include="src\Vivium\Application.cpp" />
+    <ClCompile Include="src\Vivium\Body.cpp" />
+    <ClCompile Include="src\Vivium\Button.cpp" />
+    <ClCompile Include="src\Vivium\Camera.cpp" />
+    <ClCompile Include="src\Vivium\Collision.cpp" />
+    <ClCompile Include="src\Vivium\Core.cpp" />
+    <ClCompile Include="src\Vivium\Font.cpp" />
+    <ClCompile Include="src\Vivium\Framebuffer.cpp" />
+    <ClCompile Include="src\Vivium\IndexBuffer.cpp" />
+    <ClCompile Include="src\Vivium\Input.cpp" />
+    <ClCompile Include="src\Vivium\Logger.cpp" />
+    <ClCompile Include="src\Vivium\Math.cpp" />
+    <ClCompile Include="src\Vivium\Noise.cpp" />
+    <ClCompile Include="src\Vivium\Panel.cpp" />
+    <ClCompile Include="src\Vivium\Physics.cpp" />
+    <ClCompile Include="src\Vivium\Quad.cpp" />
+    <ClCompile Include="src\Vivium\Rect.cpp" />
+    <ClCompile Include="src\Vivium\Renderer.cpp" />
+    <ClCompile Include="src\Vivium\Serialiser.cpp" />
+    <ClCompile Include="src\Vivium\Shader.cpp" />
+    <ClCompile Include="src\Vivium\Slider.cpp" />
+    <ClCompile Include="src\Vivium\Sprite.cpp" />
+    <ClCompile Include="src\Vivium\Text.cpp" />
+    <ClCompile Include="src\Vivium\TextInput.cpp" />
+    <ClCompile Include="src\Vivium\Texture.cpp" />
+    <ClCompile Include="src\Vivium\TextureAtlas.cpp" />
+    <ClCompile Include="src\Vivium\Timer.cpp" />
+    <ClCompile Include="src\Vivium\ToggleSwitch.cpp" />
+    <ClCompile Include="src\Vivium\Utils.cpp" />
+    <ClCompile Include="src\Vivium\Vector2.cpp" />
+    <ClCompile Include="src\Vivium\VersionNumber.cpp" />
+    <ClCompile Include="src\Vivium\VertexBuffer.cpp" />
   </ItemGroup>
   <ItemGroup>
-    <ClInclude Include="src\Engine\Animation.h" />
-    <ClInclude Include="src\Engine\Body.h" />
-    <ClInclude Include="src\Engine\Camera.h" />
-    <ClInclude Include="src\Engine\Collision.h" />
-    <ClInclude Include="src\Engine.h" />
-    <ClInclude Include="src\Engine\Application.h" />
-    <ClInclude Include="src\Engine\IndexBuffer.h" />
-    <ClInclude Include="src\Engine\Input.h" />
-    <ClInclude Include="src\Engine\Noise.h" />
-    <ClInclude Include="src\Engine\Panel.h" />
-    <ClInclude Include="src\Engine\Physics.h" />
-    <ClInclude Include="src\Engine\Quad.h" />
-    <ClInclude Include="src\Engine\Rect.h" />
-    <ClInclude Include="src\Engine\Renderer.h" />
-    <ClInclude Include="src\Engine\Button.h" />
-    <ClInclude Include="src\Engine\SceneObject.h" />
-    <ClInclude Include="src\Engine\Serialiser.h" />
-    <ClInclude Include="src\Engine\Shader.h" />
-    <ClInclude Include="src\Engine\Font.h" />
-    <ClInclude Include="src\Engine\Slider.h" />
-    <ClInclude Include="src\Engine\Sprite.h" />
-    <ClInclude Include="src\Engine\Text.h" />
-    <ClInclude Include="src\Engine\TextInput.h" />
-    <ClInclude Include="src\Engine\Texture.h" />
-    <ClInclude Include="src\Engine\TextureAtlas.h" />
-    <ClInclude Include="src\Engine\ToggleSwitch.h" />
-    <ClInclude Include="src\Engine\Utils.h" />
-    <ClInclude Include="src\Engine\Vector2.h" />
-    <ClInclude Include="src\Engine\Vector3.h" />
-    <ClInclude Include="src\Engine\VersionNumber.h" />
-    <ClInclude Include="src\Engine\VertexBuffer.h" />
+    <ClInclude Include="src\Vivium.h" />
+    <ClInclude Include="src\Vivium\Animation.h" />
+    <ClInclude Include="src\Vivium\Application.h" />
+    <ClInclude Include="src\Vivium\Body.h" />
+    <ClInclude Include="src\Vivium\Button.h" />
+    <ClInclude Include="src\Vivium\Camera.h" />
+    <ClInclude Include="src\Vivium\Collision.h" />
+    <ClInclude Include="src\Vivium\Core.h" />
+    <ClInclude Include="src\Vivium\Font.h" />
+    <ClInclude Include="src\Vivium\Framebuffer.h" />
+    <ClInclude Include="src\Vivium\IndexBuffer.h" />
+    <ClInclude Include="src\Vivium\Input.h" />
+    <ClInclude Include="src\Vivium\Logger.h" />
+    <ClInclude Include="src\Vivium\Math.h" />
+    <ClInclude Include="src\Vivium\Noise.h" />
+    <ClInclude Include="src\Vivium\Panel.h" />
+    <ClInclude Include="src\Vivium\Physics.h" />
+    <ClInclude Include="src\Vivium\Quad.h" />
+    <ClInclude Include="src\Vivium\Rect.h" />
+    <ClInclude Include="src\Vivium\Renderer.h" />
+    <ClInclude Include="src\Vivium\Serialiser.h" />
+    <ClInclude Include="src\Vivium\Shader.h" />
+    <ClInclude Include="src\Vivium\Slider.h" />
+    <ClInclude Include="src\Vivium\Sprite.h" />
+    <ClInclude Include="src\Vivium\Text.h" />
+    <ClInclude Include="src\Vivium\TextInput.h" />
+    <ClInclude Include="src\Vivium\Texture.h" />
+    <ClInclude Include="src\Vivium\TextureAtlas.h" />
+    <ClInclude Include="src\Vivium\Timer.h" />
+    <ClInclude Include="src\Vivium\ToggleSwitch.h" />
+    <ClInclude Include="src\Vivium\Utils.h" />
+    <ClInclude Include="src\Vivium\Vector2.h" />
+    <ClInclude Include="src\Vivium\VersionNumber.h" />
+    <ClInclude Include="src\Vivium\VertexBuffer.h" />
   </ItemGroup>
   <PropertyGroup Label="Globals">
     <VCProjectVersion>16.0</VCProjectVersion>
@@ -89,7 +95,7 @@
     <ProjectGuid>{2E05089D-8F1B-4F1F-9B82-E37B1E84C4F2}</ProjectGuid>
     <RootNamespace>Redstone</RootNamespace>
     <WindowsTargetPlatformVersion>10.0</WindowsTargetPlatformVersion>
-    <ProjectName>Engine</ProjectName>
+    <ProjectName>Vivium</ProjectName>
   </PropertyGroup>
   <Import Project="$(VCTargetsPath)\Microsoft.Cpp.Default.props" />
   <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Debug|Win32'" Label="Configuration">
@@ -154,7 +160,7 @@
     <ClCompile>
       <WarningLevel>Level3</WarningLevel>
       <SDLCheck>true</SDLCheck>
-      <PreprocessorDefinitions>ENGINE_BUILD_DLL;WIN32;GLEW_STATIC;_DEBUG;_CONSOLE;%(PreprocessorDefinitions)</PreprocessorDefinitions>
+      <PreprocessorDefinitions>__VIVIUM_BUILD_DLL;WIN32;GLEW_STATIC;_DEBUG;_CONSOLE;%(PreprocessorDefinitions)</PreprocessorDefinitions>
       <ConformanceMode>true</ConformanceMode>
       <LanguageStandard>stdcpplatest</LanguageStandard>
       <AdditionalIncludeDirectories>src;$(SolutionDir)vendor\glew\include;$(SolutionDir)vendor\freetype\include;$(SolutionDir)vendor\glfw\include;$(SolutionDir)vendor\glm\glm;$(SolutionDir)vendor\stb_image;$(SolutionDir)vendor\entt;%(AdditionalIncludeDirectories)</AdditionalIncludeDirectories>

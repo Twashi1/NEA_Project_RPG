@@ -1,10 +1,11 @@
 #pragma once
 
-#include <Engine.h>
+#include <Vivium.h>
 
 class Player {
 private:
-    double m_time; // Stores last time object was updated
+    Vivium::Timer m_Timer; // Stores last time object was updated
+    double m_Time = 0.0;
 
 public:
     std::shared_ptr<Vivium::Body> body; // Describes physical properties of player and how it should interact with other objects
