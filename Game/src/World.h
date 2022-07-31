@@ -23,7 +23,7 @@ private:
 
 	Vivium::Noise::Interpolated* m_noise_terrain;
 	Vivium::Noise::White* m_noise_trees;
-	Vivium::Serialiser::Stream m_Stream;
+	Vivium::Serialiser* m_Serialiser;
 	unsigned int m_seed;
 
 	std::string m_world_name;

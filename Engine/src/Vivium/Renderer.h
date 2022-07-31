@@ -4,8 +4,8 @@
 #include "Logger.h"
 
 namespace Vivium {
-	struct VertexBuffer;
-	struct IndexBuffer;
+	class VertexBuffer;
+	class IndexBuffer;
 	class Shader;
 	struct Camera;
 	class Text;
@@ -14,7 +14,6 @@ namespace Vivium {
 	class Animation;
 	struct Quad;
 	class Texture;
-	struct SceneObject;
 	class Slider;
 	class ToggleSwitch;
 
@@ -40,7 +39,6 @@ namespace Vivium {
 		static void Schedule(Button* btn);
 		static void Schedule(Animation* animation);
 		static void Schedule(TextInput* text_input);
-		static void Schedule(SceneObject* scene_object);
 		static void Schedule(Slider* slider);
 		static void Schedule(ToggleSwitch* toggle_switch);
 	};

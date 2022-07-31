@@ -128,7 +128,7 @@ World::~World()
 
 void World::m_DeserialiseRegion(const std::string& filename, const Vivium::Vector2<int>& index)
 {
-	m_Stream.BeginRead((PATH + m_world_name + "/" + filename).c_str());
+	m_Serialiser->BeginRead((PATH + m_world_name + "/" + filename).c_str());
 
 	// Construct empty region object
 	Region region;
@@ -136,7 +136,7 @@ void World::m_DeserialiseRegion(const std::string& filename, const Vivium::Vecto
 	// Deserialise tiles
 	// DeserialiseArray<Tile>(m_serialiser, region.tiles);
 
-	m_Stream.EndRead();
+	m_Serialiser->EndRead();
 
 	// Add region to region map
 	regions[index] = region;
@@ -144,7 +144,7 @@ void World::m_DeserialiseRegion(const std::string& filename, const Vivium::Vecto
 
 void World::m_LoadWorld(const std::string& fullpath)
 {
-	m_Stream.BeginRead((fullpath + GENERAL_FILE + FILE_EXTENSION).c_str());
+	m_Serialiser->BeginRead((fullpath + GENERAL_FILE + FILE_EXTENSION).c_str());
 
 	// Get version number
 	Vivium::VersionNumber serialised_version;
@@ -163,7 +163,7 @@ void World::m_LoadWorld(const std::string& fullpath)
 	// Vector2<int> player_pos = Deserialise<Vector2<int>>(m_serialiser);
 
 	// End read
-	m_Stream.EndRead();
+	m_Serialiser->EndRead();
 
 	// Load region around player pos
 	// m_LoadRegions(player_pos, 1);
@@ -185,12 +185,12 @@ void World::m_SerialiseRegion(const Vivium::Vector2<int>& index)
 	Region& region = regions[index];
 	std::string region_path = PATH + m_world_name + "/" + m_ToRegionName(index);
 
-	m_Stream.BeginWrite(region_path.c_str());
+	m_Serialiser->BeginWrite(region_path.c_str());
 
 	// Serialise list of tiles
 	// Serialise<Tile>(m_serialiser, region.tiles, Region::SIZE);
 
-	m_Stream.EndWrite();
+	m_Serialiser->EndWrite();
 }
 
 void World::m_GenerateRegion(const Vivium::Vector2<int>& index)

@@ -42,7 +42,7 @@ Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "_animationfiles", "_animati
 		Resources\sprites\data.animation = Resources\sprites\data.animation
 	EndProjectSection
 EndProject
-Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "__frag", "__frag", "{E8A12835-60D9-4A96-B9BD-D867803098B4}"
+Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "_frag", "_frag", "{E8A12835-60D9-4A96-B9BD-D867803098B4}"
 	ProjectSection(SolutionItems) = preProject
 		Resources\shaders\color_frag.glsl = Resources\shaders\color_frag.glsl
 		Resources\shaders\ground_frag.glsl = Resources\shaders\ground_frag.glsl
@@ -53,7 +53,7 @@ Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "__frag", "__frag", "{E8A128
 		Resources\shaders\uv_frag.glsl = Resources\shaders\uv_frag.glsl
 	EndProjectSection
 EndProject
-Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "__vertex", "__vertex", "{7BBE11D5-A004-4A3D-AAFD-8FD8CD485B32}"
+Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "_vertex", "_vertex", "{7BBE11D5-A004-4A3D-AAFD-8FD8CD485B32}"
 	ProjectSection(SolutionItems) = preProject
 		Resources\shaders\static_texture_vertex.glsl = Resources\shaders\static_texture_vertex.glsl
 		Resources\shaders\static_vertex.glsl = Resources\shaders\static_vertex.glsl

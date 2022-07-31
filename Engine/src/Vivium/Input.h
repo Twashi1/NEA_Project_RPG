@@ -7,14 +7,14 @@
 namespace Vivium {
 	class VIVIUM_API Input {
 	public:
-		VIVIUM_API enum class State : uint8_t {
+		enum class VIVIUM_API State : uint8_t {
 			NONE = 0,    // If last action was RELEASE, and current action is RELEASE, then NONE
 			PRESS = 1,   // If last action was RELEASE, and current action is PRESS, then PRESS
 			RELEASE = 2, // If last action was PRESS/HOLD, and current action is RELEASE, then RELEASE
 			HOLD = 4     // If last action was PRESS, and current action is PRESS, then HOLD
 		};
 
-		VIVIUM_API enum class Mod : int {
+		enum class VIVIUM_API Mod : int {
 			NONE = 0,
 			SHIFT = GLFW_MOD_SHIFT,
 			CTRL = GLFW_MOD_CONTROL,
@@ -24,7 +24,7 @@ namespace Vivium {
 			NUM_LOCK = GLFW_MOD_NUM_LOCK
 		};
 
-		VIVIUM_API struct KeypressLog {
+		struct VIVIUM_API KeypressLog {
 			int key;
 			int mods;
 

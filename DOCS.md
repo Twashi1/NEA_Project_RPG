@@ -15,21 +15,21 @@
 ### Hello world
 
 ```c++
-#include <Engine.h>
+#include <Vivium.h>
 
 // Set constants
 const int WIDTH = 1080;
 const int HEIGHT = 720;
 const int FPS = 60;
 
+using namespace Vivium;
+
 int main(void) {
 	// Initialise window, classes, etc.
 	Application::Init(WIDTH, HEIGHT, FPS);
 
 	// Create a shader
-	// "static_vertex" means this is not affected by any cameras you have
-	// "color_frag" will draw the whole quad in the desired color
-	Shader color_shader = Shader("static_vertex", "color_frag");
+	Shader color_shader = Shader("vertex_shader.glsl", "fragment_shader.glsl");
 	// Set the color of the shader
 	color_shader.SetUniform3f("u_Color", 1.0f, 0.0f, 0.0f);
 
