@@ -20,10 +20,26 @@ void RotaterFunc(Vivium::Slider* ctx) {
 }
 
 void PixelationSliderFunc(Vivium::Slider* ctx) {
-    LogInfo("New pixelation value: {}", int(ctx->GetValue(50, 300)));
     ground_shader_ptr->Bind();
     ground_shader_ptr->SetUniform1i("u_Pixelation", int(ctx->GetValue(50, 300)));
 }
+
+struct MyTestStruct : Vivium::IStreamable {
+    int x = 0;
+    int y = 0;
+
+    MyTestStruct(int x, int y) : x(x), y(y) {}
+
+    void Write(Vivium::Serialiser& s) const override {
+        s.Write(x);
+        s.Write(y);
+    }
+
+    void Read(Vivium::Serialiser& s) override {
+        s.Read(&x);
+        s.Read(&y);
+    }
+};
 
 int sandbox(void)
 {
@@ -31,21 +47,21 @@ int sandbox(void)
 
     Application::Init(WIDTH, HEIGHT, FPS, false);
 
-    Shader color_shader("static_vertex", "color_frag");
-    color_shader.SetUniform3f("u_Color", 1.0, 0.0, 0.0);
+    Serialiser serialiser(Stream::Mode::BINARY);
 
-    Player player;
-    
-    while (Application::IsRunning())
-    {
-        Application::BeginFrame();
+    std::string before = "Hello world";
 
-        player.Update();
+    serialiser.BeginWrite("../Resources/saves/new_file.txt");
+    serialiser.Write(before);
+    serialiser.EndWrite();
 
-        Renderer::Schedule(&player.quad, &color_shader);
+    std::string after;
 
-        Application::EndFrame();
-    }
+    serialiser.BeginRead("../Resources/saves/new_file.txt");
+    serialiser.Read(&after);
+    serialiser.EndRead();
+
+    LogInfo("Value is now: {}", after);
 
     return EXIT_SUCCESS;
 }
@@ -171,5 +187,5 @@ int game(void)
 }
 
 int main(void) {
-    game();
+    sandbox();
 }
