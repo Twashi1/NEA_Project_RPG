@@ -188,6 +188,26 @@ namespace Vivium {
 		tb->Set(m_TexCoords);
 	}
 
+	void Quad::Write(Serialiser& s) const
+	{
+		s.Write(x);
+		s.Write(y);
+		s.Write(width);
+		s.Write(height);
+		s.Write(angle);
+	}
+
+	void Quad::Read(Serialiser& s)
+	{
+		s.Read(&x);
+		s.Read(&y);
+		s.Read(&width);
+		s.Read(&height);
+		s.Read(&angle);
+
+		m_Construct();
+	}
+
 	const VertexBuffer& Quad::GetVertexBuffer() const
 	{
 		return *vb;

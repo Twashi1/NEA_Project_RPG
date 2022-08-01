@@ -2,11 +2,12 @@
 
 #include "Core.h"
 #include "Logger.h"
+#include "Serialiser.h"
 
 namespace Vivium {
 	struct HSVColor;
 
-	struct VIVIUM_API RGBColor {
+	struct VIVIUM_API RGBColor : public IStreamable {
 	private:
 		char m_DigitToHex(const uint8_t& digit) const;
 
@@ -18,5 +19,8 @@ namespace Vivium {
 		RGBColor(const std::string& hex_string);
 
 		std::string GetHex() const;
+
+		void Write(Serialiser& s) const override;
+		void Read(Serialiser& s) override;
 	};
 }

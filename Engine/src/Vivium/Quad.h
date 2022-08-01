@@ -1,16 +1,17 @@
 #pragma once
 
-#include "Utils.h"
+#include "Core.h"
 #include "Vector2.h"
 #include "VertexBuffer.h"
 #include "IndexBuffer.h"
 #include "Rect.h"
 #include "Texture.h"
+#include "Serialiser.h"
 
 namespace Vivium {
 	class Application;
 
-	struct VIVIUM_API Quad : protected Rect {
+	struct VIVIUM_API Quad : protected Rect, public IStreamable {
 	private:
 		std::vector<float> m_TexCoords;
 
@@ -91,6 +92,9 @@ namespace Vivium {
 		// Takes the atlas being loaded, the index of the image within the atlas, and the size (in px) of each image in the atlas
 		void SetTextureCoords(const Texture& atlas, const Vector2<int>& index, const Vector2<int>& size);
 		void SetTextureCoords(const Texture& atlas, const Vector2<int>& top_left, const Vector2<int>& bottom_right, const Vector2<int>& size);
+
+		void Write(Serialiser& s) const override;
+		void Read(Serialiser& s) override;
 
 		friend bool operator==(const Quad& a, const Quad& b);
 

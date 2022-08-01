@@ -3,9 +3,10 @@
 #include "Core.h"
 #include "Vector2.h"
 #include "Math.h"
+#include "Serialiser.h"
 
 namespace Vivium {
-	struct VIVIUM_API Rect {
+	struct VIVIUM_API Rect : public IStreamable {
 	protected:
 		static const Vector2<float> m_VertexOffsets[4]; // For calculating vertices
 
@@ -63,6 +64,9 @@ namespace Vivium {
 			height = other.height;
 			angle = other.angle;
 		}
+
+		void Write(Serialiser& s) const override;
+		void Read(Serialiser& s) override;
 	};
 }
 

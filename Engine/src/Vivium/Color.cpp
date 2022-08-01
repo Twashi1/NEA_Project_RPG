@@ -35,11 +35,12 @@ namespace Vivium {
 
 	RGBColor::RGBColor(const std::string& hex_string)
 	{
-		// TODO: Use some regex to clean up a # or 0x or whatever
 		// TODO: this is just kinda dumb, like if im gonna use stoi
 		//	might as well split the string up into 3 parts and stoi each part
+		std::regex cleaner("^#|0x"); // Match # or 0x at start of string
+		std::string cleaned = std::regex_replace(hex_string, cleaner, "");
 
-		uint32_t hex_value = stoi(hex_string, 0, 16);
+		uint32_t hex_value = stoi(cleaned, 0, 16);
 		uint8_t ri = hex_value >> 16;
 		uint8_t gi = (hex_value >> 8) - (ri << 8);
 		uint8_t bi = hex_value - (gi << 8) - (ri << 16);
@@ -66,4 +67,28 @@ namespace Vivium {
 
 		return hex_string;
 	}
+
+	void RGBColor::Write(Serialiser& s) const
+	{
+		s.Write(r);
+		s.Write(g);
+		s.Write(b);
+	}
+
+	void RGBColor::Read(Serialiser& s)
+	{
+		s.Read(&r);
+		s.Read(&g);
+		s.Read(&b);
+	}
+}
+
+namespace std {
+	template <>
+	struct formatter<Vivium::RGBColor> : formatter<string> {
+		auto format(Vivium::RGBColor color, format_context& ctx) {
+			return formatter<string>::format(
+				std::format("#{}", color.GetHex()), ctx);
+		}
+	};
 }
