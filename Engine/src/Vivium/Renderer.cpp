@@ -43,7 +43,17 @@ namespace Vivium {
 		}
 	}
 
-	VIVIUM_API void Renderer::Schedule(const Quad* quad, Shader* shader)
+	VIVIUM_API void Renderer::Submit(const VertexBuffer* vb, const IndexBuffer* ib, Shader* shader)
+	{
+		vb->Bind(); ib->Bind(); shader->Bind();
+		shader->SetUniformMat4fv("u_ProjMat", camera->GetProjMat());
+		shader->SetUniformMat4fv("u_ViewMat", camera->GetViewMat());
+		shader->SetUniform1f("u_Time", Timer::GetTime());
+
+		glDrawElements(GL_TRIANGLES, ib->count, ib->type, nullptr);
+	}
+
+	VIVIUM_API void Renderer::Submit(const Quad* quad, Shader* shader)
 	{
 		quad->GetVertexBuffer().Bind();
 		quad->GetTexCoordsBuffer().Bind();
@@ -56,7 +66,7 @@ namespace Vivium {
 		glDrawElements(GL_TRIANGLES, ib.count, ib.type, nullptr);
 	}
 
-	VIVIUM_API void Renderer::Schedule(const Quad* quad, Shader* shader, const Texture* texture)
+	VIVIUM_API void Renderer::Submit(const Quad* quad, Shader* shader, const Texture* texture)
 	{
 		quad->GetVertexBuffer().Bind();
 		quad->GetTexCoordsBuffer().Bind();
@@ -80,7 +90,7 @@ namespace Vivium {
 		FreeTextureSlot(slot);
 	}
 
-	VIVIUM_API void Renderer::Schedule(const Quad* quad, Shader* shader, const Texture* texture, uint8_t slot)
+	VIVIUM_API void Renderer::Submit(const Quad* quad, Shader* shader, const Texture* texture, uint8_t slot)
 	{
 		quad->GetVertexBuffer().Bind();
 		quad->GetTexCoordsBuffer().Bind();
@@ -99,7 +109,7 @@ namespace Vivium {
 		glDrawElements(GL_TRIANGLES, ib.count, ib.type, nullptr);
 	}
 
-	VIVIUM_API void Renderer::Schedule(const Text* text)
+	VIVIUM_API void Renderer::Submit(const Text* text)
 	{
 		uint8_t slot = Renderer::GetTextureSlot(); // Get slot we're drawing texture to
 
@@ -157,75 +167,75 @@ namespace Vivium {
 		Renderer::FreeTextureSlot(slot);
 	}
 
-	VIVIUM_API void Renderer::Schedule(Button* btn)
+	VIVIUM_API void Renderer::Submit(Button* btn)
 	{
 		// Get texture currently being used (if there is a texture)
 		const Texture* current_texture = btn->CurrentTexture().get();
 		if (current_texture != nullptr) {
 			// Render with texture
-			Renderer::Schedule(&btn->quad, btn->CurrentShader().get(), current_texture);
+			Renderer::Submit(&btn->quad, btn->CurrentShader().get(), current_texture);
 		}
 		else {
 			// Render without texture
-			Renderer::Schedule(&btn->quad, btn->CurrentShader().get());
+			Renderer::Submit(&btn->quad, btn->CurrentShader().get());
 		}
 
 		// Render text of button
-		Renderer::Schedule(btn->text);
+		Renderer::Submit(btn->text);
 	}
 
-	VIVIUM_API void Renderer::Schedule(Animation* animation)
+	VIVIUM_API void Renderer::Submit(Animation* animation)
 	{
-		Renderer::Schedule(animation->quad.get(), animation->shader.get(), animation->GetAtlas().get());
+		Renderer::Submit(animation->quad.get(), animation->shader.get(), animation->GetAtlas().get());
 	}
 
-	VIVIUM_API void Renderer::Schedule(TextInput* text_input)
+	VIVIUM_API void Renderer::Submit(TextInput* text_input)
 	{
 		if (text_input->bg_texture != nullptr) {
-			Renderer::Schedule(&text_input->quad, text_input->bg_shader.get(), text_input->bg_texture.get());
+			Renderer::Submit(&text_input->quad, text_input->bg_shader.get(), text_input->bg_texture.get());
 		}
 		else {
-			Renderer::Schedule(&text_input->quad, text_input->bg_shader.get());
+			Renderer::Submit(&text_input->quad, text_input->bg_shader.get());
 		}
 
-		Renderer::Schedule(text_input->GetText().get());
+		Renderer::Submit(text_input->GetText().get());
 
 		// Display typing bar
 		if (text_input->GetIsTyping()) {
-			Renderer::Schedule(text_input->GetTypingBar().get());
+			Renderer::Submit(text_input->GetTypingBar().get());
 		}
 	}
 
-	VIVIUM_API void Renderer::Schedule(Slider* slider)
+	VIVIUM_API void Renderer::Submit(Slider* slider)
 	{
 		slider->bar_shader->Bind();
 		slider->bar_shader->SetUniform1f("u_Value", slider->GetValue());
 
 		if (slider->bar_texture != nullptr) {
-			Renderer::Schedule(slider->m_BarQuad.get(), slider->bar_shader.get(), slider->bar_texture.get());
+			Renderer::Submit(slider->m_BarQuad.get(), slider->bar_shader.get(), slider->bar_texture.get());
 		}
 		else {
-			Renderer::Schedule(slider->m_BarQuad.get(), slider->bar_shader.get());
+			Renderer::Submit(slider->m_BarQuad.get(), slider->bar_shader.get());
 		}
 
 		if (slider->slider_texture != nullptr) {
-			Renderer::Schedule(slider->m_SliderQuad.get(), slider->slider_shader.get(), slider->slider_texture.get());
+			Renderer::Submit(slider->m_SliderQuad.get(), slider->slider_shader.get(), slider->slider_texture.get());
 		}
 		else {
-			Renderer::Schedule(slider->m_SliderQuad.get(), slider->slider_shader.get());
+			Renderer::Submit(slider->m_SliderQuad.get(), slider->slider_shader.get());
 		}
 	}
 
-	VIVIUM_API void Renderer::Schedule(ToggleSwitch* toggle_switch)
+	VIVIUM_API void Renderer::Submit(ToggleSwitch* toggle_switch)
 	{
 		Shader* shader = toggle_switch->GetShader();
 		Texture* texture = toggle_switch->GetTexture();
 
 		if (texture != nullptr) {
-			Renderer::Schedule(toggle_switch->quad.get(), shader, texture);
+			Renderer::Submit(toggle_switch->quad.get(), shader, texture);
 		}
 		else {
-			Renderer::Schedule(toggle_switch->quad.get(), shader);
+			Renderer::Submit(toggle_switch->quad.get(), shader);
 		}
 	}
 }

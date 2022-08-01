@@ -7,11 +7,11 @@
 - [x] Framebuffers
     - Allow user to render to frame buffer
     - Allow user to render from frame buffer
+- [ ] Batch rendering API?
 - [ ] Compute shader API
 - [ ] Scene API
 - [x] Camera
-- [ ] Color type
-    - Should support RGB, HEX, HSV
+- [x] Color type
     - Shader SetUniform should support it
     - Have statics for some common colours
 
@@ -30,7 +30,7 @@
 
 ## General
 - [ ] Pathfinding
-- [ ] Ambient particles
+- [ ] Ambient particles/Particle system
 - [ ] Sound API
 - [ ] Physics system
     - Impulse resolution
@@ -46,6 +46,7 @@
 - [ ] Terrain generation
 - [ ] Save files
 - [ ] Animating tiles
+- [ ] Batch render tiles
 
 ## Gameplay
 - [ ] Crafting
@@ -64,20 +65,22 @@
 - [ ] Player sprites/animation
 
 # Other
-- ECS!!!!!!!
-- Some files include more than they need to (like including `Utils.h` when all you need is `Core.h`)
+- ECS
+- Some files include more than they need to (like including `Utils.h` when all they need is `Core.h`)
 - Still major CPU bottleneck
 - Sleep in engine `Application::EndFrame`
 - Better link to Resources folder/re-do file paths and file extension statics
 - Input box typing bar size is using magic numbers
 - Default statics are ugly
-- Make functions private/only accessible in engine
+- Make static initialise functions private/only accessible in engine
 - Better api for shader/texture/texture-atlas
 - Cursor no longer switches when hovering text input box
 - docs docs docs docs docs docs docs docs
 - Inconsistent data layout between GUI objects
-- inl file for Vector2/3
+- inl file for Vector2
+- GL id should be private for GL abstractions
+- Allow void* user data for callback functions
+- VIVIUM_API on Renderer statics not necessary?
 
 # Bugs
-- First frame of animations shows entire texture atlas
-- (Unconfirmed) Interpolated 2D noise seems to break on region boundaries
+- none i am a perfect programmer

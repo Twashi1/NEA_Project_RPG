@@ -21,7 +21,7 @@ namespace Vivium {
 			LogError("Mode is invalid! Class incorrectly initialised?");
 		}
 
-		Assert(m_Stream.in->is_open(), "File was not opened successfully");
+		if (!m_Stream.in->is_open()) LogError("File was not opened successfully");
 	}
 
 	void Serialiser::BeginWrite(const char* path) {
@@ -36,7 +36,7 @@ namespace Vivium {
 			LogError("Mode is invalid! Class incorrectly initialised?");
 		}
 
-		Assert(m_Stream.out->is_open(), "File was not opened/not created successfully");
+		if(!m_Stream.out->is_open()) LogError("File was not opened/not created successfully");
 	}
 
 	void Serialiser::EndRead() {

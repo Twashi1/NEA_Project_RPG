@@ -32,14 +32,15 @@ namespace Vivium {
 		// Makes a texture slot available again
 		static void FreeTextureSlot(uint8_t slot);
 
-		static void Schedule(const Quad* quad, Shader* shader);
-		static void Schedule(const Quad* quad, Shader* shader, const Texture* texture);
-		static void Schedule(const Quad* quad, Shader* shader, const Texture* texture, uint8_t slot);
-		static void Schedule(const Text* text);
-		static void Schedule(Button* btn);
-		static void Schedule(Animation* animation);
-		static void Schedule(TextInput* text_input);
-		static void Schedule(Slider* slider);
-		static void Schedule(ToggleSwitch* toggle_switch);
+		static void Submit(const VertexBuffer* vb, const IndexBuffer* ib, Shader* shader);
+		static void Submit(const Quad* quad, Shader* shader);
+		static void Submit(const Quad* quad, Shader* shader, const Texture* texture);
+		static void Submit(const Quad* quad, Shader* shader, const Texture* texture, uint8_t slot);
+		static void Submit(const Text* text);
+		static void Submit(Button* btn);
+		static void Submit(Animation* animation);
+		static void Submit(TextInput* text_input);
+		static void Submit(Slider* slider);
+		static void Submit(ToggleSwitch* toggle_switch);
 	};
 }

@@ -37,10 +37,10 @@ namespace Vivium {
 
         class VIVIUM_API __NoiseVirtual {
         protected:
-            unsigned int m_seed;
+            unsigned int m_seed = 0;
         public:
-            float amplitude; // Multiplier for value of noise
-            int wavelength;  // Determines period at which noise repeats
+            float amplitude = 1.0f; // Multiplier for value of noise
+            int wavelength = 1;  // Determines period at which noise repeats
 
             virtual void SetSeed(unsigned int nseed);
 
@@ -69,6 +69,7 @@ namespace Vivium {
             // Returns 2D array of dimensions (width, height) of random bytes (indexed [y][x])
             uint8_t** GetByteList(int x, int y, unsigned int width, unsigned int height);
 
+            White();
             White(unsigned int seed, float amplitude, int wavelength);
             ~White();
         };
@@ -90,6 +91,7 @@ namespace Vivium {
             // Get smoothly interpolated noise for 1D coordinate as byte
             uint8_t GetByteSmooth(int x);
 
+            Interpolated();
             Interpolated(unsigned int seed, float amplitude, int wavelength);
             ~Interpolated();
         };

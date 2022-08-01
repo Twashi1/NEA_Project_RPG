@@ -25,6 +25,7 @@
     <ClCompile Include="src\Vivium\Button.cpp" />
     <ClCompile Include="src\Vivium\Camera.cpp" />
     <ClCompile Include="src\Vivium\Collision.cpp" />
+    <ClCompile Include="src\Vivium\Color.cpp" />
     <ClCompile Include="src\Vivium\Core.cpp" />
     <ClCompile Include="src\Vivium\Font.cpp" />
     <ClCompile Include="src\Vivium\Framebuffer.cpp" />
@@ -61,6 +62,7 @@
     <ClInclude Include="src\Vivium\Button.h" />
     <ClInclude Include="src\Vivium\Camera.h" />
     <ClInclude Include="src\Vivium\Collision.h" />
+    <ClInclude Include="src\Vivium\Color.h" />
     <ClInclude Include="src\Vivium\Core.h" />
     <ClInclude Include="src\Vivium\Font.h" />
     <ClInclude Include="src\Vivium\Framebuffer.h" />
@@ -163,7 +165,7 @@
       <PreprocessorDefinitions>__VIVIUM_BUILD_DLL;WIN32;GLEW_STATIC;_DEBUG;_CONSOLE;%(PreprocessorDefinitions)</PreprocessorDefinitions>
       <ConformanceMode>true</ConformanceMode>
       <LanguageStandard>stdcpplatest</LanguageStandard>
-      <AdditionalIncludeDirectories>src;$(SolutionDir)vendor\glew\include;$(SolutionDir)vendor\freetype\include;$(SolutionDir)vendor\glfw\include;$(SolutionDir)vendor\glm\glm;$(SolutionDir)vendor\stb_image;$(SolutionDir)vendor\entt;%(AdditionalIncludeDirectories)</AdditionalIncludeDirectories>
+      <AdditionalIncludeDirectories>$(SolutionDir)vendor\glew\include;$(SolutionDir)vendor\freetype\include;$(SolutionDir)vendor\glfw\include;$(SolutionDir)vendor\glm\glm;$(SolutionDir)vendor\stb_image;$(SolutionDir)vendor\entt;%(AdditionalIncludeDirectories)</AdditionalIncludeDirectories>
     </ClCompile>
     <Link>
       <SubSystem>Console</SubSystem>

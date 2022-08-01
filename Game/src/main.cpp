@@ -24,44 +24,37 @@ void PixelationSliderFunc(Vivium::Slider* ctx) {
     ground_shader_ptr->SetUniform1i("u_Pixelation", int(ctx->GetValue(50, 300)));
 }
 
-struct MyTestStruct : Vivium::IStreamable {
-    int x = 0;
-    int y = 0;
-
-    MyTestStruct(int x, int y) : x(x), y(y) {}
-
-    void Write(Vivium::Serialiser& s) const override {
-        s.Write(x);
-        s.Write(y);
-    }
-
-    void Read(Vivium::Serialiser& s) override {
-        s.Read(&x);
-        s.Read(&y);
-    }
-};
-
 int sandbox(void)
 {
     using namespace Vivium;
 
     Application::Init(WIDTH, HEIGHT, FPS, false);
 
-    Serialiser serialiser(Stream::Mode::BINARY);
+    BufferLayout example_layout = {
+        {"position", GLSLDataType::VEC2},
+        {"texCoords", GLSLDataType::VEC2}
+    };
 
-    std::string before = "Hello world";
+    std::vector<float> data = {
+        0.3f, 0.3f, 0.0f, 0.0f,
+        0.3f, 0.7f, 1.0f, 0.0f,
+        0.7f, 0.7f, 1.0f, 1.0f,
+        0.7f, 0.3f, 0.0f, 1.0f
+    };
 
-    serialiser.BeginWrite("../Resources/saves/new_file.txt");
-    serialiser.Write(before);
-    serialiser.EndWrite();
+    VertexBuffer vb(data, example_layout);
+    Shader eg_shader = Shader("static_texture_vertex", "color_frag");
+    eg_shader.SetUniform3f("u_Color", 1.0f, 0.0f, 0.0f);
 
-    std::string after;
+    IndexBuffer ib(std::vector<uint8_t>{0, 1, 2, 2, 3, 0});
+    
+    while (Application::IsRunning()) {
+        Application::BeginFrame();
 
-    serialiser.BeginRead("../Resources/saves/new_file.txt");
-    serialiser.Read(&after);
-    serialiser.EndRead();
+        Renderer::Submit(&vb, &ib, &eg_shader);
 
-    LogInfo("Value is now: {}", after);
+        Application::EndFrame();
+    }
 
     return EXIT_SUCCESS;
 }
@@ -124,7 +117,7 @@ int game(void)
     Player player = Player();
     Vivium::Application::physics->Register(player.body, 0);
 
-    Vivium::Application::SetBGColor(Vivium::Color(0.0, 0.0, 1.0));
+    Vivium::Application::SetBGColor(Vivium::RGBColor(0.0f, 0.0f, 1.0f));
 
     Vivium::Application::window_panel->Anchor(Vivium::Panel::ANCHOR::RIGHT, Vivium::Panel::ANCHOR::TOP, slider);
     Vivium::Application::window_panel->Anchor(Vivium::Panel::ANCHOR::RIGHT, Vivium::Panel::ANCHOR::TOP, pixelator);
@@ -143,7 +136,6 @@ int game(void)
     // Loop until window is closed by user
     while (Vivium::Application::IsRunning())
     {
-        // TODO better API for setting camera position
         Vivium::Renderer::camera->SetCamera(
             player.quad.GetCenter(),
             { Vivium::Application::width / 2.0f, Vivium::Application::height / 2.0f },
@@ -162,14 +154,16 @@ int game(void)
         player.Update();
 
         // Draw calls
-        world.Update((Vivium::Vector2<int>)(player.quad.GetCenter() / World::scale).floor());
-        Vivium::Renderer::Schedule(ground_quad.get(), &ground_shader);
-        Vivium::Renderer::Schedule(&player.quad, player.shader);
-        Vivium::Renderer::Schedule(slider.get());
-        Vivium::Renderer::Schedule(slider_text_ptr);
-        Vivium::Renderer::Schedule(rotater.get());
-        Vivium::Renderer::Schedule(rotater_text_ptr);
-        Vivium::Renderer::Schedule(pixelator.get());
+        Vivium::Vector2<int> update_pos = (Vivium::Vector2<int>)(player.quad.GetCenter() / World::scale).floor();
+        world.Update(update_pos);
+
+        Vivium::Renderer::Submit(ground_quad.get(), &ground_shader);
+        Vivium::Renderer::Submit(&player.quad, player.shader);
+        Vivium::Renderer::Submit(slider.get());
+        Vivium::Renderer::Submit(slider_text_ptr);
+        Vivium::Renderer::Submit(rotater.get());
+        Vivium::Renderer::Submit(rotater_text_ptr);
+        Vivium::Renderer::Submit(pixelator.get());
 
         if (Vivium::Application::isStatsEnabled) Vivium::Application::UpdateStats(*player.body); // Draw stats information
 

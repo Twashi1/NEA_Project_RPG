@@ -194,6 +194,10 @@ namespace Vivium {
         return GetSmooth(x) * 255;
     }
 
+    Noise::Interpolated::Interpolated()
+    {
+    }
+
     Noise::Interpolated::Interpolated(unsigned int seed, float amplitude, int wavelength)
     {
         this->m_seed = seed;
@@ -269,5 +273,9 @@ namespace Vivium {
         wavelength = original_wl;
 
         return v / total_amplitude;
+    }
+
+    Vivium::Noise::White::White()
+    {
     }
 }

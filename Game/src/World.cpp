@@ -122,8 +122,6 @@ Region& World::m_LoadRegion(const Vivium::Vector2<int>& index)
 World::~World()
 {
 	m_SaveWorld();
-	delete m_noise_terrain;
-	delete m_noise_trees;
 }
 
 void World::m_DeserialiseRegion(const std::string& filename, const Vivium::Vector2<int>& index)
@@ -169,8 +167,8 @@ void World::m_LoadWorld(const std::string& fullpath)
 	// m_LoadRegions(player_pos, 1);
 
 	// Construct noise generator
-	m_noise_terrain = new Vivium::Noise::Interpolated(m_seed, m_amplitude, m_wavelength);
-	m_noise_trees = new Vivium::Noise::White(m_seed, m_amplitude, 1);
+	m_noise_terrain = Vivium::Noise::Interpolated(m_seed, m_amplitude, m_wavelength);
+	m_noise_trees = Vivium::Noise::White(m_seed, m_amplitude, 1);
 }
 
 void World::m_SaveWorld()
@@ -185,12 +183,12 @@ void World::m_SerialiseRegion(const Vivium::Vector2<int>& index)
 	Region& region = regions[index];
 	std::string region_path = PATH + m_world_name + "/" + m_ToRegionName(index);
 
-	m_Serialiser->BeginWrite(region_path.c_str());
+	//m_Serialiser->BeginWrite(region_path.c_str());
 
 	// Serialise list of tiles
 	// Serialise<Tile>(m_serialiser, region.tiles, Region::SIZE);
 
-	m_Serialiser->EndWrite();
+	//m_Serialiser->EndWrite();
 }
 
 void World::m_GenerateRegion(const Vivium::Vector2<int>& index)
@@ -199,7 +197,7 @@ void World::m_GenerateRegion(const Vivium::Vector2<int>& index)
 
 	for (int y = 0; y < Region::LENGTH; y++) {
 		for (int x = 0; x < Region::LENGTH; x++) {
-			float noise_value = m_noise_terrain->Get(x, y); // Returns noise value from 0 - 1
+			float noise_value = m_noise_terrain.Get(x, y); // Returns noise value from 0 - 1
 
 			Tile tile;
 
@@ -213,7 +211,7 @@ void World::m_GenerateRegion(const Vivium::Vector2<int>& index)
 
 			tile.ids.push_back(tile_id);
 
-			float tree_noise = m_noise_trees->Get(x + y * Region::LENGTH);
+			float tree_noise = m_noise_trees.Get(x + y * Region::LENGTH);
 
 			if (tree_noise > 0.8 && noise_value > 0.6) tile.ids.push_back(Tile::ID::TREE);
 
@@ -253,8 +251,8 @@ void World::m_RenderTile(int x, int y)
 
 		// Set texture coords
 		quad->SetTextureCoords(*m_tile_atlas, atlas_index, m_tile_atlas_size);
-		// Schedule to renderer
-		Vivium::Renderer::Schedule(quad.get(), texture_shader, m_tile_atlas);
+		// Submit to renderer
+		Vivium::Renderer::Submit(quad.get(), texture_shader, m_tile_atlas);
 	}
 
 	// Add ourselves to rendered_tiles
@@ -288,8 +286,8 @@ void World::m_RenderTile(const Vivium::Vector2<int>& pos)
 
 		// Set texture coords
 		quad->SetTextureCoords(*m_tile_atlas, atlas_index, m_tile_atlas_size);
-		// Schedule to renderer
-		Vivium::Renderer::Schedule(quad.get(), texture_shader, m_tile_atlas);
+		// Submit to renderer
+		Vivium::Renderer::Submit(quad.get(), texture_shader, m_tile_atlas);
 	}
 
 	// Add ourselves to rendered_tiles
@@ -305,16 +303,16 @@ void World::m_RenderTile(const RenderedTile& rendered_tile)
 
 		// Set texture coords
 		rendered_tile.quad->SetTextureCoords(*m_tile_atlas, atlas_index, m_tile_atlas_size);
-		// Schedule to renderer
-		Vivium::Renderer::Schedule(rendered_tile.quad.get(), texture_shader, m_tile_atlas);
+		// Submit to renderer
+		Vivium::Renderer::Submit(rendered_tile.quad.get(), texture_shader, m_tile_atlas);
 	}
 }
 
 void World::m_GenWorld(const std::string& fullpath)
 {
 	// TODO
-	m_noise_terrain = new Vivium::Noise::Interpolated(m_seed, m_amplitude, m_wavelength);
-	m_noise_trees = new Vivium::Noise::White(m_seed, 1.0f, 1);
+	m_noise_terrain = Vivium::Noise::Interpolated(m_seed, m_amplitude, m_wavelength);
+	m_noise_trees = Vivium::Noise::White(m_seed, 1.0f, 1);
 	
 	m_LoadRegions(Vivium::Vector2<int>(0, 0), 3);
 }

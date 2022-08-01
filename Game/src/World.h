@@ -21,8 +21,8 @@ private:
 	static Vivium::Vector2<int> m_tile_atlas_size; // Size of each sprite in tile atlas
 	static Vivium::Vector2<int> m_atlas_dim_relative; // Relative dimensions of tile atlas
 
-	Vivium::Noise::Interpolated* m_noise_terrain;
-	Vivium::Noise::White* m_noise_trees;
+	Vivium::Noise::Interpolated m_noise_terrain;
+	Vivium::Noise::White m_noise_trees;
 	Vivium::Serialiser* m_Serialiser;
 	unsigned int m_seed;
 

@@ -15,6 +15,7 @@ namespace Vivium {
 		std::vector<float> m_TexCoords;
 
 		static IndexBuffer* ib;
+		static BufferLayout* layout; // For vec2 vertices
 
 		// Buffers
 		Ref(VertexBuffer) vb;

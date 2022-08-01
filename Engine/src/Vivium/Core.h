@@ -20,6 +20,7 @@
 #include <regex>
 #include <set>
 #include <string>
+#include <thread>
 #include <type_traits>
 #include <unordered_map>
 #include <vector>
@@ -43,17 +44,6 @@
 #ifdef __VIVIUM_EXPOSE
 	#define Ref(T) std::shared_ptr<T>
 	#define MakeRef(T, ...) std::make_shared<T>(__VA_ARGS__)
+	#define ScopeRef(T) std::unique_ptr<T>
+	#define MakeScopeRef(T, ...) std::make_unique<T>(__VA_ARGS__)
 #endif
-
-
-namespace Vivium {
-	// TODO: TMP!
-	struct VIVIUM_API Color {
-		union {
-			struct { float x, y, z; };
-			struct { float r, g, b; };
-		};
-
-		Color(float x, float y, float z);
-	};
-}

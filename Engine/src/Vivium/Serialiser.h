@@ -6,11 +6,13 @@
 
 /*
 TODO: add functionality for pointers?
+TODO: text serialisation
+TODO: vectors/arrays/containers
 */
 
 namespace Vivium {
 	class IStreamable;
-	// TODO must be a better way
+	// TODO: could simplify into a arithmetic and Vector2<arithmetic>, but that makes it a bit more difficult to understand
 	template <typename T> concept IsStreamable = std::is_base_of_v<IStreamable, T>
 		|| std::is_same_v<T, uint8_t>
 		|| std::is_same_v<T, int8_t>
@@ -32,7 +34,7 @@ namespace Vivium {
 		|| std::is_same_v<T, Vector2<double>>
 		|| std::is_same_v<T, std::string>;
 
-	class VIVIUM_API Serialiser;
+	class Serialiser;
 
 	class VIVIUM_API Stream {
 	public:
@@ -51,7 +53,7 @@ namespace Vivium {
 
 	class VIVIUM_API Serialiser {
 	private:
-		// TODO: decide whether to write requires IsStreamable<T> for clarity's sake
+		// TODO: write requires IsStreamable<T> for clarity's sake? maybe excessive
 		template <typename T>
 		void m_WriteBinary(Stream& s, const T& data) {
 			s.out->write((char*)&data, sizeof(T));
@@ -76,7 +78,7 @@ namespace Vivium {
 			delete[] readbuff; // Delete buffer after copying the data
 		}
 
-		// Memory for string doesn't have to be allocated here, but for the template it does...
+		// TODO: slow for long strings
 		template <>
 		void m_ReadBinary(Stream& s, std::string* memory) {
 			char lastchar;
@@ -95,6 +97,44 @@ namespace Vivium {
 		}
 
 		template <typename T>
+		T m_ReadBinary(Stream& s) {
+			static_assert(std::is_default_constructible_v<T>, "Object does not have default constructor");
+
+			char* readbuff = new char[sizeof(T)];
+			s.in->read(readbuff, sizeof(T));
+
+			T instance;
+
+			memcpy(&instance, readbuff, sizeof(T));
+
+			delete[] readbuff;
+
+			return instance;
+		}
+
+		// TODO: slow for long strings
+		template <>
+		std::string m_ReadBinary(Stream& s) {
+			char lastchar;
+
+			std::string instance;
+
+			s.in->get(lastchar); // Get first character
+			instance += lastchar; // Add to instance
+
+			// While the last character is not null termination character
+			while (lastchar != '\0') {
+				s.in->get(lastchar); // Get next character
+				instance += lastchar; // Add next character to instance
+
+				// If character is null termination character, break
+				if (lastchar == '\0') break;
+			}
+
+			return instance;
+		}
+
+		template <typename T>
 		void m_WriteText(Stream& s, const T& data) {
 			LogError("Serialising text not supported yet");
 		}
@@ -104,6 +144,20 @@ namespace Vivium {
 			LogError("Unserialising text not supported yet");
 
 			memory = nullptr;
+		}
+
+		template <typename T>
+		T m_WriteText(Stream& s) {
+			LogError("Serialising text not supported yet");
+			
+			return NULL;
+		}
+
+		template <typename T>
+		T m_ReadText(Stream& s) {
+			LogError("Unserialising text not supported yet");
+
+			return NULL;
 		}
 
 		Stream m_Stream;
@@ -121,13 +175,15 @@ namespace Vivium {
 		~Serialiser() = default;
 
 		template <typename T>
-		void Write(const T& object) requires IsStreamable<T> {
-			// If the object inherits IStreamable, recursively attempt to Write
-			if constexpr (std::is_base_of_v<IStreamable, T>) {
+		void Write(const T& object) {
+			if constexpr (!IsStreamable<T>) {
+				LogError("Object type {} is not Streamable", typeid(T).name());
+			}
+			// If the object inherits IStreamable, call IStreamable's write
+			else if constexpr (std::is_base_of_v<IStreamable, T>) {
 				object.Write(*this);
 			}
-			// TODO: maybe the two separate methods can be combined into one?
-			// We got to a trivial type
+			// Its a trivial type
 			else {
 				switch (m_Mode) {
 				case Stream::Mode::BINARY:
@@ -142,12 +198,16 @@ namespace Vivium {
 
 		// NOTE: assuming the memory has been allocated for us
 		template <typename T>
-		void Read(T* memory) requires IsStreamable<T> {
-			// If the object inherits IStreamable, recursively attempt to Read
-			if constexpr (std::is_base_of_v<IStreamable, T>) {
+		void Read(T* memory)  {
+			// Ensure object is streamable
+			if constexpr (!IsStreamable<T>) {
+				LogError("Object type {} is not Streamable", typeid(T).name());
+			}
+			// If the object inherits IStreamable, call IStreamable's read
+			else if constexpr (std::is_base_of_v<IStreamable, T>) {
 				memory->Read(*this);
 			}
-			// We got to a trivial type
+			// Its a trivial type
 			else {
 				switch (m_Mode) {
 				case Stream::Mode::BINARY:
@@ -160,17 +220,33 @@ namespace Vivium {
 			}
 		}
 
-		// TODO: since im separating these functions only by concept, shouldn't there just be a conditional constexpr?
-		// Will run if T is not Streamable
 		template <typename T>
-		void Write(const T& object) {
-			LogError("Object type {} is not Streamable", typeid(T).name());
-		}
+		T Read() {
+			// Ensure object is streamable
+			if constexpr (!IsStreamable<T>) {
+				LogError("Object type {} is not Streamable", typeid(T).name());
+			}
+			// If the object inherits IStreamable, call IStreamable's read
+			else if constexpr (std::is_base_of_v<IStreamable, T>) {
+				static_assert(std::is_default_constructible_v<T>, "Object does not have default constructor, use void Read(T*)");
 
-		// Will run if T is not Streamable
-		template <typename T>
-		void Read(T* memory) {
-			LogError("Object type {} is not Streamable", typeid(T).name());
+				T instance;
+
+				instance.Read(*this);
+
+				return instance;
+			}
+			// Its a trivial type
+			else {
+				switch (m_Mode) {
+				case Stream::Mode::BINARY:
+					return m_ReadBinary<T>(m_Stream);
+				case Stream::Mode::TEXT:
+					return m_ReadText<T>(m_Stream);
+				default:
+					LogError("Invalid stream mode: {}", m_Mode); return NULL;
+				}
+			}
 		}
 	};
 

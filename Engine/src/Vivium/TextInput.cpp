@@ -2,8 +2,8 @@
 
 namespace Vivium {
 	Ref(Animation) TextInput::m_TypingBar = nullptr;
-	Color TextInput::m_DefaultEmptyColor = Color(0.0, 0.0, 0.0);
-	Color TextInput::m_DefaultTypedColor = Color(0.0, 0.0, 0.0);
+	RGBColor TextInput::m_DefaultEmptyColor = RGBColor(0.0f, 0.0f, 0.0f);
+	RGBColor TextInput::m_DefaultTypedColor = RGBColor(0.0f, 0.0f, 0.0f);
 	std::string TextInput::m_DefaultEmptyText = "";
 	Ref(Font) TextInput::m_DefaultFont = nullptr;
 	Ref(Shader) TextInput::m_DefaultBgShader = nullptr;
@@ -22,8 +22,8 @@ namespace Vivium {
 			Animation::Data("engine_icons")
 		);
 
-		m_DefaultEmptyColor = { 0.3, 0.3, 0.3 };
-		m_DefaultTypedColor = { 0.0, 0.0, 0.0 };
+		m_DefaultEmptyColor = { 0.3f, 0.3f, 0.3f };
+		m_DefaultTypedColor = { 0.0f, 0.0f, 0.0f };
 		m_DefaultEmptyText = "Type here...";
 		m_DefaultFont = Text::GetDefaultFont();
 
@@ -183,21 +183,21 @@ namespace Vivium {
 		m_Construct();
 	}
 
-	TextInput::TextInput(const Quad& quad, CallbackFunc_t callback, const Color& typed_color, const Color& empty_color, int offset)
+	TextInput::TextInput(const Quad& quad, CallbackFunc_t callback, const RGBColor& typed_color, const RGBColor& empty_color, int offset)
 		: quad(quad), callback(callback), bg_shader(m_DefaultBgShader), bg_texture(nullptr), empty_text(m_DefaultEmptyText),
 		m_EmptyColor(empty_color), m_TypedColor(typed_color), m_Offset(offset)
 	{
 		m_Construct();
 	}
 
-	TextInput::TextInput(const Quad& quad, CallbackFunc_t callback, const Color& typed_color, const Color& empty_color, Ref(Shader) bg_shader, int offset)
+	TextInput::TextInput(const Quad& quad, CallbackFunc_t callback, const RGBColor& typed_color, const RGBColor& empty_color, Ref(Shader) bg_shader, int offset)
 		: quad(quad), callback(callback), bg_shader(bg_shader), bg_texture(nullptr), empty_text(m_DefaultEmptyText),
 		m_EmptyColor(empty_color), m_TypedColor(typed_color), m_Offset(offset)
 	{
 		m_Construct();
 	}
 
-	TextInput::TextInput(const Quad& quad, CallbackFunc_t callback, const Color& typed_color, const Color& empty_color, Ref(Shader) bg_shader, Ref(Texture) bg_texture, int offset)
+	TextInput::TextInput(const Quad& quad, CallbackFunc_t callback, const RGBColor& typed_color, const RGBColor& empty_color, Ref(Shader) bg_shader, Ref(Texture) bg_texture, int offset)
 		: quad(quad), callback(callback), bg_shader(bg_shader), bg_texture(bg_texture), empty_text(m_DefaultEmptyText),
 		m_EmptyColor(empty_color), m_TypedColor(typed_color), m_Offset(offset)
 	{

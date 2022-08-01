@@ -7,6 +7,7 @@
 #include "Animation.h"
 #include "Slider.h"
 #include "Math.h"
+#include "Color.h"
 
 namespace Vivium {
     class Panel;
@@ -46,7 +47,7 @@ namespace Vivium {
         static Ref(Panel) window_panel;  // For attaching things to the window
 
         // Set clear screen/background color
-        static void SetBGColor(const Color& color);
+        static void SetBGColor(const RGBColor& color);
 
         static void Init(int nwidth, int nheight, int nfps, bool nisStatsEnabled = false);
         static void Terminate();

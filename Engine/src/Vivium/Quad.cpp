@@ -4,19 +4,22 @@
 
 namespace Vivium {
 	IndexBuffer* Quad::ib = nullptr;
+	BufferLayout* Quad::layout = nullptr;
 
 	void Quad::m_Update()
 	{
 		std::vector<Vector2<float>> vertices = GetVertices();
 
+		std::vector<float> buffer_data = {
+			vertices[Rect::BOTTOMLEFT].x, vertices[Rect::BOTTOMLEFT].y, 0.0f, 0.0f,
+			vertices[Rect::BOTTOMRIGHT].x, vertices[Rect::BOTTOMRIGHT].y, 1.0f, 0.0f,
+			vertices[Rect::TOPRIGHT].x, vertices[Rect::TOPRIGHT].y, 1.0f, 1.0f,
+			vertices[Rect::TOPLEFT].x, vertices[Rect::TOPLEFT].y, 0.0f, 1.0f
+		};
+
 		// Set vertex buffer vertices
 		vb->Set(
-			{
-				vertices[Rect::BOTTOMLEFT].x, vertices[Rect::BOTTOMLEFT].y,
-				vertices[Rect::BOTTOMRIGHT].x, vertices[Rect::BOTTOMRIGHT].y,
-				vertices[Rect::TOPRIGHT].x, vertices[Rect::TOPRIGHT].y,
-				vertices[Rect::TOPLEFT].x, vertices[Rect::TOPLEFT].y
-			}
+			buffer_data
 		);
 	}
 
@@ -31,26 +34,30 @@ namespace Vivium {
 				0.0f, 1.0f
 		};
 
-		// Generate vertex and texture coordinates
-		vb = MakeRef(VertexBuffer,
-			std::vector<float>{
-			vertices[Rect::BOTTOMLEFT].x, vertices[Rect::BOTTOMLEFT].y,
-			vertices[Rect::BOTTOMRIGHT].x, vertices[Rect::BOTTOMRIGHT].y,
-			vertices[Rect::TOPRIGHT].x, vertices[Rect::TOPRIGHT].y,
-			vertices[Rect::TOPLEFT].x, vertices[Rect::TOPLEFT].y
-		});
+		std::vector<float> buffer_data = {
+			vertices[Rect::BOTTOMLEFT].x, vertices[Rect::BOTTOMLEFT].y, 0.0f, 0.0f,
+			vertices[Rect::BOTTOMRIGHT].x, vertices[Rect::BOTTOMRIGHT].y, 1.0f, 0.0f,
+			vertices[Rect::TOPRIGHT].x, vertices[Rect::TOPRIGHT].y, 1.0f, 1.0f,
+			vertices[Rect::TOPLEFT].x, vertices[Rect::TOPLEFT].y, 0.0f, 1.0f
+		};
 
-		tb = MakeRef(VertexBuffer, m_TexCoords, 1);
+		// Create buffer for vertex coords and tex coords
+		vb = MakeRef(VertexBuffer, buffer_data, *layout);
 	}
 
 	void Quad::m_Init()
 	{
 		ib = new IndexBuffer(std::vector<uint8_t>{ 0, 1, 2, 2, 3, 0 });
+		layout = new BufferLayout({
+			{ "position", GLSLDataType::VEC2 },
+			{ "texCoord", GLSLDataType::VEC2 }
+		});
 	}
 
 	void Quad::m_Terminate()
 	{
 		delete ib;
+		delete layout;
 	}
 
 	void Quad::SetCenter(float nx, float ny)
@@ -153,6 +160,7 @@ namespace Vivium {
 		};
 
 		// Update VertexBuffer coords
+		// TODO: update
 		tb->Set(m_TexCoords);
 	}
 

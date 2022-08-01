@@ -42,7 +42,7 @@ int main(void) {
 		Application::BeginFrame();
 
 		// Render our quad using the given shader to screen
-		Renderer::Schedule(&my_quad, &color_shader);
+		Renderer::Submit(&my_quad, &color_shader);
 
 		// End frame
 		Application::EndFrame();

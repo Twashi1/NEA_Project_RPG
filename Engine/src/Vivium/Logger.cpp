@@ -2,6 +2,20 @@
 
 namespace Vivium {
 #ifdef __VIVIUM_EXPOSE
+	std::string VIVIUM_API __SignatureToString(const std::string& msg, int line, const char* func_sig)
+	{
+		// Matches __something and the whitespace after
+		const std::regex cleaner("__\\S+\\s");
+		std::string function_cleaned = std::regex_replace(func_sig, cleaner, "");
+
+		return std::format(
+			"[{}] ASSERTION FAILED: {}:{} {}",
+			Timer::GetTimeString(),
+			function_cleaned,
+			line,
+			msg
+		);
+	}
 	void __LogBase(const std::string& msg, int line, const char* func_sig, const char* log_level)
 	{
 		// Matches __something and the whitespace after
@@ -16,6 +30,8 @@ namespace Vivium {
 			line,
 			msg
 		) << std::endl;
+
+		if (log_level == "Fatal") { exit(EXIT_FAILURE); }
 	}
 	void GLAPIENTRY __GLLogCallback(GLenum source, GLenum type, GLuint id, GLenum severity, GLsizei length, const GLchar* message, const void* userParam)
 	{
