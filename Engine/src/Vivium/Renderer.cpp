@@ -32,7 +32,7 @@ namespace Vivium {
 		Framebuffer::Unbind();
 	}
 
-	VIVIUM_API uint8_t Renderer::GetTextureSlot()
+	uint8_t Renderer::GetTextureSlot()
 	{
 		if (m_AvailableSlots.size() > 1) {
 			// Get front of queue and store it
@@ -44,17 +44,28 @@ namespace Vivium {
 		}
 
 		LogInfo("Ran out of texture slots (MAX 16 concurrent)");
-		return Renderer::m_INVALID_TEXTURE_SLOT;
+		return Renderer::INVALID_TEXTURE_SLOT;
 	}
 
-	VIVIUM_API void Renderer::FreeTextureSlot(uint8_t slot)
+	void Renderer::FreeTextureSlot(uint8_t slot)
 	{
-		if (slot != Renderer::m_INVALID_TEXTURE_SLOT) {
+		if (slot != Renderer::INVALID_TEXTURE_SLOT) {
 			m_AvailableSlots.emplace_back(slot);
 		}
 	}
 
-	VIVIUM_API void Renderer::Submit(const VertexBuffer* vb, const IndexBuffer* ib, Shader* shader)
+	void Renderer::Submit(const VertexBuffer* vb, const IndexBuffer* ib, Shader* shader, Texture* texture, uint8_t slot)
+	{
+		vb->Bind(); ib->Bind(); shader->Bind(); texture->Bind(slot);
+		shader->SetUniformMat4fv("u_ProjMat", camera->GetProjMat());
+		shader->SetUniformMat4fv("u_ViewMat", camera->GetViewMat());
+		shader->SetUniform1f("u_Time", Timer::GetTime());
+		shader->SetUniform1i("u_Texture", slot);
+
+		glDrawElements(GL_TRIANGLES, ib->count, ib->type, nullptr);
+	}
+
+	void Renderer::Submit(const VertexBuffer* vb, const IndexBuffer* ib, Shader* shader)
 	{
 		vb->Bind(); ib->Bind(); shader->Bind();
 		shader->SetUniformMat4fv("u_ProjMat", camera->GetProjMat());
@@ -79,7 +90,7 @@ namespace Vivium {
 		glDrawElements(GL_TRIANGLES, ib->count, ib->type, nullptr);
 	}
 
-	VIVIUM_API void Renderer::Submit(const Quad* quad, Shader* shader)
+	void Renderer::Submit(const Quad* quad, Shader* shader)
 	{
 		quad->GetVertexBuffer()->Bind();
 		const IndexBuffer* ib = Quad::GetIndexBuffer(); ib->Bind();
@@ -91,7 +102,7 @@ namespace Vivium {
 		glDrawElements(GL_TRIANGLES, ib->count, ib->type, nullptr);
 	}
 
-	VIVIUM_API void Renderer::Submit(const Quad* quad, Shader* shader, const Texture* texture)
+	void Renderer::Submit(const Quad* quad, Shader* shader, const Texture* texture)
 	{
 		quad->GetVertexBuffer()->Bind();
 		const IndexBuffer* ib = Quad::GetIndexBuffer(); ib->Bind();
@@ -114,7 +125,7 @@ namespace Vivium {
 		FreeTextureSlot(slot);
 	}
 
-	VIVIUM_API void Renderer::Submit(const Quad* quad, Shader* shader, const Texture* texture, uint8_t slot)
+	void Renderer::Submit(const Quad* quad, Shader* shader, const Texture* texture, uint8_t slot)
 	{
 		quad->GetVertexBuffer()->Bind();
 		const IndexBuffer* ib = Quad::GetIndexBuffer(); ib->Bind();
@@ -132,7 +143,7 @@ namespace Vivium {
 		glDrawElements(GL_TRIANGLES, ib->count, ib->type, nullptr);
 	}
 
-	VIVIUM_API void Renderer::Submit(const Text* text)
+	void Renderer::Submit(const Text* text)
 	{
 		uint8_t slot = Renderer::GetTextureSlot(); // Get slot we're drawing texture to
 
@@ -190,7 +201,7 @@ namespace Vivium {
 		Renderer::FreeTextureSlot(slot);
 	}
 
-	VIVIUM_API void Renderer::Submit(Button* btn)
+	void Renderer::Submit(Button* btn)
 	{
 		// Get texture currently being used (if there is a texture)
 		const Texture* current_texture = btn->CurrentTexture().get();
@@ -207,12 +218,12 @@ namespace Vivium {
 		Renderer::Submit(btn->text);
 	}
 
-	VIVIUM_API void Renderer::Submit(Animation* animation)
+	void Renderer::Submit(Animation* animation)
 	{
 		Renderer::Submit(animation->quad.get(), animation->shader.get(), animation->GetAtlas().get());
 	}
 
-	VIVIUM_API void Renderer::Submit(TextInput* text_input)
+	void Renderer::Submit(TextInput* text_input)
 	{
 		if (text_input->bg_texture != nullptr) {
 			Renderer::Submit(&text_input->quad, text_input->bg_shader.get(), text_input->bg_texture.get());
@@ -229,7 +240,7 @@ namespace Vivium {
 		}
 	}
 
-	VIVIUM_API void Renderer::Submit(Slider* slider)
+	void Renderer::Submit(Slider* slider)
 	{
 		slider->bar_shader->Bind();
 		slider->bar_shader->SetUniform1f("u_Value", slider->GetValue());
@@ -249,7 +260,7 @@ namespace Vivium {
 		}
 	}
 
-	VIVIUM_API void Renderer::Submit(ToggleSwitch* toggle_switch)
+	void Renderer::Submit(ToggleSwitch* toggle_switch)
 	{
 		Shader* shader = toggle_switch->GetShader();
 		Texture* texture = toggle_switch->GetTexture();

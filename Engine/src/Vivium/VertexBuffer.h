@@ -94,5 +94,6 @@ namespace Vivium {
 		void Bind() const;
 
 		void Set(const std::vector<float>& vertices);
+		void Set(const void* data, const std::size_t& size);
 	};
 }

@@ -81,6 +81,8 @@ public:
 	static void LoadTextures(const std::string& atlas_file);
 
 	void Update(const Vivium::Vector2<int>& pos);
+
+	void NewRenderTest(const Vivium::Vector2<int>& pos);
 	
 	// Loads from existing world
 	World(const std::string& world_name);

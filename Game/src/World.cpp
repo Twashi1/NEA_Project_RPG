@@ -400,6 +400,86 @@ void World::Update(const Vivium::Vector2<int>& pos)
 	m_RenderAround(pos, {8, 6});
 }
 
+void World::NewRenderTest(const Vivium::Vector2<int>& pos)
+{
+	std::vector<float> coords;
+	std::vector<uint16_t> indexCoords;
+
+	Vivium::Vector2<int> frame = { 8, 6 };
+
+	uint16_t count = 0;
+
+	for (int y = pos.y - frame.y; y <= pos.y + frame.y; y++) {
+		for (int x = pos.x - frame.x; x <= frame.x + frame.x; x++) {
+			// Calculate region index
+			Vivium::Vector2<int> region_index = m_GetRegionIndex(x, y);
+			// Calculate relative coords
+			int rx = x - (region_index.x * Region::LENGTH);
+			int ry = y - (region_index.y * Region::LENGTH);
+
+			// Get region
+			Region& region = m_LoadRegion(region_index); // NOTE: m_LoadRegion not really needed, since regions should always already be loaded
+
+			// Get tile from region
+			Tile& tile = region.Index(rx, ry);
+
+			// Calculate draw coords
+			float dx = x * scale;
+			float dy = y * scale;
+
+			float halfscale = scale / 2.0f;
+
+			// Iterate over each tile id
+			coords.reserve(coords.size() + (16 * tile.ids.size()));
+			indexCoords.reserve(indexCoords.size() + (6 * tile.ids.size()));
+
+			for (const Tile::ID& id : tile.ids) {
+				// Get index in atlas
+				Vivium::Vector2<int> atlas_index = m_tilemap[id];
+
+				// Inverse width and height of atlas
+				float inv_width = 1.0f / m_tile_atlas->width;
+				float inv_height = 1.0f / m_tile_atlas->height;
+
+				// Calculate faces
+				float left = atlas_index.x * inv_width * m_tile_atlas_size.x;
+				float right = (atlas_index.x + 1) * inv_width * m_tile_atlas_size.x;
+				float bottom = atlas_index.y * inv_height * m_tile_atlas_size.y;
+				float top = (atlas_index.y + 1) * inv_height * m_tile_atlas_size.y;
+
+				std::vector<float> this_coords =
+				{
+					dx - halfscale, dy - halfscale, left, bottom,
+					dx + halfscale, dy - halfscale, right, bottom,
+					dx + halfscale, dy + halfscale, right, top,
+					dx - halfscale, dy + halfscale, left, top
+				};
+
+				indexCoords.emplace_back(0 + count * 4);
+				indexCoords.emplace_back(1 + count * 4);
+				indexCoords.emplace_back(2 + count * 4);
+				indexCoords.emplace_back(2 + count * 4);
+				indexCoords.emplace_back(3 + count * 4);
+				indexCoords.emplace_back(0 + count * 4);
+
+				coords.insert(coords.end(), this_coords.begin(), this_coords.end());
+
+				count++;
+			}
+		}
+	}
+
+	Vivium::BufferLayout layout = {
+		{"position", Vivium::GLSLDataType::VEC2},
+		{"texCoords", Vivium::GLSLDataType::VEC2}
+	};
+
+	Vivium::VertexBuffer vb(coords, layout);
+	Vivium::IndexBuffer ib(indexCoords);
+
+	Vivium::Renderer::Submit(&vb, &ib, texture_shader, m_tile_atlas);
+}
+
 World::RenderedTile::RenderedTile()
 	: quad(nullptr), tile(Tile::ID::VOID)
 {}

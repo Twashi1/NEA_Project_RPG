@@ -11,6 +11,7 @@ namespace Vivium {
 
 	void Texture::Bind(uint8_t slot) const
 	{
+		if (slot > Renderer::MAX_TEXTURE_SLOT) { LogError("Attempted to bind texture to invalid slot: {}", (int)slot); }
 		glActiveTexture(GL_TEXTURE0 + slot);
 		glBindTexture(GL_TEXTURE_2D, id);
 		glActiveTexture(GL_TEXTURE0);

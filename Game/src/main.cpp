@@ -163,11 +163,8 @@ int game(void)
         // Update player
         player.Update();
 
-        // Draw calls
-        fb.Bind();
-
         Vivium::Vector2<int> update_pos = (Vivium::Vector2<int>)(player.quad.GetCenter() / World::scale).floor();
-        world.Update(update_pos);
+        world.NewRenderTest(update_pos);
 
         Vivium::Renderer::Submit(ground_quad.get(), &ground_shader);
         Vivium::Renderer::Submit(&player.quad, player.shader);
@@ -176,13 +173,8 @@ int game(void)
         Vivium::Renderer::Submit(rotater.get());
         Vivium::Renderer::Submit(rotater_text_ptr);
         Vivium::Renderer::Submit(pixelator.get());
-        
-        fb.Unbind();
 
         if (Vivium::Application::isStatsEnabled) Vivium::Application::UpdateStats(*player.body); // Draw stats information
-
-        Vivium::Renderer::Submit(screen_quad.GetVertexBuffer().get(), screen_quad.GetIndexBuffer(), &grayscale_shader, &fb);
-        fb.Clear();
 
         Vivium::Application::EndFrame();
     }

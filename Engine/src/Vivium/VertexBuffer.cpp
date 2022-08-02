@@ -86,6 +86,12 @@ namespace Vivium {
 		Bind();
 		glBufferData(GL_ARRAY_BUFFER, data.size() * sizeof(float), &data[0], GL_STATIC_DRAW);
 	}
+
+	void VertexBuffer::Set(const void* data, const std::size_t& size)
+	{
+		Bind();
+		glBufferData(GL_ARRAY_BUFFER, size, data, GL_STATIC_DRAW);
+	}
 	
 	BufferElement::BufferElement(const std::string& name, const GLSLDataType& type)
 		: name(name), type(type), offset(0) {}
