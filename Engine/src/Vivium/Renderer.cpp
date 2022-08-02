@@ -21,6 +21,17 @@ namespace Vivium {
 		camera = MakeRef(Camera, 0.0f, (float)Application::width, 0.0f, (float)Application::height);
 	}
 
+	void SetTarget(const Framebuffer* fb)
+	{
+		if (fb != nullptr) { fb->Bind(); }
+		else { Framebuffer::Unbind(); }
+	}
+
+	void ResetTarget()
+	{
+		Framebuffer::Unbind();
+	}
+
 	VIVIUM_API uint8_t Renderer::GetTextureSlot()
 	{
 		if (m_AvailableSlots.size() > 1) {
@@ -53,24 +64,37 @@ namespace Vivium {
 		glDrawElements(GL_TRIANGLES, ib->count, ib->type, nullptr);
 	}
 
+	void Renderer::Submit(const VertexBuffer* vb, const IndexBuffer* ib, Shader* shader, const Framebuffer* fb, uint8_t slot)
+	{
+		vb->Bind(); ib->Bind(); shader->Bind(); fb->SetSlot(slot);
+		shader->SetUniformMat4fv("u_ProjMat", camera->GetProjMat());
+		shader->SetUniformMat4fv("u_ViewMat", camera->GetViewMat());
+		shader->SetUniform1f("u_Time", Timer::GetTime());
+		shader->SetUniform1i("u_Texture", slot);
+
+		glActiveTexture(GL_TEXTURE0 + slot);
+		glBindTexture(GL_TEXTURE_2D, fb->GetColorAttachment());
+		glActiveTexture(GL_TEXTURE0);
+
+		glDrawElements(GL_TRIANGLES, ib->count, ib->type, nullptr);
+	}
+
 	VIVIUM_API void Renderer::Submit(const Quad* quad, Shader* shader)
 	{
-		quad->GetVertexBuffer().Bind();
-		quad->GetTexCoordsBuffer().Bind();
-		const IndexBuffer& ib = Quad::GetIndexBuffer(); ib.Bind();
+		quad->GetVertexBuffer()->Bind();
+		const IndexBuffer* ib = Quad::GetIndexBuffer(); ib->Bind();
 		shader->Bind();
 		shader->SetUniformMat4fv("u_ProjMat", camera->GetProjMat());
 		shader->SetUniformMat4fv("u_ViewMat", camera->GetViewMat());
 		shader->SetUniform1f("u_Time", Timer::GetTime());
 
-		glDrawElements(GL_TRIANGLES, ib.count, ib.type, nullptr);
+		glDrawElements(GL_TRIANGLES, ib->count, ib->type, nullptr);
 	}
 
 	VIVIUM_API void Renderer::Submit(const Quad* quad, Shader* shader, const Texture* texture)
 	{
-		quad->GetVertexBuffer().Bind();
-		quad->GetTexCoordsBuffer().Bind();
-		const IndexBuffer& ib = Quad::GetIndexBuffer(); ib.Bind();
+		quad->GetVertexBuffer()->Bind();
+		const IndexBuffer* ib = Quad::GetIndexBuffer(); ib->Bind();
 
 		// Bind texture
 		uint8_t slot = GetTextureSlot();
@@ -83,7 +107,7 @@ namespace Vivium {
 		shader->SetUniformMat4fv("u_ViewMat", camera->GetViewMat());
 		shader->SetUniform1f("u_Time", Timer::GetTime());
 
-		glDrawElements(GL_TRIANGLES, ib.count, ib.type, nullptr);
+		glDrawElements(GL_TRIANGLES, ib->count, ib->type, nullptr);
 
 		// Unbind texture
 		Texture::Unbind();
@@ -92,9 +116,8 @@ namespace Vivium {
 
 	VIVIUM_API void Renderer::Submit(const Quad* quad, Shader* shader, const Texture* texture, uint8_t slot)
 	{
-		quad->GetVertexBuffer().Bind();
-		quad->GetTexCoordsBuffer().Bind();
-		const IndexBuffer& ib = Quad::GetIndexBuffer(); ib.Bind();
+		quad->GetVertexBuffer()->Bind();
+		const IndexBuffer* ib = Quad::GetIndexBuffer(); ib->Bind();
 
 		// Bind texture
 		texture->Bind(slot);
@@ -106,7 +129,7 @@ namespace Vivium {
 		shader->SetUniformMat4fv("u_ViewMat", camera->GetViewMat());
 		shader->SetUniform1f("u_Time", Timer::GetTime());
 
-		glDrawElements(GL_TRIANGLES, ib.count, ib.type, nullptr);
+		glDrawElements(GL_TRIANGLES, ib->count, ib->type, nullptr);
 	}
 
 	VIVIUM_API void Renderer::Submit(const Text* text)

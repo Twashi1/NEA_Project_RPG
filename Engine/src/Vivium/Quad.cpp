@@ -11,10 +11,10 @@ namespace Vivium {
 		std::vector<Vector2<float>> vertices = GetVertices();
 
 		std::vector<float> buffer_data = {
-			vertices[Rect::BOTTOMLEFT].x, vertices[Rect::BOTTOMLEFT].y, 0.0f, 0.0f,
-			vertices[Rect::BOTTOMRIGHT].x, vertices[Rect::BOTTOMRIGHT].y, 1.0f, 0.0f,
-			vertices[Rect::TOPRIGHT].x, vertices[Rect::TOPRIGHT].y, 1.0f, 1.0f,
-			vertices[Rect::TOPLEFT].x, vertices[Rect::TOPLEFT].y, 0.0f, 1.0f
+			vertices[Rect::BOTTOMLEFT].x, vertices[Rect::BOTTOMLEFT].y, m_TexCoords[0], m_TexCoords[1],
+			vertices[Rect::BOTTOMRIGHT].x, vertices[Rect::BOTTOMRIGHT].y, m_TexCoords[2], m_TexCoords[3],
+			vertices[Rect::TOPRIGHT].x, vertices[Rect::TOPRIGHT].y, m_TexCoords[4], m_TexCoords[5],
+			vertices[Rect::TOPLEFT].x, vertices[Rect::TOPLEFT].y, m_TexCoords[6], m_TexCoords[7]
 		};
 
 		// Set vertex buffer vertices
@@ -35,10 +35,10 @@ namespace Vivium {
 		};
 
 		std::vector<float> buffer_data = {
-			vertices[Rect::BOTTOMLEFT].x, vertices[Rect::BOTTOMLEFT].y, 0.0f, 0.0f,
-			vertices[Rect::BOTTOMRIGHT].x, vertices[Rect::BOTTOMRIGHT].y, 1.0f, 0.0f,
-			vertices[Rect::TOPRIGHT].x, vertices[Rect::TOPRIGHT].y, 1.0f, 1.0f,
-			vertices[Rect::TOPLEFT].x, vertices[Rect::TOPLEFT].y, 0.0f, 1.0f
+			vertices[Rect::BOTTOMLEFT].x, vertices[Rect::BOTTOMLEFT].y, m_TexCoords[0], m_TexCoords[1],
+			vertices[Rect::BOTTOMRIGHT].x, vertices[Rect::BOTTOMRIGHT].y, m_TexCoords[2], m_TexCoords[3],
+			vertices[Rect::TOPRIGHT].x, vertices[Rect::TOPRIGHT].y, m_TexCoords[4], m_TexCoords[5],
+			vertices[Rect::TOPLEFT].x, vertices[Rect::TOPLEFT].y, m_TexCoords[6], m_TexCoords[7]
 		};
 
 		// Create buffer for vertex coords and tex coords
@@ -161,7 +161,14 @@ namespace Vivium {
 
 		// Update VertexBuffer coords
 		// TODO: update
-		tb->Set(m_TexCoords);
+		const std::vector<Vector2<float>>& vertices = GetVertices();
+
+		vb->Set(std::vector<float>{
+			vertices[Rect::BOTTOMLEFT].x, vertices[Rect::BOTTOMLEFT].y, m_TexCoords[0], m_TexCoords[1],
+			vertices[Rect::BOTTOMRIGHT].x, vertices[Rect::BOTTOMRIGHT].y, m_TexCoords[2], m_TexCoords[3],
+			vertices[Rect::TOPRIGHT].x, vertices[Rect::TOPRIGHT].y, m_TexCoords[4], m_TexCoords[5],
+			vertices[Rect::TOPLEFT].x, vertices[Rect::TOPLEFT].y, m_TexCoords[6], m_TexCoords[7]
+			});
 	}
 
 	void Quad::SetTextureCoords(const Texture& atlas, const Vector2<int>& top_left, const Vector2<int>& bottom_right, const Vector2<int>& size)
@@ -185,7 +192,14 @@ namespace Vivium {
 		};
 
 		// Update VertexBuffer coords
-		tb->Set(m_TexCoords);
+		const std::vector<Vector2<float>>& vertices = GetVertices();
+
+		vb->Set(std::vector<float>{
+			vertices[Rect::BOTTOMLEFT].x, vertices[Rect::BOTTOMLEFT].y, m_TexCoords[0], m_TexCoords[1],
+			vertices[Rect::BOTTOMRIGHT].x, vertices[Rect::BOTTOMRIGHT].y, m_TexCoords[2], m_TexCoords[3],
+			vertices[Rect::TOPRIGHT].x, vertices[Rect::TOPRIGHT].y, m_TexCoords[4], m_TexCoords[5],
+			vertices[Rect::TOPLEFT].x, vertices[Rect::TOPLEFT].y, m_TexCoords[6], m_TexCoords[7]
+		});
 	}
 
 	void Quad::Write(Serialiser& s) const
@@ -208,19 +222,14 @@ namespace Vivium {
 		m_Construct();
 	}
 
-	const VertexBuffer& Quad::GetVertexBuffer() const
+	const Ref(VertexBuffer) Quad::GetVertexBuffer() const
 	{
-		return *vb;
+		return vb;
 	}
 
-	const VertexBuffer& Quad::GetTexCoordsBuffer() const
+	const IndexBuffer* Quad::GetIndexBuffer()
 	{
-		return *tb;
-	}
-
-	const IndexBuffer& Quad::GetIndexBuffer()
-	{
-		return *ib;
+		return ib;
 	}
 
 	Quad::Quad()

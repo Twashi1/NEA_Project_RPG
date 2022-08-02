@@ -64,12 +64,27 @@ namespace Vivium {
 	void VertexBuffer::Bind() const
 	{
 		glBindBuffer(GL_ARRAY_BUFFER, id);
+		const std::vector<BufferElement>& elements = layout.GetElements();
+
+		for (int i = 0; i < elements.size(); i++) {
+			const BufferElement& element = elements[i];
+
+			glEnableVertexAttribArray(i);
+			glVertexAttribPointer(
+				i,								// Layout location
+				element.type.component_count,	// Amount of components of type
+				element.type.gl_type,			// GL base type
+				GL_FALSE,						// Is normalised
+				layout.GetStride(),				// Stride
+				(const void*)element.offset		// Offset
+			);
+		}
 	}
 
-	void VertexBuffer::Set(const std::vector<float>& vertices)
+	void VertexBuffer::Set(const std::vector<float>& data)
 	{
-		glBindBuffer(GL_ARRAY_BUFFER, id);
-		glBufferData(GL_ARRAY_BUFFER, vertices.size() * sizeof(float), &vertices[0], GL_STATIC_DRAW);
+		Bind();
+		glBufferData(GL_ARRAY_BUFFER, data.size() * sizeof(float), &data[0], GL_STATIC_DRAW);
 	}
 	
 	BufferElement::BufferElement(const std::string& name, const GLSLDataType& type)

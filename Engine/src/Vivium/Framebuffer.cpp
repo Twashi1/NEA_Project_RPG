@@ -12,6 +12,13 @@ namespace Vivium {
 		glDeleteFramebuffers(1, &id);
 	}
 
+	void Framebuffer::Clear() const
+	{
+		static const float clearcolor[] = {0.0f, 0.0f, 0.0f, 0.0f};
+
+		glClearTexImage(color_attachment, 0, GL_RGBA, GL_FLOAT, clearcolor);
+	}
+
 	void Framebuffer::Bind() const
 	{
 		glBindFramebuffer(GL_FRAMEBUFFER, id);
@@ -22,7 +29,7 @@ namespace Vivium {
 		glBindFramebuffer(GL_FRAMEBUFFER, 0);
 	}
 
-	void Framebuffer::SetSlot(unsigned int slot)
+	void Framebuffer::SetSlot(unsigned int slot) const
 	{
 		glActiveTexture(GL_TEXTURE0 + slot);
 		glBindTexture(GL_TEXTURE_2D, color_attachment);

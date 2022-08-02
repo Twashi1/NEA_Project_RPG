@@ -8,3 +8,4 @@
 #include "Vivium/Button.h"
 #include "Vivium/Slider.h"
 #include "Vivium/Panel.h"
+#include "Vivium/Framebuffer.h"

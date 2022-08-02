@@ -1,6 +1,19 @@
 #include "Color.h"
 
 namespace Vivium {
+	RGBColor RGBColor::RED = RGBColor(255, 0, 0);
+	RGBColor RGBColor::GREEN = RGBColor(0, 255, 0);
+	RGBColor RGBColor::BLUE = RGBColor(0, 0, 255);
+	RGBColor RGBColor::YELLOW = RGBColor(255, 255, 0);
+	RGBColor RGBColor::TEAL = RGBColor(0, 255, 255);
+	RGBColor RGBColor::PURPLE = RGBColor(255, 0, 255);
+	RGBColor RGBColor::ORANGE = RGBColor(255, 162, 0);
+	RGBColor RGBColor::GRAY = RGBColor(105, 105, 105);
+	RGBColor RGBColor::DARKGRAY = RGBColor(40, 40, 40);
+	RGBColor RGBColor::BLACK = RGBColor(0, 0, 0);
+	RGBColor RGBColor::WHITE = RGBColor(255, 255, 255);
+	RGBColor RGBColor::BROWN = RGBColor(128, 64, 0);
+
 	char RGBColor::m_DigitToHex(const uint8_t& digit) const {
 		// ok sure its a little ugly but i cba
 		switch ((int)digit) {
@@ -30,6 +43,10 @@ namespace Vivium {
 	{}
 
 	RGBColor::RGBColor(uint8_t r, uint8_t g, uint8_t b)
+		: r(float(r) / 255.0f), g(float(g) / 255.0f), b(float(b) / 255.0f)
+	{}
+
+	RGBColor::RGBColor(int r, int g, int b)
 		: r(float(r) / 255.0f), g(float(g) / 255.0f), b(float(b) / 255.0f)
 	{}
 

@@ -24,37 +24,42 @@ void PixelationSliderFunc(Vivium::Slider* ctx) {
     ground_shader_ptr->SetUniform1i("u_Pixelation", int(ctx->GetValue(50, 300)));
 }
 
+struct MyContainer : public Vivium::IStreamable {
+    int x = 0;
+
+    MyContainer(int x) : x(x) {}
+
+    void Write(Vivium::Serialiser& s) const override {
+        s.Write(x, "x");
+    }
+
+    void Read(Vivium::Serialiser& s) override {
+        s.Read(&x, "x");
+    }
+};
+
+struct MyObject : public Vivium::IStreamable {
+    MyContainer my_cont;
+    std::string my_str;
+
+    MyObject(int x, std::string my_str) : my_cont(x), my_str(my_str) {}
+
+    void Write(Vivium::Serialiser& s) const override {
+        s.Write(my_cont, "MyContainer");
+        s.Write(my_str, "MyString");
+    }
+
+    void Read(Vivium::Serialiser& s) override {
+        s.Read(&my_cont, "MyContainer");
+        s.Read(&my_str, "MyString");
+    }
+};
+
 int sandbox(void)
 {
     using namespace Vivium;
 
     Application::Init(WIDTH, HEIGHT, FPS, false);
-
-    BufferLayout example_layout = {
-        {"position", GLSLDataType::VEC2},
-        {"texCoords", GLSLDataType::VEC2}
-    };
-
-    std::vector<float> data = {
-        0.3f, 0.3f, 0.0f, 0.0f,
-        0.3f, 0.7f, 1.0f, 0.0f,
-        0.7f, 0.7f, 1.0f, 1.0f,
-        0.7f, 0.3f, 0.0f, 1.0f
-    };
-
-    VertexBuffer vb(data, example_layout);
-    Shader eg_shader = Shader("static_texture_vertex", "color_frag");
-    eg_shader.SetUniform3f("u_Color", 1.0f, 0.0f, 0.0f);
-
-    IndexBuffer ib(std::vector<uint8_t>{0, 1, 2, 2, 3, 0});
-    
-    while (Application::IsRunning()) {
-        Application::BeginFrame();
-
-        Renderer::Submit(&vb, &ib, &eg_shader);
-
-        Application::EndFrame();
-    }
 
     return EXIT_SUCCESS;
 }
@@ -117,7 +122,7 @@ int game(void)
     Player player = Player();
     Vivium::Application::physics->Register(player.body, 0);
 
-    Vivium::Application::SetBGColor(Vivium::RGBColor(0.0f, 0.0f, 1.0f));
+    Vivium::Application::SetBGColor(Vivium::RGBColor::BLUE);
 
     Vivium::Application::window_panel->Anchor(Vivium::Panel::ANCHOR::RIGHT, Vivium::Panel::ANCHOR::TOP, slider);
     Vivium::Application::window_panel->Anchor(Vivium::Panel::ANCHOR::RIGHT, Vivium::Panel::ANCHOR::TOP, pixelator);
@@ -129,9 +134,14 @@ int game(void)
     Vivium::Shader ground_shader("texture_vertex", "ground_frag");
     ground_shader.SetUniform1f("u_Scale", 50.0f);
     ground_shader.SetUniform1ui("u_Seed", 0);
-    ground_shader.SetUniform3f("u_StdBrown", 0.0, 1.0, 0.0);
+    ground_shader.SetUniform3f("u_StdBrown", Vivium::RGBColor::BROWN);
 
     ground_shader_ptr = &ground_shader;
+
+    Vivium::Framebuffer fb(WIDTH, HEIGHT);
+    Vivium::Quad screen_quad = Vivium::Quad(WIDTH / 2.0f, HEIGHT / 2.0f, WIDTH, HEIGHT);
+
+    Vivium::Shader grayscale_shader("static_texture_vertex", "texture_frag");
 
     // Loop until window is closed by user
     while (Vivium::Application::IsRunning())
@@ -154,6 +164,8 @@ int game(void)
         player.Update();
 
         // Draw calls
+        fb.Bind();
+
         Vivium::Vector2<int> update_pos = (Vivium::Vector2<int>)(player.quad.GetCenter() / World::scale).floor();
         world.Update(update_pos);
 
@@ -164,8 +176,13 @@ int game(void)
         Vivium::Renderer::Submit(rotater.get());
         Vivium::Renderer::Submit(rotater_text_ptr);
         Vivium::Renderer::Submit(pixelator.get());
+        
+        fb.Unbind();
 
         if (Vivium::Application::isStatsEnabled) Vivium::Application::UpdateStats(*player.body); // Draw stats information
+
+        Vivium::Renderer::Submit(screen_quad.GetVertexBuffer().get(), screen_quad.GetIndexBuffer(), &grayscale_shader, &fb);
+        fb.Clear();
 
         Vivium::Application::EndFrame();
     }
@@ -181,5 +198,5 @@ int game(void)
 }
 
 int main(void) {
-    sandbox();
+    game();
 }

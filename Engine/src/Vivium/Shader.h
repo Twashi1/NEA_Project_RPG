@@ -4,6 +4,7 @@
 #include "Logger.h"
 #include "Math.h"
 #include "Utils.h"
+#include "Color.h"
 
 namespace Vivium {
     class VIVIUM_API Shader {
@@ -29,6 +30,7 @@ namespace Vivium {
         void SetUniform2f(const char* name, float x, float y);
         void SetUniform2f(const char* name, Vector2<float> v);
         void SetUniform3f(const char* name, float x, float y, float z);
+        void SetUniform3f(const char* name, const RGBColor& color);
         void SetUniform4f(const char* name, float x, float y, float z, float w);
         void SetUniform1fv(const char* name, unsigned int count, const float* values);
         void SetUniform1uiv(const char* name, unsigned int count, const unsigned int* values);

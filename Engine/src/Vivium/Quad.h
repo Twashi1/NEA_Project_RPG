@@ -20,7 +20,6 @@ namespace Vivium {
 
 		// Buffers
 		Ref(VertexBuffer) vb;
-		Ref(VertexBuffer) tb;
 
 		// Update vertex buffer
 		void m_Update();
@@ -45,9 +44,8 @@ namespace Vivium {
 		using Rect::Bottom;
 		using Rect::Top;
 
-		const VertexBuffer& GetVertexBuffer() const;
-		const VertexBuffer& GetTexCoordsBuffer() const;
-		static const IndexBuffer& GetIndexBuffer();
+		const Ref(VertexBuffer) GetVertexBuffer() const;
+		static const IndexBuffer* GetIndexBuffer();
 
 		Quad();
 		Quad(float x, float y, float width, float height, float angle = 0.0f);

@@ -6,10 +6,7 @@
 
 namespace Vivium {
 	class VIVIUM_API Framebuffer {
-
-
-		// TODO private
-	private:
+	private: // TODO private naming
 		int width, height;
 		GLuint id;
 		GLuint color_attachment;
@@ -18,13 +15,14 @@ namespace Vivium {
 		Framebuffer(int width, int height);
 		~Framebuffer();
 
-		void SetSlot(unsigned int slot);
+		void SetSlot(unsigned int slot) const;
 
 		int GetWidth() const;
 		int GetHeight() const;
 		Vector2<int> GetDim() const;
 		GLuint GetColorAttachment() const;
 
+		void Clear() const;
 		void Bind() const;
 		static void Unbind();
 

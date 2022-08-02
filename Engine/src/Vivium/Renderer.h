@@ -3,6 +3,8 @@
 #include "Core.h"
 #include "Logger.h"
 
+#include "Framebuffer.h"
+
 namespace Vivium {
 	class VertexBuffer;
 	class IndexBuffer;
@@ -32,7 +34,11 @@ namespace Vivium {
 		// Makes a texture slot available again
 		static void FreeTextureSlot(uint8_t slot);
 
+		static void SetTarget(const Framebuffer* fb);
+		static void ResetTarget();
+
 		static void Submit(const VertexBuffer* vb, const IndexBuffer* ib, Shader* shader);
+		static void Submit(const VertexBuffer* vb, const IndexBuffer* ib, Shader* shader, const Framebuffer* fb, uint8_t slot = 0);
 		static void Submit(const Quad* quad, Shader* shader);
 		static void Submit(const Quad* quad, Shader* shader, const Texture* texture);
 		static void Submit(const Quad* quad, Shader* shader, const Texture* texture, uint8_t slot);

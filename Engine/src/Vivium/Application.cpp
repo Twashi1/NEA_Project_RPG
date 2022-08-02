@@ -249,9 +249,9 @@ namespace Vivium {
             double avg_tpf = (m_ProcessingTime / m_FramesProcessed);
             double avg_tpf_ms = Math::Round(avg_tpf * 1000.0, 3);
 
-            RGBColor color = { 1.0f, 1.0f, 1.0f };
-            if (avg_tpf > m_TimePerFrame) { color = { 1.0f, 0.0f, 0.0f }; }
-            else if (avg_tpf > m_TimePerFrame * 0.7) { color = {1.0f, 1.0f, 0.0f}; }
+            RGBColor color = RGBColor::WHITE;
+            if (avg_tpf > m_TimePerFrame) { color = RGBColor::RED; }
+            else if (avg_tpf > m_TimePerFrame * 0.7) { color = RGBColor::YELLOW; }
 
             std::string text = std::format("Average time per frame: {}ms", avg_tpf_ms);
 
@@ -266,9 +266,9 @@ namespace Vivium {
         {
             double percentage_processing = Math::Round((m_ProcessingTime / (m_TimePerFrame * m_FramesProcessed)) * 100.0f, 2);
 
-            RGBColor color = { 1.0f, 1.0f, 1.0f };
-            if (percentage_processing > 100) { color = { 1.0f, 0.0f, 0.0f }; }
-            else if (percentage_processing > 70) { color = { 1.0f, 1.0f, 0.0f }; }
+            RGBColor color = RGBColor::WHITE;
+            if (percentage_processing > 100) { color = RGBColor::RED; }
+            else if (percentage_processing > 70) { color = RGBColor::YELLOW; }
 
             std::string text = std::format("Processing time: {}%", percentage_processing);
 
@@ -286,7 +286,7 @@ namespace Vivium {
             std::string text = std::format("Player position: {}", player_position);
 
             Text& t = m_DebugStatsText["Player pos"];
-            t.shader->Bind(); t.shader->SetUniform3f("u_TextColor", 1.0, 1.0, 1.0);
+            t.shader->Bind(); t.shader->SetUniform3f("u_TextColor", RGBColor::WHITE);
             t.text = text;
             t.pos = Vector2<float>(5, height - 100);
 
@@ -299,7 +299,7 @@ namespace Vivium {
             std::string text = std::format("Player velocity: {}", player_velocity);
 
             Text& t = m_DebugStatsText["Player vel"];
-            t.shader->Bind(); t.shader->SetUniform3f("u_TextColor", 1.0, 1.0, 1.0);
+            t.shader->Bind(); t.shader->SetUniform3f("u_TextColor", RGBColor::WHITE);
             t.text = text;
             t.pos = Vector2<float>(5, height - 115);
 
@@ -312,7 +312,7 @@ namespace Vivium {
             std::string text = std::format("Player acceleration: {}", player_acceleration);
 
             Text& t = m_DebugStatsText["Player acc"];
-            t.shader->Bind(); t.shader->SetUniform3f("u_TextColor", 1.0, 1.0, 1.0);
+            t.shader->Bind(); t.shader->SetUniform3f("u_TextColor", RGBColor::WHITE);
             t.text = text;
             t.pos = Vector2<float>(5, height - 130);
 

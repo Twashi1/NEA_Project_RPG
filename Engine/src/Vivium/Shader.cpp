@@ -133,6 +133,12 @@ namespace Vivium {
         glUniform3f(location, x, y, z);
     }
 
+    void Shader::SetUniform3f(const char* name, const RGBColor& color)
+    {
+        GLuint location = glGetUniformLocation(id, name);
+        glUniform3f(location, color.r, color.g, color.b);
+    }
+
     void Shader::SetUniform4f(const char* name, float x, float y, float z, float w)
     {
         GLuint location = glGetUniformLocation(id, name);

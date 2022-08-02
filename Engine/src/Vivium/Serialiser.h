@@ -135,27 +135,20 @@ namespace Vivium {
 		}
 
 		template <typename T>
-		void m_WriteText(Stream& s, const T& data) {
-			LogError("Serialising text not supported yet");
+		void m_WriteText(Stream& s, const T& data, const std::string& name) {
+			LogError("Writing data of type {} with name {}", typeid(T).name(), name);
 		}
 
 		template <typename T>
-		void m_ReadText(Stream& s, T* memory) {
-			LogError("Unserialising text not supported yet");
+		void m_ReadText(Stream& s, T* memory, const std::string& name) {
+			LogError("Reading (T*) data of type {} with name {}", typeid(T).name(), name);
 
 			memory = nullptr;
 		}
 
 		template <typename T>
-		T m_WriteText(Stream& s) {
-			LogError("Serialising text not supported yet");
-			
-			return NULL;
-		}
-
-		template <typename T>
-		T m_ReadText(Stream& s) {
-			LogError("Unserialising text not supported yet");
+		T m_ReadText(Stream& s, const std::string& name) {
+			LogError("Reading (ret) data of type {} with name {}", typeid(T).name(), name);
 
 			return NULL;
 		}
@@ -175,7 +168,7 @@ namespace Vivium {
 		~Serialiser() = default;
 
 		template <typename T>
-		void Write(const T& object) {
+		void Write(const T& object, const std::string& name = "") {
 			if constexpr (!IsStreamable<T>) {
 				LogError("Object type {} is not Streamable", typeid(T).name());
 			}
@@ -189,7 +182,7 @@ namespace Vivium {
 				case Stream::Mode::BINARY:
 					m_WriteBinary(m_Stream, object); break;
 				case Stream::Mode::TEXT:
-					m_WriteText(m_Stream, object); break;
+					m_WriteText(m_Stream, object, name); break;
 				default:
 					LogError("Invalid stream mode: {}", m_Mode);
 				}
@@ -198,7 +191,7 @@ namespace Vivium {
 
 		// NOTE: assuming the memory has been allocated for us
 		template <typename T>
-		void Read(T* memory)  {
+		void Read(T* memory, const std::string& name = "") {
 			// Ensure object is streamable
 			if constexpr (!IsStreamable<T>) {
 				LogError("Object type {} is not Streamable", typeid(T).name());
@@ -213,7 +206,7 @@ namespace Vivium {
 				case Stream::Mode::BINARY:
 					m_ReadBinary(m_Stream, memory); break;
 				case Stream::Mode::TEXT:
-					m_ReadText(m_Stream, memory); break;
+					m_ReadText(m_Stream, memory, name); break;
 				default:
 					LogError("Invalid stream mode: {}", m_Mode);
 				}
@@ -221,7 +214,7 @@ namespace Vivium {
 		}
 
 		template <typename T>
-		T Read() {
+		T Read(const std::string& name = "") {
 			// Ensure object is streamable
 			if constexpr (!IsStreamable<T>) {
 				LogError("Object type {} is not Streamable", typeid(T).name());
@@ -242,7 +235,7 @@ namespace Vivium {
 				case Stream::Mode::BINARY:
 					return m_ReadBinary<T>(m_Stream);
 				case Stream::Mode::TEXT:
-					return m_ReadText<T>(m_Stream);
+					return m_ReadText<T>(m_Stream, name);
 				default:
 					LogError("Invalid stream mode: {}", m_Mode); return NULL;
 				}
