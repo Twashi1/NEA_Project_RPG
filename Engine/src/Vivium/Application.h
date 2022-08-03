@@ -26,11 +26,14 @@ namespace Vivium {
         static int m_FPS; // Frames per second
         static double m_TimePerFrame; // Time per frame in seconds
 
-        static constexpr double POLL_INTERVAL = 3.0; // Determines how often average performance is calculated (in seconds)
+        static constexpr double POLL_INTERVAL = 1.0; // Determines how often average performance is calculated (in seconds)
         static unsigned int m_FramesProcessed; // Tracks amount of frames that have been processed since the last poll
         static double m_ProcessingTime; // Tracks time spent processing since the last poll
 
         static VersionNumber m_VersionNumber; // Application version number
+
+        // Calculates average time per frame, and will display warning if engine is running behind
+        static void m_CalculatePerformance(double dt);
 
     public:
         static bool isStatsEnabled; // Determines if stats should be calculated and displayed
@@ -52,9 +55,6 @@ namespace Vivium {
         static void Init(int nwidth, int nheight, int nfps, bool nisStatsEnabled = false);
         static void Terminate();
 
-        // Calculates average time per frame, and will display warning if engine is running behind
-        // TODO: should be private
-        static void PollPerformance(double dt);
         // Updates all Text objects for stats to display correct information for that frame
         static void UpdateStats(const Body& player_body);
 

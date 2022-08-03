@@ -42,11 +42,6 @@ private:
 		bool operator==(const RenderedTile& other) { return tile.ids == other.tile.ids && quad == other.quad; }
 	};
 
-	std::unordered_map<Vivium::Vector2<int>, RenderedTile> rendered_tiles;
-
-	Vivium::Vector2<int> last_render_pos;
-	Vivium::Vector2<int> last_render_frame;
-
 	std::string m_ToRegionName(const Vivium::Vector2<int>& index);
 
 	void m_SerialiseRegion(const Vivium::Vector2<int>& index);
@@ -62,12 +57,6 @@ private:
 	void m_DeserialiseRegion(const std::string& filename, const Vivium::Vector2<int>& index);
 	void m_GenerateRegion(const Vivium::Vector2<int>& index);
 
-	void m_RenderTile(int x, int y);
-	void m_RenderTile(const Vivium::Vector2<int>& pos);
-	void m_RenderTile(const RenderedTile& rendered_tile);
-
-	void m_RenderAround(const Vivium::Vector2<int>& center, const Vivium::Vector2<int>& frame);
-
 public:
 	static constexpr float scale = 64.0;
 
@@ -80,9 +69,7 @@ public:
 	// Loads all tile::ids into textures
 	static void LoadTextures(const std::string& atlas_file);
 
-	void Update(const Vivium::Vector2<int>& pos);
-
-	void NewRenderTest(const Vivium::Vector2<int>& pos);
+	void Render(const Vivium::Vector2<int>& pos);
 	
 	// Loads from existing world
 	World(const std::string& world_name);

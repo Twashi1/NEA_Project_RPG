@@ -28,13 +28,13 @@ namespace Vivium {
 	{}
 
 	VertexBuffer::VertexBuffer(const std::vector<float>& data, const BufferLayout& layout)
-		: id(0), layout(layout)
+		: m_ID(0), m_Layout(layout)
 	{
-		glGenBuffers(1, &id);
-		glBindBuffer(GL_ARRAY_BUFFER, id);
-		glBufferData(GL_ARRAY_BUFFER, data.size() * sizeof(float), &data[0], GL_STATIC_DRAW);
+		glGenBuffers(1, &m_ID);
+		glBindBuffer(GL_ARRAY_BUFFER, m_ID);
+		glBufferData(GL_ARRAY_BUFFER, data.size() * sizeof(float), &data[0], GL_DYNAMIC_DRAW);
 
-		const std::vector<BufferElement>& elements = layout.GetElements();
+		const std::vector<BufferElement>& elements = m_Layout.GetElements();
 
 		for (int i = 0; i < elements.size(); i++) {
 			const BufferElement& element = elements[i];
@@ -45,7 +45,31 @@ namespace Vivium {
 				element.type.component_count,	// Amount of components of type
 				element.type.gl_type,			// GL base type
 				GL_FALSE,						// Is normalised
-				layout.GetStride(),				// Stride
+				m_Layout.GetStride(),				// Stride
+				(const void*)element.offset		// Offset
+			);
+		}
+	}
+
+	VertexBuffer::VertexBuffer(const void* data, const std::size_t& size, const BufferLayout& layout)
+		: m_ID(0), m_Layout(layout)
+	{
+		glGenBuffers(1, &m_ID);
+		glBindBuffer(GL_ARRAY_BUFFER, m_ID);
+		glBufferData(GL_ARRAY_BUFFER, size, data, GL_DYNAMIC_DRAW);
+
+		const std::vector<BufferElement>& elements = m_Layout.GetElements();
+
+		for (int i = 0; i < elements.size(); i++) {
+			const BufferElement& element = elements[i];
+
+			glEnableVertexAttribArray(i);
+			glVertexAttribPointer(
+				i,								// Layout location
+				element.type.component_count,	// Amount of components of type
+				element.type.gl_type,			// GL base type
+				GL_FALSE,						// Is normalised
+				m_Layout.GetStride(),				// Stride
 				(const void*)element.offset		// Offset
 			);
 		}
@@ -53,7 +77,7 @@ namespace Vivium {
 
 	VertexBuffer::~VertexBuffer()
 	{
-		glDeleteBuffers(1, &id);
+		glDeleteBuffers(1, &m_ID);
 	}
 
 	void VertexBuffer::Unbind()
@@ -63,34 +87,68 @@ namespace Vivium {
 
 	void VertexBuffer::Bind() const
 	{
-		glBindBuffer(GL_ARRAY_BUFFER, id);
-		const std::vector<BufferElement>& elements = layout.GetElements();
+		glBindBuffer(GL_ARRAY_BUFFER, m_ID);
+		const std::vector<BufferElement>& elements = m_Layout.GetElements();
 
 		for (int i = 0; i < elements.size(); i++) {
 			const BufferElement& element = elements[i];
 
-			glEnableVertexAttribArray(i);
+			// glEnableVertexAttribArray(i);
 			glVertexAttribPointer(
 				i,								// Layout location
 				element.type.component_count,	// Amount of components of type
 				element.type.gl_type,			// GL base type
 				GL_FALSE,						// Is normalised
-				layout.GetStride(),				// Stride
+				m_Layout.GetStride(),				// Stride
 				(const void*)element.offset		// Offset
 			);
 		}
 	}
 
+	const BufferLayout& VertexBuffer::GetLayout() const { return m_Layout; }
+
+	const GLuint& VertexBuffer::GetID() const { return m_ID; }
+
 	void VertexBuffer::Set(const std::vector<float>& data)
 	{
-		Bind();
-		glBufferData(GL_ARRAY_BUFFER, data.size() * sizeof(float), &data[0], GL_STATIC_DRAW);
+		glBindBuffer(GL_ARRAY_BUFFER, m_ID);
+		glBufferSubData(GL_ARRAY_BUFFER, 0, data.size() * sizeof(float), &data[0]);
 	}
 
 	void VertexBuffer::Set(const void* data, const std::size_t& size)
 	{
-		Bind();
-		glBufferData(GL_ARRAY_BUFFER, size, data, GL_STATIC_DRAW);
+		glBindBuffer(GL_ARRAY_BUFFER, m_ID);
+		glBufferSubData(GL_ARRAY_BUFFER, 0, size, data);
+	}
+
+	void VertexBuffer::Set(unsigned int element_index, const void* data, const std::size_t& size)
+	{
+		glBindBuffer(GL_ARRAY_BUFFER, m_ID);
+		const std::vector<BufferElement>& elements = m_Layout.GetElements();
+
+		// TODO: all of this is so illegal and bad and unreadable
+		int offset = elements[element_index].offset;
+		int element_size = elements[element_index].type.size;
+		int stride = m_Layout.GetStride();
+		int total_vertices = size / element_size;
+
+		for (int i = 0; i < total_vertices; i++) {
+			glBufferSubData(GL_ARRAY_BUFFER, offset, element_size, (char*)data + (i * element_size));
+
+			offset += stride;
+		}
+	}
+
+	void* VertexBuffer::StartMap()
+	{
+		glBindBuffer(GL_ARRAY_BUFFER, m_ID);
+
+		return glMapBuffer(GL_ARRAY_BUFFER, GL_WRITE_ONLY);
+	}
+
+	void VertexBuffer::EndMap()
+	{
+		glUnmapBuffer(GL_ARRAY_BUFFER);
 	}
 	
 	BufferElement::BufferElement(const std::string& name, const GLSLDataType& type)
@@ -101,7 +159,6 @@ namespace Vivium {
 	{}
 
 	// Calculates offsets and stride
-
 	void BufferLayout::m_Calculate() {
 		unsigned int running_offset = 0;
 

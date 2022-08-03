@@ -222,92 +222,6 @@ void World::m_GenerateRegion(const Vivium::Vector2<int>& index)
 	regions[index] = region;
 }
 
-void World::m_RenderTile(int x, int y)
-{
-	// Calculate region index
-	Vivium::Vector2<int> region_index = m_GetRegionIndex(x, y);
-	// Calculate relative coords
-	int rx = x - (region_index.x * Region::LENGTH);
-	int ry = y - (region_index.y * Region::LENGTH);
-
-	// Get region
-	Region& region = m_LoadRegion(region_index); // NOTE: m_LoadRegion not really needed, since regions should always already be loaded
-
-	// Get tile from region
-	Tile& tile = region.Index(rx, ry);
-
-	// Calculate draw coords
-	float dx = x * scale;
-	float dy = y * scale;
-
-	// Construct quad
-	// TODO: make shared
-	std::shared_ptr<Vivium::Quad> quad = std::shared_ptr<Vivium::Quad>(new Vivium::Quad(dx, dy, scale, scale, 0));
-
-	// Iterate over each tile id
-	for (const Tile::ID& id : tile.ids) {
-		// Get index in atlas
-		Vivium::Vector2<int> atlas_index = m_tilemap[id];
-
-		// Set texture coords
-		quad->SetTextureCoords(*m_tile_atlas, atlas_index, m_tile_atlas_size);
-		// Submit to renderer
-		Vivium::Renderer::Submit(quad.get(), texture_shader, m_tile_atlas);
-	}
-
-	// Add ourselves to rendered_tiles
-	rendered_tiles[{x, y}] = RenderedTile(quad, tile);
-}
-
-void World::m_RenderTile(const Vivium::Vector2<int>& pos)
-{
-	// Calculate region index
-	Vivium::Vector2<int> region_index = m_GetRegionIndex(pos);
-	// Calculate relative coords
-	Vivium::Vector2<int> relative_coords = pos - (region_index * (int)Region::LENGTH);
-
-	// Get region
-	Region& region = m_LoadRegion(region_index); // NOTE: m_LoadRegion not really needed, since regions should always already be loaded
-
-	// Get tile from region
-	Tile& tile = region.Index(relative_coords);
-
-	// Calculate draw coords
-	Vivium::Vector2<float> draw_coords = Vivium::Vector2<float>(pos.x * scale, pos.y * scale);
-
-	// Construct quad
-	// TODO this might be slightly legacy? i saw a rotation added to the quad for no apparent reason
-	std::shared_ptr<Vivium::Quad> quad = std::shared_ptr<Vivium::Quad>(new Vivium::Quad(draw_coords, Vivium::Vector2<float>(scale, scale)));
-
-	// Iterate over each tile id
-	for (const Tile::ID& id : tile.ids) {
-		// Get index in atlas
-		Vivium::Vector2<int> atlas_index = m_tilemap[id];
-
-		// Set texture coords
-		quad->SetTextureCoords(*m_tile_atlas, atlas_index, m_tile_atlas_size);
-		// Submit to renderer
-		Vivium::Renderer::Submit(quad.get(), texture_shader, m_tile_atlas);
-	}
-
-	// Add ourselves to rendered_tiles
-	rendered_tiles[pos] = RenderedTile(quad, tile);
-}
-
-void World::m_RenderTile(const RenderedTile& rendered_tile)
-{
-	// Iterate over each tile id
-	for (const Tile::ID& id : rendered_tile.tile.ids) {
-		// Get index in atlas
-		Vivium::Vector2<int> atlas_index = m_tilemap[id];
-
-		// Set texture coords
-		rendered_tile.quad->SetTextureCoords(*m_tile_atlas, atlas_index, m_tile_atlas_size);
-		// Submit to renderer
-		Vivium::Renderer::Submit(rendered_tile.quad.get(), texture_shader, m_tile_atlas);
-	}
-}
-
 void World::m_GenWorld(const std::string& fullpath)
 {
 	// TODO
@@ -317,91 +231,10 @@ void World::m_GenWorld(const std::string& fullpath)
 	m_LoadRegions(Vivium::Vector2<int>(0, 0), 3);
 }
 
-void World::m_RenderAround(const Vivium::Vector2<int>& center, const Vivium::Vector2<int>& frame)
+void World::Render(const Vivium::Vector2<int>& pos)
 {
-	/*
-	* Short explanation of logic behind this function:
-	* Calling m_RenderAround renders a square area around a central position, who's side lengths are 2*radius + 1
-	* We store the last call of m_RenderAround's arguments
-	* We store all the rendered tiles from the last call in rendered_tiles
-	* Upon calling m_RenderAround, we should discard all already rendered tiles from rendered_tiles IF they are not within the bounds of the new square area
-			we're rendering
-	* To do this we find the bounds of the old "region" and the new "region", tiles in the old region that do not overlap with the new region
-			should not be rendered, thus are deleted from rendered_tiles, however tiles that do overlap are rendered
-	* However ALL tiles in the new region should be rendered, not just tiles that overlap with both regions, thus we find all the tiles within the new region
-			that do not overlap with the old region (since those tiles are already drawn), and we create quads for them, add them to rendered_tiles, and draw
-			them
-	* This should have a time complexity O(n) in average case (unordered_map::erase, at, and insert are constant on average, but can be n in worst case,
-			and worst case O(n^2)
-	*/
+	const unsigned int MAX_IDS_PER_TILE = 4;
 
-	// TODO: fix
-	
-	// If last pos has been set
-	if (last_render_frame.x != 0) {
-		// Calculate bounds of last rendering region and new rendering region
-		// Bounds of old pos
-		int left0 = last_render_pos.x - last_render_frame.x;
-		int right0 = last_render_pos.x + last_render_frame.x;
-		int bottom0 = last_render_pos.y - last_render_frame.y;
-		int top0 = last_render_pos.y + last_render_frame.y;
-		// Bounds of new pos
-		int left1 = center.x - frame.x;
-		int right1 = center.x + frame.x;
-		int bottom1 = center.y - frame.y;
-		int top1 = center.y + frame.y;
-
-		// Iterate every tile in old region
-		for (int y = bottom0; y <= top0; y++) {
-			for (int x = left0; x <= right0; x++) {
-				// Check if its within bounds of the new region
-				// Not within bounds if true
-				if (x < left1 || x > right1 || y < bottom1 || y > top1) {
-					rendered_tiles.erase({ x, y });
-				}
-				// Coordinate is within bounds
-				else {
-					// Get tile and render it
-					m_RenderTile(rendered_tiles.at({x, y}));
-				}
-			}
-		}
-
-		// Iterate every tile in new region
-		for (int y = bottom1; y <= top1; y++) {
-			for (int x = left1; x <= right1; x++) {
-				// Check tile is within bounds of old region
-				// Not within bounds if ture
-				if (x < left0 || x > right0 || y < bottom0 || y > top0) {
-					// Render new tile and add to rendered tiles
-					m_RenderTile(x, y);
-				}
-			}
-		}
-	}
-	// Render everything new
-	else {
-		for (int y = center.y - frame.y; y <= center.y + frame.y; y++) {
-			for (int x = center.x - frame.x; x <= center.x + frame.x; x++) {
-				// Render new tile and add to rendered tiles
-				m_RenderTile(x, y);
-			}
-		}
-	}
-
-	// Update last render pos and last render radius
-	last_render_pos = center;
-	last_render_frame = frame;
-}
-
-void World::Update(const Vivium::Vector2<int>& pos)
-{
-	// TODO: non-fixed render region
-	m_RenderAround(pos, {8, 6});
-}
-
-void World::NewRenderTest(const Vivium::Vector2<int>& pos)
-{
 	std::vector<float> coords;
 	std::vector<uint16_t> indexCoords;
 
@@ -409,8 +242,11 @@ void World::NewRenderTest(const Vivium::Vector2<int>& pos)
 
 	uint16_t count = 0;
 
+	coords.reserve(16 * frame.x * frame.y * MAX_IDS_PER_TILE);
+	indexCoords.reserve(6 * frame.x * frame.y * MAX_IDS_PER_TILE);
+
 	for (int y = pos.y - frame.y; y <= pos.y + frame.y; y++) {
-		for (int x = pos.x - frame.x; x <= frame.x + frame.x; x++) {
+		for (int x = pos.x - frame.x; x <= pos.x + frame.x; x++) {
 			// Calculate region index
 			Vivium::Vector2<int> region_index = m_GetRegionIndex(x, y);
 			// Calculate relative coords
@@ -430,9 +266,6 @@ void World::NewRenderTest(const Vivium::Vector2<int>& pos)
 			float halfscale = scale / 2.0f;
 
 			// Iterate over each tile id
-			coords.reserve(coords.size() + (16 * tile.ids.size()));
-			indexCoords.reserve(indexCoords.size() + (6 * tile.ids.size()));
-
 			for (const Tile::ID& id : tile.ids) {
 				// Get index in atlas
 				Vivium::Vector2<int> atlas_index = m_tilemap[id];
@@ -447,7 +280,7 @@ void World::NewRenderTest(const Vivium::Vector2<int>& pos)
 				float bottom = atlas_index.y * inv_height * m_tile_atlas_size.y;
 				float top = (atlas_index.y + 1) * inv_height * m_tile_atlas_size.y;
 
-				std::vector<float> this_coords =
+				std::array<float, 16> this_coords =
 				{
 					dx - halfscale, dy - halfscale, left, bottom,
 					dx + halfscale, dy - halfscale, right, bottom,
@@ -455,13 +288,20 @@ void World::NewRenderTest(const Vivium::Vector2<int>& pos)
 					dx - halfscale, dy + halfscale, left, top
 				};
 
-				indexCoords.emplace_back(0 + count * 4);
-				indexCoords.emplace_back(1 + count * 4);
-				indexCoords.emplace_back(2 + count * 4);
-				indexCoords.emplace_back(2 + count * 4);
-				indexCoords.emplace_back(3 + count * 4);
-				indexCoords.emplace_back(0 + count * 4);
+				int stride = count * 4;
 
+				std::array<uint16_t, 6> this_indices =
+				{
+					0 + stride,
+					1 + stride,
+					2 + stride,
+					2 + stride,
+					3 + stride,
+					0 + stride,
+				};
+
+				
+				indexCoords.insert(indexCoords.end(), this_indices.begin(), this_indices.end());
 				coords.insert(coords.end(), this_coords.begin(), this_coords.end());
 
 				count++;

@@ -1,0 +1,3 @@
+values = [1, 5, 2, 4]
+MyString = "hello"
+MyCoords = [0, 0]

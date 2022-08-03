@@ -22,14 +22,14 @@ namespace Vivium {
 		VIVIUM_API void EraseSubstring(std::string& str, const char* substr);
 
 		// Returns substr removed from str
-		VIVIUM_API::std::string EraseSubstring(const char* str, const ::std::string& substr);
+		VIVIUM_API std::string EraseSubstring(const char* str, const ::std::string& substr);
 		// Returns substr removed from str
-		VIVIUM_API::std::string EraseSubstring(const char* str, const char* substr);
+		VIVIUM_API std::string EraseSubstring(const char* str, const char* substr);
 
 		// Reads an entire file into one string on heap (NOTE: remember to delete the string once done with it)
-		VIVIUM_API::std::string* ReadFile(const ::std::string& path);
+		VIVIUM_API std::string* ReadFile(const ::std::string& path);
 
 		// Splits string by delimiter
-		VIVIUM_API::std::vector<::std::string> SplitString(const ::std::string& s, const ::std::string& delim);
+		VIVIUM_API std::vector<std::string> SplitString(const ::std::string& s, const ::std::string& delim);
 	}
 }

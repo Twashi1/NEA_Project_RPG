@@ -9,8 +9,6 @@
 #include <ft2build.h>
 #include FT_FREETYPE_H
 
-
-// Following this tutorial for rendering text
 // https://learnopengl.com/In-Practice/Text-Rendering
 
 namespace Vivium {

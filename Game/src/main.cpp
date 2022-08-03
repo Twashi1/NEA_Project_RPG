@@ -25,33 +25,36 @@ void PixelationSliderFunc(Vivium::Slider* ctx) {
 }
 
 struct MyContainer : public Vivium::IStreamable {
-    int x = 0;
+    std::vector<int> values;
 
-    MyContainer(int x) : x(x) {}
+    MyContainer(const std::vector<int>& values) : values(values) {}
 
     void Write(Vivium::Serialiser& s) const override {
-        s.Write(x, "x");
+        s.Write(values, "values");
     }
 
     void Read(Vivium::Serialiser& s) override {
-        s.Read(&x, "x");
+        s.Read(&values, "values");
     }
 };
 
 struct MyObject : public Vivium::IStreamable {
     MyContainer my_cont;
     std::string my_str;
+    Vivium::Vector2<int> my_coords;
 
-    MyObject(int x, std::string my_str) : my_cont(x), my_str(my_str) {}
+    MyObject(const std::vector<int>& values, std::string my_str) : my_cont(values), my_str(my_str) {}
 
     void Write(Vivium::Serialiser& s) const override {
         s.Write(my_cont, "MyContainer");
         s.Write(my_str, "MyString");
+        s.Write(my_coords, "MyCoords");
     }
 
     void Read(Vivium::Serialiser& s) override {
         s.Read(&my_cont, "MyContainer");
         s.Read(&my_str, "MyString");
+        s.Read(&my_coords, "MyCoords");
     }
 };
 
@@ -59,7 +62,27 @@ int sandbox(void)
 {
     using namespace Vivium;
 
-    Application::Init(WIDTH, HEIGHT, FPS, false);
+    Serialiser my_serialiser(Stream::Flag::TEXT);
+
+    MyObject obj({ 1, 5, 2, 4 }, "hello");
+
+    my_serialiser.BeginWrite("../Resources/saves/general.txt");
+    my_serialiser.Write(obj);
+    my_serialiser.EndWrite();
+
+    /*
+    MyObject mem({}, "");
+
+    my_serialiser.BeginRead("../Resources/saves/general.txt");
+    my_serialiser.Read(&mem);
+    my_serialiser.EndRead();
+
+    for (auto& value : mem.my_cont.values) {
+        std::cout << value << ", " << std::endl;
+    }
+
+    std::cout << "\nString: " << mem.my_str << std::endl;
+    */
 
     return EXIT_SUCCESS;
 }
@@ -94,7 +117,7 @@ int game(void)
     LogInfo("Loading world...");
     World world(0, "testworld");
     World::LoadTextures("tile_atlas.png");
-    world.Update(Vivium::Vector2<int>(0, 0));
+    world.Render(Vivium::Vector2<int>(0, 0));
     LogInfo("Finished initialising world");
 
     Ref(Vivium::Quad) scale_bar =       MakeRef(Vivium::Quad, -150, -300, 200, 30);
@@ -164,7 +187,7 @@ int game(void)
         player.Update();
 
         Vivium::Vector2<int> update_pos = (Vivium::Vector2<int>)(player.quad.GetCenter() / World::scale).floor();
-        world.NewRenderTest(update_pos);
+        world.Render(update_pos);
 
         Vivium::Renderer::Submit(ground_quad.get(), &ground_shader);
         Vivium::Renderer::Submit(&player.quad, player.shader);
@@ -190,5 +213,5 @@ int game(void)
 }
 
 int main(void) {
-    game();
+    sandbox();
 }

@@ -70,7 +70,7 @@ namespace Vivium {
         double elapsed = m_Timer.GetElapsed();
 
         // Update performance tracking variables and display warning if running behind
-        PollPerformance(elapsed);
+        m_CalculatePerformance(elapsed);
 
         // TODO: this is bad probably
         while (elapsed < m_TimePerFrame) { elapsed += m_Timer.GetElapsed(); }
@@ -222,7 +222,7 @@ namespace Vivium {
         glfwTerminate();
     }
 
-    void VIVIUM_API Application::PollPerformance(double dt)
+    void VIVIUM_API Application::m_CalculatePerformance(double dt)
     {
         // Update performance tracking variables
         m_FramesProcessed++;

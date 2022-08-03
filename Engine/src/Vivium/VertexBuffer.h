@@ -83,17 +83,26 @@ namespace Vivium {
 	};
 
 	class VIVIUM_API VertexBuffer {
-	public:
-		GLuint id;
-		BufferLayout layout; // TODO: shouldn't be able to edit layout
+	private:
+		GLuint m_ID;
+		BufferLayout m_Layout;
 
+	public:
 		VertexBuffer(const std::vector<float>& data, const BufferLayout& layout);
+		VertexBuffer(const void* data, const std::size_t& size, const BufferLayout& layout);
 		~VertexBuffer();
 
 		static void Unbind();
 		void Bind() const;
 
+		const BufferLayout& GetLayout() const;
+		const GLuint& GetID() const;
+
 		void Set(const std::vector<float>& vertices);
 		void Set(const void* data, const std::size_t& size);
+		void Set(unsigned int element_index, const void* data, const std::size_t& size);
+
+		void* StartMap();
+		void EndMap();
 	};
 }

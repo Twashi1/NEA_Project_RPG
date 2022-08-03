@@ -62,7 +62,7 @@ namespace Vivium {
 		shader->SetUniform1f("u_Time", Timer::GetTime());
 		shader->SetUniform1i("u_Texture", slot);
 
-		glDrawElements(GL_TRIANGLES, ib->count, ib->type, nullptr);
+		glDrawElements(GL_TRIANGLES, ib->GetCount(), ib->GetType(), nullptr);
 	}
 
 	void Renderer::Submit(const VertexBuffer* vb, const IndexBuffer* ib, Shader* shader)
@@ -72,7 +72,7 @@ namespace Vivium {
 		shader->SetUniformMat4fv("u_ViewMat", camera->GetViewMat());
 		shader->SetUniform1f("u_Time", Timer::GetTime());
 
-		glDrawElements(GL_TRIANGLES, ib->count, ib->type, nullptr);
+		glDrawElements(GL_TRIANGLES, ib->GetCount(), ib->GetType(), nullptr);
 	}
 
 	void Renderer::Submit(const VertexBuffer* vb, const IndexBuffer* ib, Shader* shader, const Framebuffer* fb, uint8_t slot)
@@ -87,7 +87,7 @@ namespace Vivium {
 		glBindTexture(GL_TEXTURE_2D, fb->GetColorAttachment());
 		glActiveTexture(GL_TEXTURE0);
 
-		glDrawElements(GL_TRIANGLES, ib->count, ib->type, nullptr);
+		glDrawElements(GL_TRIANGLES, ib->GetCount(), ib->GetType(), nullptr);
 	}
 
 	void Renderer::Submit(const Quad* quad, Shader* shader)
@@ -99,7 +99,7 @@ namespace Vivium {
 		shader->SetUniformMat4fv("u_ViewMat", camera->GetViewMat());
 		shader->SetUniform1f("u_Time", Timer::GetTime());
 
-		glDrawElements(GL_TRIANGLES, ib->count, ib->type, nullptr);
+		glDrawElements(GL_TRIANGLES, ib->GetCount(), ib->GetType(), nullptr);
 	}
 
 	void Renderer::Submit(const Quad* quad, Shader* shader, const Texture* texture)
@@ -118,7 +118,7 @@ namespace Vivium {
 		shader->SetUniformMat4fv("u_ViewMat", camera->GetViewMat());
 		shader->SetUniform1f("u_Time", Timer::GetTime());
 
-		glDrawElements(GL_TRIANGLES, ib->count, ib->type, nullptr);
+		glDrawElements(GL_TRIANGLES, ib->GetCount(), ib->GetType(), nullptr);
 
 		// Unbind texture
 		Texture::Unbind();
@@ -140,7 +140,7 @@ namespace Vivium {
 		shader->SetUniformMat4fv("u_ViewMat", camera->GetViewMat());
 		shader->SetUniform1f("u_Time", Timer::GetTime());
 
-		glDrawElements(GL_TRIANGLES, ib->count, ib->type, nullptr);
+		glDrawElements(GL_TRIANGLES, ib->GetCount(), ib->GetType(), nullptr);
 	}
 
 	void Renderer::Submit(const Text* text)

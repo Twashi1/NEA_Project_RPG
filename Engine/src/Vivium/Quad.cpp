@@ -10,17 +10,9 @@ namespace Vivium {
 	{
 		std::vector<Vector2<float>> vertices = GetVertices();
 
-		std::vector<float> buffer_data = {
-			vertices[Rect::BOTTOMLEFT].x, vertices[Rect::BOTTOMLEFT].y, m_TexCoords[0], m_TexCoords[1],
-			vertices[Rect::BOTTOMRIGHT].x, vertices[Rect::BOTTOMRIGHT].y, m_TexCoords[2], m_TexCoords[3],
-			vertices[Rect::TOPRIGHT].x, vertices[Rect::TOPRIGHT].y, m_TexCoords[4], m_TexCoords[5],
-			vertices[Rect::TOPLEFT].x, vertices[Rect::TOPLEFT].y, m_TexCoords[6], m_TexCoords[7]
-		};
-
+		// NOTE: assuming sizeof(Vector2<float>) = sizeof(float) * 2
 		// Set vertex buffer vertices
-		vb->Set(
-			buffer_data
-		);
+		vb->Set(0, &vertices[0], sizeof(Vector2<float>) * 4);
 	}
 
 	void Quad::m_Construct()
@@ -159,16 +151,8 @@ namespace Vivium {
 				left, top
 		};
 
-		// Update VertexBuffer coords
-		// TODO: update
-		const std::vector<Vector2<float>>& vertices = GetVertices();
-
-		vb->Set(std::vector<float>{
-			vertices[Rect::BOTTOMLEFT].x, vertices[Rect::BOTTOMLEFT].y, m_TexCoords[0], m_TexCoords[1],
-			vertices[Rect::BOTTOMRIGHT].x, vertices[Rect::BOTTOMRIGHT].y, m_TexCoords[2], m_TexCoords[3],
-			vertices[Rect::TOPRIGHT].x, vertices[Rect::TOPRIGHT].y, m_TexCoords[4], m_TexCoords[5],
-			vertices[Rect::TOPLEFT].x, vertices[Rect::TOPLEFT].y, m_TexCoords[6], m_TexCoords[7]
-			});
+		// Update texture coords
+		vb->Set(1, &m_TexCoords[0], sizeof(float) * 8);
 	}
 
 	void Quad::SetTextureCoords(const Texture& atlas, const Vector2<int>& top_left, const Vector2<int>& bottom_right, const Vector2<int>& size)
@@ -191,15 +175,8 @@ namespace Vivium {
 				left, top
 		};
 
-		// Update VertexBuffer coords
-		const std::vector<Vector2<float>>& vertices = GetVertices();
-
-		vb->Set(std::vector<float>{
-			vertices[Rect::BOTTOMLEFT].x, vertices[Rect::BOTTOMLEFT].y, m_TexCoords[0], m_TexCoords[1],
-			vertices[Rect::BOTTOMRIGHT].x, vertices[Rect::BOTTOMRIGHT].y, m_TexCoords[2], m_TexCoords[3],
-			vertices[Rect::TOPRIGHT].x, vertices[Rect::TOPRIGHT].y, m_TexCoords[4], m_TexCoords[5],
-			vertices[Rect::TOPLEFT].x, vertices[Rect::TOPLEFT].y, m_TexCoords[6], m_TexCoords[7]
-		});
+		// Update texture coords
+		vb->Set(1, &m_TexCoords[0], sizeof(float) * 8);
 	}
 
 	void Quad::Write(Serialiser& s) const

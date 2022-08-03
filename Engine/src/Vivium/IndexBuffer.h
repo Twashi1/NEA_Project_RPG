@@ -5,14 +5,19 @@
 
 namespace Vivium {
 	class VIVIUM_API IndexBuffer {
-	public:
-		GLuint id;
-		GLushort count; // Amount of indices
-		GLenum type; // Datatype of each index
+		GLuint m_ID;
+		GLushort m_Count; // Amount of indices
+		GLenum m_GLType; // GLSL data type
 
+	public:
 		IndexBuffer(const std::vector<uint16_t>& indices);
 		IndexBuffer(const std::vector<uint8_t>& indices);
+		IndexBuffer(const void* data, const std::size_t& size, const std::size_t& count, GLenum gl_type);
 		~IndexBuffer();
+
+		const GLuint& GetID() const;
+		const GLushort& GetCount() const;
+		const GLenum& GetType() const;
 
 		static void Unbind();
 		void Bind() const;
