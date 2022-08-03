@@ -1,6 +1,6 @@
 #pragma once
 
-#include "Utils.h"
+#include "Logger.h"
 #include "Input.h"
 #include "Text.h"
 #include "Font.h"

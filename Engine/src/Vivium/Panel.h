@@ -1,6 +1,6 @@
 #pragma once
 
-#include "Utils.h"
+#include "Logger.h"
 #include "Quad.h"
 #include "Slider.h"
 #include "Button.h"

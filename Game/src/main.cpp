@@ -62,7 +62,7 @@ int sandbox(void)
 {
     using namespace Vivium;
 
-    Serialiser my_serialiser(Stream::Flag::TEXT);
+    Serialiser my_serialiser(Stream::Flag(Stream::Flag::TEXT | Stream::Flag::TRUNC));
 
     MyObject obj({ 1, 5, 2, 4 }, "hello");
 
@@ -213,5 +213,5 @@ int game(void)
 }
 
 int main(void) {
-    sandbox();
+    game();
 }

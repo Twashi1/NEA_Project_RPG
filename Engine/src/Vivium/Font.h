@@ -1,10 +1,9 @@
 #pragma once
 
-#include "Utils.h"
+#include "Core.h"
+#include "Logger.h"
 #include "Texture.h"
 #include "Vector2.h"
-#include "Vector2.h"
-#include "Core.h"
 
 #include <ft2build.h>
 #include FT_FREETYPE_H

@@ -1,6 +1,8 @@
 #pragma once
 
-#include "Utils.h"
+#include "Core.h"
+#include "Logger.h"
+#include "Math.h"
 #include "Vector2.h"
 
 // TODO: rework to use function pointers and enums to select functions/fractal/etc.

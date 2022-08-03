@@ -1,6 +1,6 @@
 #pragma once
 
-#include "Utils.h"
+#include "Core.h"
 #include "Renderer.h"
 #include "Application.h"
 

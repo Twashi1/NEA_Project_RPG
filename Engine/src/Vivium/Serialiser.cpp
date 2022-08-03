@@ -11,11 +11,27 @@ namespace Vivium {
 		else				return Stream::Flag::INVALID;
 	}
 
+	bool Stream::GetTrunc(const Flag& flag)
+	{
+		return (uint8_t)flag & (uint8_t)Stream::Flag::TRUNC;
+	}
+
+	int operator|(const Stream::Flag& left, const Stream::Flag& right) { return (uint8_t)left | (uint8_t)right; }
+	int operator|(const int& left, const Stream::Flag& right) { return left | (uint8_t)right; }
+	int operator|(const Stream::Flag& left, const int& right) { return (uint8_t)left | right; }
+
 	Serialiser::Serialiser(const Stream::Flag& flag)
 		: m_Flags(flag)
 	{
 		m_Stream = Stream();
 	}
+
+	Serialiser::Serialiser(const int& flags)
+		: m_Flags((Stream::Flag)flags)
+	{
+		m_Stream = Stream();
+	}
+
 
 	Stream::Stream() {}
 
@@ -37,11 +53,25 @@ namespace Vivium {
 	void Serialiser::BeginWrite(const char* path) {
 		if (!std::filesystem::exists(path)) { LogInfo("Creating file for write at {}", path); }
 
+		bool truncate = Stream::GetTrunc(m_Flags);
+
+		// TODO: so bad
+
 		switch (Stream::GetMode(m_Flags)) {
 		case Stream::Flag::BINARY:
-			m_Stream.out = new std::ofstream(path, std::ios::binary | std::ofstream::trunc); break;
+			if (truncate) {
+				m_Stream.out = new std::ofstream(path, std::ios::binary | std::ios::trunc);
+			}
+			else {
+				m_Stream.out = new std::ofstream(path, std::ios::binary | std::ios::app);
+			} break;
 		case Stream::Flag::TEXT:
-			m_Stream.out = new std::ofstream(path, std::ios::trunc); break;
+			if (truncate) {
+				m_Stream.out = new std::ofstream(path, std::ios::trunc);
+			}
+			else {
+				m_Stream.out = new std::ofstream(path, std::ios::app);
+			} break;
 		default:
 			LogError("Mode is invalid! Class incorrectly initialised?");
 		}

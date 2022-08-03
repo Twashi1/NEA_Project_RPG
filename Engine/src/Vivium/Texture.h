@@ -1,7 +1,7 @@
 #pragma once
 
 #include "Renderer.h"
-#include "Utils.h"
+#include "Logger.h"
 
 #include "stb_image.h"
 

@@ -1,9 +1,10 @@
 #pragma once
 
-#include "Texture.h"
-#include "Quad.h"
+#include "Utils.h"
+#include "Logger.h"
 #include "Vector2.h"
-#include "Core.h"
+#include "Quad.h"
+#include "Texture.h"
 
 // TODO: python scripting for animations? or python script to generate timings for animations?
 // TODO: better names
