@@ -93,7 +93,7 @@ namespace Vivium {
 				// Update value based on new position
 				m_UpdateValue();
 				// Run callback
-				if (callback != nullptr) callback(this);
+				if (callback != nullptr) callback(this, m_UserParams);
 			}
 			else {
 				isMovingSlider = false;
@@ -104,20 +104,20 @@ namespace Vivium {
 		bar_shader->SetUniform1f("u_Value", m_Value);
 	}
 
-	Slider::Slider(Ref(Quad) bar_quad, Ref(Quad) slider_quad, CallbackFunc_t callback)
-		: m_Value(0.0f), m_BarQuad(bar_quad), m_SliderQuad(slider_quad), callback(callback), bar_shader(m_DefaultBarShader), slider_shader(m_DefaultSliderShader)
+	Slider::Slider(Ref(Quad) bar_quad, Ref(Quad) slider_quad, CallbackFunc_t callback, void* userParams)
+		: m_Value(0.0f), m_BarQuad(bar_quad), m_SliderQuad(slider_quad), callback(callback), bar_shader(m_DefaultBarShader), slider_shader(m_DefaultSliderShader), m_UserParams(userParams)
 	{
 		m_Construct();
 	}
 
-	Slider::Slider(Ref(Quad) bar_quad, Ref(Quad) slider_quad, Ref(Shader) bar_shader, Ref(Shader) slider_shader, CallbackFunc_t callback)
-		: m_Value(0.0f), m_BarQuad(bar_quad), m_SliderQuad(slider_quad), callback(callback), bar_shader(bar_shader), slider_shader(slider_shader)
+	Slider::Slider(Ref(Quad) bar_quad, Ref(Quad) slider_quad, Ref(Shader) bar_shader, Ref(Shader) slider_shader, CallbackFunc_t callback, void* userParams)
+		: m_Value(0.0f), m_BarQuad(bar_quad), m_SliderQuad(slider_quad), callback(callback), bar_shader(bar_shader), slider_shader(slider_shader), m_UserParams(userParams)
 	{
 		m_Construct();
 	}
 
-	Slider::Slider(Ref(Quad) bar_quad, Ref(Quad) slider_quad, Ref(Shader) bar_shader, Ref(Shader) slider_shader, Ref(Texture) bar_texture, Ref(Texture) slider_texture, CallbackFunc_t callback)
-		: m_Value(0.0f), m_BarQuad(bar_quad), m_SliderQuad(slider_quad), callback(callback), bar_shader(bar_shader), slider_shader(slider_shader), bar_texture(bar_texture), slider_texture(slider_texture)
+	Slider::Slider(Ref(Quad) bar_quad, Ref(Quad) slider_quad, Ref(Shader) bar_shader, Ref(Shader) slider_shader, Ref(Texture) bar_texture, Ref(Texture) slider_texture, CallbackFunc_t callback, void* userParams)
+		: m_Value(0.0f), m_BarQuad(bar_quad), m_SliderQuad(slider_quad), callback(callback), bar_shader(bar_shader), slider_shader(slider_shader), bar_texture(bar_texture), slider_texture(slider_texture), m_UserParams(userParams)
 	{
 		m_Construct();
 	}

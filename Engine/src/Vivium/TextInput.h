@@ -10,7 +10,7 @@
 namespace Vivium {
 	class VIVIUM_API TextInput {
 	public:
-		typedef void (*CallbackFunc_t)(TextInput*); // Shorthand for a callback function pointer (takes the text input that was entered as a paramater)
+		typedef void (*CallbackFunc_t)(TextInput*, void*); // Shorthand for a callback function pointer (takes the text input that was entered as a paramater)
 
 		static Ref(Animation) m_TypingBar; // Animation for the bar that shows where your cursor currently is
 		static RGBColor m_DefaultEmptyColor; // Default color for text that displays when input is empty
@@ -46,6 +46,7 @@ namespace Vivium {
 		void m_UpdateText();
 
 		CallbackFunc_t callback;
+		void* m_UserParams;
 
 		int m_Offset;
 
@@ -66,12 +67,14 @@ namespace Vivium {
 
 		static void Init(Ref(Texture) engine_icons);
 
-		TextInput(const Quad& quad, CallbackFunc_t callback, int offset = 0);
-		TextInput(const Quad& quad, CallbackFunc_t callback, Ref(Shader) bg_shader, int offset = 0);
-		TextInput(const Quad& quad, CallbackFunc_t callback, Ref(Shader) bg_shader, Ref(Texture) bg_texture, int offset = 0);
-		TextInput(const Quad& quad, CallbackFunc_t callback, const RGBColor& typed_color, const RGBColor& empty_color, int offset = 0);
-		TextInput(const Quad& quad, CallbackFunc_t callback, const RGBColor& typed_color, const RGBColor& empty_color, Ref(Shader) bg_shader, int offset = 0);
-		TextInput(const Quad& quad, CallbackFunc_t callback, const RGBColor& typed_color, const RGBColor& empty_color, Ref(Shader) bg_shader, Ref(Texture) bg_texture, int offset = 0);
+		void SetUserParams(void* userParams);
+
+		TextInput(const Quad& quad, CallbackFunc_t callback, void* userParams = nullptr, int offset = 0);
+		TextInput(const Quad& quad, CallbackFunc_t callback, Ref(Shader) bg_shader, void* userParams = nullptr, int offset = 0);
+		TextInput(const Quad& quad, CallbackFunc_t callback, Ref(Shader) bg_shader, Ref(Texture) bg_texture, void* userParams = nullptr, int offset = 0);
+		TextInput(const Quad& quad, CallbackFunc_t callback, const RGBColor& typed_color, const RGBColor& empty_color, void* userParams = nullptr, int offset = 0);
+		TextInput(const Quad& quad, CallbackFunc_t callback, const RGBColor& typed_color, const RGBColor& empty_color, Ref(Shader) bg_shader, void* userParams = nullptr, int offset = 0);
+		TextInput(const Quad& quad, CallbackFunc_t callback, const RGBColor& typed_color, const RGBColor& empty_color, Ref(Shader) bg_shader, Ref(Texture) bg_texture, void* userParams = nullptr, int offset = 0);
 		~TextInput();
 
 		void CheckClicked(const Vector2<float>& cursor_pos, const Input::State& lmb_state);

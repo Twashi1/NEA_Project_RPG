@@ -34,6 +34,8 @@ namespace Vivium {
 		m_TextShader->Bind(); m_TextShader->SetUniform3f("u_TextColor", m_DefaultEmptyColor.r, m_DefaultEmptyColor.g, m_DefaultEmptyColor.b);
 	}
 
+	void TextInput::SetUserParams(void* userParams) { m_UserParams = userParams; }
+
 	void TextInput::CheckClicked(const Vector2<float>& cursor_pos, const Input::State& lmb_state)
 	{
 		bool withinQuad = quad.Contains(cursor_pos);
@@ -129,7 +131,7 @@ namespace Vivium {
 			// Pressed enter
 			if (keypress.key == GLFW_KEY_ENTER) {
 				// Submit the text
-				callback(this);
+				callback(this, m_UserParams);
 				// No longer typing (make subroutine probably so other events that need to happen, happen
 				isTyping = false;
 				// TODO: move to next text input box
@@ -162,44 +164,44 @@ namespace Vivium {
 		m_TypingBar->Update();
 	}
 
-	TextInput::TextInput(const Quad& quad, CallbackFunc_t callback, int offset)
+	TextInput::TextInput(const Quad& quad, CallbackFunc_t callback, void* userParams, int offset)
 		: quad(quad), callback(callback), bg_shader(m_DefaultBgShader), bg_texture(nullptr), empty_text(m_DefaultEmptyText),
-		m_EmptyColor(m_DefaultEmptyColor), m_TypedColor(m_DefaultTypedColor), m_Offset(offset)
+		m_EmptyColor(m_DefaultEmptyColor), m_TypedColor(m_DefaultTypedColor), m_Offset(offset), m_UserParams(userParams)
 	{
 		m_Construct();
 	}
 
-	TextInput::TextInput(const Quad& quad, CallbackFunc_t callback, Ref(Shader) bg_shader, int offset)
+	TextInput::TextInput(const Quad& quad, CallbackFunc_t callback, Ref(Shader) bg_shader, void* userParams, int offset)
 		: quad(quad), callback(callback), bg_shader(bg_shader), bg_texture(nullptr), empty_text(m_DefaultEmptyText),
-		m_EmptyColor(m_DefaultEmptyColor), m_TypedColor(m_DefaultTypedColor), m_Offset(offset)
+		m_EmptyColor(m_DefaultEmptyColor), m_TypedColor(m_DefaultTypedColor), m_Offset(offset), m_UserParams(userParams)
 	{
 		m_Construct();
 	}
 
-	TextInput::TextInput(const Quad& quad, CallbackFunc_t callback, Ref(Shader) bg_shader, Ref(Texture) bg_texture, int offset)
+	TextInput::TextInput(const Quad& quad, CallbackFunc_t callback, Ref(Shader) bg_shader, Ref(Texture) bg_texture, void* userParams, int offset)
 		: quad(quad), callback(callback), bg_shader(bg_shader), bg_texture(bg_texture), empty_text(m_DefaultEmptyText),
-		m_EmptyColor(m_DefaultEmptyColor), m_TypedColor(m_DefaultTypedColor), m_Offset(offset)
+		m_EmptyColor(m_DefaultEmptyColor), m_TypedColor(m_DefaultTypedColor), m_Offset(offset), m_UserParams(userParams)
 	{
 		m_Construct();
 	}
 
-	TextInput::TextInput(const Quad& quad, CallbackFunc_t callback, const RGBColor& typed_color, const RGBColor& empty_color, int offset)
+	TextInput::TextInput(const Quad& quad, CallbackFunc_t callback, const RGBColor& typed_color, const RGBColor& empty_color, void* userParams, int offset)
 		: quad(quad), callback(callback), bg_shader(m_DefaultBgShader), bg_texture(nullptr), empty_text(m_DefaultEmptyText),
-		m_EmptyColor(empty_color), m_TypedColor(typed_color), m_Offset(offset)
+		m_EmptyColor(empty_color), m_TypedColor(typed_color), m_Offset(offset), m_UserParams(userParams)
 	{
 		m_Construct();
 	}
 
-	TextInput::TextInput(const Quad& quad, CallbackFunc_t callback, const RGBColor& typed_color, const RGBColor& empty_color, Ref(Shader) bg_shader, int offset)
+	TextInput::TextInput(const Quad& quad, CallbackFunc_t callback, const RGBColor& typed_color, const RGBColor& empty_color, Ref(Shader) bg_shader, void* userParams, int offset)
 		: quad(quad), callback(callback), bg_shader(bg_shader), bg_texture(nullptr), empty_text(m_DefaultEmptyText),
-		m_EmptyColor(empty_color), m_TypedColor(typed_color), m_Offset(offset)
+		m_EmptyColor(empty_color), m_TypedColor(typed_color), m_Offset(offset), m_UserParams(userParams)
 	{
 		m_Construct();
 	}
 
-	TextInput::TextInput(const Quad& quad, CallbackFunc_t callback, const RGBColor& typed_color, const RGBColor& empty_color, Ref(Shader) bg_shader, Ref(Texture) bg_texture, int offset)
+	TextInput::TextInput(const Quad& quad, CallbackFunc_t callback, const RGBColor& typed_color, const RGBColor& empty_color, Ref(Shader) bg_shader, Ref(Texture) bg_texture, void* userParams, int offset)
 		: quad(quad), callback(callback), bg_shader(bg_shader), bg_texture(bg_texture), empty_text(m_DefaultEmptyText),
-		m_EmptyColor(empty_color), m_TypedColor(typed_color), m_Offset(offset)
+		m_EmptyColor(empty_color), m_TypedColor(typed_color), m_Offset(offset), m_UserParams(userParams)
 	{
 		m_Construct();
 	}

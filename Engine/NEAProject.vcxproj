@@ -48,7 +48,6 @@
     <ClCompile Include="src\Vivium\Texture.cpp" />
     <ClCompile Include="src\Vivium\TextureAtlas.cpp" />
     <ClCompile Include="src\Vivium\Timer.cpp" />
-    <ClCompile Include="src\Vivium\ToggleSwitch.cpp" />
     <ClCompile Include="src\Vivium\Utils.cpp" />
     <ClCompile Include="src\Vivium\Vector2.cpp" />
     <ClCompile Include="src\Vivium\VersionNumber.cpp" />
@@ -85,7 +84,6 @@
     <ClInclude Include="src\Vivium\Texture.h" />
     <ClInclude Include="src\Vivium\TextureAtlas.h" />
     <ClInclude Include="src\Vivium\Timer.h" />
-    <ClInclude Include="src\Vivium\ToggleSwitch.h" />
     <ClInclude Include="src\Vivium\Utils.h" />
     <ClInclude Include="src\Vivium\Vector2.h" />
     <ClInclude Include="src\Vivium\VersionNumber.h" />

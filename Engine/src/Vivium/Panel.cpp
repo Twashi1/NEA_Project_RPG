@@ -230,11 +230,6 @@ namespace Vivium {
 		//Anchor(x, y, Ref(Vector2<float>)(&text->pos));
 	}
 
-	void Panel::Anchor(ANCHOR x, ANCHOR y, Ref(ToggleSwitch) toggle_switch)
-	{
-		// TODO
-	}
-
 	void Panel::Anchor(ANCHOR x, ANCHOR y, Ref(TextInput) text_input)
 	{
 		//Anchor(x, y, text_input->m_Text);

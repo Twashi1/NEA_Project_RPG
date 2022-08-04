@@ -21,8 +21,11 @@ namespace Vivium {
 		Ref(Quad) m_SliderQuad;
 
 		bool isMovingSlider = false;
+
+		void* m_UserParams = nullptr;
+
 	public:
-		typedef void (*CallbackFunc_t)(Slider*);
+		typedef void (*CallbackFunc_t)(Slider*, void*);
 
 		static void Init();
 
@@ -45,11 +48,13 @@ namespace Vivium {
 		const Vector2<float>& GetPos() const;
 		void SetPos(const Vector2<float>& new_pos);
 
+		void SetUserParams(void* userParams) { m_UserParams = userParams; }
+
 		void Update();
 
-		Slider(Ref(Quad) bar_quad, Ref(Quad) slider_quad, CallbackFunc_t callback);
-		Slider(Ref(Quad) bar_quad, Ref(Quad) slider_quad, Ref(Shader) bar_shader, Ref(Shader) slider_shader, CallbackFunc_t callback);
-		Slider(Ref(Quad) bar_quad, Ref(Quad) slider_quad, Ref(Shader) bar_shader, Ref(Shader) slider_shader, Ref(Texture) bar_texture, Ref(Texture) slider_texture, CallbackFunc_t callback);
+		Slider(Ref(Quad) bar_quad, Ref(Quad) slider_quad, CallbackFunc_t callback, void* userParams = nullptr);
+		Slider(Ref(Quad) bar_quad, Ref(Quad) slider_quad, Ref(Shader) bar_shader, Ref(Shader) slider_shader, CallbackFunc_t callback, void* userParams = nullptr);
+		Slider(Ref(Quad) bar_quad, Ref(Quad) slider_quad, Ref(Shader) bar_shader, Ref(Shader) slider_shader, Ref(Texture) bar_texture, Ref(Texture) slider_texture, CallbackFunc_t callback, void* userParams = nullptr);
 		~Slider();
 
 		friend Renderer;

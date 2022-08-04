@@ -26,7 +26,7 @@ namespace Vivium {
 
     Ref(Panel) Application::window_panel = nullptr;
 
-    void VIVIUM_API Application::m_WindowResizeCallback(GLFWwindow* window, int nwidth, int nheight)
+    void Application::m_WindowResizeCallback(GLFWwindow* window, int nwidth, int nheight)
     {
         // Update window dimensions
         width = nwidth; height = nheight;
@@ -41,7 +41,7 @@ namespace Vivium {
         glViewport(0, 0, width, height);
     }
 
-    void VIVIUM_API Application::BeginFrame()
+    void Application::BeginFrame()
     {
         // Record time of frame beginning
         m_Timer.Start();
@@ -62,7 +62,7 @@ namespace Vivium {
         glfwPollEvents();
     }
 
-    void VIVIUM_API Application::EndFrame()
+    void Application::EndFrame()
     {
         // Update the screen from all the draw calls
         glfwSwapBuffers(window);
@@ -76,7 +76,9 @@ namespace Vivium {
         while (elapsed < m_TimePerFrame) { elapsed += m_Timer.GetElapsed(); }
     }
 
-    bool VIVIUM_API Application::IsRunning()
+    Vector2<int> Application::GetScreenDim() { return Vector2<int>(width, height); }
+
+    bool Application::IsRunning()
     {
         return !glfwWindowShouldClose(window);
     }
@@ -86,7 +88,7 @@ namespace Vivium {
         glClearColor(color.r, color.g, color.b, 1.0f);
     }
 
-    void VIVIUM_API Application::Init(int nwidth, int nheight, int nfps, bool nisStatsEnabled)
+    void Application::Init(int nwidth, int nheight, int nfps, bool nisStatsEnabled)
     {
         Application::width = nwidth;
         Application::height = nheight;
@@ -180,8 +182,6 @@ namespace Vivium {
         // Initialise text input class
         TextInput::Init(engine_icons);
 
-        ToggleSwitch::Init("engine_icons.png");
-
         // TODO Panel::Init(width, height)
         // Construct window panel
         Ref(Quad) panel_quad = MakeRef(Quad, width * 0.5f, height * 0.5f, (float)width, (float)height);
@@ -213,7 +213,7 @@ namespace Vivium {
         LogInfo("Loaded engine on version: {}", m_VersionNumber);
     }
 
-    void VIVIUM_API Application::Terminate()
+    void Application::Terminate()
     {
         LogInfo("Engine shutting down");
 
@@ -222,7 +222,7 @@ namespace Vivium {
         glfwTerminate();
     }
 
-    void VIVIUM_API Application::m_CalculatePerformance(double dt)
+    void Application::m_CalculatePerformance(double dt)
     {
         // Update performance tracking variables
         m_FramesProcessed++;
@@ -243,7 +243,7 @@ namespace Vivium {
         }
     }
 
-    void VIVIUM_API Application::UpdateStats(const Body& player_body)
+    void Application::UpdateStats(const Body& player_body)
     {
         {
             double avg_tpf = (m_ProcessingTime / m_FramesProcessed);
@@ -253,7 +253,7 @@ namespace Vivium {
             if (avg_tpf > m_TimePerFrame) { color = RGBColor::RED; }
             else if (avg_tpf > m_TimePerFrame * 0.7) { color = RGBColor::YELLOW; }
 
-            std::string text = std::format("Average time per frame: {}ms", avg_tpf_ms);
+            std::string text = std::format("Average time per frame: {}ms/{:.3f}ms", avg_tpf_ms, m_TimePerFrame * 1000);
 
             Text& t = m_DebugStatsText["Average TPF"];
             t.shader->Bind(); t.shader->SetUniform3f("u_TextColor", color.r, color.g, color.b);

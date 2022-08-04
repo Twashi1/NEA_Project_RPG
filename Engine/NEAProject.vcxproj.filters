@@ -82,9 +82,6 @@
     <ClCompile Include="src\Vivium\Timer.cpp">
       <Filter>Source</Filter>
     </ClCompile>
-    <ClCompile Include="src\Vivium\ToggleSwitch.cpp">
-      <Filter>Source</Filter>
-    </ClCompile>
     <ClCompile Include="src\Vivium\Utils.cpp">
       <Filter>Source</Filter>
     </ClCompile>
@@ -188,9 +185,6 @@
       <Filter>Headers</Filter>
     </ClInclude>
     <ClInclude Include="src\Vivium\Timer.h">
-      <Filter>Headers</Filter>
-    </ClInclude>
-    <ClInclude Include="src\Vivium\ToggleSwitch.h">
       <Filter>Headers</Filter>
     </ClInclude>
     <ClInclude Include="src\Vivium\Utils.h">

@@ -1,6 +1,6 @@
 #include "Player.h"
 
-void Player::Update()
+void Player::UpdateMovement()
 {
     float current = Vivium::Timer::GetTime();
     float elapsed = current - m_Time; m_Time = current;
@@ -40,6 +40,25 @@ void Player::Update()
 
     body->acc -= body->vel * FRICTION;
     body->vel = body->vel + (body->acc * elapsed);
+}
+
+void Player::UpdateSelectedTile(World& world)
+{
+    Vivium::Vector2<float> cursor_pos = Vivium::Input::GetCursorPos();
+    Vivium::Vector2<float> offset = (Vivium::Vector2<float>)Vivium::Application::GetScreenDim() * 0.5f;
+
+    // Convert cursor position to world position
+    // TODO: assumes no rotation etc.
+    Vivium::Vector2<float> world_pos = cursor_pos + quad.GetCenter() - offset;
+    selected_tile_pos = Vivium::Vector2<int>((world_pos / World::scale).floor());
+    selected_tile = world.GetTile(selected_tile_pos);
+    // TODO: Add draw to selected tile
+}
+
+void Player::Update(World& world)
+{
+    UpdateMovement();
+    UpdateSelectedTile(world);
 }
 
 Player::Player()

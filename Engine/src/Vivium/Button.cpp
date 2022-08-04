@@ -52,39 +52,43 @@ namespace Vivium {
 		return quad.GetCenter();
 	}
 
-	Button::Button(const Quad& quad, CallbackFunc_t callback, const std::string& idle_text, const std::string& pressed_text, Ref(Shader) idle_shader, Ref(Shader) pressed_shader, Ref(Texture) idle_texture, Ref(Texture) pressed_texture)
+	Button::Button(const Quad& quad, CallbackFunc_t callback, const std::string& idle_text, const std::string& pressed_text, Ref(Shader) idle_shader, Ref(Shader) pressed_shader, Ref(Texture) idle_texture, Ref(Texture) pressed_texture, void* userParams)
 		: quad(quad),
 		callback(callback),
 		idle_text(idle_text), pressed_text(pressed_text),
 		idle_shader(idle_shader), pressed_shader(pressed_shader),
-		idle_texture(idle_texture), pressed_texture(pressed_texture)
+		idle_texture(idle_texture), pressed_texture(pressed_texture),
+		m_UserParams(userParams)
 	{
 		m_Construct();
 	}
 
-	Button::Button(const Quad& quad, CallbackFunc_t callback, const std::string& idle_text, const std::string& pressed_text, Ref(Shader) idle_shader, Ref(Shader) pressed_shader)
+	Button::Button(const Quad& quad, CallbackFunc_t callback, const std::string& idle_text, const std::string& pressed_text, Ref(Shader) idle_shader, Ref(Shader) pressed_shader, void* userParams)
 		: quad(quad),
 		callback(callback),
 		idle_text(idle_text), pressed_text(pressed_text),
-		idle_shader(idle_shader), pressed_shader(pressed_shader)
+		idle_shader(idle_shader), pressed_shader(pressed_shader),
+		m_UserParams(userParams)
 	{
 		m_Construct();
 	}
 
-	Button::Button(const Quad& quad, CallbackFunc_t callback, const std::string& idle_text, const std::string& pressed_text)
+	Button::Button(const Quad& quad, CallbackFunc_t callback, const std::string& idle_text, const std::string& pressed_text, void* userParams)
 		: quad(quad),
 		callback(callback),
 		idle_text(idle_text), pressed_text(pressed_text),
-		idle_shader(m_DefaultIdleShader), pressed_shader(m_DefaultPressedShader)
+		idle_shader(m_DefaultIdleShader), pressed_shader(m_DefaultPressedShader),
+		m_UserParams(userParams)
 	{
 		m_Construct();
 	}
 
-	Button::Button(const Quad& quad, CallbackFunc_t callback, const std::string& text)
+	Button::Button(const Quad& quad, CallbackFunc_t callback, const std::string& text, void* userParams)
 		: quad(quad),
 		callback(callback),
 		idle_text(text), pressed_text(text),
-		idle_shader(m_DefaultIdleShader), pressed_shader(m_DefaultPressedShader)
+		idle_shader(m_DefaultIdleShader), pressed_shader(m_DefaultPressedShader),
+		m_UserParams(userParams)
 	{
 		m_Construct();
 	}
@@ -93,6 +97,8 @@ namespace Vivium {
 	{
 		delete text;
 	}
+
+	void Button::SetUserParams(void* userParams) { m_UserParams = userParams; }
 
 	void Button::Update()
 	{
@@ -124,7 +130,7 @@ namespace Vivium {
 		// If the cursor is within the bounds of the button, run callback function
 		if (quad.Contains(cursor_pos)) {
 			// Execute callback function
-			callback(this);
+			callback(this, m_UserParams);
 
 			// Update position
 			m_UpdatePos();

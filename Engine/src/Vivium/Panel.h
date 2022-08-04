@@ -5,7 +5,6 @@
 #include "Slider.h"
 #include "Button.h"
 #include "TextInput.h"
-#include "ToggleSwitch.h"
 #include "Text.h"
 
 /*
@@ -93,7 +92,6 @@ namespace Vivium {
 		void Anchor(ANCHOR x, ANCHOR y, Ref(Button) button);
 		void Anchor(ANCHOR x, ANCHOR y, Ref(Slider) slider);
 		void Anchor(ANCHOR x, ANCHOR y, Ref(TextInput) text_input);
-		void Anchor(ANCHOR x, ANCHOR y, Ref(ToggleSwitch) toggle_switch);
 		void Anchor(ANCHOR x, ANCHOR y, Ref(Text) text);
 
 		// For moving/resizing panels (although this requires the panel to be drawn through something)

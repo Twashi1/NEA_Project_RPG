@@ -25,8 +25,10 @@ namespace Vivium {
 		// Updates button's text position - Need to call this if you edit "quad"
 		void m_UpdatePos();
 
+		void* m_UserParams;
+
 	public:
-		typedef void (*CallbackFunc_t)(Button*); // Shorthand for a callback function pointer (takes the button that was pressed as a paramater)
+		typedef void (*CallbackFunc_t)(Button*, void*); // Shorthand for a callback function pointer (takes the button that was pressed as a paramater)
 
 		CallbackFunc_t callback; // Function called when button is pressed
 		std::string idle_text; // Text that displays when button is not pressed
@@ -51,11 +53,13 @@ namespace Vivium {
 		const Vector2<float>& GetPos() const;
 
 		// TODO better constructor?
-		Button(const Quad& quad, CallbackFunc_t callback, const ::std::string& idle_text, const ::std::string& pressed_text, Ref(Shader) idle_shader, Ref(Shader) pressed_shader, Ref(Texture) idle_texture, Ref(Texture) pressed_texture);
-		Button(const Quad& quad, CallbackFunc_t callback, const ::std::string& idle_text, const ::std::string& pressed_text, Ref(Shader) idle_shader, Ref(Shader) pressed_shader);
-		Button(const Quad& quad, CallbackFunc_t callback, const ::std::string& idle_text, const ::std::string& pressed_text);
-		Button(const Quad& quad, CallbackFunc_t callback, const ::std::string& text);
+		Button(const Quad& quad, CallbackFunc_t callback, const std::string& idle_text, const std::string& pressed_text, Ref(Shader) idle_shader, Ref(Shader) pressed_shader, Ref(Texture) idle_texture, Ref(Texture) pressed_texture, void* userParams = nullptr);
+		Button(const Quad& quad, CallbackFunc_t callback, const std::string& idle_text, const std::string& pressed_text, Ref(Shader) idle_shader, Ref(Shader) pressed_shader, void* userParams = nullptr);
+		Button(const Quad& quad, CallbackFunc_t callback, const std::string& idle_text, const std::string& pressed_text, void* userParams = nullptr);
+		Button(const Quad& quad, CallbackFunc_t callback, const std::string& text, void* userParams = nullptr);
 		~Button();
+
+		void SetUserParams(void* userParams);
 
 		void Update();
 		void CheckClicked(const Vector2<float>& cursor_pos);

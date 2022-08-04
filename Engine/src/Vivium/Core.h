@@ -45,3 +45,7 @@
 	#define Ref(T) std::shared_ptr<T>
 	#define MakeRef(T, ...) std::make_shared<T>(__VA_ARGS__)
 #endif
+
+namespace Vivium {
+	static entt::registry Registry;
+}

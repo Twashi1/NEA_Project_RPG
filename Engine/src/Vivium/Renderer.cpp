@@ -10,7 +10,6 @@
 #include "Button.h"
 #include "TextInput.h"
 #include "Slider.h"
-#include "ToggleSwitch.h"
 
 namespace Vivium {
 	std::vector<uint8_t> Renderer::m_AvailableSlots = std::vector<uint8_t>({ 0, 1, 2, 3, 4, 5, 6, 7, 8, 9, 10, 11, 12, 13, 14, 15 });
@@ -31,7 +30,7 @@ namespace Vivium {
 	{
 		Framebuffer::Unbind();
 	}
-
+	
 	uint8_t Renderer::GetTextureSlot()
 	{
 		if (m_AvailableSlots.size() > 1) {
@@ -257,19 +256,6 @@ namespace Vivium {
 		}
 		else {
 			Renderer::Submit(slider->m_SliderQuad.get(), slider->slider_shader.get());
-		}
-	}
-
-	void Renderer::Submit(ToggleSwitch* toggle_switch)
-	{
-		Shader* shader = toggle_switch->GetShader();
-		Texture* texture = toggle_switch->GetTexture();
-
-		if (texture != nullptr) {
-			Renderer::Submit(toggle_switch->quad.get(), shader, texture);
-		}
-		else {
-			Renderer::Submit(toggle_switch->quad.get(), shader);
 		}
 	}
 }

@@ -32,7 +32,7 @@ private:
 	static std::string FILE_EXTENSION;
 	static std::string GENERAL_FILE;
 
-	std::string m_ToRegionName(const Vivium::Vector2<int>& index);
+	std::string m_ToRegionName(const Vivium::Vector2<int>& index) const;
 
 	void m_SerialiseRegion(const Vivium::Vector2<int>& index);
 
@@ -60,6 +60,11 @@ public:
 	static void LoadTextures(const std::string& atlas_file);
 
 	void Render(const Vivium::Vector2<int>& pos);
+
+	// Converts from screen coordinate to world position
+	// TODO: functions assumes no scale/rotation, use camera
+	Vivium::Vector2<float> GetWorldPos(const Vivium::Vector2<float>& pos) const;
+	Tile GetTile(const Vivium::Vector2<int>& tile);
 	
 	// Loads from existing world
 	World(const std::string& world_name);

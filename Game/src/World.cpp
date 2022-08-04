@@ -34,6 +34,23 @@ void World::LoadTextures(const std::string& atlas_file)
 	}
 }
 
+Vivium::Vector2<float> World::GetWorldPos(const Vivium::Vector2<float>& pos) const
+{
+	// TODO
+	return { 0, 0 };
+}
+
+Tile World::GetTile(const Vivium::Vector2<int>& pos)
+{
+	// Find region tile is in
+	Vivium::Vector2<int> region_pos = m_GetRegionIndex(pos);
+	Region& region = m_LoadRegion(region_pos);
+	// Get coordinate of tile within region
+	Vivium::Vector2<int> relative = pos - (region_pos * Region::LENGTH);
+	// Index tile and return
+	return region.Index(relative);
+}
+
 World::World(const std::string& world_name)
 	: m_WorldName(world_name)
 {
@@ -76,7 +93,7 @@ Vivium::Vector2<int> World::m_GetRegionIndex(int x, int y)
 		);
 }
 
-std::string World::m_ToRegionName(const Vivium::Vector2<int>& index)
+std::string World::m_ToRegionName(const Vivium::Vector2<int>& index) const
 {
 	return std::format("region{}_{}{}", index.x, index.y, FILE_EXTENSION);
 }
@@ -234,16 +251,17 @@ void World::m_GenWorld(const std::string& fullpath)
 void World::Render(const Vivium::Vector2<int>& pos)
 {
 	std::vector<float> coords;
-	std::vector<uint16_t> indexCoords;
+	std::vector<unsigned short> indexCoords;
 
-	Vivium::Vector2<int> frame = { 8, 6 };
+	Vivium::Vector2<int> frame = Vivium::Application::GetScreenDim() / (scale * 2.0f) + Vivium::Vector2<int>(1, 1);
 
-	uint16_t count = 0;
+	unsigned short count = 0;
+	unsigned int max_count = (frame.x * 2 + 1) * (frame.y * 2 + 1) * 3;
 
 	// TODO: use VertexBuffer::StartMap and EndMap
 
-	coords.reserve(16 * frame.x * frame.y * 3);
-	indexCoords.reserve(6 * frame.x * frame.y * 3);
+	coords.reserve(16 * max_count);
+	indexCoords.reserve(6 * max_count);
 
 	for (int y = pos.y - frame.y; y <= pos.y + frame.y; y++) {
 		for (int x = pos.x - frame.x; x <= pos.x + frame.x; x++) {
@@ -267,7 +285,7 @@ void World::Render(const Vivium::Vector2<int>& pos)
 
 			// Iterate over each tile id
 			for (const Tile::ID& id : { tile.base, tile.mid, tile.top }) {
-				if (id == Tile::ID::VOID) continue;
+				if (id == Tile::ID::VOID) { continue; }
 
 				// Get index in atlas
 				Vivium::Vector2<int> atlas_index = m_Tilemap[id];
@@ -292,7 +310,7 @@ void World::Render(const Vivium::Vector2<int>& pos)
 
 				int stride = count * 4;
 
-				std::array<uint16_t, 6> this_indices =
+				std::array<unsigned short, 6> this_indices =
 				{
 					0 + stride,
 					1 + stride,

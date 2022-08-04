@@ -1,1 +1,10 @@
-myXValue = 5; 
+"Scene":{
+	"SceneData":[
+		"FirstQuad":{
+			0, 0, 300, 300
+		}
+		"OtherQuad":{
+		}
+		"TextInput":{"Name":"HelloWorld"}
+	]
+};
