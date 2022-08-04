@@ -79,13 +79,16 @@ struct MyVector2 : Vivium::IStreamable {
 	int x, y;
 
 	void Write(Vivium::Serialiser& s) const override {
-		s.Write(x);
-		s.Write(y);
+		// Defining names is not necessary, but if you are using text serialisation, it makes the file more readable
+		s.Write(x, "x");
+		s.Write(y, "y");
 	}
 
 	void Read(Vivium::Serialiser& s) override {
-		s.Read(&x);
-		s.Read(&y);
+		// Defining names when using text serialisation will allow you to read the variables in a different order than they are written,
+		// however this would not work for binary serialisation
+		s.Read(&x, "x");
+		s.Read(&y, "y");
 	}
 }
 ```
@@ -93,7 +96,7 @@ struct MyVector2 : Vivium::IStreamable {
 1. To serialise objects first create an instance of `Vivium::Serialiser`, also giving the mode you want to serialse data in  
 *Using BINARY in this example, but TEXT is also available, so you can write data in a human-readable format*
 >```c++
->Vivium::Serialiser my_serialiser(Vivium::Stream::Mode::BINARY);
+>Vivium::Serialiser my_serialiser(Vivium::Stream::Mode::BINARY | Vivium::Stream::Mode::TRUNC);
 >```
 
 2. Open the file you will be writing to/reading from

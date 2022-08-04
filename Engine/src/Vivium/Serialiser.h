@@ -29,6 +29,9 @@ namespace Vivium {
 	class Serialiser;
 
 	class VIVIUM_API Stream {
+	private:
+		int m_CurrentTabCount = 0;
+
 	public:
 		enum class Flag : uint8_t {
 			INVALID =	0b00000000,
@@ -42,6 +45,11 @@ namespace Vivium {
 
 		std::ofstream* out = nullptr;
 		std::ifstream* in = nullptr;
+
+		int GetTabCount() const;
+		int IncrementTabCount();
+		int DecrementTabCount();
+		std::string GetTab() const; // Gives printable string to represent tab space
 
 		Stream();
 		~Stream();
@@ -158,34 +166,41 @@ namespace Vivium {
 
 		/* WriteText */
 		template <typename T> void m_WriteText(Stream& s, const T& data, const std::string& name) {
-			*s.out << name << " = " << data << ";" << std::endl;
+			*s.out << s.GetTab() << name << " = " << data << ";" << std::endl;
 		}
 
 		template <typename T> void m_WriteText(Stream& s, const Vector2<T>& data, const std::string& name) {
-			*s.out << name << " = " << "{" << data.x << ", " << data.y << "};" << std::endl;
+			*s.out << s.GetTab() << name << " = " << "{" << data.x << ", " << data.y << "};" << std::endl;
 		}
 
 		template <> void m_WriteText(Stream& s, const std::string& data, const std::string& name) {
-			*s.out << name << " = \"" << data << "\";" << std::endl;
+			*s.out << s.GetTab() << name << " = \"" << data << "\";" << std::endl;
 		}
 
 		template <typename T> void m_WriteText(Stream& s, const std::vector<T>& data, const std::string& name) {
 			constexpr bool isMultiLineArray = std::is_base_of_v<IStreamable, T>;
 
-			// TODO: Need a static for current_tab_space or something
 			// TODO: split into functions
 			if (isMultiLineArray) {
-				*s.out << name << " = [\n";
+				// TODO some sort of write string subroutine for stream, maybe takes format
+				// maybe just even a #define
+				*s.out << s.GetTab() << name << " = [\n";
 				
+				s.IncrementTabCount();
+
 				for (int i = 0; i < data.size(); i++) {
-					*s.out << "    " << data[i];
+					*s.out << s.GetTab() << data[i];
 					
-					if (i == data.size() - 1) { *s.out << "\n];" << std::endl; }
+					if (i == data.size() - 1)
+					{
+						s.DecrementTabCount();
+						*s.out << std::endl << s.GetTab() << "];" << std::endl;
+					}
 					else { *s.out << ",\n"; }
 				}
 			}
 			else {
-				*s.out << name << " = [";
+				*s.out << s.GetTab() << name << " = [";
 
 				for (int i = 0; i < data.size(); i++) {
 					*s.out << data[i];
@@ -230,7 +245,28 @@ namespace Vivium {
 			}
 			// If the object inherits IStreamable, call IStreamable's write
 			else if constexpr (std::is_base_of_v<IStreamable, T>) {
-				object.Write(*this);
+				// If writing text, wrap streamable's data under name of object
+				if (Stream::GetMode(m_Flags) == Stream::Flag::TEXT) {
+					// NOTE: might make parsing the file more difficult later
+					if (!name.empty())
+					{
+						*m_Stream.out << m_Stream.GetTab() << name << " = {\n";
+					}
+					else 
+					{
+						*m_Stream.out << m_Stream.GetTab() << "{\n";
+					}
+
+					m_Stream.IncrementTabCount();
+
+					object.Write(*this);
+
+					m_Stream.DecrementTabCount();
+					*m_Stream.out << m_Stream.GetTab() << "};\n";
+				}
+				else {
+					object.Write(*this);
+				}
 			}
 			// Its a trivial type
 			else {
@@ -253,6 +289,7 @@ namespace Vivium {
 			// If the object inherits IStreamable, call IStreamable's write
 			else if constexpr (std::is_base_of_v<IStreamable, T>) {
 				unsigned int size = object.size();
+				// TODO: for unnamed vector, object will just appear as "-size"
 				Write<unsigned int>(size, name + "-size");
 
 				LogTrace("Writing size of {}", size);
