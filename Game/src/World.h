@@ -2,8 +2,6 @@
 
 #include "Region.h"
 
-// TODO: fix naming style
-
 class World {
 private:
 	// Converts a coordinate in the world to the index of the chunk that coordinate is in

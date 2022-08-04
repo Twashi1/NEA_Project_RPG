@@ -3,17 +3,20 @@
 #include "Core.h"
 #include "Logger.h"
 #include "Vector2.h"
+#include "Utils.h"
 
 /*
 TODO: add functionality for pointers?
 TODO: text serialisation
 TODO: arrays/containers
+TODO: Ignore name in Read
 */
 
 namespace Vivium {
 	class IStreamable;
 	// TODO still ugly
 	template <typename T> inline constexpr bool __BaseStreamableTypes = std::is_arithmetic_v<T> || std::is_same_v<T, std::string>;
+	template <typename T> concept IsBaseStreamable = __BaseStreamableTypes<T>;
 	template <typename T> concept IsStreamable = std::is_base_of_v<IStreamable, T>
 	|| __BaseStreamableTypes<T>
 		|| std::is_same_v<T, Vector2<int8_t>>
@@ -30,7 +33,7 @@ namespace Vivium {
 
 	class VIVIUM_API Stream {
 	private:
-		int m_CurrentTabCount = 0;
+		int m_ScopeLevel = 0;
 
 	public:
 		enum class Flag : uint8_t {
@@ -46,9 +49,9 @@ namespace Vivium {
 		std::ofstream* out = nullptr;
 		std::ifstream* in = nullptr;
 
-		int GetTabCount() const;
-		int IncrementTabCount();
-		int DecrementTabCount();
+		int GetScopeLevel() const;
+		int IncrementScope();
+		int DecrementScope();
 		std::string GetTab() const; // Gives printable string to represent tab space
 
 		Stream();
@@ -186,14 +189,14 @@ namespace Vivium {
 				// maybe just even a #define
 				*s.out << s.GetTab() << name << " = [\n";
 				
-				s.IncrementTabCount();
+				s.IncrementScope();
 
 				for (int i = 0; i < data.size(); i++) {
 					*s.out << s.GetTab() << data[i];
 					
 					if (i == data.size() - 1)
 					{
-						s.DecrementTabCount();
+						s.DecrementScope();
 						*s.out << std::endl << s.GetTab() << "];" << std::endl;
 					}
 					else { *s.out << ",\n"; }
@@ -211,15 +214,39 @@ namespace Vivium {
 		}
 
 		/* ReadText */
-		template <typename T> void m_ReadText(Stream& s, T* memory, const std::string& name) {
-			LogError("Reading (T*) data of type {} with name {}", typeid(T).name(), name);
+		// TODO: Arithmetic<T> instead
+		template <typename T> void m_ReadText(Stream& s, T* memory, const std::string& name) requires IsBaseStreamable<T> {
+			// Matches an equal sign as long as its not in quotes, and then the whitespace after the equal if its there
+			const std::regex match_equal("^[^\"].*?= ?");
+			// Matches ; and then newline at tend of statement
+			const std::regex end_of_statement("; ?(\\n)?$");
 
-			memory = nullptr;
+			std::string statement;
+			std::getline(*s.in, statement);
+
+			if (statement.empty()) {
+				LogError("Got empty statement from file? Invalid text file");
+				memory = nullptr;
+				return;
+			}
+
+			// Strip the name of the value, and the "="
+			std::string expr = std::regex_replace(statement, match_equal, "");
+			// Strip end of line characters
+			expr = std::regex_replace(expr, end_of_statement, "");
+
+			// For casting to T
+			std::istringstream iss(expr);
+
+			// Get from string stream and push to expr
+			iss >> *memory;
 		}
 
-		template <typename T> void m_ReadText(Stream& s, std::vector<T>* memory, const std::string& name) {
-			LogError("Reading vector data of type {} with name {}", typeid(T).name(), name);
+		// TODO: Read vector2
+		// TODO: Read string
 
+		template <typename T> void m_ReadText(Stream& s, std::vector<T>* memory, const std::string& name) {
+		
 			memory = nullptr;
 		}
 
@@ -257,11 +284,11 @@ namespace Vivium {
 						*m_Stream.out << m_Stream.GetTab() << "{\n";
 					}
 
-					m_Stream.IncrementTabCount();
+					m_Stream.IncrementScope();
 
 					object.Write(*this);
 
-					m_Stream.DecrementTabCount();
+					m_Stream.DecrementScope();
 					*m_Stream.out << m_Stream.GetTab() << "};\n";
 				}
 				else {

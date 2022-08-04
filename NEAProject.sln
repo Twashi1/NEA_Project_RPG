@@ -31,7 +31,6 @@ EndProject
 Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "sprites", "sprites", "{09A99787-00EB-4920-AA8F-67E5B1B52DFA}"
 	ProjectSection(SolutionItems) = preProject
 		Resources\sprites\atlas.png = Resources\sprites\atlas.png
-		Resources\sprites\example_atlas.png = Resources\sprites\example_atlas.png
 		Resources\sprites\testing.png = Resources\sprites\testing.png
 	EndProjectSection
 EndProject

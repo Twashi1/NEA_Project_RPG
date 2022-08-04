@@ -85,10 +85,8 @@ struct MyVector2 : Vivium::IStreamable {
 	}
 
 	void Read(Vivium::Serialiser& s) override {
-		// Defining names when using text serialisation will allow you to read the variables in a different order than they are written,
-		// however this would not work for binary serialisation
-		s.Read(&x, "x");
-		s.Read(&y, "y");
+		s.Read(&x);
+		s.Read(&y);
 	}
 }
 ```

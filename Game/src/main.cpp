@@ -34,7 +34,7 @@ struct MyContainer : public Vivium::IStreamable {
     }
 
     void Read(Vivium::Serialiser& s) override {
-        s.Read(&values, "values");
+        //s.Read(&values, "values");
     }
 };
 
@@ -52,9 +52,9 @@ struct MyObject : public Vivium::IStreamable {
     }
 
     void Read(Vivium::Serialiser& s) override {
-        s.Read(&my_cont, "MyContainer");
-        s.Read(&my_str, "MyString");
-        s.Read(&my_coords, "MyCoords");
+        //s.Read(&my_cont, "MyContainer");
+        //s.Read(&my_str, "MyString");
+        //s.Read(&my_coords, "MyCoords");
     }
 };
 
@@ -66,9 +66,13 @@ int sandbox(void)
 
     MyObject obj({ 1, 5, 2, 4 }, "hello");
 
-    my_serialiser.BeginWrite("../Resources/saves/general.txt");
-    my_serialiser.Write(obj);
-    my_serialiser.EndWrite();
+    int x = 0;
+
+    my_serialiser.BeginRead("../Resources/saves/general.txt");
+    my_serialiser.Read<int>(&x);
+    my_serialiser.EndRead();
+    
+    LogTrace("X value: {}", x);
 
     /*
     MyObject mem({}, "");
@@ -213,5 +217,5 @@ int game(void)
 }
 
 int main(void) {
-    game();
+    sandbox();
 }

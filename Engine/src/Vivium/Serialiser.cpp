@@ -20,14 +20,14 @@ namespace Vivium {
 	int operator|(const int& left, const Stream::Flag& right) { return left | (uint8_t)right; }
 	int operator|(const Stream::Flag& left, const int& right) { return (uint8_t)left | right; }
 
-	int Stream::GetTabCount() const { return m_CurrentTabCount; }
-	int Stream::IncrementTabCount() { return ++m_CurrentTabCount; }
-	int Stream::DecrementTabCount() { return --m_CurrentTabCount; }
+	int Stream::GetScopeLevel() const { return m_ScopeLevel; }
+	int Stream::IncrementScope() { return ++m_ScopeLevel; }
+	int Stream::DecrementScope() { return --m_ScopeLevel; }
 	std::string Stream::GetTab() const
 	{
 		static const int SPACES_PER_TAB = 4;
 		// Creates string full of spaces
-		return std::string(m_CurrentTabCount * SPACES_PER_TAB, ' ');
+		return std::string(m_ScopeLevel * SPACES_PER_TAB, ' ');
 	}
 
 	Serialiser::Serialiser(const Stream::Flag& flag)
