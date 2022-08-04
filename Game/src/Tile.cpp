@@ -1,5 +1,6 @@
 #include "Tile.h"
 
+// TODO: load object data from serialised file
 std::array<Tile::Properties, (uint16_t)Tile::ID::MAX> Tile::m_Properties = {
 	Tile::Properties("void", false),
 	Tile::Properties("ground", false),
@@ -24,13 +25,17 @@ bool Tile::GetIsPhysical(const Tile::ID& id)
 	return Tile::m_Properties[uint16_t(id)].isPhysical;
 }
 
-Tile::Tile() { ids.emplace_back(Tile::ID::VOID); }
+Tile::Tile()
+	: base(Tile::ID::VOID), mid(Tile::ID::VOID), top(Tile::ID::VOID)
+{}
 
-Tile::Tile(const Tile::ID& id) { ids.emplace_back(id); }
+Tile::Tile(const Tile::ID& base, const Tile::ID& mid, const Tile::ID& top)
+	: base(base), mid(mid), top(top)
+{}
 
-Tile::Tile(const std::vector<Tile::ID>& ids) : ids(ids) {}
-
-Tile::Tile(const Tile& other) : ids(other.ids) {}
+Tile::Tile(const Tile & other)
+	: base(other.base), mid(other.mid), top(other.top)
+{}
 
 Tile::Properties::Properties(const char* name, bool isPhysical)
 	: name(name), isPhysical(isPhysical) {}

@@ -209,11 +209,11 @@ void World::m_GenerateRegion(const Vivium::Vector2<int>& index)
 			if (noise_value < 0.5) { tile_id = Tile::ID::SAND; }
 			if (noise_value < 0.2) { tile_id = Tile::ID::WATER; }
 
-			tile.ids.push_back(tile_id);
+			tile.base = tile_id;
 
 			float tree_noise = m_noise_trees.Get(x + y * Region::LENGTH);
 
-			if (tree_noise > 0.8 && noise_value > 0.6) tile.ids.push_back(Tile::ID::TREE);
+			if (tree_noise > 0.8 && noise_value > 0.6) tile.top = Tile::ID::TREE;
 
 			region.Index(x, y) = tile;
 		}
@@ -233,8 +233,6 @@ void World::m_GenWorld(const std::string& fullpath)
 
 void World::Render(const Vivium::Vector2<int>& pos)
 {
-	const unsigned int MAX_IDS_PER_TILE = 4;
-
 	std::vector<float> coords;
 	std::vector<uint16_t> indexCoords;
 
@@ -242,8 +240,10 @@ void World::Render(const Vivium::Vector2<int>& pos)
 
 	uint16_t count = 0;
 
-	coords.reserve(16 * frame.x * frame.y * MAX_IDS_PER_TILE);
-	indexCoords.reserve(6 * frame.x * frame.y * MAX_IDS_PER_TILE);
+	// TODO: use VertexBuffer::StartMap and EndMap
+
+	coords.reserve(16 * frame.x * frame.y * 3);
+	indexCoords.reserve(6 * frame.x * frame.y * 3);
 
 	for (int y = pos.y - frame.y; y <= pos.y + frame.y; y++) {
 		for (int x = pos.x - frame.x; x <= pos.x + frame.x; x++) {
@@ -266,7 +266,9 @@ void World::Render(const Vivium::Vector2<int>& pos)
 			float halfscale = scale / 2.0f;
 
 			// Iterate over each tile id
-			for (const Tile::ID& id : tile.ids) {
+			for (const Tile::ID& id : { tile.base, tile.mid, tile.top }) {
+				if (id == Tile::ID::VOID) continue;
+
 				// Get index in atlas
 				Vivium::Vector2<int> atlas_index = m_tilemap[id];
 
@@ -319,11 +321,3 @@ void World::Render(const Vivium::Vector2<int>& pos)
 
 	Vivium::Renderer::Submit(&vb, &ib, texture_shader, m_tile_atlas);
 }
-
-World::RenderedTile::RenderedTile()
-	: quad(nullptr), tile(Tile::ID::VOID)
-{}
-
-World::RenderedTile::RenderedTile(const std::shared_ptr<Vivium::Quad>& quad, const Tile& tile)
-	: quad(quad), tile(tile)
-{}

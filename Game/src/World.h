@@ -2,6 +2,8 @@
 
 #include "Region.h"
 
+// TODO: fix naming style
+
 class World {
 private:
 	// Converts a coordinate in the world to the index of the chunk that coordinate is in
@@ -31,16 +33,6 @@ private:
 	static std::string PATH;
 	static std::string FILE_EXTENSION;
 	static std::string GENERAL_FILE;
-
-	struct RenderedTile {
-		std::shared_ptr<Vivium::Quad> quad;
-		Tile tile;
-
-		RenderedTile();
-		RenderedTile(const std::shared_ptr<Vivium::Quad>& quad, const Tile& tile);
-
-		bool operator==(const RenderedTile& other) { return tile.ids == other.tile.ids && quad == other.quad; }
-	};
 
 	std::string m_ToRegionName(const Vivium::Vector2<int>& index);
 

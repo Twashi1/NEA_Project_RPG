@@ -25,14 +25,12 @@ public:
 	static const char* GetName(const Tile::ID& id);
 	static bool GetIsPhysical(const Tile::ID& id);
 
-	std::vector<ID> ids; // List of IDs of tiles that should display at the same coordinate
-
-	// Explicit conversion to id
-	explicit operator Tile::ID() const { return ids[0]; }
+	Tile::ID base;
+	Tile::ID mid;
+	Tile::ID top;
 
 	Tile();
-	Tile(const Tile::ID& id);
-	Tile(const std::vector<Tile::ID>& ids);
+	Tile(const Tile::ID& base, const Tile::ID& mid = Tile::ID::VOID, const Tile::ID& top = Tile::ID::VOID);
 	Tile(const Tile& other);
 
 private:
