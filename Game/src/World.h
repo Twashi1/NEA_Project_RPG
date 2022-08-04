@@ -11,24 +11,24 @@ private:
 	static Vivium::Vector2<int> m_GetRegionIndex(int x, int y);
 
 	// Some constants for noise
-	static constexpr float m_amplitude = 1.0f;
-	static constexpr int m_wavelength = 4;
-	static constexpr int m_octaves = 1;
+	static constexpr float m_Amplitude = 1.0f;
+	static constexpr int m_Wavelength = 4;
+	static constexpr int m_Octaves = 1;
 
-	static Vivium::VersionNumber m_version;
+	static Vivium::VersionNumber m_VersionNumber;
 
 	typedef std::unordered_map<Tile::ID, Vivium::Vector2<int>> TileMap_t;
-	static TileMap_t m_tilemap; // Maps a Tile::ID to its index into the atlas
-	static Vivium::Texture* m_tile_atlas; // Atlas of all Tile textures
-	static Vivium::Vector2<int> m_tile_atlas_size; // Size of each sprite in tile atlas
-	static Vivium::Vector2<int> m_atlas_dim_relative; // Relative dimensions of tile atlas
+	static TileMap_t m_Tilemap; // Maps a Tile::ID to its index into the atlas
+	static Vivium::Texture* m_TileAtlas; // Atlas of all Tile textures
+	static Vivium::Vector2<int> m_TileAtlasSize; // Size of each sprite in tile atlas
+	static Vivium::Vector2<int> m_AtlasDimRelative; // Relative dimensions of tile atlas
 
-	Vivium::Noise::Interpolated m_noise_terrain;
-	Vivium::Noise::White m_noise_trees;
+	Vivium::Noise::Interpolated m_NoiseTerrain;
+	Vivium::Noise::White m_NoiseTrees;
 	Vivium::Serialiser* m_Serialiser;
-	unsigned int m_seed;
+	unsigned int m_Seed;
 
-	std::string m_world_name;
+	std::string m_WorldName;
 
 	static std::string PATH;
 	static std::string FILE_EXTENSION;

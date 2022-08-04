@@ -5,11 +5,11 @@
 std::string World::PATH = "../Resources/saves/";
 std::string World::FILE_EXTENSION = ".data";
 std::string World::GENERAL_FILE = "general";
-Vivium::VersionNumber World::m_version = Vivium::VersionNumber(0, 0, 1);
-World::TileMap_t World::m_tilemap = {};
-Vivium::Texture* World::m_tile_atlas = nullptr;
-Vivium::Vector2<int> World::m_tile_atlas_size = Vivium::Vector2<int>(0, 0);
-Vivium::Vector2<int> World::m_atlas_dim_relative = Vivium::Vector2<int>(0, 0);
+Vivium::VersionNumber World::m_VersionNumber = Vivium::VersionNumber(0, 0, 1);
+World::TileMap_t World::m_Tilemap = {};
+Vivium::Texture* World::m_TileAtlas = nullptr;
+Vivium::Vector2<int> World::m_TileAtlasSize = Vivium::Vector2<int>(0, 0);
+Vivium::Vector2<int> World::m_AtlasDimRelative = Vivium::Vector2<int>(0, 0);
 Vivium::Shader* World::texture_shader = nullptr;
 
 void World::LoadTextures(const std::string& atlas_file)
@@ -17,25 +17,25 @@ void World::LoadTextures(const std::string& atlas_file)
 	constexpr int sprite_size = 32; // TODO
 
 	// Load atlas and various information about atlas
-	m_tile_atlas = new Vivium::Texture(atlas_file);
-	m_tile_atlas_size = Vivium::Vector2<int>(sprite_size, sprite_size); // TODO
-	m_atlas_dim_relative = Vivium::Vector2<int>(m_tile_atlas->width / sprite_size, m_tile_atlas->height / sprite_size);
+	m_TileAtlas = new Vivium::Texture(atlas_file);
+	m_TileAtlasSize = Vivium::Vector2<int>(sprite_size, sprite_size); // TODO
+	m_AtlasDimRelative = Vivium::Vector2<int>(m_TileAtlas->width / sprite_size, m_TileAtlas->height / sprite_size);
 
 	// Iterate over value of each tile id
 	for (int i = 0; i < (int)Tile::ID::MAX; i++) {
 		// Convert it to an index into the atlas
-		int y = i / m_atlas_dim_relative.x;
-		int x = i - (y * m_atlas_dim_relative.x);
+		int y = i / m_AtlasDimRelative.x;
+		int x = i - (y * m_AtlasDimRelative.x);
 		// Invert y
-		y = (m_atlas_dim_relative.y - 1) - y;
+		y = (m_AtlasDimRelative.y - 1) - y;
 
 		// Add to tilemap
-		m_tilemap[(Tile::ID)i] = Vivium::Vector2<int>(x, y);
+		m_Tilemap[(Tile::ID)i] = Vivium::Vector2<int>(x, y);
 	}
 }
 
 World::World(const std::string& world_name)
-	: m_world_name(world_name)
+	: m_WorldName(world_name)
 {
 	std::string fullpath = PATH + world_name + "/";
 
@@ -49,7 +49,7 @@ World::World(const std::string& world_name)
 }
 
 World::World(const uint32_t& seed, const std::string& world_name)
-	: m_world_name(world_name), m_seed(seed)
+	: m_WorldName(world_name), m_Seed(seed)
 {
 	std::string fullpath = PATH + world_name + "/";
 
@@ -126,7 +126,7 @@ World::~World()
 
 void World::m_DeserialiseRegion(const std::string& filename, const Vivium::Vector2<int>& index)
 {
-	m_Serialiser->BeginRead((PATH + m_world_name + "/" + filename).c_str());
+	m_Serialiser->BeginRead((PATH + m_WorldName + "/" + filename).c_str());
 
 	// Construct empty region object
 	Region region;
@@ -148,14 +148,14 @@ void World::m_LoadWorld(const std::string& fullpath)
 	Vivium::VersionNumber serialised_version;
 	// Deserialise<VersionNumber>(m_serialiser, &serialised_version);
 	// If version number is different
-	if (serialised_version != m_version)
+	if (serialised_version != m_VersionNumber)
 	{
 		// We can't interpret this data so log fatal error
-		LogFatal("World version is {}, but we're on version {}", serialised_version, m_version);
+		LogFatal("World version is {}, but we're on version {}", serialised_version, m_VersionNumber);
 	}
 
 	// Get seed
-	// Deserialise<unsigned int>(m_serialiser, &m_seed);
+	// Deserialise<unsigned int>(m_serialiser, &m_Seed);
 
 	// Get player position
 	// Vector2<int> player_pos = Deserialise<Vector2<int>>(m_serialiser);
@@ -167,8 +167,8 @@ void World::m_LoadWorld(const std::string& fullpath)
 	// m_LoadRegions(player_pos, 1);
 
 	// Construct noise generator
-	m_noise_terrain = Vivium::Noise::Interpolated(m_seed, m_amplitude, m_wavelength);
-	m_noise_trees = Vivium::Noise::White(m_seed, m_amplitude, 1);
+	m_NoiseTerrain = Vivium::Noise::Interpolated(m_Seed, m_Amplitude, m_Wavelength);
+	m_NoiseTrees = Vivium::Noise::White(m_Seed, m_Amplitude, 1);
 }
 
 void World::m_SaveWorld()
@@ -181,7 +181,7 @@ void World::m_SaveWorld()
 void World::m_SerialiseRegion(const Vivium::Vector2<int>& index)
 {
 	Region& region = regions[index];
-	std::string region_path = PATH + m_world_name + "/" + m_ToRegionName(index);
+	std::string region_path = PATH + m_WorldName + "/" + m_ToRegionName(index);
 
 	//m_Serialiser->BeginWrite(region_path.c_str());
 
@@ -197,7 +197,7 @@ void World::m_GenerateRegion(const Vivium::Vector2<int>& index)
 
 	for (int y = 0; y < Region::LENGTH; y++) {
 		for (int x = 0; x < Region::LENGTH; x++) {
-			float noise_value = m_noise_terrain.Get(x, y); // Returns noise value from 0 - 1
+			float noise_value = m_NoiseTerrain.Get(x, y); // Returns noise value from 0 - 1
 
 			Tile tile;
 
@@ -211,7 +211,7 @@ void World::m_GenerateRegion(const Vivium::Vector2<int>& index)
 
 			tile.base = tile_id;
 
-			float tree_noise = m_noise_trees.Get(x + y * Region::LENGTH);
+			float tree_noise = m_NoiseTrees.Get(x + y * Region::LENGTH);
 
 			if (tree_noise > 0.8 && noise_value > 0.6) tile.top = Tile::ID::TREE;
 
@@ -225,8 +225,8 @@ void World::m_GenerateRegion(const Vivium::Vector2<int>& index)
 void World::m_GenWorld(const std::string& fullpath)
 {
 	// TODO
-	m_noise_terrain = Vivium::Noise::Interpolated(m_seed, m_amplitude, m_wavelength);
-	m_noise_trees = Vivium::Noise::White(m_seed, 1.0f, 1);
+	m_NoiseTerrain = Vivium::Noise::Interpolated(m_Seed, m_Amplitude, m_Wavelength);
+	m_NoiseTrees = Vivium::Noise::White(m_Seed, 1.0f, 1);
 	
 	m_LoadRegions(Vivium::Vector2<int>(0, 0), 3);
 }
@@ -270,17 +270,17 @@ void World::Render(const Vivium::Vector2<int>& pos)
 				if (id == Tile::ID::VOID) continue;
 
 				// Get index in atlas
-				Vivium::Vector2<int> atlas_index = m_tilemap[id];
+				Vivium::Vector2<int> atlas_index = m_Tilemap[id];
 
 				// Inverse width and height of atlas
-				float inv_width = 1.0f / m_tile_atlas->width;
-				float inv_height = 1.0f / m_tile_atlas->height;
+				float inv_width = 1.0f / m_TileAtlas->width;
+				float inv_height = 1.0f / m_TileAtlas->height;
 
 				// Calculate faces
-				float left = atlas_index.x * inv_width * m_tile_atlas_size.x;
-				float right = (atlas_index.x + 1) * inv_width * m_tile_atlas_size.x;
-				float bottom = atlas_index.y * inv_height * m_tile_atlas_size.y;
-				float top = (atlas_index.y + 1) * inv_height * m_tile_atlas_size.y;
+				float left = atlas_index.x * inv_width * m_TileAtlasSize.x;
+				float right = (atlas_index.x + 1) * inv_width * m_TileAtlasSize.x;
+				float bottom = atlas_index.y * inv_height * m_TileAtlasSize.y;
+				float top = (atlas_index.y + 1) * inv_height * m_TileAtlasSize.y;
 
 				std::array<float, 16> this_coords =
 				{
@@ -319,5 +319,5 @@ void World::Render(const Vivium::Vector2<int>& pos)
 	Vivium::VertexBuffer vb(coords, layout);
 	Vivium::IndexBuffer ib(indexCoords);
 
-	Vivium::Renderer::Submit(&vb, &ib, texture_shader, m_tile_atlas);
+	Vivium::Renderer::Submit(&vb, &ib, texture_shader, m_TileAtlas);
 }
