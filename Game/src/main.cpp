@@ -74,11 +74,20 @@ int game(void)
         player.Update(world);
 
         // Draw calls
+        Renderer::BeginScene(1);
         Vector2<int> update_pos = (Vector2<int>)(player.quad.GetCenter() / World::scale).floor();
         world.Render(update_pos);
-        Renderer::Submit(&player.quad, player.shader);
+        Renderer::EndScene();
 
+        Renderer::BeginScene(5);
+        Renderer::Submit(&player.quad, player.shader);
+        Renderer::EndScene();
+
+        Renderer::BeginScene(2);
         if (Application::isStatsEnabled) Application::UpdateStats(*player.body); // Draw stats information
+        Renderer::EndScene();
+
+        Renderer::DrawScenes();
 
         Application::EndFrame();
     }

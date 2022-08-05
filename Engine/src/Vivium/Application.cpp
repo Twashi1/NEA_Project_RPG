@@ -2,6 +2,7 @@
 #include "Input.h"
 #include "Sprite.h"
 #include "Panel.h"
+#include "Renderer.h"
 
 namespace Vivium {
     Timer Application::m_Timer = Timer();

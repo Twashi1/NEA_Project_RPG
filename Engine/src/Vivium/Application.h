@@ -8,6 +8,7 @@
 #include "Slider.h"
 #include "Math.h"
 #include "Color.h"
+#include "Renderer.h"
 
 namespace Vivium {
     class Panel;

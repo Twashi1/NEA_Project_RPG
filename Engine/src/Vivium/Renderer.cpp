@@ -10,25 +10,96 @@
 #include "Button.h"
 #include "TextInput.h"
 #include "Slider.h"
+#include "Application.h"
 
 namespace Vivium {
 	std::vector<uint8_t> Renderer::m_AvailableSlots = std::vector<uint8_t>({ 0, 1, 2, 3, 4, 5, 6, 7, 8, 9, 10, 11, 12, 13, 14, 15 });
 	Ref(Camera) Renderer::camera = nullptr;
 
+	std::map<int, Framebuffer*> Renderer::m_Framebuffers = {};
+	Framebuffer* Renderer::m_CurrentScene = nullptr;
+	Shader* Renderer::m_FramebufferShader = nullptr;
+
+	void Renderer::m_Terminate()
+	{
+		Framebuffer::Unbind();
+
+		for (auto [key, value] : m_Framebuffers) {
+			delete value;
+		}
+
+		m_Framebuffers = {};
+
+		delete m_FramebufferShader;
+	}
+
 	void Renderer::Init()
 	{
 		camera = MakeRef(Camera, 0.0f, (float)Application::width, 0.0f, (float)Application::height);
+
+		m_FramebufferShader = new Shader("static_texture_vertex", "texture_frag");
 	}
 
-	void SetTarget(const Framebuffer* fb)
+	void Renderer::SetTarget(const Framebuffer* fb)
 	{
 		if (fb != nullptr) { fb->Bind(); }
 		else { Framebuffer::Unbind(); }
 	}
 
-	void ResetTarget()
+	void Renderer::ResetTarget()
 	{
 		Framebuffer::Unbind();
+	}
+
+	void Renderer::BeginScene(int z)
+	{
+		auto it = m_Framebuffers.find(z);
+
+		if (it != m_Framebuffers.end()) {
+			it->second->Bind();
+			m_CurrentScene = it->second;
+		}
+		else {
+			Vector2<int> screen_dim = Application::GetScreenDim();
+			m_CurrentScene = new Framebuffer(screen_dim.x, screen_dim.y);
+			m_Framebuffers.insert({z, m_CurrentScene});
+			m_CurrentScene->Bind();
+		}
+	}
+
+	void Renderer::EndScene()
+	{
+		Framebuffer::Unbind();
+		m_CurrentScene = nullptr;
+	}
+
+	void Renderer::DrawScenes()
+	{
+		Vector2<float> screen_dim = (Vector2<float>)Application::GetScreenDim();
+
+		Quad screen_quad = Quad(screen_dim * 0.5f, screen_dim);
+
+		for (auto& [z, fb] : m_Framebuffers) {
+			Renderer::Submit(screen_quad.GetVertexBuffer().get(), screen_quad.GetIndexBuffer(), m_FramebufferShader, fb);
+			fb->Clear();
+		}
+	}
+
+	void Renderer::DrawScene(int scene_ID)
+	{
+		auto it = m_Framebuffers.find(scene_ID);
+
+		if (it != m_Framebuffers.end()) {
+			Vector2<float> screen_dim = (Vector2<float>)Application::GetScreenDim();
+
+			Quad screen_quad = Quad(screen_dim * 0.5f, screen_dim);
+
+			Renderer::Submit(screen_quad.GetVertexBuffer().get(), screen_quad.GetIndexBuffer(), m_FramebufferShader, it->second);
+			it->second->Clear();
+		}
+		else {
+			LogError("Couldn't find scene with ID {}, ignoring call", scene_ID);
+		}
 	}
 	
 	uint8_t Renderer::GetTextureSlot()

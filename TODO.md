@@ -5,8 +5,7 @@
 ## Renderer
 - [x] Framebuffers
     - More helper functions for rendering from frame buffers
-    - Use framebuffers for z levels?
-    - Default "window" frame buffer?
+    - ~~Use framebuffers for z levels~~
 - [ ] Batch rendering API (kinda done)
 - [ ] Compute shader API
 - [ ] Scene API
