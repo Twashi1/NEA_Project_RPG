@@ -11,6 +11,7 @@ TODO: text serialisation
 TODO: arrays/containers
 TODO: Ignore name in Read
 TODO: Cleanup
+TODO: split IStreamable, Serialiser, Stream into seperate files
 */
 
 namespace Vivium {

@@ -59,7 +59,7 @@ namespace Vivium {
 
 		// Cast to arithmetic type
 		template <typename C>
-		explicit operator Vector2<C>() const requires Arithmetic<C> { return Vector2<C>((C)x, (C)y); }
+		operator Vector2<C>() const requires Arithmetic<C> { return Vector2<C>((C)x, (C)y); }
 	};
 }
 

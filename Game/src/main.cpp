@@ -20,35 +20,18 @@ int game(void)
     // Construct engine instance
     Application::Init(WIDTH, HEIGHT, FPS, true);
 
-    // DEBUG: shaders
-    LogInfo("Starting shader creation");
     Shader texture_shader("texture_vertex", "texture_frag");
-    texture_shader.SetUniform1f("u_Scale", 1);
-
-    Shader colour_shader("world_vertex", "color_frag");
-    colour_shader.SetUniform3f("u_Color", 1.0, 0.0, 0.0);
-
-    Shader grey_shader("static_vertex", "transparency_frag");
-    grey_shader.SetUniform4f("u_Color", 0.3, 0.3, 0.3, 0.4f);
-
-    Shader red_shader("static_vertex", "transparency_frag");
-    red_shader.SetUniform4f("u_Color", 1.0, 0.0, 0.0, 0.6f);
-
-    Shader static_color("static_vertex", "color_frag");
-    static_color.SetUniform3f("u_Color", 0.0, 0.0, 1.0);
-
+    Shader colour_shader("world_vertex", "color_frag"); colour_shader.SetUniform3f("u_Color", 1.0, 0.0, 0.0);
+    Shader grey_shader("static_vertex", "transparency_frag"); grey_shader.SetUniform4f("u_Color", 0.3, 0.3, 0.3, 0.4f);
+    Shader red_shader("static_vertex", "transparency_frag"); red_shader.SetUniform4f("u_Color", 1.0, 0.0, 0.0, 0.6f);
+    Shader static_color("static_vertex", "color_frag"); static_color.SetUniform3f("u_Color", 0.0, 0.0, 1.0);
     Shader static_texture("static_texture_vertex", "texture_frag");
 
     World::texture_shader = &texture_shader;
 
     // Test construct world
-    LogInfo("Loading world...");
     World world(0, "testworld");
     World::LoadTextures("tile_atlas.png");
-    world.Render(Vector2<int>(0, 0));
-    LogInfo("Finished initialising world");
-
-    Texture atlas_test("atlas.png");
 
     Player player = Player();
     Application::physics->Register(player.body, 0);

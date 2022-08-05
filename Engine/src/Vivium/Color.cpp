@@ -1,21 +1,21 @@
 #include "Color.h"
 
 namespace Vivium {
-	RGBColor RGBColor::RED = RGBColor(255, 0, 0);
-	RGBColor RGBColor::GREEN = RGBColor(0, 255, 0);
-	RGBColor RGBColor::BLUE = RGBColor(0, 0, 255);
-	RGBColor RGBColor::YELLOW = RGBColor(255, 255, 0);
-	RGBColor RGBColor::TEAL = RGBColor(0, 255, 255);
-	RGBColor RGBColor::PURPLE = RGBColor(255, 0, 255);
-	RGBColor RGBColor::ORANGE = RGBColor(255, 162, 0);
-	RGBColor RGBColor::GRAY = RGBColor(105, 105, 105);
-	RGBColor RGBColor::DARKGRAY = RGBColor(40, 40, 40);
-	RGBColor RGBColor::BLACK = RGBColor(0, 0, 0);
-	RGBColor RGBColor::WHITE = RGBColor(255, 255, 255);
-	RGBColor RGBColor::BROWN = RGBColor(128, 64, 0);
+	RGBColor RGBColor::RED =		RGBColor(255,   0,   0);
+	RGBColor RGBColor::GREEN =		RGBColor(  0, 255,   0);
+	RGBColor RGBColor::BLUE =		RGBColor(  0,   0, 255);
+	RGBColor RGBColor::YELLOW =		RGBColor(255, 255,   0);
+	RGBColor RGBColor::TEAL =		RGBColor(  0, 255, 255);
+	RGBColor RGBColor::PURPLE =		RGBColor(255,   0, 255);
+	RGBColor RGBColor::ORANGE =		RGBColor(255, 162,   0);
+	RGBColor RGBColor::GRAY =		RGBColor(105, 105, 105);
+	RGBColor RGBColor::DARKGRAY =	RGBColor( 40,  40,  40);
+	RGBColor RGBColor::BLACK =		RGBColor(  0,   0,   0);
+	RGBColor RGBColor::WHITE =		RGBColor(255, 255, 255);
+	RGBColor RGBColor::BROWN =		RGBColor(128,  64,   0);
 
 	char RGBColor::m_DigitToHex(const uint8_t& digit) const {
-		// ok sure its a little ugly but i cba
+		// kinda ugly but works well enough
 		switch ((int)digit) {
 		case 0:
 		case 1:
@@ -28,12 +28,13 @@ namespace Vivium {
 		case 8:
 		case 9:
 			return static_cast<char>(digit + '0');
-		case 10: return 'A';
-		case 11: return 'B';
-		case 12: return 'C';
-		case 13: return 'D';
-		case 14: return 'E';
-		case 15: return 'F';
+		case 10:
+		case 11:
+		case 12:
+		case 13: 
+		case 14:
+		case 15:
+			return static_cast<char>(digit - 10 + 'A');
 		default:
 			LogError("Invalid digit value of {}", (int)digit); return '?';
 		}
