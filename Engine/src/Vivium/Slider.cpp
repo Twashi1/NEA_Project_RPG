@@ -17,7 +17,7 @@ namespace Vivium {
 		SetValue(std::min(std::max(initial, 0.0f), 1.0f));
 	}
 
-	void Slider::Init()
+	void Slider::m_Init()
 	{
 		m_DefaultBarShader = MakeRef(Shader, "static_texture_vertex", "slider_frag");
 		m_DefaultBarShader->SetUniform3f("u_BarColor", 0.3, 0.3, 0.3);

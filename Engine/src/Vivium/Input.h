@@ -4,6 +4,8 @@
 #include "Renderer.h"
 #include "Application.h"
 
+// TODO needs an update and cleanup
+
 namespace Vivium {
 	class VIVIUM_API Input {
 	public:
@@ -59,14 +61,14 @@ namespace Vivium {
 
 		// Updates a listener's state based on the GLFW action code and time since last update (GLFW_RELEASE/GLFW_PRESSED)
 		static void m_UpdateListener(Listener& listener, int current_action, float dt);
+		
+		static void m_Init();
 
 		static Timer m_Timer;
 
 		static int m_CurrentMods;
 
 	public:
-		static void Init();
-
 		static void AddKeyListener(int key);
 		static void AddMouseListener(int btn);
 
@@ -86,6 +88,8 @@ namespace Vivium {
 
 		// Update all listener objects, keypress logs, etc.
 		static void Update();
+
+		friend Application;
 	};
 	
 	VIVIUM_API int operator|(const Input::Mod& a, const Input::Mod& b);

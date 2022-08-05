@@ -45,6 +45,8 @@ namespace Vivium {
 		// Updates the text based on user input
 		void m_UpdateText();
 
+		static void m_Init(Ref(Texture) engine_icons);
+
 		CallbackFunc_t callback;
 		void* m_UserParams;
 
@@ -65,8 +67,6 @@ namespace Vivium {
 		bool GetIsTyping();
 		Ref(Text) GetText();
 
-		static void Init(Ref(Texture) engine_icons);
-
 		void SetUserParams(void* userParams);
 
 		TextInput(const Quad& quad, CallbackFunc_t callback, void* userParams = nullptr, int offset = 0);
@@ -79,5 +79,7 @@ namespace Vivium {
 
 		void CheckClicked(const Vector2<float>& cursor_pos, const Input::State& lmb_state);
 		void Update();
+
+		friend Application;
 	};
 }

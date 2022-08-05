@@ -33,7 +33,7 @@ namespace Vivium {
 		delete m_FramebufferShader;
 	}
 
-	void Renderer::Init()
+	void Renderer::m_Init()
 	{
 		camera = MakeRef(Camera, 0.0f, (float)Application::width, 0.0f, (float)Application::height);
 
@@ -55,10 +55,12 @@ namespace Vivium {
 	{
 		auto it = m_Framebuffers.find(z);
 
+		// If framebuffer already exists
 		if (it != m_Framebuffers.end()) {
 			it->second->Bind();
 			m_CurrentScene = it->second;
 		}
+		// Framebuffer doesn't already exist, create it
 		else {
 			Vector2<int> screen_dim = Application::GetScreenDim();
 			m_CurrentScene = new Framebuffer(screen_dim.x, screen_dim.y);
@@ -80,7 +82,7 @@ namespace Vivium {
 		Quad screen_quad = Quad(screen_dim * 0.5f, screen_dim);
 
 		for (auto& [z, fb] : m_Framebuffers) {
-			Renderer::Submit(screen_quad.GetVertexBuffer().get(), screen_quad.GetIndexBuffer(), m_FramebufferShader, fb);
+			Renderer::Submit(&screen_quad, m_FramebufferShader, fb);
 			fb->Clear();
 		}
 	}
@@ -94,7 +96,7 @@ namespace Vivium {
 
 			Quad screen_quad = Quad(screen_dim * 0.5f, screen_dim);
 
-			Renderer::Submit(screen_quad.GetVertexBuffer().get(), screen_quad.GetIndexBuffer(), m_FramebufferShader, it->second);
+			Renderer::Submit(&screen_quad, m_FramebufferShader, it->second);
 			it->second->Clear();
 		}
 		else {
@@ -148,6 +150,24 @@ namespace Vivium {
 	void Renderer::Submit(const VertexBuffer* vb, const IndexBuffer* ib, Shader* shader, const Framebuffer* fb, uint8_t slot)
 	{
 		vb->Bind(); ib->Bind(); shader->Bind(); fb->SetSlot(slot);
+		shader->SetUniformMat4fv("u_ProjMat", camera->GetProjMat());
+		shader->SetUniformMat4fv("u_ViewMat", camera->GetViewMat());
+		shader->SetUniform1f("u_Time", Timer::GetTime());
+		shader->SetUniform1i("u_Texture", slot);
+
+		glActiveTexture(GL_TEXTURE0 + slot);
+		glBindTexture(GL_TEXTURE_2D, fb->GetColorAttachment());
+		glActiveTexture(GL_TEXTURE0);
+
+		glDrawElements(GL_TRIANGLES, ib->GetCount(), ib->GetType(), nullptr);
+	}
+
+	void Renderer::Submit(const Quad* quad, Shader* shader, const Framebuffer* fb, uint8_t slot)
+	{
+		quad->GetVertexBuffer()->Bind();
+		const IndexBuffer* ib = Quad::GetIndexBuffer(); ib->Bind();
+		shader->Bind(); fb->SetSlot(slot);
+
 		shader->SetUniformMat4fv("u_ProjMat", camera->GetProjMat());
 		shader->SetUniformMat4fv("u_ViewMat", camera->GetViewMat());
 		shader->SetUniform1f("u_Time", Timer::GetTime());

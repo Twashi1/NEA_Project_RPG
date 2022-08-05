@@ -23,7 +23,7 @@ namespace Vivium {
 		return dim * Button::m_DefaultScale;
 	}
 
-	void Button::Init()
+	void Button::m_Init()
 	{
 		// Check if class has been initialised already (the standard shaders are default until initialised)
 		if (m_DefaultIdleShader != nullptr) {

@@ -6,6 +6,7 @@
 #include "Text.h"
 #include "Font.h"
 #include "Quad.h"
+#include "Application.h"
 
 namespace Vivium {
 	class VIVIUM_API Button {
@@ -27,6 +28,9 @@ namespace Vivium {
 
 		void* m_UserParams;
 
+		// Initialises standard shaders
+		static void m_Init();
+
 	public:
 		typedef void (*CallbackFunc_t)(Button*, void*); // Shorthand for a callback function pointer (takes the button that was pressed as a paramater)
 
@@ -45,9 +49,6 @@ namespace Vivium {
 
 		Quad quad; // Stores position and dimensions of button
 		Text* text; // Text object, stores information required to render text TODO: should be private
-
-		// Initialises standard shaders and Input listeners
-		static void Init();
 
 		void SetPos(const Vector2<float>& pos);
 		const Vector2<float>& GetPos() const;
@@ -68,5 +69,7 @@ namespace Vivium {
 		Ref(Shader) CurrentShader();
 		Ref(Texture) CurrentTexture();
 		const std::string& CurrentText() const;
+
+		friend Application;
 	};
 }

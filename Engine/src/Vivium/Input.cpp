@@ -52,7 +52,7 @@ namespace Vivium {
 		listener.last_action = current_action;
 	}
 
-	void Input::Init()
+	void Input::m_Init()
 	{
 		for (int i = GLFW_KEY_SPACE; i < GLFW_KEY_LAST; i++) {
 			key_listeners[i] = Listener();

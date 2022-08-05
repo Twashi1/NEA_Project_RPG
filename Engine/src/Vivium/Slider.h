@@ -5,6 +5,7 @@
 #include "Shader.h"
 #include "Text.h"
 #include "Input.h"
+#include "Application.h"
 
 namespace Vivium {
 	class VIVIUM_API Slider {
@@ -24,10 +25,10 @@ namespace Vivium {
 
 		void* m_UserParams = nullptr;
 
+		static void m_Init();
+
 	public:
 		typedef void (*CallbackFunc_t)(Slider*, void*);
-
-		static void Init();
 
 		CallbackFunc_t callback;
 
@@ -58,5 +59,6 @@ namespace Vivium {
 		~Slider();
 
 		friend Renderer;
+		friend Application;
 	};
 }

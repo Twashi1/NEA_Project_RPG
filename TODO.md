@@ -1,11 +1,11 @@
 # Vivium
 ## Application
-- Initialisation functions for various classes should be private, and instead should make Application their friend
+- ~~Initialisation functions for various classes should be private, and instead should make Application their friend~~
 
 ## Renderer
 - [x] Framebuffers
-    - More helper functions for rendering from frame buffers
-    - ~~Use framebuffers for z levels~~
+    - ~~More helper functions for rendering from frame buffers~~
+    - ~~Use framebuffers for drawing at specific z levels~~
 - [ ] Batch rendering API (kinda done)
 - [ ] Compute shader API
 - [ ] Scene API
@@ -23,9 +23,7 @@
 - [x] Sliders
     - Add feature to make slider snap to intervals
 - [x] Input boxes
-    - Typing bar still weird
-- [ ] Toggle switches
-    - Implementation
+    - Typing bar still using magic numbers
 - [ ] Panels
     - Add other GUI objects to Anchor overload
     - Add resizing
@@ -87,7 +85,6 @@
 - Default statics are ugly
 - Make static initialise functions private/only accessible in engine
 - Better api for shader/texture/texture-atlas
-- Cursor no longer switches when hovering text input box
 - Inconsistent data layout between GUI objects
 - GL id should be private for GL abstractions
 - Allow void* user data for callback functions (mostly done?)
@@ -95,3 +92,4 @@
 - docs docs docs docs docs docs docs docs
 
 # Bugs
+- Cursor no longer switches when hovering text input box

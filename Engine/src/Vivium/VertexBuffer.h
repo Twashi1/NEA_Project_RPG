@@ -24,7 +24,7 @@ namespace Vivium {
 			return *this;
 		}
 
-		// TODO maybe private?
+		// TODO make private with getter functions
 		unsigned int size;
 		unsigned int gl_type;
 		unsigned int component_count;

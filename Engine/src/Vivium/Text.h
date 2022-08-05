@@ -3,6 +3,7 @@
 #include "Renderer.h"
 #include "Font.h"
 #include "Shader.h"
+#include "Application.h"
 
 namespace Vivium {
 	class VIVIUM_API Text {
@@ -12,6 +13,8 @@ namespace Vivium {
 
 		void m_Construct();
 
+		static void m_Init();
+
 	public:
 		std::string text;			// Text to render
 		Vector2<float> pos;			// Position to render text
@@ -19,7 +22,6 @@ namespace Vivium {
 		Ref(Shader) shader;		// Shader for text
 		float scale;				// Scale for text
 
-		static void Init();
 		static Ref(Font) GetDefaultFont();
 
 		// TODO might need fixes
@@ -34,5 +36,7 @@ namespace Vivium {
 		Text(const std::string& text, const Vector2<float>& pos, Ref(Font) font, Ref(Shader) shader, float scale = 1.0f);
 
 		~Text();
+
+		friend Application;
 	};
 }

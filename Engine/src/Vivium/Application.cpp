@@ -2,7 +2,10 @@
 #include "Input.h"
 #include "Sprite.h"
 #include "Panel.h"
-#include "Renderer.h"
+#include "Slider.h"
+#include "Text.h"
+#include "TextInput.h"
+#include "Button.h"
 
 namespace Vivium {
     Timer Application::m_Timer = Timer();
@@ -157,13 +160,13 @@ namespace Vivium {
         // Construct physics object
         physics = std::make_shared<Physics>();
         // Set renderer's camera
-        Renderer::Init();
+        Renderer::m_Init();
 
         // Create icons texture
         engine_icons = MakeRef(Texture, "engine_icons.png");
 
         // Initialise input system
-        Input::Init();
+        Input::m_Init();
 
         // Initialise static for Animation
         Animation::FILE_EXTENSION = ".animation";
@@ -172,16 +175,16 @@ namespace Vivium {
         Sprite::m_DefaultTextureShader = MakeRef(Shader, "world_vertex", "texture_frag");
 
         // Initialise text class
-        Text::Init();
+        Text::m_Init();
 
         // Initialise button class
-        Button::Init();
+        Button::m_Init();
 
         // Initialise slider class
-        Slider::Init();
+        Slider::m_Init();
 
         // Initialise text input class
-        TextInput::Init(engine_icons);
+        TextInput::m_Init(engine_icons);
 
         // TODO Panel::Init(width, height)
         // Construct window panel

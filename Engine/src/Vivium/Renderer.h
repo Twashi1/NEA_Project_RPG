@@ -26,15 +26,13 @@ namespace Vivium {
 		static Shader* m_FramebufferShader;
 
 		static void m_Terminate();
+		static void m_Init();
 
 	public:
 		static Ref(Camera) camera; // Camera currently being used on all Renderable objects
 
 		static constexpr uint8_t INVALID_TEXTURE_SLOT = 0xff; // Constant to represent an invalid texture slot
 		static constexpr uint8_t MAX_TEXTURE_SLOT = 0xf;
-
-		// TODO private
-		static void Init();
 
 		// Gives a free texture slot
 		static uint8_t GetTextureSlot();
@@ -55,6 +53,7 @@ namespace Vivium {
 		static void Submit(const VertexBuffer* vb, const IndexBuffer* ib, Shader* shader);
 		static void Submit(const VertexBuffer* vb, const IndexBuffer* ib, Shader* shader, Texture* texture, uint8_t slot = 0);
 		static void Submit(const VertexBuffer* vb, const IndexBuffer* ib, Shader* shader, const Framebuffer* fb, uint8_t slot = 0);
+		static void Submit(const Quad* quad, Shader* shader, const Framebuffer* fb, uint8_t slot = 0);
 		static void Submit(const Quad* quad, Shader* shader);
 		static void Submit(const Quad* quad, Shader* shader, const Texture* texture);
 		static void Submit(const Quad* quad, Shader* shader, const Texture* texture, uint8_t slot);

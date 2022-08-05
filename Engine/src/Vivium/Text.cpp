@@ -8,7 +8,7 @@ namespace Vivium {
     {
     }
 
-    void Text::Init()
+    void Text::m_Init()
     {
         m_DefaultShader = MakeRef(Shader, "text_vertex", "text_frag");
         m_DefaultFont = MakeRef(Font, "consola.ttf");

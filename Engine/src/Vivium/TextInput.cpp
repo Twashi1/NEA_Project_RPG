@@ -10,7 +10,7 @@ namespace Vivium {
 	Ref(Shader) TextInput::m_TextShader = nullptr;
 	Ref(Shader) TextInput::m_TypingBarShader = nullptr;
 
-	void TextInput::Init(Ref(Texture) engine_icons)
+	void TextInput::m_Init(Ref(Texture) engine_icons)
 	{
 		m_TypingBarShader = MakeRef(Shader, "static_texture_vertex", "texture_frag");
 
