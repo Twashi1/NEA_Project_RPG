@@ -9,4 +9,3 @@
 #include "Vivium/Slider.h"
 #include "Vivium/Panel.h"
 #include "Vivium/Framebuffer.h"
-#include "Vivium/TextureAtlas.h"

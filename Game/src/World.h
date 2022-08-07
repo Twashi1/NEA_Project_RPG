@@ -20,9 +20,6 @@ private:
 	static Vivium::Texture* m_TileAtlas; // Atlas of all Tile textures
 	static Vivium::Vector2<int> m_TileAtlasSize; // Size of each sprite in tile atlas
 	static Vivium::Vector2<int> m_AtlasDimRelative; // Relative dimensions of tile atlas
-	
-	static Vivium::TextureAtlas* m_TextureAtlas;
-	static std::vector<std::array<float, 4>> m_TextureCoords;
 
 	Vivium::Noise::Interpolated m_NoiseTerrain;
 	Vivium::Noise::White m_NoiseTrees;
@@ -38,8 +35,6 @@ private:
 	std::string m_ToRegionName(const Vivium::Vector2<int>& index) const;
 
 	void m_SerialiseRegion(const Vivium::Vector2<int>& index);
-
-	void m_PrecalcTextureCoords();
 
 	void m_SaveWorld();
 	void m_LoadWorld(const std::string& fullpath);
@@ -60,6 +55,9 @@ public:
 	static Vivium::Shader* texture_shader;
 
 	RegionMap_t regions; // Maps a region index to a Region object
+
+	// Loads all tile::ids into textures
+	static void LoadTextures(const std::string& atlas_file);
 
 	void Render(const Vivium::Vector2<int>& pos);
 

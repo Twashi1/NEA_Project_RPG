@@ -1,7 +1,6 @@
 #include "Quad.h"
 
 #include "Application.h"
-#include "TextureAtlas.h"
 
 namespace Vivium {
 	IndexBuffer* Quad::ib = nullptr;

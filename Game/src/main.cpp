@@ -31,7 +31,7 @@ int game(void)
 
     // Test construct world
     World world(0, "testworld");
-    // World::LoadTextures("tile_atlas.png");
+    World::LoadTextures("tile_atlas.png");
 
     Player player = Player();
     Application::physics->Register(player.body, 0);
