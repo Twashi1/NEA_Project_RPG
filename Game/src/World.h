@@ -21,6 +21,9 @@ private:
 	static Vivium::Vector2<int> m_TileAtlasSize; // Size of each sprite in tile atlas
 	static Vivium::Vector2<int> m_AtlasDimRelative; // Relative dimensions of tile atlas
 
+	static Vivium::TextureAtlas* m_TextureAtlas;
+	static std::vector<std::array<float, 4>> m_TextureCoords;
+
 	Vivium::Noise::Interpolated m_NoiseTerrain;
 	Vivium::Noise::White m_NoiseTrees;
 	Vivium::Serialiser* m_Serialiser;
@@ -35,6 +38,8 @@ private:
 	std::string m_ToRegionName(const Vivium::Vector2<int>& index) const;
 
 	void m_SerialiseRegion(const Vivium::Vector2<int>& index);
+
+	void m_PrecalcTextureCoords();
 
 	void m_SaveWorld();
 	void m_LoadWorld(const std::string& fullpath);
@@ -56,16 +61,13 @@ public:
 
 	RegionMap_t regions; // Maps a region index to a Region object
 
-	// Loads all tile::ids into textures
-	static void LoadTextures(const std::string& atlas_file);
-
 	void Render(const Vivium::Vector2<int>& pos);
 
 	// Converts from screen coordinate to world position
 	// TODO: functions assumes no scale/rotation, use camera
 	Vivium::Vector2<float> GetWorldPos(const Vivium::Vector2<float>& pos) const;
 	Tile GetTile(const Vivium::Vector2<int>& tile);
-	
+
 	// Loads from existing world
 	World(const std::string& world_name);
 	// Generates new world
