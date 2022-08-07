@@ -9,7 +9,7 @@ private:
 
 public:
     std::shared_ptr<Vivium::Body> body; // Describes physical properties of player and how it should interact with other objects
-    Vivium::Quad quad;                  // Holds vertex buffer and index buffer of player
+    Ref(Vivium::Quad) quad;             // Holds vertex buffer and index buffer of player
     Vivium::Shader* shader;             // Pointer to player shader
 
     Vivium::Vector2<int> selected_tile_pos; // World position of hovered tile

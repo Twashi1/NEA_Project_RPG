@@ -41,6 +41,8 @@ namespace Vivium {
         // TODO: update window panel
         window_panel->SetRect({ width * 0.5f, height * 0.5f, (float)width, (float)height });
 
+        Renderer::m_ResizeFramebuffers(width, height);
+
         // Update viewport
         glViewport(0, 0, width, height);
     }

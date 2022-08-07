@@ -14,16 +14,13 @@ void World::m_PrecalcTextureCoords()
 {
 	m_TextureCoords.resize((int)Tile::ID::MAX);
 
-	LogTrace("Size is now: {}", m_TextureCoords.size());
-
 	for (int i = 0; i < (int)Tile::ID::MAX; i++) {
 		// TODO: maybe implement GetCoordsArray?
 		// TODO: maybe GetCoords should just return an array? makes more sense with new API
 		const std::vector<float>& vector_coords = m_TextureAtlas->GetCoords(i);
 
 		// left bottom right top
-		std::array<float, 4> array_coords = { vector_coords[0], vector_coords[1], vector_coords[2], vector_coords[5] };
-		m_TextureCoords[i] = array_coords;
+		m_TextureCoords[i] = { vector_coords[0], vector_coords[1], vector_coords[2], vector_coords[5] };
 	}
 }
 

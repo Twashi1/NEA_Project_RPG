@@ -49,7 +49,7 @@ void Player::UpdateSelectedTile(World& world)
 
     // Convert cursor position to world position
     // TODO: assumes no rotation etc.
-    Vivium::Vector2<float> world_pos = cursor_pos + quad.GetCenter() - offset;
+    Vivium::Vector2<float> world_pos = cursor_pos + quad->GetCenter() - offset;
     selected_tile_pos = Vivium::Vector2<int>((world_pos / World::scale).floor());
     selected_tile = world.GetTile(selected_tile_pos);
     // TODO: Add draw to selected tile
@@ -64,8 +64,8 @@ void Player::Update(World& world)
 Player::Player()
 {
     // Setup player quad and body
-    quad = Vivium::Quad(0.0f, 0.0f, 100.0f, 100.0f);
-    body = MakeRef(Vivium::Body, Ref(Vivium::Quad)(&quad), true, 0.0f, 1.0f);
+    quad = MakeRef(Vivium::Quad, 0.0f, 0.0f, 100.0f, 100.0f);
+    body = MakeRef(Vivium::Body, quad, true, 0.0f, 1.0f);
 
     // Setup shader and uniforms
     shader = new Vivium::Shader("world_vertex", "color_frag");

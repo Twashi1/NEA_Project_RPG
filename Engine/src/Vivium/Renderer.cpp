@@ -24,8 +24,8 @@ namespace Vivium {
 	{
 		Framebuffer::Unbind();
 
-		for (auto [key, value] : m_Framebuffers) {
-			delete value;
+		for (auto [id, fb] : m_Framebuffers) {
+			delete fb;
 		}
 
 		m_Framebuffers = {};
@@ -40,6 +40,13 @@ namespace Vivium {
 		m_FramebufferShader = new Shader("static_texture_vertex", "texture_frag");
 	}
 
+	void Renderer::m_ResizeFramebuffers(int width, int height)
+	{
+		for (auto [id, fb] : m_Framebuffers) {
+			fb->Resize(width, height);
+		}
+	}
+
 	void Renderer::SetTarget(const Framebuffer* fb)
 	{
 		if (fb != nullptr) { fb->Bind(); }
@@ -51,9 +58,9 @@ namespace Vivium {
 		Framebuffer::Unbind();
 	}
 
-	void Renderer::BeginScene(int z)
+	void Renderer::BeginScene(int id)
 	{
-		auto it = m_Framebuffers.find(z);
+		auto it = m_Framebuffers.find(id);
 
 		// If framebuffer already exists
 		if (it != m_Framebuffers.end()) {
@@ -64,7 +71,7 @@ namespace Vivium {
 		else {
 			Vector2<int> screen_dim = Application::GetScreenDim();
 			m_CurrentScene = new Framebuffer(screen_dim.x, screen_dim.y);
-			m_Framebuffers.insert({z, m_CurrentScene});
+			m_Framebuffers.insert({id, m_CurrentScene});
 			m_CurrentScene->Bind();
 		}
 	}
@@ -81,7 +88,7 @@ namespace Vivium {
 
 		Quad screen_quad = Quad(screen_dim * 0.5f, screen_dim);
 
-		for (auto& [z, fb] : m_Framebuffers) {
+		for (auto& [id, fb] : m_Framebuffers) {
 			Renderer::Submit(&screen_quad, m_FramebufferShader, fb);
 			fb->Clear();
 		}
