@@ -31,7 +31,6 @@ int game(void)
 
     // Test construct world
     World world(0, "testworld");
-    World::LoadTextures("tile_atlas.png");
 
     Player player = Player();
     Application::physics->Register(player.body, 0);
@@ -42,7 +41,7 @@ int game(void)
     while (Application::IsRunning())
     {
         Renderer::camera->SetCamera(
-            player.quad.GetCenter(),
+            player.quad->GetCenter(),
             { Application::width / 2.0f, Application::height / 2.0f },
             1.0f,
             0.0f
@@ -58,12 +57,12 @@ int game(void)
 
         // Draw calls
         Renderer::BeginScene(1);
-        Vector2<int> update_pos = (Vector2<int>)(player.quad.GetCenter() / World::scale).floor();
+        Vector2<int> update_pos = (Vector2<int>)(player.quad->GetCenter() / World::scale).floor();
         world.Render(update_pos);
         Renderer::EndScene();
 
         Renderer::BeginScene(5);
-        Renderer::Submit(&player.quad, player.shader);
+        Renderer::Submit(player.quad.get(), player.shader);
         Renderer::EndScene();
 
         Renderer::BeginScene(2);

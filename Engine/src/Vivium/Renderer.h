@@ -28,6 +28,8 @@ namespace Vivium {
 		static void m_Terminate();
 		static void m_Init();
 
+		static void m_ResizeFramebuffers(int width, int height);
+
 	public:
 		static Ref(Camera) camera; // Camera currently being used on all Renderable objects
 
@@ -42,7 +44,7 @@ namespace Vivium {
 		static void SetTarget(const Framebuffer* fb);
 		static void ResetTarget();
 
-		static void BeginScene(int z = 0);
+		static void BeginScene(int id = 0);
 		static void EndScene();
 
 		// Draws scenes in order of increasing z

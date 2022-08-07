@@ -15,12 +15,6 @@ private:
 
 	static Vivium::VersionNumber m_VersionNumber;
 
-	typedef std::unordered_map<Tile::ID, Vivium::Vector2<int>> TileMap_t;
-	static TileMap_t m_Tilemap; // Maps a Tile::ID to its index into the atlas
-	static Vivium::Texture* m_TileAtlas; // Atlas of all Tile textures
-	static Vivium::Vector2<int> m_TileAtlasSize; // Size of each sprite in tile atlas
-	static Vivium::Vector2<int> m_AtlasDimRelative; // Relative dimensions of tile atlas
-
 	static Vivium::TextureAtlas* m_TextureAtlas;
 	static std::vector<std::array<float, 4>> m_TextureCoords;
 

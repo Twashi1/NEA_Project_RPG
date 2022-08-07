@@ -35,6 +35,8 @@ namespace Vivium {
         // Update window dimensions
         width = nwidth; height = nheight;
 
+        Renderer::m_ResizeFramebuffers(width, height);
+
         // Update projection matrix for camera
         Renderer::camera->SetProj(0.0f, (float)width, 0.0f, (float)height);
 
