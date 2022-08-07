@@ -10,6 +10,7 @@
 
 namespace Vivium {
 	class Application;
+	class TextureAtlas;
 
 	struct VIVIUM_API Quad : protected Rect, public IStreamable {
 	private:
@@ -97,6 +98,7 @@ namespace Vivium {
 		friend bool operator==(const Quad& a, const Quad& b);
 
 		friend Application;
+		friend TextureAtlas;
 	};
 
 	bool operator==(const Quad& a, const Quad& b);
