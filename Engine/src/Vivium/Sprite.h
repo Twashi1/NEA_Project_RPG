@@ -7,7 +7,6 @@
 #include "Application.h"
 
 // TODO: unused
-// TODO: add constructor from path to image
 
 namespace Vivium {
 	class VIVIUM_API Sprite {

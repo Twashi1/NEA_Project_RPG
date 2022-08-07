@@ -17,6 +17,7 @@ namespace Vivium {
 	class Texture;
 	class Slider;
 	class Application;
+	class Sprite;
 
 	class VIVIUM_API Renderer {
 	private:
@@ -64,6 +65,7 @@ namespace Vivium {
 		static void Submit(Animation* animation);
 		static void Submit(TextInput* text_input);
 		static void Submit(Slider* slider);
+		static void Submit(Sprite* sprite);
 
 		friend Application;
 	};

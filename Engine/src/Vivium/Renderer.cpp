@@ -10,6 +10,7 @@
 #include "Button.h"
 #include "TextInput.h"
 #include "Slider.h"
+#include "Sprite.h"
 #include "Application.h"
 
 namespace Vivium {
@@ -355,5 +356,10 @@ namespace Vivium {
 		else {
 			Renderer::Submit(slider->m_SliderQuad.get(), slider->slider_shader.get());
 		}
+	}
+
+	void Renderer::Submit(Sprite* sprite)
+	{
+		Renderer::Submit(sprite->quad.get(), sprite->shader.get(), sprite->texture.get());
 	}
 }

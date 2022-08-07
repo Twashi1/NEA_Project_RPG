@@ -4,14 +4,6 @@
 #include "Texture.h"
 #include "Quad.h"
 
-// TODO
-
-/*
-TextureAtlas atlas(path);
-Quad quad...;
-atlas.Set(quad, index);
-*/
-
 namespace Vivium {
 	// Allows easy access to texture coordinates of a specific texture, or textures in an atlas
 	// Top left corner is (0,0), increasing as you go down and to the right
@@ -30,8 +22,6 @@ namespace Vivium {
 
 		const Ref(Texture) GetAtlas() const;
 
-		//void Set(Sprite& sprite, const Vector2<int>& index) const;
-		//void Set(Sprite& sprite, const Vector2<int>& top_left, const Vector2<int>& bottom_right) const;
 		void Set(Quad* quad, int index) const;
 		void Set(Quad* quad, const Vector2<int>& index) const;
 		void Set(Quad* quad, const Vector2<int>& top_left, const Vector2<int>& bottom_right) const;
