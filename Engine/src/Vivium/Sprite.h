@@ -7,6 +7,7 @@
 #include "Application.h"
 
 // TODO: unused
+// TODO: bad support for texture atlases
 
 namespace Vivium {
 	class VIVIUM_API Sprite {

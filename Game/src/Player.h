@@ -9,9 +9,13 @@ private:
 
     void m_RenderSelectedTile();
 
+    // Update acceleration according to client inputs
+    void m_UpdateMovement();
+    void m_UpdateSelectedTile(World& world);
+
     Vivium::Quad* m_SelectedTileQuad;
     Vivium::Shader* m_SelectedTileShader;
-    Vivium::TextureAtlas* m_GameIcons; // TODO: general class for this?
+    Vivium::TextureAtlas* m_GameIcons;
 
 public:
     std::shared_ptr<Vivium::Body> body; // Describes physical properties of player and how it should interact with other objects
@@ -24,13 +28,6 @@ public:
     // Miscellaneous constants for player movement
     static constexpr float FRICTION = 20.0f;
     static constexpr float MAXACCEL = 15000.0f;
-
-    // TODO: private
-    // Update acceleration according to client inputs
-    void UpdateMovement();
-
-    // TODO: private
-    void UpdateSelectedTile(World& world);
 
     void Update(World& world);
 

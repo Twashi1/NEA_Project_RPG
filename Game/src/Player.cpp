@@ -8,7 +8,7 @@ void Player::m_RenderSelectedTile()
     }
 }
 
-void Player::UpdateMovement()
+void Player::m_UpdateMovement()
 {
     float current = Vivium::Timer::GetTime();
     float elapsed = current - m_Time; m_Time = current;
@@ -50,7 +50,7 @@ void Player::UpdateMovement()
     body->vel = body->vel + (body->acc * elapsed);
 }
 
-void Player::UpdateSelectedTile(World& world)
+void Player::m_UpdateSelectedTile(World& world)
 {
     Vivium::Vector2<float> offset = (Vivium::Vector2<float>)Vivium::Application::GetScreenDim() * 0.5f;
     Vivium::Vector2<float> cursor_pos = Vivium::Input::GetCursorPos();
@@ -64,8 +64,8 @@ void Player::UpdateSelectedTile(World& world)
 
 void Player::Update(World& world)
 {
-    UpdateMovement();
-    UpdateSelectedTile(world);
+    m_UpdateMovement();
+    m_UpdateSelectedTile(world);
 }
 
 void Player::Render()
