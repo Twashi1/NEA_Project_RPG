@@ -5,7 +5,8 @@ std::array<Tile::Properties, (uint16_t)Tile::ID::MAX> Tile::m_Properties = {
 	Tile::Properties("void", false),
 	Tile::Properties("ground", false),
 	Tile::Properties("grass", false),
-	Tile::Properties("tree", true),
+	Tile::Properties("tree_bottom", true),
+	Tile::Properties("tree_top", false),
 	Tile::Properties("sand", false),
 	Tile::Properties("water", false)
 };

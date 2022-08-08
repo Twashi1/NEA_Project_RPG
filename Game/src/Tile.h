@@ -8,10 +8,15 @@ public:
 		VOID,
 		GROUND,
 		GRASS,
-		TREE,
+		TREE_BOT,
+		TREE_TOP,
 		SAND,
 		WATER,
 		MAX
+	};
+
+	enum class STRUCT : uint16_t {
+		TREE
 	};
 
 	struct Properties {

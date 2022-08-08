@@ -15,6 +15,7 @@ void World::m_PrecalcTextureCoords()
 	m_TextureCoords.resize((int)Tile::ID::MAX);
 
 	for (int i = 0; i < (int)Tile::ID::MAX; i++) {
+		// TODO: won't work with more complicated sprites
 		// TODO: maybe implement GetCoordsArray?
 		// TODO: maybe GetCoords should just return an array? makes more sense with new API
 		const std::vector<float>& vector_coords = m_TextureAtlas->GetCoords(i);
@@ -209,6 +210,8 @@ void World::m_GenerateRegion(const Vivium::Vector2<int>& index)
 {
 	Region region;
 
+	std::unordered_map<Vivium::Vector2<int>, Tile::STRUCT> structures; // Maps bottom left corner of structure to a structure
+
 	for (int y = 0; y < Region::LENGTH; y++) {
 		for (int x = 0; x < Region::LENGTH; x++) {
 			float noise_value = m_NoiseTerrain.Get(x, y); // Returns noise value from 0 - 1
@@ -227,9 +230,31 @@ void World::m_GenerateRegion(const Vivium::Vector2<int>& index)
 
 			float tree_noise = m_NoiseTrees.Get(x + y * Region::LENGTH);
 
-			if (tree_noise > 0.8 && noise_value > 0.6) tile.top = Tile::ID::TREE;
+			if (tree_noise > 0.8 && noise_value > 0.6) {
+				// Check theres no structure below
+				// TODO: in future need more sophisticated system to check bounds dont overlap
+				auto it = structures.find(Vivium::Vector2<int>(x, y - 1));
+
+				if (it == structures.end()) {
+					structures[Vivium::Vector2<int>(x, y)] = Tile::STRUCT::TREE;
+				}
+			}
 
 			region.Index(x, y) = tile;
+		}
+	}
+
+	// Iterate and construct structures
+	for (auto& [pos, struct_id] : structures) {
+		switch (struct_id) {
+		case Tile::STRUCT::TREE:
+		{
+			region.Index(pos).top = Tile::ID::TREE_BOT;
+			region.Index(pos.x, pos.y + 1).top = Tile::ID::TREE_TOP;
+			break;
+		}
+		default:
+			LogWarn("Invalid structure at {}: {}", pos, (int)struct_id);
 		}
 	}
 
