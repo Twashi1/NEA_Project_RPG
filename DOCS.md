@@ -3,6 +3,7 @@
 - [ Startup guide ](#StartupGuide)
     - [ Hello World ](#HelloWorld)
 - [ Rendering guide ](#RenderingGuide)
+    - [ Default shaders ](#DefaultShadersList)
     - [ OO Rendering ](#OOBasedRendering)
         - [ Shaded quad ](#ShadedQuadRendering)
 		- [ Textured quad ](#TexturedQuadRendering)
@@ -60,6 +61,34 @@ int main(void) {
 
 <a name="RenderingGuide"></a>
 ## Rendering guide
+<a name="DefaultShadersList"></a>
+### Default shaders list
+A list of the default GLSL shaders
+#### Vertex Shaders
+- `static_texture_vertex` Drawing **textures** onto quads that **should not** be affected by the camera
+    - `OUT` Texture coordinates
+- `static_vertex` Drawing onto quads that **should not** be affected by the camera
+- `texture_vertex` Drawing **textures** onto quads that **should** be affected by the camera
+    - `OUT` Texture coordinates
+- `text_vertex` For drawing text
+- `world_vertex` Drawing onto quads that **should** be affected by the camera
+
+#### Fragment Shaders
+- `color_frag` Drawing a flat color
+    - Provides `vec3 u_Color` for changing the color
+- `grayscale_frag` Draws a texture in grayscale
+    - `IN` Texture coordinates
+    - Provides `sampler2D u_Texture` for manually setting the texture slot to be drawn from
+	- Provides `float u_Scale` for changing the scale of the texture
+- `texture_frag` Draws a texture
+    - `IN` Texture coordinates
+    - Provides `sampler2D u_Texture` for manually setting the texture slot to be drawn from
+	- Provides `float u_Scale` for changing the scale of the texture
+- `transparency_frag` For drawing a RGBA color
+    - Provides `vec4 u_Color` for changing the color and transparency
+- `uv_frag` Draws UV coordinates
+    - `IN` Texture coordinates
+
 <a name="OOBasedRendering"></a>
 ### OO based rendering
 <a name="ShadedQuadRendering"></a>
