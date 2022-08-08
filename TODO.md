@@ -45,20 +45,21 @@
 # Game
 ## World
 - [ ] Terrain generation
+    - [ ] Fix messy world generation code
     - [ ] Better structure generation
     - [ ] More versatile texture coords for tile atlas
 - [ ] Save files
     - [ ] Implement saving to/loading from file
-- [ ] Animating tiles
+- [ ] Animating tiles / Drawing animated tiles
 - [x] Batch render tiles
-- [ ] Drawing animated tiles
 - [x] Drawing selection hover
 - [ ] Items/Floor drops
 - [ ] Tiles should cleanly connect to each other
-- [ ] Tile breaking
-    - [ ] Implement selecting a tile to break and holding lmb to start timer
+    - [ ] Draw possible transitions
+- [x] Tile breaking
+    - [x] Implement selecting a tile to break and holding lmb to start timer
     - [ ] Only decor/top tiles can be broken
-    - [ ] Tile will grow and shrink rapidly when being broken, until being removed and being converted into an item
+    - [x] Tile will grow and shrink rapidly when being broken, until being removed and being converted into an item
 
 ## Gameplay
 - [ ] Crafting
@@ -86,12 +87,12 @@
 - Better link to Resources folder/re-do file paths and file extension statics
 - Input box typing bar size is using magic numbers
 - Default statics are ugly
-- Make static initialise functions private/only accessible in engine
 - Better api for shader/texture/texture-atlas
 - Inconsistent data layout between GUI objects
 - GL id should be private for GL abstractions
 - Allow void* user data for callback functions (mostly done?)
 - Batch rendering API (mostly done)
+- Change performance stats in Application to use a running average
 - docs docs docs docs docs docs docs docs
 
 # Bugs

@@ -207,11 +207,11 @@ namespace Vivium {
 
         // Create all text renderables for stats
         if (isStatsEnabled) {
-            m_DebugStatsText.insert({ "Average TPF", Text("", Vector2<float>(5, height - 15), 0.25) });
-            m_DebugStatsText.insert({ "Percentage Processing", Text("", Vector2<float>(5, height - 30), 0.25) });
-            m_DebugStatsText.insert({ "Player pos", Text("", Vector2<float>(5, height - 100), 0.25) });
-            m_DebugStatsText.insert({ "Player vel", Text("", Vector2<float>(5, height - 115), 0.25) });
-            m_DebugStatsText.insert({ "Player acc", Text("", Vector2<float>(5, height - 130), 0.25) });
+            m_DebugStatsText.insert({ "Average TPF",            Text("", Vector2<float>(5, height - 15), 0.25)  });
+            m_DebugStatsText.insert({ "Percentage Processing",  Text("", Vector2<float>(5, height - 30), 0.25)  });
+            m_DebugStatsText.insert({ "Player pos",             Text("", Vector2<float>(5, height - 100), 0.25) });
+            m_DebugStatsText.insert({ "Player vel",             Text("", Vector2<float>(5, height - 115), 0.25) });
+            m_DebugStatsText.insert({ "Player acc",             Text("", Vector2<float>(5, height - 130), 0.25) });
         }
 
         // Finished loading
