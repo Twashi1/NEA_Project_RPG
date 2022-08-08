@@ -1,4 +1,5 @@
 #include "World.h"
+#include "Player.h"
 
 // TODO: path is complicated
 
@@ -16,9 +17,8 @@ void World::m_PrecalcTextureCoords()
 
 	for (int i = 0; i < (int)Tile::ID::MAX; i++) {
 		// TODO: won't work with more complicated sprites
-		// TODO: maybe implement GetCoordsArray?
-		// TODO: maybe GetCoords should just return an array? makes more sense with new API
-		const std::vector<float>& vector_coords = m_TextureAtlas->GetCoords(i);
+		// TODO: implement get faces into m_TextureAtlas?
+		std::array<float, 8> vector_coords = m_TextureAtlas->GetCoordsArray(i);
 
 		// left bottom right top
 		m_TextureCoords[i] = { vector_coords[0], vector_coords[1], vector_coords[2], vector_coords[5] };
@@ -71,6 +71,7 @@ World::World(const uint32_t& seed, const std::string& world_name)
 	// Generate world
 	m_GenWorld(fullpath);
 
+	m_UpdateTimer.Start();
 }
 
 Vivium::Vector2<int> World::m_GetRegionIndex(const Vivium::Vector2<int>& pos)
@@ -240,6 +241,10 @@ void World::m_GenerateRegion(const Vivium::Vector2<int>& index)
 				}
 			}
 
+			if (tree_noise < 0.05 && noise_value > 0.2) {
+				tile.top = Tile::ID::AMETHYST_NODE;
+			}
+
 			region.Index(x, y) = tile;
 		}
 	}
@@ -259,6 +264,52 @@ void World::m_GenerateRegion(const Vivium::Vector2<int>& index)
 	}
 
 	regions[index] = region;
+}
+
+void World::m_UpdateMining(Player* player, float elapsed)
+{
+	// Check if player selected tile is mineable
+	if (Tile::GetIsMineable(player->selected_tile.top)) {
+		Vivium::Vector2<int> player_mining_pos = player->selected_tile_pos / World::scale;
+
+		if (Vivium::Input::GetMouseState(GLFW_MOUSE_BUTTON_1) == Vivium::Input::State::HOLD) {
+			// New tile
+			if (player_mining_pos != mined_tile_pos) {
+				mined_tile_time = 0.0f;
+				mined_tile_pos = player_mining_pos;
+			}
+			// Same tile
+			else {
+				mined_tile_time += elapsed;
+			}
+		}
+		else {
+			mined_tile_time = 0.0f;
+			mined_tile_pos = Vivium::Vector2<int>(INT_MAX, INT_MAX);
+		}
+
+		// TODO: allow different time for each object
+		if (mined_tile_time > Tile::GetMiningTime(player->selected_tile.top)) {
+			// TODO: Break tile and drop item
+			// TODO: add function for getting tile *ref* in world
+			Vivium::Vector2<int> region_pos = m_GetRegionIndex(mined_tile_pos);
+			Region& region = m_LoadRegion(region_pos);
+			// Delete top tile
+			Tile& tile = region.Index(mined_tile_pos - region_pos * Region::LENGTH);
+			tile.top = Tile::ID::VOID;
+
+			// TODO: better function?
+			if (tile.top == Tile::ID::TREE_BOT) {
+				// TODO: delete top tile as well
+			}
+
+			LogTrace("Deleted tile at {}", mined_tile_pos);
+		}
+	}
+	else {
+		mined_tile_time = 0.0f;
+		mined_tile_pos = Vivium::Vector2<int>(INT_MAX, INT_MAX);
+	}
 }
 
 void World::m_GenWorld(const std::string& fullpath)
@@ -309,14 +360,40 @@ void World::Render(const Vivium::Vector2<int>& pos)
 			for (const Tile::ID& id : { tile.base, tile.mid, tile.top }) {
 				if (id == Tile::ID::VOID) { continue; }
 
+				float tile_scale = halfscale;
+				if (id == Tile::ID::AMETHYST_NODE)
+				{
+					// TODO: generalise for any tile that needs different scale
+					tile_scale -= 10.0f;
+
+					// Its the currently mined tile
+					if (x == mined_tile_pos.x && y == mined_tile_pos.y) {
+						// TODO: move to function
+						// TODO: generalise for any mineable tile
+						// Get time spent mining as percentage (0 -> 1)
+						float time_ratio = mined_tile_time / Tile::GetMiningTime(Tile::ID::AMETHYST_NODE);
+						// Multiply by amount of cycles of growth/shrinking
+						time_ratio *= 9;
+						// Fix to 0 -> 1 range
+						float integer_part; // NOTE: unused
+						time_ratio = std::modf(time_ratio, &integer_part);
+						// Move to -4 -> 4 range
+						time_ratio = (time_ratio - 0.5f) * 8;
+						// Clamp to more than 0
+						time_ratio = std::max(0.0f, time_ratio);
+
+						tile_scale += time_ratio;
+					}
+				}
+
 				std::array<float, 4>& faces = m_TextureCoords[(int)id];
 
 				std::array<float, 16> this_coords =
 				{
-					dx - halfscale, dy - halfscale, faces[0], faces[1], // bottom left
-					dx + halfscale, dy - halfscale, faces[2], faces[1], // bottom right
-					dx + halfscale, dy + halfscale, faces[2], faces[3], // top right
-					dx - halfscale, dy + halfscale, faces[0], faces[3]  // top left
+					dx - tile_scale, dy - tile_scale, faces[0], faces[1], // bottom left
+					dx + tile_scale, dy - tile_scale, faces[2], faces[1], // bottom right
+					dx + tile_scale, dy + tile_scale, faces[2], faces[3], // top right
+					dx - tile_scale, dy + tile_scale, faces[0], faces[3]  // top left
 				};
 
 				int stride = count * 4;
@@ -349,4 +426,10 @@ void World::Render(const Vivium::Vector2<int>& pos)
 	Vivium::IndexBuffer ib(indexCoords);
 
 	Vivium::Renderer::Submit(&vb, &ib, texture_shader, m_TextureAtlas->GetAtlas().get());
+}
+
+void World::Update(Player* player)
+{
+	float elapsed = m_UpdateTimer.GetElapsed();
+	m_UpdateMining(player, elapsed);
 }

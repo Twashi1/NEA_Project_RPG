@@ -59,7 +59,7 @@ void Player::m_UpdateSelectedTile(World& world)
     // Convert cursor position to world position
     // TODO: assumes no rotation etc.
     selected_tile_pos = (world_pos / World::scale + Vivium::Vector2<float>(0.5f, 0.5f)).floor() * World::scale;
-    selected_tile = world.GetTile(selected_tile_pos);
+    selected_tile = world.GetTile(selected_tile_pos / World::scale);
 }
 
 void Player::Update(World& world)

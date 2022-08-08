@@ -2,6 +2,8 @@
 
 #include "Region.h"
 
+class Player;
+
 class World {
 private:
 	// Converts a coordinate in the world to the index of the chunk that coordinate is in
@@ -25,6 +27,11 @@ private:
 
 	std::string m_WorldName;
 
+	Vivium::Timer m_UpdateTimer;
+
+	Vivium::Vector2<int> mined_tile_pos = Vivium::Vector2<int>(INT_MAX, INT_MAX);
+	float mined_tile_time; // Time we've been mining tile for
+
 	static std::string PATH;
 	static std::string FILE_EXTENSION;
 	static std::string GENERAL_FILE;
@@ -46,6 +53,8 @@ private:
 	void m_DeserialiseRegion(const std::string& filename, const Vivium::Vector2<int>& index);
 	void m_GenerateRegion(const Vivium::Vector2<int>& index);
 
+	void m_UpdateMining(Player* player, float elapsed);
+
 public:
 	static constexpr float scale = 64.0;
 
@@ -56,6 +65,7 @@ public:
 	RegionMap_t regions; // Maps a region index to a Region object
 
 	void Render(const Vivium::Vector2<int>& pos);
+	void Update(Player* player);
 
 	// Converts from screen coordinate to world position
 	// TODO: functions assumes no scale/rotation, use camera

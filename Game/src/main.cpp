@@ -35,7 +35,7 @@ int game(void)
     Player player = Player();
     Application::physics->Register(player.body, 0);
 
-    Application::SetBGColor(RGBColor::BLUE);
+    Application::SetBGColor(RGBColor::BLACK);
 
     // Loop until window is closed by user
     while (Application::IsRunning())
@@ -54,6 +54,8 @@ int game(void)
 
         // Update player
         player.Update(world);
+
+        world.Update(&player);
 
         // Draw calls
         Renderer::BeginScene(1);
