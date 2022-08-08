@@ -1,6 +1,6 @@
 # Vivium
 ## Application
-- ~~Initialisation functions for various classes should be private, and instead should make Application their friend~~
+- [x] Initialisation functions for various classes should be private, and instead should make Application their friend
 
 ## Renderer
 - [x] Framebuffers
@@ -96,3 +96,4 @@
 
 # Bugs
 - Cursor no longer switches when hovering text input box
+- Renderer::BeginScene and EndScene interfere with transparency (Application clear color is mixed in?)

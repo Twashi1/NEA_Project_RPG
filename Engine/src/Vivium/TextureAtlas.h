@@ -19,6 +19,9 @@ namespace Vivium {
 		std::vector<float> GetCoords(int index) const;
 		std::vector<float> GetCoords(const Vector2<int>& index) const;
 		std::vector<float> GetCoords(const Vector2<int>& top_left, const Vector2<int>& bottom_right) const;
+		std::array<float, 8> GetCoordsArray(int index) const;
+		std::array<float, 8> GetCoordsArray(const Vector2<int>& index) const;
+		std::array<float, 8> GetCoordsArray(const Vector2<int>& top_left, const Vector2<int>& bottom_right) const;
 
 		const Ref(Texture) GetAtlas() const;
 
