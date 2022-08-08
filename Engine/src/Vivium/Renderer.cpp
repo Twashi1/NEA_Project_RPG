@@ -18,7 +18,6 @@ namespace Vivium {
 	Ref(Camera) Renderer::camera = nullptr;
 
 	std::map<int, Framebuffer*> Renderer::m_Framebuffers = {};
-	Framebuffer* Renderer::m_CurrentScene = nullptr;
 	Shader* Renderer::m_FramebufferShader = nullptr;
 
 	void Renderer::m_Terminate()
@@ -48,17 +47,6 @@ namespace Vivium {
 		}
 	}
 
-	void Renderer::SetTarget(const Framebuffer* fb)
-	{
-		if (fb != nullptr) { fb->Bind(); }
-		else { Framebuffer::Unbind(); }
-	}
-
-	void Renderer::ResetTarget()
-	{
-		Framebuffer::Unbind();
-	}
-
 	void Renderer::BeginScene(int id)
 	{
 		auto it = m_Framebuffers.find(id);
@@ -66,49 +54,49 @@ namespace Vivium {
 		// If framebuffer already exists
 		if (it != m_Framebuffers.end()) {
 			it->second->Bind();
-			m_CurrentScene = it->second;
 		}
 		// Framebuffer doesn't already exist, create it
 		else {
 			Vector2<int> screen_dim = Application::GetScreenDim();
-			m_CurrentScene = new Framebuffer(screen_dim.x, screen_dim.y);
-			m_Framebuffers.insert({id, m_CurrentScene});
-			m_CurrentScene->Bind();
+			Framebuffer* new_fb = new Framebuffer(screen_dim.x, screen_dim.y);
+			m_Framebuffers.insert({id, new_fb });
+			new_fb->Bind();
 		}
 	}
 
 	void Renderer::EndScene()
 	{
 		Framebuffer::Unbind();
-		m_CurrentScene = nullptr;
 	}
 
 	void Renderer::DrawScenes()
 	{
 		Vector2<float> screen_dim = (Vector2<float>)Application::GetScreenDim();
 
-		Quad screen_quad = Quad(screen_dim * 0.5f, screen_dim);
+		Quad screen_quad(screen_dim * 0.5f, screen_dim); // TODO: could be static
 
 		for (auto& [id, fb] : m_Framebuffers) {
-			Renderer::Submit(&screen_quad, m_FramebufferShader, fb);
+			Renderer::Submit(&screen_quad, m_FramebufferShader, fb, 0);
+
 			fb->Clear();
 		}
 	}
 
-	void Renderer::DrawScene(int scene_ID)
+	void Renderer::DrawScene(int id)
 	{
-		auto it = m_Framebuffers.find(scene_ID);
+		auto it = m_Framebuffers.find(id);
 
 		if (it != m_Framebuffers.end()) {
 			Vector2<float> screen_dim = (Vector2<float>)Application::GetScreenDim();
 
-			Quad screen_quad = Quad(screen_dim * 0.5f, screen_dim);
+			Quad screen_quad(screen_dim * 0.5f, screen_dim);
 
-			Renderer::Submit(&screen_quad, m_FramebufferShader, it->second);
+			Renderer::Submit(&screen_quad, m_FramebufferShader, it->second, 0);
+			
 			it->second->Clear();
 		}
 		else {
-			LogError("Couldn't find scene with ID {}, ignoring call", scene_ID);
+			LogError("Couldn't find scene with ID {}, ignoring call", id);
 		}
 	}
 	
@@ -134,7 +122,7 @@ namespace Vivium {
 		}
 	}
 
-	void Renderer::Submit(const VertexBuffer* vb, const IndexBuffer* ib, Shader* shader, Texture* texture, uint8_t slot)
+	void Renderer::Submit(const VertexBuffer* vb, const IndexBuffer* ib, Shader* shader, const Texture* texture, uint8_t slot)
 	{
 		vb->Bind(); ib->Bind(); shader->Bind(); texture->Bind(slot);
 		shader->SetUniformMat4fv("u_ProjMat", camera->GetProjMat());
@@ -163,9 +151,7 @@ namespace Vivium {
 		shader->SetUniform1f("u_Time", Timer::GetTime());
 		shader->SetUniform1i("u_Texture", slot);
 
-		glActiveTexture(GL_TEXTURE0 + slot);
-		glBindTexture(GL_TEXTURE_2D, fb->GetColorAttachment());
-		glActiveTexture(GL_TEXTURE0);
+		fb->SetSlot(slot);
 
 		glDrawElements(GL_TRIANGLES, ib->GetCount(), ib->GetType(), nullptr);
 	}
@@ -181,9 +167,7 @@ namespace Vivium {
 		shader->SetUniform1f("u_Time", Timer::GetTime());
 		shader->SetUniform1i("u_Texture", slot);
 
-		glActiveTexture(GL_TEXTURE0 + slot);
-		glBindTexture(GL_TEXTURE_2D, fb->GetColorAttachment());
-		glActiveTexture(GL_TEXTURE0);
+		fb->SetSlot(slot);
 
 		glDrawElements(GL_TRIANGLES, ib->GetCount(), ib->GetType(), nullptr);
 	}

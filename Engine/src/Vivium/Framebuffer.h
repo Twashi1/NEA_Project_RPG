@@ -5,11 +5,13 @@
 #include "Math.h"
 
 namespace Vivium {
+	class Renderer;
+
 	class VIVIUM_API Framebuffer {
-	private: // TODO private naming
-		int width, height;
-		GLuint id;
-		GLuint color_attachment;
+	private:
+		int m_Width, m_Height;
+		GLuint m_ID;
+		GLuint m_ColorAttachment;
 
 	public:
 		Framebuffer(int width, int height);
@@ -27,5 +29,7 @@ namespace Vivium {
 		static void Unbind();
 
 		void Resize(int width, int height);
+
+		friend Renderer;
 	};
 }

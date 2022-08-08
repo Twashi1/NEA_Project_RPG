@@ -94,9 +94,6 @@
     <ClCompile Include="src\Vivium\VertexBuffer.cpp">
       <Filter>Source</Filter>
     </ClCompile>
-    <ClCompile Include="src\Vivium\Core.cpp">
-      <Filter>Source</Filter>
-    </ClCompile>
     <ClCompile Include="src\Vivium\Color.cpp">
       <Filter>Source</Filter>
     </ClCompile>

@@ -62,7 +62,7 @@ int game(void)
         Renderer::EndScene();
 
         Renderer::BeginScene(5);
-        Renderer::Submit(player.quad.get(), player.shader);
+        player.Render();
         Renderer::EndScene();
 
         Renderer::BeginScene(2);

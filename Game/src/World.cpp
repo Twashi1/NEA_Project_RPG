@@ -275,10 +275,10 @@ void World::Render(const Vivium::Vector2<int>& pos)
 			Tile& tile = region.Index(rx, ry);
 
 			// Calculate draw coords
-			float dx = x * scale;
-			float dy = y * scale;
+			float dx = x * World::scale;
+			float dy = y * World::scale;
 
-			float halfscale = scale / 2.0f;
+			float halfscale = World::scale * 0.5f;
 
 			// Iterate over each tile id
 			for (const Tile::ID& id : { tile.base, tile.mid, tile.top }) {

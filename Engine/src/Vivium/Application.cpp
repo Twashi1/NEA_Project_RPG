@@ -170,11 +170,10 @@ namespace Vivium {
         // Initialise input system
         Input::m_Init();
 
+        Sprite::m_Init();
+
         // Initialise static for Animation
         Animation::FILE_EXTENSION = ".animation";
-
-        // Init sprite class
-        Sprite::m_DefaultTextureShader = MakeRef(Shader, "world_vertex", "texture_frag");
 
         // Initialise text class
         Text::m_Init();

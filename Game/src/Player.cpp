@@ -1,5 +1,13 @@
 #include "Player.h"
 
+void Player::m_RenderSelectedTile()
+{
+    if (selected_tile.base != Tile::ID::VOID) {
+        m_SelectedTileQuad->SetCenter(selected_tile_pos);
+        Vivium::Renderer::Submit(m_SelectedTileQuad, m_SelectedTileShader, m_GameIcons->GetAtlas().get());
+    }
+}
+
 void Player::UpdateMovement()
 {
     float current = Vivium::Timer::GetTime();
@@ -44,21 +52,26 @@ void Player::UpdateMovement()
 
 void Player::UpdateSelectedTile(World& world)
 {
-    Vivium::Vector2<float> cursor_pos = Vivium::Input::GetCursorPos();
     Vivium::Vector2<float> offset = (Vivium::Vector2<float>)Vivium::Application::GetScreenDim() * 0.5f;
+    Vivium::Vector2<float> cursor_pos = Vivium::Input::GetCursorPos();
+    Vivium::Vector2<float> world_pos = cursor_pos + quad->GetCenter() - offset;
 
     // Convert cursor position to world position
     // TODO: assumes no rotation etc.
-    Vivium::Vector2<float> world_pos = cursor_pos + quad->GetCenter() - offset;
-    selected_tile_pos = Vivium::Vector2<int>((world_pos / World::scale).floor());
+    selected_tile_pos = (world_pos / World::scale + Vivium::Vector2<float>(0.5f, 0.5f)).floor() * World::scale;
     selected_tile = world.GetTile(selected_tile_pos);
-    // TODO: Add draw to selected tile
 }
 
 void Player::Update(World& world)
 {
     UpdateMovement();
     UpdateSelectedTile(world);
+}
+
+void Player::Render()
+{
+    m_RenderSelectedTile();
+    Vivium::Renderer::Submit(quad.get(), shader);
 }
 
 Player::Player()
@@ -71,7 +84,20 @@ Player::Player()
     shader = new Vivium::Shader("world_vertex", "color_frag");
     shader->SetUniform3f("u_Color", 1.0, 1.0, 0.0);
 
+    m_GameIcons = new Vivium::TextureAtlas("game_icons.png", {32, 32});
+    
+    m_SelectedTileQuad = new Vivium::Quad(0.0f, 0.0f, World::scale, World::scale);
+    m_SelectedTileShader = new Vivium::Shader("texture_vertex", "texture_frag");
+    
+    m_GameIcons->Set(m_SelectedTileQuad, 0); // Set texture from index in texture atlas
+
     m_Time = Vivium::Timer::GetTime();
 }
 
-Player::~Player() { delete shader; }
+Player::~Player()
+{
+    delete shader;
+    delete m_SelectedTileQuad;
+    delete m_SelectedTileShader;
+    delete m_GameIcons;
+}
