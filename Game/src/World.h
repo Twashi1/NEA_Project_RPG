@@ -18,8 +18,6 @@ private:
 	static constexpr int m_Wavelength = 4;
 	static constexpr int m_Octaves = 1;
 
-	static Vivium::VersionNumber m_VersionNumber;
-
 	static Vivium::TextureAtlas* m_TextureAtlas; // TODO unique ptr
 	static std::vector<std::array<float, 4>> m_TextureCoords;
 
@@ -34,7 +32,8 @@ private:
 
 	Vivium::Vector2<int> mined_tile_pos = Vivium::Vector2<int>(INT_MAX, INT_MAX);
 	float mined_tile_time; // Time we've been mining tile for
-
+	
+	// TODO: weird statics
 	static std::string PATH;
 	static std::string FILE_EXTENSION;
 	static std::string GENERAL_FILE;
@@ -58,7 +57,7 @@ private:
 	void m_UpdateMining(Player* player, float elapsed);
 
 public:
-	static constexpr float scale = 64.0;
+	static constexpr float PIXEL_SCALE = 64.0;
 
 	typedef std::unordered_map<Vivium::Vector2<int>, Region> RegionMap_t;
 
@@ -71,7 +70,7 @@ public:
 
 	// Converts from screen coordinate to world position
 	// TODO: functions assumes no scale/rotation, use camera
-	Vivium::Vector2<float> GetWorldPos(const Vivium::Vector2<float>& pos) const;
+	Vivium::Vector2<int> GetWorldPos(const Vivium::Vector2<float>& pos) const;
 	Tile& GetTile(const Vivium::Vector2<int>& tile);
 
 	// Loads from existing world

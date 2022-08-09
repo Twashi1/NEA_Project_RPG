@@ -29,6 +29,9 @@ namespace Vivium {
 
         void SetProj(float left, float right, float bottom, float top);
 
+        Vector2<float> Untransform(const Vector2<float>& point) const;
+        Vector2<float> Transform(const Vector2<float>& point) const;
+
         const glm::vec3& GetPos() const;
         const glm::vec3& GetScale() const;
 

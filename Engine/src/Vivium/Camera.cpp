@@ -61,6 +61,21 @@ namespace Vivium {
         m_UpdateMatrix();
     }
 
+    Vector2<float> Camera::Untransform(const Vector2<float>& point) const
+    {
+        glm::mat4 inverse_view_mat = glm::inverse(m_ViewMat);
+        glm::vec4 untransformed = inverse_view_mat * glm::vec4(point.x, point.y, 0.0, 1.0);
+
+        return Vector2<float>(untransformed.x, untransformed.y);
+    }
+
+    Vector2<float> Camera::Transform(const Vector2<float>& point) const
+    {
+        glm::vec4 transformed = m_ViewMat * glm::vec4(point.x, point.y, 0.0, 1.0);
+
+        return Vector2<float>(transformed.x, transformed.y);
+    }
+
     const glm::vec3& Camera::GetPos() const
     {
         return m_Pos;

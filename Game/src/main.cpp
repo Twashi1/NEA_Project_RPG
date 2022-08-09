@@ -75,7 +75,7 @@ int game(void)
 
         // Draw calls
         Renderer::BeginScene(1);
-        Vector2<int> update_pos = (Vector2<int>)(player.quad->GetCenter() / World::scale).floor();
+        Vector2<int> update_pos = (Vector2<int>)(player.quad->GetCenter() / World::PIXEL_SCALE).floor();
         world.Render(update_pos);
         Renderer::EndScene();
 

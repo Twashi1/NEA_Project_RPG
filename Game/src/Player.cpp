@@ -3,7 +3,7 @@
 void Player::m_RenderSelectedTile()
 {
     if (selected_tile.base != Tile::ID::VOID) {
-        m_SelectedTileQuad->SetCenter(selected_tile_pos);
+        m_SelectedTileQuad->SetCenter(selected_tile_pos * World::PIXEL_SCALE);
         Vivium::Renderer::Submit(m_SelectedTileQuad, m_SelectedTileShader, m_GameIcons->GetAtlas().get());
     }
 }
@@ -52,14 +52,9 @@ void Player::m_UpdateMovement()
 
 void Player::m_UpdateSelectedTile(World& world)
 {
-    Vivium::Vector2<float> offset = (Vivium::Vector2<float>)Vivium::Application::GetScreenDim() * 0.5f;
-    Vivium::Vector2<float> cursor_pos = Vivium::Input::GetCursorPos();
-    Vivium::Vector2<float> world_pos = cursor_pos + quad->GetCenter() - offset;
-
     // Convert cursor position to world position
-    // TODO: assumes no rotation etc.
-    selected_tile_pos = (world_pos / World::scale + Vivium::Vector2<float>(0.5f, 0.5f)).floor() * World::scale;
-    selected_tile = world.GetTile(selected_tile_pos / World::scale);
+    selected_tile_pos = world.GetWorldPos(Vivium::Input::GetCursorPos());
+    selected_tile = world.GetTile(selected_tile_pos);
 }
 
 void Player::Update(World& world)
@@ -86,7 +81,7 @@ Player::Player()
 
     m_GameIcons = new Vivium::TextureAtlas("game_icons.png", {32, 32});
     
-    m_SelectedTileQuad = new Vivium::Quad(0.0f, 0.0f, World::scale, World::scale);
+    m_SelectedTileQuad = new Vivium::Quad(0.0f, 0.0f, World::PIXEL_SCALE, World::PIXEL_SCALE);
     m_SelectedTileShader = new Vivium::Shader("texture_vertex", "texture_frag");
     
     m_GameIcons->Set(m_SelectedTileQuad, 0); // Set texture from index in texture atlas

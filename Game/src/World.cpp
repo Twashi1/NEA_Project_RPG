@@ -6,7 +6,6 @@
 std::string World::PATH = "../Resources/saves/";
 std::string World::FILE_EXTENSION = ".data";
 std::string World::GENERAL_FILE = "general";
-Vivium::VersionNumber World::m_VersionNumber = Vivium::VersionNumber(0, 0, 1);
 Vivium::Shader* World::texture_shader = nullptr;
 Vivium::TextureAtlas* World::m_TextureAtlas = nullptr;
 std::vector<std::array<float, 4>> World::m_TextureCoords = {};
@@ -26,10 +25,10 @@ void World::m_PrecalcTextureCoords()
 	}
 }
 
-Vivium::Vector2<float> World::GetWorldPos(const Vivium::Vector2<float>& pos) const
+Vivium::Vector2<int> World::GetWorldPos(const Vivium::Vector2<float>& pos) const
 {
-	// TODO
-	return { 0, 0 };
+	// Convert to tile-scale, add 0.5, 0.5 to move to center of screen, floor to get clostest tile
+	return (Vivium::Renderer::camera->Untransform(pos) / World::PIXEL_SCALE + Vivium::Vector2<float>(0.5f, 0.5f)).floor();
 }
 
 Tile& World::GetTile(const Vivium::Vector2<int>& pos)
@@ -148,14 +147,9 @@ void World::m_LoadWorld(const std::string& fullpath)
 	m_Serialiser->BeginRead((fullpath + GENERAL_FILE + FILE_EXTENSION).c_str());
 
 	// Get version number
-	Vivium::VersionNumber serialised_version;
+
 	// Deserialise<VersionNumber>(m_serialiser, &serialised_version);
 	// If version number is different
-	if (serialised_version != m_VersionNumber)
-	{
-		// We can't interpret this data so log fatal error
-		LogFatal("World version is {}, but we're on version {}", serialised_version, m_VersionNumber);
-	}
 
 	// Get seed
 	// Deserialise<unsigned int>(m_serialiser, &m_Seed);
@@ -239,7 +233,7 @@ void World::m_UpdateMining(Player* player, float elapsed)
 {
 	// Check if player selected tile is mineable
 	if (Tile::GetIsMineable(player->selected_tile.top)) {
-		Vivium::Vector2<int> player_mining_pos = player->selected_tile_pos / World::scale;
+		Vivium::Vector2<int> player_mining_pos = player->selected_tile_pos;
 
 		if (Vivium::Input::GetMouseState(GLFW_MOUSE_BUTTON_1) == Vivium::Input::State::HOLD) {
 			// New tile
@@ -293,7 +287,7 @@ void World::Render(const Vivium::Vector2<int>& pos)
 	std::vector<float> coords;
 	std::vector<unsigned short> indexCoords;
 
-	Vivium::Vector2<int> frame = Vivium::Application::GetScreenDim() / (scale * 2.0f) + Vivium::Vector2<int>(1, 1);
+	Vivium::Vector2<int> frame = Vivium::Application::GetScreenDim() / (PIXEL_SCALE * 2.0f) + Vivium::Vector2<int>(1, 1);
 
 	unsigned short count = 0;
 	unsigned int max_count = (frame.x * 2 + 1) * (frame.y * 2 + 1) * 3;
@@ -318,10 +312,10 @@ void World::Render(const Vivium::Vector2<int>& pos)
 			Tile& tile = region.Index(rx, ry);
 
 			// Calculate draw coords
-			float dx = x * World::scale;
-			float dy = y * World::scale;
+			float dx = x * World::PIXEL_SCALE;
+			float dy = y * World::PIXEL_SCALE;
 
-			float halfscale = World::scale * 0.5f;
+			float halfscale = World::PIXEL_SCALE * 0.5f;
 
 			// Iterate over each tile id
 			for (const Tile::ID& id : { tile.base, tile.mid, tile.top }) {
