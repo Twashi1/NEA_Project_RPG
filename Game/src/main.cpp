@@ -6,10 +6,11 @@ const int WIDTH = 1080;
 const int HEIGHT = 720;
 const int FPS = 144;
 
+using namespace Vivium;
+using namespace Game;
+
 int sandbox(void)
 {
-    using namespace Vivium;
-
     Serialiser serialiser(std::ios::binary | std::ios::trunc);
     
     Vivium::Vector2<int> before[9] = { 0, 1, 2, 3, 4, 5, 7, 8, 9 };
@@ -31,8 +32,6 @@ int sandbox(void)
 
 int game(void)
 {
-    using namespace Vivium;
-
     // Construct engine instance
     Application::Init(WIDTH, HEIGHT, FPS, true);
 

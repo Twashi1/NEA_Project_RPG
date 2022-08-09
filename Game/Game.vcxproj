@@ -32,6 +32,7 @@
     </ProjectReference>
   </ItemGroup>
   <ItemGroup>
+    <ClInclude Include="src\Item.h" />
     <ClInclude Include="src\Player.h" />
     <ClInclude Include="src\Region.h" />
     <ClInclude Include="src\Structures.h" />
