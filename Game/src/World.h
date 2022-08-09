@@ -1,6 +1,9 @@
 #pragma once
 
 #include "Region.h"
+#include "Structures.h"
+
+// TODO: world should serialise/deserialise around player
 
 class Player;
 
@@ -17,12 +20,12 @@ private:
 
 	static Vivium::VersionNumber m_VersionNumber;
 
-	static Vivium::TextureAtlas* m_TextureAtlas;
+	static Vivium::TextureAtlas* m_TextureAtlas; // TODO unique ptr
 	static std::vector<std::array<float, 4>> m_TextureCoords;
 
 	Vivium::Noise::Interpolated m_NoiseTerrain;
 	Vivium::Noise::White m_NoiseTrees;
-	Vivium::Serialiser* m_Serialiser;
+	Vivium::Serialiser* m_Serialiser; // TODO unique ptr
 	unsigned int m_Seed;
 
 	std::string m_WorldName;
@@ -38,8 +41,6 @@ private:
 
 	std::string m_ToRegionName(const Vivium::Vector2<int>& index) const;
 
-	void m_SerialiseRegion(const Vivium::Vector2<int>& index);
-
 	void m_PrecalcTextureCoords();
 
 	void m_SaveWorld();
@@ -50,6 +51,7 @@ private:
 	void m_LoadRegions(const Vivium::Vector2<int>& center, int radius);
 	Region& m_LoadRegion(const Vivium::Vector2<int>& index);
 
+	void m_SerialiseRegion(const Vivium::Vector2<int>& index);
 	void m_DeserialiseRegion(const std::string& filename, const Vivium::Vector2<int>& index);
 	void m_GenerateRegion(const Vivium::Vector2<int>& index);
 
@@ -70,10 +72,10 @@ public:
 	// Converts from screen coordinate to world position
 	// TODO: functions assumes no scale/rotation, use camera
 	Vivium::Vector2<float> GetWorldPos(const Vivium::Vector2<float>& pos) const;
-	Tile GetTile(const Vivium::Vector2<int>& tile);
+	Tile& GetTile(const Vivium::Vector2<int>& tile);
 
 	// Loads from existing world
-	World(const std::string& world_name);
+	// World(const std::string& world_name);
 	// Generates new world
 	World(const uint32_t& seed, const std::string& world_name);
 	~World();

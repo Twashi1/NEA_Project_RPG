@@ -4,12 +4,22 @@
 
 class Tile {
 public:
+	struct AtlasData : Vivium::IStreamable {
+		Vivium::Vector2<int> index;
+
+		AtlasData();
+		AtlasData(const Vivium::Vector2<int>& index);
+
+		void Write(Vivium::Serialiser& s) const override;
+		void Read(Vivium::Serialiser& s) override;
+	};
+
 	enum class ID : uint16_t {
 		VOID,
 		GROUND,
 		GRASS,
-		TREE_BOT,
-		TREE_TOP,
+		TREE_0,
+		TREE_1,
 		SAND,
 		WATER,
 		BUSH,
@@ -18,17 +28,17 @@ public:
 		MAX
 	};
 
-	enum class STRUCT : uint16_t {
-		TREE
-	};
+	struct Properties : Vivium::IStreamable {
+		const char* name;		// Tile::ID as string
+		bool isPhysical;		// If tile is something the player can collide with
+		bool isMineable;		// If player can mine the item
+		float mining_time;		// Amount of time it takes to mine this tile
+		AtlasData atlas_data;
 
-	struct Properties {
-		const char* name;	// Tile::ID as string
-		bool isPhysical;	// If tile is something the player can collide with
-		bool isMineable;	// If player can mine the item
-		float mining_time;  // Amount of time it takes to mine this tile
+		Properties(const char* name, bool isPhysical, bool isMineable, float mining_time, AtlasData atlas_data);
 
-		Properties(const char* name, bool isPhysical, bool isMineable, float mining_time);
+		void Write(Vivium::Serialiser& s) const override;
+		void Read(Vivium::Serialiser& s) override;
 	};
 
 	static Properties GetProperties(const Tile::ID& id);
@@ -36,10 +46,14 @@ public:
 	static bool GetIsPhysical(const Tile::ID& id);
 	static bool GetIsMineable(const Tile::ID& id);
 	static float GetMiningTime(const Tile::ID& id);
+	static AtlasData GetAltasData(const Tile::ID& id);
 
-	Tile::ID base;
+	Tile::ID base; // TODO: rename to bot
 	Tile::ID mid;
 	Tile::ID top;
+
+	// Copies only non-void tiles
+	void CopyRealTiles(const Tile& other);
 
 	Tile();
 	Tile(const Tile::ID& base, const Tile::ID& mid = Tile::ID::VOID, const Tile::ID& top = Tile::ID::VOID);

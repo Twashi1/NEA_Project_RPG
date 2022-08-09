@@ -22,6 +22,7 @@
     <ClCompile Include="src\main.cpp" />
     <ClCompile Include="src\Player.cpp" />
     <ClCompile Include="src\Region.cpp" />
+    <ClCompile Include="src\Structures.cpp" />
     <ClCompile Include="src\Tile.cpp" />
     <ClCompile Include="src\World.cpp" />
   </ItemGroup>
@@ -33,6 +34,7 @@
   <ItemGroup>
     <ClInclude Include="src\Player.h" />
     <ClInclude Include="src\Region.h" />
+    <ClInclude Include="src\Structures.h" />
     <ClInclude Include="src\Tile.h" />
     <ClInclude Include="src\World.h" />
   </ItemGroup>

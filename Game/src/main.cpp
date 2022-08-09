@@ -10,6 +10,22 @@ int sandbox(void)
 {
     using namespace Vivium;
 
+    Serialiser serialiser(std::ios::binary | std::ios::trunc);
+    
+    Vivium::Vector2<int> before[9] = { 0, 1, 2, 3, 4, 5, 7, 8, 9 };
+
+    serialiser.BeginWrite("../Resources/saves/example.txt");
+    serialiser.Write(before, 9);
+    serialiser.EndWrite();
+
+    Vivium::Vector2<int> after[9] = {};
+    
+    serialiser.BeginRead("../Resources/saves/example.txt");
+    serialiser.Read(after, 9);
+    serialiser.EndRead();
+
+    LogTrace("Array after: {}", Vivium::Logger::List(after, 9));
+
     return EXIT_SUCCESS;
 }
 
@@ -85,6 +101,6 @@ int game(void)
     return EXIT_SUCCESS;
 }
 
-int main(void) {
+int main(int argc, char** argv) {
     game();
 }

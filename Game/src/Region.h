@@ -3,8 +3,9 @@
 #include "Tile.h"
 
 struct Region {
-	static constexpr unsigned int LENGTH = 16;
+	static constexpr unsigned int LENGTH = 64;
 	static constexpr unsigned int SIZE = LENGTH * LENGTH;
+	static constexpr unsigned int MEMORY_SIZE = SIZE * sizeof(Tile);
 
 	Tile* tiles; // 1D array of tile ids
 

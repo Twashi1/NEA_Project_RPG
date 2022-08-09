@@ -18,7 +18,8 @@ void World::m_PrecalcTextureCoords()
 	for (int i = 0; i < (int)Tile::ID::MAX; i++) {
 		// TODO: won't work with more complicated sprites
 		// TODO: implement get faces into m_TextureAtlas?
-		std::array<float, 8> vector_coords = m_TextureAtlas->GetCoordsArray(i);
+		const Tile::AtlasData& atlas_data = Tile::GetAltasData(Tile::ID(i));
+		std::array<float, 8> vector_coords = m_TextureAtlas->GetCoordsArray(atlas_data.index);
 
 		// left bottom right top
 		m_TextureCoords[i] = { vector_coords[0], vector_coords[1], vector_coords[2], vector_coords[5] };
@@ -31,7 +32,7 @@ Vivium::Vector2<float> World::GetWorldPos(const Vivium::Vector2<float>& pos) con
 	return { 0, 0 };
 }
 
-Tile World::GetTile(const Vivium::Vector2<int>& pos)
+Tile& World::GetTile(const Vivium::Vector2<int>& pos)
 {
 	// Find region tile is in
 	Vivium::Vector2<int> region_pos = m_GetRegionIndex(pos);
@@ -40,20 +41,6 @@ Tile World::GetTile(const Vivium::Vector2<int>& pos)
 	Vivium::Vector2<int> relative = pos - (region_pos * Region::LENGTH);
 	// Index tile and return
 	return region.Index(relative);
-}
-
-World::World(const std::string& world_name)
-	: m_WorldName(world_name)
-{
-	std::string fullpath = PATH + world_name + "/";
-
-	if (std::filesystem::is_directory(fullpath)) {
-		// Load world
-		m_LoadWorld(fullpath);
-	}
-	else {
-		LogFatal("Directory didn't exist, world hasn't been generated yet?");
-	}
 }
 
 World::World(const uint32_t& seed, const std::string& world_name)
@@ -67,6 +54,8 @@ World::World(const uint32_t& seed, const std::string& world_name)
 	m_TextureAtlas = new Vivium::TextureAtlas("tile_atlas.png", { 32, 32 }); // TODO: hardcoded sprite size
 
 	m_PrecalcTextureCoords();
+
+	m_Serialiser = new Vivium::Serialiser(Vivium::Stream::Flags::BINARY | Vivium::Stream::Flags::TRUNC);
 
 	// Generate world
 	m_GenWorld(fullpath);
@@ -138,18 +127,16 @@ World::~World()
 	m_SaveWorld();
 
 	delete m_TextureAtlas;
+	delete m_Serialiser;
 }
 
 void World::m_DeserialiseRegion(const std::string& filename, const Vivium::Vector2<int>& index)
 {
-	m_Serialiser->BeginRead((PATH + m_WorldName + "/" + filename).c_str());
-
 	// Construct empty region object
 	Region region;
 
-	// Deserialise tiles
-	// DeserialiseArray<Tile>(m_serialiser, region.tiles);
-
+	m_Serialiser->BeginRead((PATH + m_WorldName + "/" + filename).c_str());
+	m_Serialiser->Read((char*)region.tiles, Region::MEMORY_SIZE);
 	m_Serialiser->EndRead();
 
 	// Add region to region map
@@ -199,19 +186,16 @@ void World::m_SerialiseRegion(const Vivium::Vector2<int>& index)
 	Region& region = regions[index];
 	std::string region_path = PATH + m_WorldName + "/" + m_ToRegionName(index);
 
-	//m_Serialiser->BeginWrite(region_path.c_str());
-
-	// Serialise list of tiles
-	// Serialise<Tile>(m_serialiser, region.tiles, Region::SIZE);
-
-	//m_Serialiser->EndWrite();
+	m_Serialiser->BeginWrite(region_path.c_str());
+	m_Serialiser->Write((char*)region.tiles, Region::MEMORY_SIZE);
+	m_Serialiser->EndWrite();
 }
 
 void World::m_GenerateRegion(const Vivium::Vector2<int>& index)
 {
 	Region region;
 
-	std::unordered_map<Vivium::Vector2<int>, Tile::STRUCT> structures; // Maps bottom left corner of structure to a structure
+	std::unordered_map<Vivium::Vector2<int>, Structure::ID> structures; // Maps bottom left corner of structure to a structure
 
 	for (int y = 0; y < Region::LENGTH; y++) {
 		for (int x = 0; x < Region::LENGTH; x++) {
@@ -221,49 +205,34 @@ void World::m_GenerateRegion(const Vivium::Vector2<int>& index)
 
 			Tile::ID tile_id = Tile::ID::GRASS;
 
-			// TODO
+			// TODO better world generation
 
-			if (noise_value < 0.6) { tile_id = Tile::ID::GROUND; }
-			if (noise_value < 0.5) { tile_id = Tile::ID::SAND; }
+			if (noise_value < 0.4) { tile_id = Tile::ID::GROUND; }
+			if (noise_value < 0.3) { tile_id = Tile::ID::SAND; }
 			if (noise_value < 0.2) { tile_id = Tile::ID::WATER; }
 
 			tile.base = tile_id;
 
 			float tree_noise = m_NoiseTrees.Get(x + y * Region::LENGTH);
 
-			if (tree_noise > 0.8 && noise_value > 0.6) {
-				// Check theres no structure below
-				// TODO: in future need more sophisticated system to check bounds dont overlap
-				auto it = structures.find(Vivium::Vector2<int>(x, y - 1));
-
-				if (it == structures.end()) {
-					structures[Vivium::Vector2<int>(x, y)] = Tile::STRUCT::TREE;
-				}
+			if (tree_noise < 0.03 && noise_value > 0.2) {
+				tile.top = Tile::ID::AMETHYST_NODE;
 			}
 
-			if (tree_noise < 0.05 && noise_value > 0.2) {
-				tile.top = Tile::ID::AMETHYST_NODE;
+			if (tree_noise > 0.8 && noise_value > 0.6) {
+				structures[Vivium::Vector2<int>(x, y)] = Structure::ID::TREE;
 			}
 
 			region.Index(x, y) = tile;
 		}
 	}
 
+	regions[index] = region;
+
 	// Iterate and construct structures
 	for (auto& [pos, struct_id] : structures) {
-		switch (struct_id) {
-		case Tile::STRUCT::TREE:
-		{
-			region.Index(pos).top = Tile::ID::TREE_BOT;
-			region.Index(pos.x, pos.y + 1).top = Tile::ID::TREE_TOP;
-			break;
-		}
-		default:
-			LogWarn("Invalid structure at {}: {}", pos, (int)struct_id);
-		}
+		Structure::Place(pos, struct_id, this);
 	}
-
-	regions[index] = region;
 }
 
 void World::m_UpdateMining(Player* player, float elapsed)
@@ -299,11 +268,9 @@ void World::m_UpdateMining(Player* player, float elapsed)
 			tile.top = Tile::ID::VOID;
 
 			// TODO: better function?
-			if (tile.top == Tile::ID::TREE_BOT) {
+			if (tile.top == Tile::ID::TREE_0) {
 				// TODO: delete top tile as well
 			}
-
-			LogTrace("Deleted tile at {}", mined_tile_pos);
 		}
 	}
 	else {
@@ -417,7 +384,7 @@ void World::Render(const Vivium::Vector2<int>& pos)
 		}
 	}
 
-	Vivium::BufferLayout layout = {
+	static const Vivium::BufferLayout layout = {
 		{"position", Vivium::GLSLDataType::VEC2},
 		{"texCoords", Vivium::GLSLDataType::VEC2}
 	};

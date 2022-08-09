@@ -1,5 +1,7 @@
 #include "TextureAtlas.h"
 
+// TODO: so much repeated code
+
 namespace Vivium {
 	void TextureAtlas::Set(Quad* quad, int index) const
 	{
@@ -119,11 +121,13 @@ namespace Vivium {
 		float inv_width = 1.0f / m_Atlas->width;
 		float inv_height = 1.0f / m_Atlas->height;
 
+		int y_index = m_AtlasDimRelative.y - 1 - index.y;
+
 		// Calculate faces
 		float left = index.x * inv_width * m_SpriteSize.x;
 		float right = (index.x + 1) * inv_width * m_SpriteSize.x;
-		float bottom = index.y * inv_height * m_SpriteSize.y;
-		float top = (index.y + 1) * inv_height * m_SpriteSize.y;
+		float bottom = y_index * inv_height * m_SpriteSize.y;
+		float top = (y_index + 1) * inv_height * m_SpriteSize.y;
 
 		// Create tex coords list
 		std::vector<float> tex_coords = {
@@ -143,11 +147,14 @@ namespace Vivium {
 		float inv_width = 1.0f / m_Atlas->width;
 		float inv_height = 1.0f / m_Atlas->height;
 
+		int bot_index = m_AtlasDimRelative.y - 1 - bottom_right.y;
+		int top_index = m_AtlasDimRelative.y - 1 - top_left.y;
+
 		// Calculate faces
 		float left = top_left.x * inv_width * m_SpriteSize.x;
 		float right = bottom_right.x * inv_width * m_SpriteSize.x;
-		float bottom = bottom_right.y * inv_height * m_SpriteSize.y;
-		float top = top_left.y * inv_height * m_SpriteSize.y;
+		float bottom = bot_index * inv_height * m_SpriteSize.y;
+		float top = top_index * inv_height * m_SpriteSize.y;
 
 		// Create tex coords list
 		std::vector<float> tex_coords = {
@@ -195,11 +202,13 @@ namespace Vivium {
 		float inv_width = 1.0f / m_Atlas->width;
 		float inv_height = 1.0f / m_Atlas->height;
 
+		int y_index = m_AtlasDimRelative.y - 1 - index.y;
+
 		// Calculate faces
 		float left = index.x * inv_width * m_SpriteSize.x;
 		float right = (index.x + 1) * inv_width * m_SpriteSize.x;
-		float bottom = index.y * inv_height * m_SpriteSize.y;
-		float top = (index.y + 1) * inv_height * m_SpriteSize.y;
+		float bottom = y_index * inv_height * m_SpriteSize.y;
+		float top = (y_index + 1) * inv_height * m_SpriteSize.y;
 
 		// Create tex coords list
 		std::array<float, 8> tex_coords = {
@@ -219,11 +228,14 @@ namespace Vivium {
 		float inv_width = 1.0f / m_Atlas->width;
 		float inv_height = 1.0f / m_Atlas->height;
 
+		int bot_index = m_AtlasDimRelative.y - 1 - bottom_right.y;
+		int top_index = m_AtlasDimRelative.y - 1 - top_left.y;
+
 		// Calculate faces
 		float left = top_left.x * inv_width * m_SpriteSize.x;
 		float right = bottom_right.x * inv_width * m_SpriteSize.x;
-		float bottom = bottom_right.y * inv_height * m_SpriteSize.y;
-		float top = top_left.y * inv_height * m_SpriteSize.y;
+		float bottom = bot_index * inv_height * m_SpriteSize.y;
+		float top = top_index * inv_height * m_SpriteSize.y;
 
 		// Create tex coords list
 		std::array<float, 8> tex_coords = {

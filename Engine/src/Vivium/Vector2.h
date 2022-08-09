@@ -1,7 +1,6 @@
 #pragma once
 
 #include "Core.h"
-#include "Logger.h"
 
 namespace Vivium {
 	template <typename T> concept Arithmetic = std::is_arithmetic_v<T>;
@@ -60,14 +59,13 @@ namespace Vivium {
 		// Cast to arithmetic type
 		template <typename C>
 		operator Vector2<C>() const requires Arithmetic<C> { return Vector2<C>((C)x, (C)y); }
+
+		friend std::ostream& operator<<(std::ostream& os, const Vector2& v) {
+			os << "[" << v.x << ", " << v.y << "]";
+
+			return os;
+		}
 	};
-}
-
-template <typename T>
-std::ostream& operator<<(std::ostream& os, const Vivium::Vector2<T>& v) {
-	os << "[" << v.x << ", " << v.y << "]";
-
-	return os;
 }
 
 namespace std {

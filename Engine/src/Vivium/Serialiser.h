@@ -34,9 +34,6 @@ namespace Vivium {
 	class Serialiser;
 
 	class VIVIUM_API Stream {
-	private:
-		int m_ScopeLevel = 0;
-
 	public:
 		enum Flags : int {
 			TEXT = NULL,
@@ -47,11 +44,6 @@ namespace Vivium {
 
 		std::ofstream* out = nullptr;
 		std::ifstream* in = nullptr;
-
-		int GetScopeLevel() const;
-		int IncrementScope();
-		int DecrementScope();
-		std::string GetTab() const; // Gives printable string to represent tab space
 
 		Stream();
 		~Stream();
@@ -90,6 +82,13 @@ namespace Vivium {
 		}
 
 		template <typename T>
+		void m_WriteBinary(Stream& s, const T* data, const unsigned int& length) {
+			static_assert(!std::is_same_v<T, std::string>, "Cannot write array of strings, use std::vector instead");
+
+			s.out->write((char*)data, sizeof(T) * length);
+		}
+
+		template <typename T>
 		void m_WriteBinary(Stream& s, const Vector2<T>& data) {
 			s.out->write((char*)&data, sizeof(Vector2<T>));
 		}
@@ -100,7 +99,7 @@ namespace Vivium {
 			char* readbuff = new char[sizeof(T)]; // Allocate buffer for file data
 			s.in->read(readbuff, sizeof(T)); // Read file data into buffer
 
-			memcpy(memory, readbuff, sizeof(T)); // Copy data from buffer into pointer given
+			std::memcpy(memory, readbuff, sizeof(T)); // Copy data from buffer into pointer given
 
 			delete[] readbuff; // Delete buffer after copying the data
 		}
@@ -134,7 +133,7 @@ namespace Vivium {
 			memory->resize(size);
 
 			// Alternative &(*memory)[0]
-			memcpy(&memory->at(0), readbuff, sizeof(T) * size);
+			std::memcpy(&memory->at(0), readbuff, sizeof(T) * size);
 
 			delete[] readbuff;
 		}
@@ -152,84 +151,26 @@ namespace Vivium {
 		}
 
 		template <typename T>
-		void m_ReadBinary(Stream& s, Vector2<T>* memory) {
-			char* readbuff = new char[sizeof(Vector2<T>)];
-			s.in->read(readbuff, sizeof(Vector2<T>));
+		void m_ReadBinary(Stream& s, T* memory, const unsigned int& length) {
+			static_assert(!std::is_same_v<T, std::string>, "Cannot read array of strings, use std::vector instead");
 
-			memcpy(memory, readbuff, sizeof(Vector2<T>));
+			// Assuming memory has already been allocated
+			char* readbuff = new char[sizeof(T) * length];
+			s.in->read(readbuff, sizeof(T) * length);
+
+			std::memcpy(memory, readbuff, sizeof(T) * length);
 
 			delete[] readbuff;
 		}
 
 		template <typename T>
-		void m_WriteText(Stream& s, const std::vector<T>& data) {
-			constexpr bool isMultiLineArray = std::is_base_of_v<IStreamable, T>;
+		void m_ReadBinary(Stream& s, Vector2<T>* memory) {
+			char* readbuff = new char[sizeof(Vector2<T>)];
+			s.in->read(readbuff, sizeof(Vector2<T>));
 
-			// TODO: split into functions
-			if (isMultiLineArray) {
-				// TODO some sort of write string subroutine for stream, maybe takes format
-				// maybe just even a #define
-				*s.out << s.GetTab() << "" << " = [\n";
-				
-				s.IncrementScope();
+			std::memcpy(memory, readbuff, sizeof(Vector2<T>));
 
-				for (int i = 0; i < data.size(); i++) {
-					Write<T>(data[i]);
-					
-					if (i == data.size() - 1)
-					{
-						s.DecrementScope();
-						*s.out << std::endl << s.GetTab() << "];" << std::endl;
-					}
-					else { *s.out << ",\n"; }
-				}
-			}
-			else {
-				*s.out << s.GetTab() << "" << " = [";
-
-				for (int i = 0; i < data.size(); i++) {
-					*s.out << data[i];
-					if (i == data.size() - 1) { *s.out << "];" << std::endl; }
-					else { *s.out << ", "; }
-				}
-			}
-		}
-
-		/* ReadText */
-		template <typename T>
-		void m_ReadText(Stream& s, T* memory) requires IsBaseStreamable<T>
-		{
-			// Matches an equal sign as long as its not in quotes, and then the whitespace after the equal if its there
-			const std::regex match_equal("^[^\"].*?= ?");
-			// Matches ; and then newline at tend of statement
-			const std::regex end_of_statement("; ?(\\n)?$");
-
-			std::string statement;
-			std::getline(*s.in, statement);
-
-			if (statement.empty()) {
-				LogError("Got empty statement from file? Invalid text file");
-				memory = nullptr;
-				return;
-			}
-
-			// Strip the name of the value, and the "="
-			std::string expr = std::regex_replace(statement, match_equal, "");
-			// Strip end of line characters
-			expr = std::regex_replace(expr, end_of_statement, "");
-
-			// For casting to T
-			std::istringstream iss(expr);
-
-			// Get from string stream and push to expr
-			iss >> *memory;
-		}
-
-		// TODO: Read string
-
-		template <typename T> void m_ReadText(Stream& s, std::vector<T>* memory) {
-		
-			// Read in the size of the vector
+			delete[] readbuff;
 		}
 
 		Stream m_Stream;
@@ -253,30 +194,11 @@ namespace Vivium {
 			}
 			// If the object inherits IStreamable, call IStreamable's write
 			else if constexpr (std::is_base_of_v<IStreamable, T>) {
-				// If writing text, wrap streamable's data under name of object
-				if (!(m_Flags & Stream::Flags::BINARY)) {
-					// NOTE: might make parsing the file more difficult later
-					*m_Stream.out << m_Stream.GetTab() << "{\n";
-
-					m_Stream.IncrementScope();
-
-					object.Write(*this);
-
-					m_Stream.DecrementScope();
-					*m_Stream.out << m_Stream.GetTab() << "};\n";
-				}
-				else {
-					object.Write(*this);
-				}
+				object.Write(*this);
 			}
 			// Its a trivial type
 			else {
-				if (m_Flags & Stream::Flags::BINARY) {
-					m_WriteBinary(m_Stream, object);
-				}
-				else {
-					//m_WriteText(m_Stream, object);
-				}
+				m_WriteBinary(m_Stream, object);
 			}
 		}
 
@@ -287,26 +209,33 @@ namespace Vivium {
 			}
 			// If the object inherits IStreamable, call IStreamable's write
 			else if constexpr (std::is_base_of_v<IStreamable, T>) {
-				if (m_Flags & Stream::Flag::BINARY) {
-					unsigned int size = object.size();
-					Write<unsigned int>(size);
+				unsigned int size = object.size();
+				Write<unsigned int>(size);
 
-					for (unsigned int i = 0; i < size; i++) {
-						Write<T>(object[i]);
-					}
-				}
-				else {
-					m_WriteText(m_Stream, object);
+				for (unsigned int i = 0; i < size; i++) {
+					Write<T>(object[i]);
 				}
 			}
 			// Its a trivial type
 			else {
-				if (m_Flags & Stream::Flags::BINARY) {
-					m_WriteBinary(m_Stream, object);
+				m_WriteBinary(m_Stream, object);
+			}
+		}
+
+		template <typename T>
+		void Write(const T* object_array, const unsigned int& length) {
+			if constexpr (!IsStreamable<T>) {
+				LogError("Object type {} is not Streamable", typeid(T).name());
+			}
+			// If the object inherits IStreamable, call IStreamable's write
+			else if constexpr (std::is_base_of_v<IStreamable, T>) {
+				for (unsigned int i = 0; i < length; i++) {
+					Write<T>(object_array[i]);
 				}
-				else {
-					m_WriteText(m_Stream, object);
-				}
+			}
+			// Its a trivial type
+			else {
+				m_WriteBinary(m_Stream, object_array, length);
 			}
 		}
 
@@ -323,12 +252,7 @@ namespace Vivium {
 			}
 			// Its a trivial type
 			else {
-				if (m_Flags & Stream::Flags::BINARY) {
-					m_ReadBinary(m_Stream, memory);
-				}
-				else {
-					m_ReadText(m_Stream, memory);
-				}
+				m_ReadBinary(m_Stream, memory);
 			}
 		}
 
@@ -351,12 +275,25 @@ namespace Vivium {
 			}
 			// Its a trivial type
 			else {
-				if (m_Flags & Stream::Flags::BINARY) {
-					m_ReadBinary(m_Stream, memory);
+				m_ReadBinary(m_Stream, memory);
+			}
+		}
+
+		template <typename T>
+		void Read(T* memory, const unsigned int& length) {
+			// Ensure object is streamable
+			if constexpr (!IsStreamable<T>) {
+				LogError("Object type {} is not Streamable", typeid(T).name());
+			}
+			// If the object inherits IStreamable, call IStreamable's read
+			else if constexpr (std::is_base_of_v<IStreamable, T>) {
+				for (unsigned int i = 0; i < length; i++) {
+					Read<T>(&memory[i]);
 				}
-				else {
-					m_ReadText(m_Stream, memory);
-				}
+			}
+			// Its a trivial type
+			else {
+				m_ReadBinary(m_Stream, memory, length);
 			}
 		}
 	};

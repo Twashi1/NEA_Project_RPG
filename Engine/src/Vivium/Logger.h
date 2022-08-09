@@ -2,6 +2,7 @@
 
 #include "Core.h"
 #include "Timer.h"
+#include "Vector2.h"
 
 // Only define the following if we're within the Vivium engine
 #ifdef __VIVIUM_EXPOSE
@@ -22,5 +23,46 @@ namespace Vivium {
 	const char* __GLDebugSeverityToString(GLenum severity);
 	const char* __GLDebugTypeToString(GLenum type);
 	const char* __GLDebugSourceToString(GLenum source);
+
+	class VIVIUM_API Logger {
+	public:
+		template <typename T>
+		static std::string List(const std::vector<T>& values)
+		{
+			std::stringstream ss;
+			ss << "[";
+
+			for (std::size_t i = 0; i < values.size(); i++) {
+				ss << values[i];
+
+				if (i != values.size() - 1) {
+					ss << ", ";
+				}
+			}
+
+			ss << "]";
+
+			return ss.str();
+		}
+
+		template <typename T>
+		static std::string List(const T* values, const std::size_t& length)
+		{
+			std::stringstream ss;
+			ss << "[";
+
+			for (std::size_t i = 0; i < length; i++) {
+				ss << values[i];
+
+				if (i != length - 1) {
+					ss << ", ";
+				}
+			}
+
+			ss << "]";
+
+			return ss.str();
+		}
+	};
 #endif
 }
