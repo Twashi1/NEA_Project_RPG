@@ -40,7 +40,8 @@
 - [x] Serialiser
     - [x] Binary serialisation
     - [ ] Add text serialisation (JSON? Custom format?)
-    - [ ] Add serialise helper functions for vectors, arrays, maybe even generalised for containers
+    - [ ] Add serialise helper functions generalised for containers
+    - [ ] Add serialise helper function for map and unordered_map
 
 # Game
 ## World

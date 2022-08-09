@@ -36,6 +36,7 @@
     <ClCompile Include="src\Vivium\Panel.cpp" />
     <ClCompile Include="src\Vivium\Physics.cpp" />
     <ClCompile Include="src\Vivium\Quad.cpp" />
+    <ClCompile Include="src\Vivium\Random.cpp" />
     <ClCompile Include="src\Vivium\Rect.cpp" />
     <ClCompile Include="src\Vivium\Renderer.cpp" />
     <ClCompile Include="src\Vivium\Serialiser.cpp" />
@@ -72,6 +73,7 @@
     <ClInclude Include="src\Vivium\Panel.h" />
     <ClInclude Include="src\Vivium\Physics.h" />
     <ClInclude Include="src\Vivium\Quad.h" />
+    <ClInclude Include="src\Vivium\Random.h" />
     <ClInclude Include="src\Vivium\Rect.h" />
     <ClInclude Include="src\Vivium\Renderer.h" />
     <ClInclude Include="src\Vivium\Serialiser.h" />

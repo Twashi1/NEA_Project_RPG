@@ -14,9 +14,11 @@
 #include <iomanip>
 #include <iostream>
 #include <iterator>
+#include <limits>
 #include <map>
 #include <memory>
 #include <queue>
+#include <random>
 #include <regex>
 #include <set>
 #include <string>

@@ -11,3 +11,4 @@
 #include "Vivium/Framebuffer.h"
 #include "Vivium/TextureAtlas.h"
 #include "Vivium/Sprite.h"
+#include "Vivium/Random.h"

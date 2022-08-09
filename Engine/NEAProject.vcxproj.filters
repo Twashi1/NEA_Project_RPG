@@ -97,6 +97,9 @@
     <ClCompile Include="src\Vivium\Color.cpp">
       <Filter>Source</Filter>
     </ClCompile>
+    <ClCompile Include="src\Vivium\Random.cpp">
+      <Filter>Source</Filter>
+    </ClCompile>
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="src\Vivium.h" />
@@ -197,6 +200,9 @@
       <Filter>Headers</Filter>
     </ClInclude>
     <ClInclude Include="src\Vivium\Color.h">
+      <Filter>Headers</Filter>
+    </ClInclude>
+    <ClInclude Include="src\Vivium\Random.h">
       <Filter>Headers</Filter>
     </ClInclude>
   </ItemGroup>

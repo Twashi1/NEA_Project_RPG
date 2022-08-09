@@ -6,6 +6,7 @@ namespace Game {
 	class Item {
 	public:
 		enum class ID : uint16_t {
+			VOID,
 			AMETHYST_CRYSTAL,
 			MAX
 		};
