@@ -8,9 +8,9 @@ namespace Vivium {
 		{-1.0f,  1.0f }  // Top left corner
 	};
 
-	std::vector<Vector2<float>> Rect::GetVertices() const
+	std::array<Vector2<float>, 4> Rect::GetVertices() const
 	{
-		std::vector<Vector2<float>> vertices(4);
+		std::array<Vector2<float>, 4> vertices;
 
 		Vector2<float> halfdim = dim * 0.5f; // Calculate half width and height
 
@@ -70,9 +70,9 @@ namespace Vivium {
 
 	bool Rect::Contains(const Vector2<float>& point) const
 	{
-		const float epsilon = 0.1;
+		static const float epsilon = 0.1f;
 
-		std::vector<Vector2<float>> vertices = GetVertices();
+		std::array<Vector2<float>, 4> vertices = GetVertices();
 
 		// Calculate triangle areas (where A, B, C, D = 0, 1, 2, 3)
 		float apd = Math::TriangleArea(vertices[0], point, vertices[3]); // Triangle APD
@@ -129,7 +129,7 @@ namespace Vivium {
 
 	bool Rect::ContainsAnyOf(const Rect& rect) const
 	{
-		std::vector<Vector2<float>> vertices = rect.GetVertices();
+		std::array<Vector2<float>, 4> vertices = rect.GetVertices();
 
 		for (const Vector2<float>& v : vertices) {
 			// If we contain the vertex
@@ -139,7 +139,7 @@ namespace Vivium {
 		return false;
 	}
 
-	bool Rect::ContainsAnyOf(const std::vector<Vector2<float>>& vertices) const
+	bool Rect::ContainsAnyOf(const std::array<Vector2<float>, 4>& vertices) const
 	{
 		for (const Vector2<float>& v : vertices) {
 			// If we contain the vertex

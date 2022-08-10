@@ -4,38 +4,24 @@ namespace Vivium {
 		float elapsed = m_Timer.GetElapsed();
 
 		for (auto& [layer_index, layer] : layers) {
-			collisions_t collisions; // Store all collisions we've already checked
-
-			int combinations = layer.size() * (layer.size() - 1) * 0.5f; // Amount of pairs that can be made n(n-1)/2
-			collisions.reserve(combinations * sizeof(Collision)); // Reserve space in vector for those pairs
-
 			for (int i = 0; i < layer.size(); i++) {
-				for (int j = 0; j < layer.size(); j++) {
-					if (i == j) continue;
-
+				for (int j = i + 1; j < layer.size(); j++) {
 					// Get pointers to bodies
 					Ref(Body) a = layer[i];
 					Ref(Body) b = layer[j];
 
-					// Calculate future positions of bodies
-					Quad future_quad_a = a->Peek(elapsed);
-					Quad future_quad_b = b->Peek(elapsed);
+					Math::AABB future_aabb_a = a->PeekAABB(elapsed);
+					Math::AABB future_aabb_b = b->PeekAABB(elapsed);
 
-					// TODO: might be laggy here since we're making copies of the quad twice?
-					// TODO: maybe make a move constructor for the quad to fix it?
-					// Create two bodies to represent bodies in future
-					Body future_a = *a; future_a.quad = MakeRef(Quad, future_quad_a);
-					Body future_b = *b; future_b.quad = MakeRef(Quad, future_quad_b);
+					// "haha what an amazing broad and narrow phase physics system so well designed"
 
-					// Create collision object
-					Collision collision = Collision(&future_a, &future_b);
+					// If either quad contains any points of the other quad (intersecting)
+					if (future_aabb_a.IsIntersecting(future_aabb_b)) {
+						// Calculate future positions of bodies
+						Rect future_rect_a = a->PeekRect(elapsed); // TODO: derive from AABB + some angle information
+						Rect future_rect_b = b->PeekRect(elapsed);
 
-					// If our collision object doesn't exist in our collision list, we have to resolve it
-					if (std::find(collisions.begin(), collisions.end(), collision) == collisions.end()) {
-						collisions.push_back(collision);
-
-						// If either quad contains any points of the other quad (intersecting)
-						if (future_quad_a.IsIntersecting(future_quad_b)) {
+						if (future_rect_a.IsIntersecting(future_rect_b)) {
 							// TODO: impulse resolution
 							a->vel = Vector2<float>(); b->vel = Vector2<float>();
 							a->acc = Vector2<float>(); b->acc = Vector2<float>();
@@ -45,8 +31,6 @@ namespace Vivium {
 					}
 				}
 			}
-
-			collisions.clear(); // Clear collision list
 		}
 
 		// Iterate over every body and update it
@@ -59,6 +43,7 @@ namespace Vivium {
 
 	void Physics::Register(Ref(Body) body, int layer_index)
 	{
+		// TODO: use find
 		// If layers already contains index
 		if (layers.contains(layer_index)) {
 			// Add to existing index

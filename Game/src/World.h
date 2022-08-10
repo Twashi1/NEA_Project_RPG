@@ -21,6 +21,9 @@ namespace Game {
 
 		static Vivium::TextureAtlas* m_TextureAtlas; // TODO unique ptr
 		static std::vector<std::array<float, 4>> m_TextureCoords;
+		
+		static Vivium::TextureAtlas* m_ItemsAtlas; // TODO unique ptr
+		static std::vector<std::array<float, 4>> m_ItemsTextureCoords;
 
 		Vivium::Noise::Interpolated m_NoiseTerrain;
 		Vivium::Noise::White m_NoiseTrees;
@@ -51,20 +54,29 @@ namespace Game {
 		void m_LoadRegions(const Vivium::Vector2<int>& center, int radius);
 		Region& m_LoadRegion(const Vivium::Vector2<int>& index);
 
+		std::vector<FloorItem>* m_GetFloorItems(const Vivium::Vector2<int>& pos);
+
 		void m_SerialiseRegion(const Vivium::Vector2<int>& index);
 		void m_DeserialiseRegion(const std::string& filename, const Vivium::Vector2<int>& index);
 		void m_GenerateRegion(const Vivium::Vector2<int>& index);
 
 		void m_UpdateMining(Player* player, float elapsed);
 
+		void m_AddFloorItem(const Vivium::Vector2<int>& region_pos, const FloorItem& item);
+
+		void m_RenderTiles(const Vivium::Vector2<int>& pos);
+		void m_RenderFloorItems(const Vivium::Vector2<int>& pos);
+
 	public:
 		static constexpr float PIXEL_SCALE = 64.0;
 
 		typedef std::unordered_map<Vivium::Vector2<int>, Region> RegionMap_t;
+		typedef std::unordered_map<Vivium::Vector2<int>, std::vector<FloorItem>> FloorItemMap_t;
 
 		static Vivium::Shader* texture_shader;
 
 		RegionMap_t regions; // Maps a region index to a Region object
+		FloorItemMap_t floor_items; // Maps a region index to a list of floor items, so only items within adjacent regions are drawn
 
 		void Render(const Vivium::Vector2<int>& pos);
 		void Update(Player* player);

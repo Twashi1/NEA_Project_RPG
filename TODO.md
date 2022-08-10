@@ -96,6 +96,7 @@
 - Change performance stats in Application to use a running average
 - docs docs docs docs docs docs docs docs
 - INL file for Vector2
+- Physics system is still has massive performance issues, also not accurate anymore
 
 # Bugs
 - Cursor no longer switches when hovering text input box

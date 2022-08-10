@@ -29,6 +29,8 @@ namespace Vivium {
 		void Update(float dt);
 		// Returns a quad which represents the location the object will be at, "dt" seconds into the future (provided no outside influences)
 		Quad Peek(float dt);
+		Rect PeekRect(float dt);
+		Math::AABB PeekAABB(float dt);
 
 		bool operator==(const Body& other) const {
 			return *quad == *other.quad

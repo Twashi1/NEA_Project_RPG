@@ -8,10 +8,10 @@
 /*
 TODO: add functionality for pointers?
 TODO: text serialisation
-TODO: arrays/containers
-TODO: Ignore name in Read
-TODO: Cleanup
+TODO: containers
+TODO: cleanup
 TODO: split IStreamable, Serialiser, Stream into seperate files
+TODO: map/unordered map
 */
 
 namespace Vivium {

@@ -9,7 +9,7 @@ namespace Vivium {
 
 	void Quad::m_Update()
 	{
-		std::vector<Vector2<float>> vertices = GetVertices();
+		std::array<Vector2<float>, 4> vertices = GetVertices();
 
 		// NOTE: assuming sizeof(Vector2<float>) = sizeof(float) * 2
 		// Set vertex buffer vertices
@@ -18,7 +18,7 @@ namespace Vivium {
 
 	void Quad::m_Construct()
 	{
-		std::vector<Vector2<float>> vertices = GetVertices();
+		std::array<Vector2<float>, 4> vertices = GetVertices();
 
 		m_TexCoords = {
 				0.0f, 0.0f,
@@ -42,8 +42,8 @@ namespace Vivium {
 	{
 		ib = new IndexBuffer(std::vector<uint8_t>{ 0, 1, 2, 2, 3, 0 });
 		layout = new BufferLayout({
-			{ "position", GLSLDataType::VEC2 },
-			{ "texCoord", GLSLDataType::VEC2 }
+			GLSLDataType::VEC2, // position
+			GLSLDataType::VEC2  // tex coords
 		});
 	}
 

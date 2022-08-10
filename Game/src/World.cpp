@@ -8,8 +8,12 @@ namespace Game {
 	std::string World::FILE_EXTENSION = ".data";
 	std::string World::GENERAL_FILE = "general";
 	Vivium::Shader* World::texture_shader = nullptr;
+
 	Vivium::TextureAtlas* World::m_TextureAtlas = nullptr;
 	std::vector<std::array<float, 4>> World::m_TextureCoords = {};
+
+	Vivium::TextureAtlas* World::m_ItemsAtlas = nullptr; // TODO unique ptr
+	std::vector<std::array<float, 4>> World::m_ItemsTextureCoords = {};
 
 	void World::m_PrecalcTextureCoords()
 	{
@@ -18,11 +22,23 @@ namespace Game {
 		for (int i = 0; i < (int)Tile::ID::MAX; i++) {
 			// TODO: won't work with more complicated sprites
 			// TODO: implement get faces into m_TextureAtlas?
-			const Tile::AtlasData& atlas_data = Tile::GetAltasData(Tile::ID(i));
-			std::array<float, 8> vector_coords = m_TextureAtlas->GetCoordsArray(atlas_data.index);
+			const Vivium::Vector2<int>& atlas_index = Tile::GetAltasIndex(Tile::ID(i));
+			std::array<float, 8> vector_coords = m_TextureAtlas->GetCoordsArray(atlas_index);
 
 			// left bottom right top
 			m_TextureCoords[i] = { vector_coords[0], vector_coords[1], vector_coords[2], vector_coords[5] };
+		}
+
+		m_ItemsTextureCoords.resize((int)Item::ID::MAX);
+
+		for (int i = 0; i < (int)Item::ID::MAX; i++) {
+			// TODO: won't work with more complicated sprites
+			// TODO: implement get faces into m_TextureAtlas?
+			const Vivium::Vector2<int>& atlas_index = Item::GetAltasIndex(Item::ID(i));
+			std::array<float, 8> vector_coords = m_ItemsAtlas->GetCoordsArray(atlas_index);
+
+			// left bottom right top
+			m_ItemsTextureCoords[i] = { vector_coords[0], vector_coords[1], vector_coords[2], vector_coords[5] };
 		}
 	}
 
@@ -52,6 +68,7 @@ namespace Game {
 		std::filesystem::create_directory(fullpath);
 
 		m_TextureAtlas = new Vivium::TextureAtlas("tile_atlas.png", { 32, 32 }); // TODO: hardcoded sprite size
+		m_ItemsAtlas = new Vivium::TextureAtlas("items_atlas.png", { 32, 32 }); // TODO: hardcoded sprite size
 
 		m_PrecalcTextureCoords();
 
@@ -122,11 +139,24 @@ namespace Game {
 		m_GenerateRegion(index); return regions.at(index);
 	}
 
+	std::vector<FloorItem>* World::m_GetFloorItems(const Vivium::Vector2<int>& pos)
+	{
+		auto it = floor_items.find(pos);
+
+		if (it == floor_items.end()) {
+			return nullptr;
+		}
+		else {
+			return &it->second;
+		}
+	}
+
 	World::~World()
 	{
 		m_SaveWorld();
 
 		delete m_TextureAtlas;
+		delete m_ItemsAtlas;
 		delete m_Serialiser;
 	}
 
@@ -258,8 +288,24 @@ namespace Game {
 				// TODO: add function for getting tile *ref* in world
 				Vivium::Vector2<int> region_pos = m_GetRegionIndex(mined_tile_pos);
 				Region& region = m_LoadRegion(region_pos);
-				// Delete top tile
+				// Get tile
 				Tile& tile = region.Index(mined_tile_pos - region_pos * Region::LENGTH);
+				// TODO: mined tile could be decor/top
+				// TODO: big temporary
+				// Create floor item
+				Item::ID item_id = Tile::GetDropData(tile.top).GetRandomDrop();
+				uint16_t item_count = Vivium::Random::GetInt(1, 3);
+
+				FloorItem new_item(
+					Item(item_id, item_count),
+					Vivium::Vector2<float>(mined_tile_pos * World::PIXEL_SCALE),
+					Vivium::Vector2<float>(World::PIXEL_SCALE * 0.5f)
+				);
+
+				// Add new item to floor item map
+				m_AddFloorItem(region_pos, new_item);
+
+				// Delete top tile
 				tile.top = Tile::ID::VOID;
 
 				// TODO: better function?
@@ -274,16 +320,20 @@ namespace Game {
 		}
 	}
 
-	void World::m_GenWorld(const std::string& fullpath)
+	void World::m_AddFloorItem(const Vivium::Vector2<int>& region_pos, const FloorItem& item)
 	{
-		// TODO
-		m_NoiseTerrain = Vivium::Noise::Interpolated(m_Seed, m_Amplitude, m_Wavelength);
-		m_NoiseTrees = Vivium::Noise::White(m_Seed, 1.0f, 1);
+		auto it = floor_items.find(region_pos);
 
-		m_LoadRegions(Vivium::Vector2<int>(0, 0), 3);
+		// Create new list
+		if (it == floor_items.end()) {
+			floor_items.insert({ region_pos, {item}});
+		}
+		else {
+			floor_items.at(region_pos).push_back(item);
+		}
 	}
 
-	void World::Render(const Vivium::Vector2<int>& pos)
+	void World::m_RenderTiles(const Vivium::Vector2<int>& pos)
 	{
 		std::vector<float> coords;
 		std::vector<unsigned short> indexCoords;
@@ -300,6 +350,7 @@ namespace Game {
 
 		for (int y = pos.y - frame.y; y <= pos.y + frame.y; y++) {
 			for (int x = pos.x - frame.x; x <= pos.x + frame.x; x++) {
+				// TODO: GetTile?
 				// Calculate region index
 				Vivium::Vector2<int> region_index = m_GetRegionIndex(x, y);
 				// Calculate relative coords
@@ -380,14 +431,111 @@ namespace Game {
 		}
 
 		static const Vivium::BufferLayout layout = {
-			{"position", Vivium::GLSLDataType::VEC2},
-			{"texCoords", Vivium::GLSLDataType::VEC2}
+			Vivium::GLSLDataType::VEC2, // position
+			Vivium::GLSLDataType::VEC2  // tex coords
 		};
 
 		Vivium::VertexBuffer vb(coords, layout);
 		Vivium::IndexBuffer ib(indexCoords);
 
 		Vivium::Renderer::Submit(&vb, &ib, texture_shader, m_TextureAtlas->GetAtlas().get());
+	}
+
+	void World::m_RenderFloorItems(const Vivium::Vector2<int>& pos)
+	{
+		// TODO: instead of always reading the 9 surrounding regions, do some calculations to figure out which regions need to be rendered
+		// Pos is in tile coordinates, convert to region coordinates
+		Vivium::Vector2<int> center_region = m_GetRegionIndex(pos);
+
+		std::vector<float> vertex_data;
+		std::vector<unsigned short> indexCoords;
+
+		unsigned int count = 0; // Amount of items being rendered
+
+		for (int y = center_region.y - 1; y <= center_region.y + 1; y++) {
+			for (int x = center_region.x - 1; x <= center_region.x + 1; x++) {
+				// Get list of floor items for a given region
+				std::vector<FloorItem>* items = m_GetFloorItems(Vivium::Vector2<int>(x, y));
+
+				if (items == nullptr) { continue; }
+
+				vertex_data.reserve(vertex_data.size() + 16 * items->size());
+				indexCoords.reserve(indexCoords.size() + 6 * items->size());
+
+				for (FloorItem& item : *items) {
+					// TODO: bit of a weird place, but having a separate UpdateFloorItem function would make us iterate all the regions twice
+					item.Update();
+
+					// TODO: potential for item data to be uninitialised
+					const Item& item_data = item.GetItemData();
+
+					if (item_data.id == Item::ID::VOID) { continue; }
+
+					const Ref(Vivium::Quad) item_quad = item.GetQuad();
+
+					std::array<float, 4>& faces = m_ItemsTextureCoords[(int)item_data.id];
+
+					float item_count_f = item_data.count;
+
+					// Bottom left, Bottom right, Top right, Top left
+					std::array<Vivium::Vector2<float>, 4> vertices = item_quad->GetVertices();
+
+					// TODO: wasting 3 * sizeof(float) bytes for each render, item_count_f only needed once
+					std::array<float, 16> this_vertex_data =
+					{
+						vertices[0].x, vertices[0].y, faces[0], faces[1],
+						vertices[1].x, vertices[1].y, faces[2], faces[1],
+						vertices[2].x, vertices[2].y, faces[2], faces[3],
+						vertices[3].x, vertices[3].y, faces[0], faces[3]
+					};
+
+					int stride = count * 4;
+
+					std::array<unsigned short, 6> this_indices =
+					{
+						0 + stride,
+						1 + stride,
+						2 + stride,
+						2 + stride,
+						3 + stride,
+						0 + stride,
+					};
+
+
+					indexCoords.insert(indexCoords.end(), this_indices.begin(), this_indices.end());
+					vertex_data.insert(vertex_data.end(), this_vertex_data.begin(), this_vertex_data.end());
+
+					count++;
+				}
+			}
+		}
+
+		static const Vivium::BufferLayout layout = {
+			Vivium::GLSLDataType::VEC2, // position
+			Vivium::GLSLDataType::VEC2  // tex coords
+		};
+
+		if (vertex_data.size() > 0) {
+			Vivium::VertexBuffer vb(vertex_data, layout);
+			Vivium::IndexBuffer ib(indexCoords);
+
+			Vivium::Renderer::Submit(&vb, &ib, FloorItem::floor_shader, m_ItemsAtlas->GetAtlas().get());
+		}
+	}
+
+	void World::m_GenWorld(const std::string& fullpath)
+	{
+		// TODO
+		m_NoiseTerrain = Vivium::Noise::Interpolated(m_Seed, m_Amplitude, m_Wavelength);
+		m_NoiseTrees = Vivium::Noise::White(m_Seed, 1.0f, 1);
+
+		m_LoadRegions(Vivium::Vector2<int>(0, 0), 3);
+	}
+
+	void World::Render(const Vivium::Vector2<int>& pos)
+	{
+		m_RenderTiles(pos);
+		m_RenderFloorItems(pos);
 	}
 
 	void World::Update(Player* player)

@@ -21,5 +21,14 @@ namespace Vivium {
 
 		VIVIUM_API float DegreesToRadians(float degrees);
 		VIVIUM_API float RadiansToDegrees(float radians);
+
+		struct VIVIUM_API AABB {
+			float x, y, hw, hh; // center and half dimensions
+
+			AABB(float x, float y, float w, float h);
+			AABB(const AABB& other) = default;
+
+			bool IsIntersecting(const AABB& other);
+		};
 	}
 }

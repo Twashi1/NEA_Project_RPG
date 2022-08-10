@@ -46,17 +46,15 @@ namespace Vivium {
 
 	class VIVIUM_API BufferElement {
 	public:
-		std::string name;
 		GLSLDataType type;
 		unsigned int offset;
 
 		BufferElement() = default;
-		BufferElement(const std::string& name, const GLSLDataType& type);
+		BufferElement(const GLSLDataType& type);
 		BufferElement(const BufferElement& other);
 
 		BufferElement& operator=(const BufferElement& other)
 		{
-			name = other.name;
 			type = other.type;
 			offset = other.offset;
 

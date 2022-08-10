@@ -1,20 +1,11 @@
 #pragma once
 
-#include <Vivium.h>
+#include "Item.h"
 
 namespace Game {
+	// TODO move tile texture atlas to be stored in tile class
 	class Tile {
 	public:
-		struct AtlasData : Vivium::IStreamable {
-			Vivium::Vector2<int> index;
-
-			AtlasData();
-			AtlasData(const Vivium::Vector2<int>& index);
-
-			void Write(Vivium::Serialiser& s) const override;
-			void Read(Vivium::Serialiser& s) override;
-		};
-
 		enum class ID : uint16_t {
 			VOID,
 			GROUND,
@@ -30,25 +21,27 @@ namespace Game {
 		};
 
 		struct Properties : Vivium::IStreamable {
-			const char* name;		// Tile::ID as string
-			bool isPhysical;		// If tile is something the player can collide with
-			bool isMineable;		// If player can mine the item
-			bool isPlaceable;		// If its a tile that can be placed
-			float mining_time;		// Amount of time it takes to mine this tile
-			AtlasData atlas_data;
+			std::string name;					// Tile::ID as string
+			bool isPhysical;					// If tile is something the player can collide with
+			bool isMineable;					// If player can mine the item
+			bool isPlaceable;					// If its a tile that can be placed
+			float mining_time;					// Amount of time it takes to mine this tile
+			Vivium::Vector2<int> atlas_index;   // Coordinate of sprite in atlas
+			Item::DropData drop_data;			// Drop table for item
 
-			Properties(const char* name, bool isPhysical, bool isMineable, bool isPlaceable, float mining_time, AtlasData atlas_data);
+			Properties(std::string name, bool isPhysical, bool isMineable, bool isPlaceable, float mining_time, Vivium::Vector2<int> atlas_data, Item::DropData drop_data);
 
 			void Write(Vivium::Serialiser& s) const override;
 			void Read(Vivium::Serialiser& s) override;
 		};
 
 		static Properties GetProperties(const Tile::ID& id);
-		static const char* GetName(const Tile::ID& id);
+		static std::string GetName(const Tile::ID& id);
 		static bool GetIsPhysical(const Tile::ID& id);
 		static bool GetIsMineable(const Tile::ID& id);
 		static float GetMiningTime(const Tile::ID& id);
-		static AtlasData GetAltasData(const Tile::ID& id);
+		static Vivium::Vector2<int> GetAltasIndex(const Tile::ID& id);
+		static Item::DropData GetDropData(const Tile::ID& id);
 
 		Tile::ID base; // TODO: rename to bot
 		Tile::ID mid;

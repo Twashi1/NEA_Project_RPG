@@ -14,7 +14,7 @@ namespace Vivium {
 
 	struct VIVIUM_API Quad : protected Rect, public IStreamable {
 	private:
-		std::vector<float> m_TexCoords;
+		std::vector<float> m_TexCoords; // TODO: probably not working
 
 		static IndexBuffer* ib;
 		static BufferLayout* layout; // For vec2 vertices
@@ -81,11 +81,13 @@ namespace Vivium {
 
 		void SetRect(const Rect& nrect);
 
+		// TODO: probably deprecated
 		const std::vector<float>& GetTexCoords() const;
 
 		bool ContainsAnyOf(const Quad& quad) const;
 		bool IsIntersecting(const Quad& quad) const;
 
+		// TODO: deprecated
 		// TODO move to a texture atlas class
 		// Changes texture coordinates so a specific texture from a texture atlas can be loaded
 		// Takes the atlas being loaded, the index of the image within the atlas, and the size (in px) of each image in the atlas

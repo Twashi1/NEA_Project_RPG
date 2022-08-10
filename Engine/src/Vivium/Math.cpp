@@ -88,5 +88,19 @@ namespace Vivium {
 			const float conversion = 180.0f / PI;
 			return radians * conversion;
 		}
+
+		AABB::AABB(float x, float y, float w, float h)
+			: x(x), y(y), hw(w * 0.5f), hh(h * 0.5f)
+		{}
+
+		bool AABB::IsIntersecting(const AABB& other)
+		{
+			// Our left > Their right / Our right < Their left
+			if (x - hw > other.x + hw || x + hw < other.x - hw) return false;
+			// Our bottom > Their top / Our top < Their bottom
+			if (y - hh > other.y + hh || y + hh < other.y - hh) return false;
+
+			return true;
+		}
 	}
 }

@@ -3,16 +3,16 @@
 namespace Game {
 	// TODO: load object data from file (text)
 	std::array<Tile::Properties, (uint16_t)Tile::ID::MAX> Tile::m_Properties = {
-		Tile::Properties("void",				false,	false,	false, 0.0f, Vivium::Vector2<int>(INT_MAX)),
-		Tile::Properties("ground",				false,	false,	false, 0.0f, Vivium::Vector2<int>(1, 0)),
-		Tile::Properties("grass",				false,	false,	false, 0.0f, Vivium::Vector2<int>(2, 0)),
-		Tile::Properties("tree_0",				true,	true,	false, 3.0f, Vivium::Vector2<int>(3, 1)),
-		Tile::Properties("tree_1",				false,	false,	false, 0.0f, Vivium::Vector2<int>(3, 0)),
-		Tile::Properties("sand",				false,	false,	false, 0.0f, Vivium::Vector2<int>(4, 0)),
-		Tile::Properties("water",				false,	false,	false, 0.0f, Vivium::Vector2<int>(5, 0)),
-		Tile::Properties("bush",				true,	true,	false, 1.0f, Vivium::Vector2<int>(6, 0)),
-		Tile::Properties("bush_fruit",			true,	true,	false, 1.5f, Vivium::Vector2<int>(7, 0)),
-		Tile::Properties("amethyst_node",		true,	true,	false, 3.0f, Vivium::Vector2<int>(8, 0))
+		Tile::Properties("void",				false,	false,	false, 0.0f, {0, 0}, {}),
+		Tile::Properties("ground",				false,	false,	false, 0.0f, {1, 0}, {}),
+		Tile::Properties("grass",				false,	false,	false, 0.0f, {2, 0}, {}),
+		Tile::Properties("tree_0",				true,	true,	false, 3.0f, {3, 1}, {}), // TODO drop table
+		Tile::Properties("tree_1",				false,	false,	false, 0.0f, {3, 0}, {}),
+		Tile::Properties("sand",				false,	false,	false, 0.0f, {4, 0}, {}),
+		Tile::Properties("water",				false,	false,	false, 0.0f, {5, 0}, {}),
+		Tile::Properties("bush",				true,	true,	false, 1.0f, {6, 0}, {}), // TODO drop table
+		Tile::Properties("bush_fruit",			true,	true,	false, 0.5f, {7, 0}, {}), // TODO drop table
+		Tile::Properties("amethyst_node",		true,	true,	false, 1.0f, {8, 0}, Item::DropData({{1.0f, Item::ID::AMETHYST_CRYSTAL}}))
 	};
 
 	Tile::Properties Tile::GetProperties(const Tile::ID& id)
@@ -20,7 +20,7 @@ namespace Game {
 		return Tile::m_Properties[uint16_t(id)];
 	}
 
-	const char* Tile::GetName(const Tile::ID& id)
+	std::string Tile::GetName(const Tile::ID& id)
 	{
 		return Tile::m_Properties[uint16_t(id)].name;
 	}
@@ -40,9 +40,14 @@ namespace Game {
 		return Tile::m_Properties[uint16_t(id)].mining_time;
 	}
 
-	Tile::AtlasData Tile::GetAltasData(const Tile::ID& id)
+	Vivium::Vector2<int> Tile::GetAltasIndex(const Tile::ID& id)
 	{
-		return Tile::m_Properties[uint16_t(id)].atlas_data;
+		return Tile::m_Properties[uint16_t(id)].atlas_index;
+	}
+
+	Item::DropData Tile::GetDropData(const Tile::ID& id)
+	{
+		return Tile::m_Properties[(uint16_t)id].drop_data;
 	}
 
 	void Tile::CopyRealTiles(const Tile& other)
@@ -64,21 +69,16 @@ namespace Game {
 		: base(other.base), mid(other.mid), top(other.top)
 	{}
 
-	Tile::Properties::Properties(const char* name, bool isPhysical, bool isMineable, bool isPlaceable, float mining_time, AtlasData atlas_data)
-		: name(name), isPhysical(isPhysical), isMineable(isMineable), isPlaceable(isPlaceable), mining_time(mining_time), atlas_data(atlas_data) {}
-
-	Tile::AtlasData::AtlasData() : index(INT_MAX) {}
-
-	Tile::AtlasData::AtlasData(const Vivium::Vector2<int>& index) : index(index) {}
+	Tile::Properties::Properties(std::string name, bool isPhysical, bool isMineable, bool isPlaceable, float mining_time, Vivium::Vector2<int> atlas_index, Item::DropData drop_data)
+		: name(name), isPhysical(isPhysical), isMineable(isMineable), isPlaceable(isPlaceable), mining_time(mining_time), atlas_index(atlas_index), drop_data(drop_data) {}
 
 	void Tile::Properties::Write(Vivium::Serialiser& s) const
 	{
-		// TODO: check if const char* works
 		s.Write(name);
 		s.Write(isPhysical);
 		s.Write(isMineable);
 		s.Write(mining_time);
-		s.Write(atlas_data);
+		s.Write(atlas_index);
 	}
 	void Tile::Properties::Read(Vivium::Serialiser& s)
 	{
@@ -86,14 +86,6 @@ namespace Game {
 		s.Read(&isPhysical);
 		s.Read(&isMineable);
 		s.Read(&mining_time);
-		s.Read(&atlas_data);
-	}
-
-	void Tile::AtlasData::Write(Vivium::Serialiser& s) const {
-		s.Write(index);
-	}
-
-	void Tile::AtlasData::Read(Vivium::Serialiser& s) {
-		s.Read(&index);
+		s.Read(&atlas_index);
 	}
 }

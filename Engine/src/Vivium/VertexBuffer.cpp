@@ -151,11 +151,11 @@ namespace Vivium {
 		glUnmapBuffer(GL_ARRAY_BUFFER);
 	}
 	
-	BufferElement::BufferElement(const std::string& name, const GLSLDataType& type)
-		: name(name), type(type), offset(0) {}
+	BufferElement::BufferElement(const GLSLDataType& type)
+		: type(type), offset(0) {}
 
 	BufferElement::BufferElement(const BufferElement& other)
-		: name(other.name), type(other.type), offset(other.offset)
+		: type(other.type), offset(other.offset)
 	{}
 
 	// Calculates offsets and stride

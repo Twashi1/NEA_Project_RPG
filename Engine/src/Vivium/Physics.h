@@ -6,6 +6,8 @@
 #include "Collision.h"
 #include "Core.h"
 
+// TODO: should be static?
+
 namespace Vivium {
 	class VIVIUM_API Physics {
 	private:
@@ -17,6 +19,7 @@ namespace Vivium {
 		typedef std::vector<Collision> collisions_t;
 
 		// TODO: style
+		// TODO: bodies should be allowed to interact with a list of layers, specified by user
 		layermap_t layers; // Objects within one layer cannot interact with objects in other layers
 
 	public:

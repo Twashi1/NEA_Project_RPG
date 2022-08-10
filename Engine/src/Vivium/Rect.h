@@ -33,7 +33,7 @@ namespace Vivium {
 
 		float angle;
 
-		std::vector<Vector2<float>> GetVertices() const;
+		std::array<Vector2<float>, 4> GetVertices() const;
 		Vector2<float> BottomLeft() const;
 		Vector2<float> BottomRight() const;
 		Vector2<float> TopRight() const;
@@ -45,7 +45,7 @@ namespace Vivium {
 		float Bottom() const;
 		float Top() const;
 
-		bool ContainsAnyOf(const std::vector<Vector2<float>>& vertices) const;
+		bool ContainsAnyOf(const std::array<Vector2<float>, 4>& vertices) const;
 		bool ContainsAnyOf(const Rect& rect) const;
 		bool Contains(const Vector2<float>& point) const;
 
