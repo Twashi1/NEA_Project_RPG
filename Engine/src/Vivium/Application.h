@@ -62,6 +62,9 @@ namespace Vivium {
         // Executes all post-rendering operations
         static void EndFrame();
 
+        static void EnableWireframe();
+        static void DisableWireframe();
+
         static Vector2<int> GetScreenDim();
 
         // Returns if the engine should still be running

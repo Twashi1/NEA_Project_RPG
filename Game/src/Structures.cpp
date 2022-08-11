@@ -61,4 +61,17 @@ namespace Game {
 			world_tile.CopyRealTiles(tile);
 		}
 	}
+
+	void Structure::Delete(const Vivium::Vector2<int>& pos, const Structure::ID& id, World* world)
+	{
+		TileMap_t tilemap = GetTilemap(pos, id);
+
+		for (auto& [pos, tile] : tilemap) {
+			Tile& world_tile = world->GetTile(pos);
+
+			if (tile.base != Tile::ID::VOID) { world_tile.base = Tile::ID::VOID; }
+			if (tile.mid != Tile::ID::VOID) { world_tile.mid = Tile::ID::VOID; }
+			if (tile.top != Tile::ID::VOID) { world_tile.top = Tile::ID::VOID; }
+		}
+	}
 }

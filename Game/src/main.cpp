@@ -11,6 +11,19 @@ using namespace Game;
 
 int sandbox(void)
 {
+    Application::Init(WIDTH, HEIGHT, FPS, true);
+
+    Quad random(0.0f, 0.0f, 32.0f, 32.0f, 0.0f);
+    Body body(random, true, 1.0f, 1.0f);
+
+    while (Application::IsRunning()) {
+        Application::BeginFrame();
+        if (Application::isStatsEnabled) Application::UpdateStats(body); // Draw stats information
+        Application::EndFrame();
+    }
+
+    Application::Terminate();
+
     return EXIT_SUCCESS;
 }
 
@@ -38,6 +51,9 @@ int game(void)
 
     Application::SetBGColor(RGBColor::BLACK);
 
+    // TODO: remove
+    // Application::EnableWireframe();
+
     // Loop until window is closed by user
     while (Application::IsRunning())
     {
@@ -59,20 +75,12 @@ int game(void)
         world.Update(&player);
 
         // Draw calls
-        Renderer::BeginScene(1);
         Vector2<int> update_pos = (Vector2<int>)(player.quad->GetCenter() / World::PIXEL_SCALE).floor();
         world.Render(update_pos);
-        Renderer::EndScene();
 
-        Renderer::BeginScene(5);
         player.Render();
-        Renderer::EndScene();
 
-        Renderer::BeginScene(2);
         if (Application::isStatsEnabled) Application::UpdateStats(*player.body); // Draw stats information
-        Renderer::EndScene();
-
-        Renderer::DrawScenes();
 
         Application::EndFrame();
     }

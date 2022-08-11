@@ -71,6 +71,7 @@ namespace Vivium {
     void Application::EndFrame()
     {
         // Update the screen from all the draw calls
+        glFlush();
         glfwSwapBuffers(window);
 
         double elapsed = m_Timer.GetElapsed();
@@ -80,6 +81,16 @@ namespace Vivium {
 
         // TODO: this is bad probably
         while (elapsed < m_TimePerFrame) { elapsed += m_Timer.GetElapsed(); }
+    }
+
+    void Application::EnableWireframe()
+    {
+        glPolygonMode(GL_FRONT_AND_BACK, GL_LINE);
+    }
+
+    void Application::DisableWireframe()
+    {
+        glPolygonMode(GL_FRONT_AND_BACK, GL_FILL);
     }
 
     Vector2<int> Application::GetScreenDim() { return Vector2<int>(width, height); }
@@ -117,8 +128,11 @@ namespace Vivium {
 
         // Create window
         std::string title = std::format("NEA Game {}", m_VersionNumber);
-        window = glfwCreateWindow(width, height, title.c_str(), NULL, NULL);
 
+        glfwWindowHint(GLFW_OPENGL_DEBUG_CONTEXT, GLFW_TRUE);
+        glfwWindowHint(GLFW_DOUBLEBUFFER, GLFW_FALSE);
+        
+        window = glfwCreateWindow(width, height, title.c_str(), NULL, NULL);
         if (!window) {
             // Terminate glfw if window couldn't be created
             glfwTerminate();
@@ -146,15 +160,6 @@ namespace Vivium {
 
         // Allow transparency
         glBlendFunc(GL_SRC_ALPHA, GL_ONE_MINUS_SRC_ALPHA);
-
-        if (false) {
-            // Wireframe mode
-            glPolygonMode(GL_FRONT_AND_BACK, GL_LINE);
-        }
-        else {
-            // Normal
-            glPolygonMode(GL_FRONT_AND_BACK, GL_FILL);
-        }
 
         // Initialise statics for Quad
         Quad::m_Init();
@@ -209,6 +214,7 @@ namespace Vivium {
         if (isStatsEnabled) {
             m_DebugStatsText.insert({ "Average TPF",            Text("", Vector2<float>(5, height - 15), 0.25)  });
             m_DebugStatsText.insert({ "Percentage Processing",  Text("", Vector2<float>(5, height - 30), 0.25)  });
+            m_DebugStatsText.insert({ "FPS",                    Text("", Vector2<float>(5, height - 45), 0.25)  });
             m_DebugStatsText.insert({ "Player pos",             Text("", Vector2<float>(5, height - 100), 0.25) });
             m_DebugStatsText.insert({ "Player vel",             Text("", Vector2<float>(5, height - 115), 0.25) });
             m_DebugStatsText.insert({ "Player acc",             Text("", Vector2<float>(5, height - 130), 0.25) });
@@ -281,6 +287,32 @@ namespace Vivium {
             t.shader->Bind(); t.shader->SetUniform3f("u_TextColor", color.r, color.g, color.b);
             t.text = text;
             t.pos = Vector2<float>(5, height - 30);
+
+            Renderer::Submit(&t);
+        }
+
+        {
+            float fps = POLL_INTERVAL / (m_ProcessingTime / m_FramesProcessed);
+
+            RGBColor color = RGBColor::WHITE;
+            std::string text;
+
+            if (fps < m_FPS * 0.7f) {
+                color = RGBColor::RED;
+                text = std::format("FPS: {:.3f}", fps);
+            }
+            else if (fps < m_FPS) {
+                color = RGBColor::YELLOW;
+                text = std::format("FPS: {:.3f}", fps);
+            }
+            else {
+                text = std::format("Unlimited FPS: {:.3f}; Real FPS: {}", fps, m_FPS);
+            }
+
+            Text& t = m_DebugStatsText["FPS"];
+            t.shader->Bind(); t.shader->SetUniform3f("u_TextColor", color.r, color.g, color.b);
+            t.text = text;
+            t.pos = Vector2<float>(5, height - 45);
 
             Renderer::Submit(&t);
         }

@@ -308,9 +308,11 @@ namespace Game {
 				// Delete top tile
 				tile.top = Tile::ID::VOID;
 
-				// TODO: better function?
+				// TODO: generalise for structures
+
+				// TODO: IsStructureTile?, then depending on which structure tile you subtract its offset and delete around that
 				if (tile.top == Tile::ID::TREE_0) {
-					// TODO: delete top tile as well
+					Structure::Delete(mined_tile_pos, Structure::ID::TREE, this);
 				}
 			}
 		}

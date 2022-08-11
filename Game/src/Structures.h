@@ -22,5 +22,6 @@ namespace Game {
 		static const TileMap_t& GetTilemap(const Structure::ID& id); // TODO: probably useless
 		static TileMap_t GetTilemap(const Vivium::Vector2<int>& pos, const Structure::ID& id);
 		static void Place(const Vivium::Vector2<int>& pos, const Structure::ID& id, World* world);
+		static void Delete(const Vivium::Vector2<int>& pos, const Structure::ID& id, World* world);
 	};
 }
