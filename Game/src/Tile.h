@@ -49,6 +49,7 @@ namespace Game {
 
 		// Copies only non-void tiles
 		void CopyRealTiles(const Tile& other);
+		bool CompareRealTiles(const Tile& other);
 
 		Tile();
 		Tile(const Tile::ID& base, const Tile::ID& mid = Tile::ID::VOID, const Tile::ID& top = Tile::ID::VOID);

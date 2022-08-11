@@ -8,6 +8,7 @@ namespace Game {
 		enum class ID : uint16_t {
 			VOID,
 			AMETHYST_CRYSTAL,
+			LOG,
 			MAX
 		};
 
@@ -59,8 +60,8 @@ namespace Game {
 	private:
 		Item m_ItemData;
 		Ref(Vivium::Quad) m_Quad;
-		// TODO: might need to go for the nuclear solution and just implement velocity and acceleration
-		Ref(Vivium::Body) m_Body;
+		Vivium::Vector2<float> velocity;
+		Vivium::Vector2<float> acceleration;
 
 		Vivium::Timer m_Timer; // For physics only!!
 		float m_RemainingMovingTime;

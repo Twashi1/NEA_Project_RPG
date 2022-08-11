@@ -303,10 +303,10 @@ namespace Vivium {
             }
             else if (fps < m_FPS) {
                 color = RGBColor::YELLOW;
-                text = std::format("FPS: {:.3f}", fps);
+                text = std::format("Max FPS: {:.3f}; Actual FPS: {}", fps, fps);
             }
             else {
-                text = std::format("Unlimited FPS: {:.3f}; Real FPS: {}", fps, m_FPS);
+                text = std::format("Max FPS: {:.3f}; Actual FPS: {}", fps, m_FPS);
             }
 
             Text& t = m_DebugStatsText["FPS"];

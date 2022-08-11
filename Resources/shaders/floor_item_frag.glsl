@@ -12,13 +12,5 @@ void main()
 {
 	vec4 texColor = texture(u_Texture, v_texCoord / u_Scale);
 
-//	if (v_ItemCount == 2) {
-//		texColor += texture(u_Texture, (v_texCoord + vec2(0.2f, 0.3f)) / u_Scale); // Repeat texture, but move it up a bit and to the right
-//	}
-//
-//	if (v_ItemCount >= 3) {
-//		texColor += texture(u_Texture, (v_texCoord + vec2(-0.2f, 0.3f)) / u_Scale); // Repeat texture, but move it up a bit and to the left
-//	}
-
 	color = texColor;
 }

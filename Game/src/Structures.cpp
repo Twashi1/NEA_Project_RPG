@@ -5,6 +5,10 @@
 namespace Game {
 	const std::vector<Structure::TileMap_t>* Structure::m_Tilemaps = new std::vector<Structure::TileMap_t>
 	{
+		// Void
+		TileMap_t{
+			{{0, 0}, Tile(Tile::ID::VOID, Tile::ID::VOID, Tile::ID::VOID)}
+		},
 		// Tree
 		TileMap_t{
 			{{0, 0}, Tile(Tile::ID::VOID, Tile::ID::VOID, Tile::ID::TREE_0)},
@@ -73,5 +77,87 @@ namespace Game {
 			if (tile.mid != Tile::ID::VOID) { world_tile.mid = Tile::ID::VOID; }
 			if (tile.top != Tile::ID::VOID) { world_tile.top = Tile::ID::VOID; }
 		}
+	}
+
+	const char* Structure::GetName(const Structure::ID& id)
+	{
+		switch (id) {
+		case ID::VOID: return "Void";
+		case ID::TREE: return "Tree";
+		default: return "Invalid structure";
+		}
+	}
+
+	Structure::ID Structure::GetStructureID(const Tile::ID& id)
+	{
+		switch (id) {
+		case Tile::ID::TREE_0:
+		case Tile::ID::TREE_1:
+			return Structure::ID::TREE;
+		default:
+			LogWarn("No structure that contains tile: {}", id); break;
+		}
+
+		return Structure::ID::VOID;
+	}
+
+	bool Structure::IsStructure(const Tile::ID& id)
+	{
+		switch (id) {
+		case Tile::ID::TREE_0:
+		case Tile::ID::TREE_1:
+			return true;
+		}
+
+		return false;
+	}
+
+	Vivium::Vector2<int> Structure::GetTileOffset(const Tile::ID& id, const Structure::ID& structure_id)
+	{
+		// Get untransformed tilemap
+		TileMap_t tilemap = GetTilemap(structure_id);
+
+
+		for (auto& [offset, tile] : tilemap) {
+			// TODO: temp, only works for top tiles
+			if (tile.top == id && tile.top != Tile::ID::VOID) {
+				return offset;
+			}
+		}
+
+		// Couldn't find id in tilemap (Shouldn't ever reach here)
+		LogError("Couldn't find matching tile in tilemap for structure id {}", structure_id);
+
+		return Vivium::Vector2<int>(INT_MAX);
+	}
+
+	bool Structure::IsWithinStructureBounds(const Vivium::Vector2<int>& pos, const Vivium::Vector2<int>& structure_pos, const Structure::ID& id)
+	{
+		const TileMap_t& tilemap = GetTilemap(id);
+		
+		Vivium::Vector2<int> relative_offset = pos - structure_pos; // TODO: other way round?
+
+		for (const auto& [offset, tile] : tilemap) {
+			if (relative_offset == offset) {
+				return true;
+			}
+		}
+
+		return false;
+	}
+
+	void Structure::Delete(const Vivium::Vector2<int>& pos, const Tile::ID& id, World* world)
+	{
+		Structure::ID structure_id = GetStructureID(id);
+
+		if (structure_id == Structure::ID::VOID) return;
+
+		// Get untransformed tilemap
+		TileMap_t tilemap = GetTilemap(structure_id);
+
+		// Search for offset of given tile in tilemap
+		Vivium::Vector2<int> desired_offset = GetTileOffset(id, structure_id);
+
+		Structure::Delete(pos - desired_offset, structure_id, world);
 	}
 }

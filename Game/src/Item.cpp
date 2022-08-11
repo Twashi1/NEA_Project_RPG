@@ -3,7 +3,8 @@
 namespace Game {
 	std::array<Item::Properties, (uint16_t)Item::ID::MAX> Item::m_Properties = {
 		Item::Properties("void",				false,	Vivium::Vector2<int>(INT_MAX)),
-		Item::Properties("amethyst crystal",	true,	Vivium::Vector2<int>(1, 0))
+		Item::Properties("amethyst crystal",	true,	Vivium::Vector2<int>(1, 0)),
+		Item::Properties("log", 				true,	Vivium::Vector2<int>(0, 5))
 	};
 
 	Item::DropData::DropData()
@@ -113,15 +114,18 @@ namespace Game {
 
 	void FloorItem::Update()
 	{
-		if (!m_InitialMotionEnded) {
-			float elapsed = m_Timer.GetElapsed();
+		float elapsed = m_Timer.GetElapsed();
 
+		velocity += acceleration * elapsed;
+		m_Quad->SetCenter(m_Quad->GetCenter() + velocity * elapsed);
+
+		if (!m_InitialMotionEnded) {
 			m_RemainingMovingTime -= elapsed;
 
 			if (m_RemainingMovingTime <= 0.0f) {
 				// Reset acceleration and velocity
-				m_Body->acc = 0.0f;
-				m_Body->vel = 0.0f;
+				acceleration = 0.0f;
+				velocity = 0.0f;
 
 				m_InitialMotionEnded = true;
 			}
@@ -129,7 +133,9 @@ namespace Game {
 	}
 
 	FloorItem::FloorItem(const FloorItem& other)
-		: m_ItemData(other.m_ItemData), m_Quad(other.m_Quad), m_Body(other.m_Body), m_Timer(other.m_Timer),
+		: m_ItemData(other.m_ItemData), m_Quad(other.m_Quad),
+		acceleration(other.acceleration), velocity(other.velocity),
+		m_Timer(other.m_Timer),
 		m_RemainingMovingTime(other.m_RemainingMovingTime),
 		m_InitialMotionEnded(other.m_InitialMotionEnded)
 	{}
@@ -138,12 +144,9 @@ namespace Game {
 		: m_ItemData(item_data)
 	{
 		m_Quad = MakeRef(Vivium::Quad, pos, dim, Vivium::Random::GetFloat(0.0f, 2.0f * Vivium::Math::PI));
-		m_Body = MakeRef(Vivium::Body, m_Quad, false, 1.0f, 1.0f);
-		m_Body->vel = Vivium::Random::GetVector2f(500.0f);
-		m_RemainingMovingTime = Vivium::Random::GetFloat(0.10f, 0.20f);
-		m_Body->acc = -m_Body->vel / m_RemainingMovingTime;
-
-		Vivium::Application::physics->Register(m_Body, 0);
+		velocity = Vivium::Random::GetVector2f(100.0f);
+		m_RemainingMovingTime = Vivium::Random::GetFloat(0.50f, 0.70f);
+		acceleration = -velocity / m_RemainingMovingTime;
 
 		m_Timer.Start();
 	}

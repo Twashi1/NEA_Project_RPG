@@ -8,6 +8,7 @@ namespace Game {
 	class Structure {
 	public:
 		enum class ID : uint16_t {
+			VOID,
 			TREE
 		};
 
@@ -23,5 +24,26 @@ namespace Game {
 		static TileMap_t GetTilemap(const Vivium::Vector2<int>& pos, const Structure::ID& id);
 		static void Place(const Vivium::Vector2<int>& pos, const Structure::ID& id, World* world);
 		static void Delete(const Vivium::Vector2<int>& pos, const Structure::ID& id, World* world);
+
+		static const char* GetName(const Structure::ID& id);
+
+		static Structure::ID GetStructureID(const Tile::ID& id);
+		static bool IsStructure(const Tile::ID& id);
+
+		static Vivium::Vector2<int> GetTileOffset(const Tile::ID& id, const Structure::ID& structure_id);
+		static bool IsWithinStructureBounds(const Vivium::Vector2<int>& pos, const Vivium::Vector2<int>& structure_pos, const Structure::ID& id);
+
+		// Delete structure from id of one of the tiles in structure
+		static void Delete(const Vivium::Vector2<int>& pos, const Tile::ID& id, World* world);
+	};
+}
+
+namespace std {
+	template <>
+	struct formatter<Game::Structure::ID> : formatter<string> {
+		auto format(Game::Structure::ID id, format_context& ctx) {
+			return formatter<string>::format(
+				Game::Structure::GetName(id), ctx);
+		}
 	};
 }

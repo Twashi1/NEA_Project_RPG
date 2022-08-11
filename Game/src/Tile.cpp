@@ -6,8 +6,8 @@ namespace Game {
 		Tile::Properties("void",				false,	false,	false, 0.0f, {0, 0}, {}),
 		Tile::Properties("ground",				false,	false,	false, 0.0f, {1, 0}, {}),
 		Tile::Properties("grass",				false,	false,	false, 0.0f, {2, 0}, {}),
-		Tile::Properties("tree_0",				true,	true,	false, 3.0f, {3, 1}, {}), // TODO drop table
-		Tile::Properties("tree_1",				false,	false,	false, 0.0f, {3, 0}, {}),
+		Tile::Properties("tree_0",				true,	true,	false, 2.0f, {3, 1}, Item::DropData({{1.0f, Item::ID::LOG}})), // TODO drop table
+		Tile::Properties("tree_1",				false,	true,	false, 2.0f, {3, 0}, Item::DropData({{1.0f, Item::ID::LOG}})),
 		Tile::Properties("sand",				false,	false,	false, 0.0f, {4, 0}, {}),
 		Tile::Properties("water",				false,	false,	false, 0.0f, {5, 0}, {}),
 		Tile::Properties("bush",				true,	true,	false, 1.0f, {6, 0}, {}), // TODO drop table
@@ -55,6 +55,12 @@ namespace Game {
 		base = other.base == Tile::ID::VOID ? base : other.base;
 		mid = other.mid == Tile::ID::VOID ? mid : other.mid;
 		top = other.top == Tile::ID::VOID ? top : other.top;
+	}
+
+	bool Tile::CompareRealTiles(const Tile& other)
+	{
+		// TODO: implementation
+		return false;
 	}
 
 	Tile::Tile()

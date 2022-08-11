@@ -35,6 +35,7 @@ namespace Game {
 		Vivium::Timer m_UpdateTimer;
 
 		Vivium::Vector2<int> mined_tile_pos = Vivium::Vector2<int>(INT_MAX, INT_MAX);
+		Tile::ID mined_tile_id;
 		float mined_tile_time; // Time we've been mining tile for
 	
 		// TODO: weird statics
@@ -66,6 +67,8 @@ namespace Game {
 
 		void m_RenderTiles(const Vivium::Vector2<int>& pos);
 		void m_RenderFloorItems(const Vivium::Vector2<int>& pos);
+
+		float m_GetMiningTileScale(float tile_scale, const Tile::ID& id);
 
 	public:
 		static constexpr float PIXEL_SCALE = 64.0;

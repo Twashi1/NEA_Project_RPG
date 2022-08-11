@@ -271,6 +271,7 @@ namespace Game {
 				if (player_mining_pos != mined_tile_pos) {
 					mined_tile_time = 0.0f;
 					mined_tile_pos = player_mining_pos;
+					mined_tile_id = player->selected_tile.top; // TODO only works for top tiles
 				}
 				// Same tile
 				else {
@@ -280,6 +281,7 @@ namespace Game {
 			else {
 				mined_tile_time = 0.0f;
 				mined_tile_pos = Vivium::Vector2<int>(INT_MAX, INT_MAX);
+				mined_tile_id = Tile::ID::VOID;
 			}
 
 			// TODO: allow different time for each object
@@ -296,23 +298,24 @@ namespace Game {
 				Item::ID item_id = Tile::GetDropData(tile.top).GetRandomDrop();
 				uint16_t item_count = Vivium::Random::GetInt(1, 3);
 
-				FloorItem new_item(
-					Item(item_id, item_count),
-					Vivium::Vector2<float>(mined_tile_pos * World::PIXEL_SCALE),
-					Vivium::Vector2<float>(World::PIXEL_SCALE * 0.5f)
-				);
+				if (item_id != Item::ID::VOID) {
+					FloorItem new_item(
+						Item(item_id, item_count),
+						Vivium::Vector2<float>(mined_tile_pos * World::PIXEL_SCALE),
+						Vivium::Vector2<float>(World::PIXEL_SCALE * 0.5f)
+					);
 
-				// Add new item to floor item map
-				m_AddFloorItem(region_pos, new_item);
-
-				// Delete top tile
-				tile.top = Tile::ID::VOID;
-
-				// TODO: generalise for structures
-
-				// TODO: IsStructureTile?, then depending on which structure tile you subtract its offset and delete around that
-				if (tile.top == Tile::ID::TREE_0) {
-					Structure::Delete(mined_tile_pos, Structure::ID::TREE, this);
+					// Add new item to floor item map
+					m_AddFloorItem(region_pos, new_item);
+				}
+				
+				// TODO: top tile only
+				if (Structure::IsStructure(tile.top)) {
+					Structure::Delete(mined_tile_pos, tile.top, this);
+				}
+				else {
+					// Delete top tile
+					tile.top = Tile::ID::VOID;
 				}
 			}
 		}
@@ -376,28 +379,31 @@ namespace Game {
 					if (id == Tile::ID::VOID) { continue; }
 
 					float tile_scale = halfscale;
-					if (id == Tile::ID::AMETHYST_NODE)
+
+					// TODO: lots of magic numbers
+					// TODO: generalise for any tile that needs different scale
+					if (id == Tile::ID::AMETHYST_NODE) { tile_scale -= 10.0f; }
+
+					// If our current tile is mineable, and we are currently mining at ile
+					if (Tile::GetIsMineable(id) && mined_tile_id != Tile::ID::VOID)
 					{
-						// TODO: generalise for any tile that needs different scale
-						tile_scale -= 10.0f;
+						// If we're currently mining a structure
+						if (Structure::IsStructure(mined_tile_id)) {
+							// Get the ID of the structure we're mining
+							Structure::ID structure_id = Structure::GetStructureID(mined_tile_id);
 
-						// Its the currently mined tile
-						if (x == mined_tile_pos.x && y == mined_tile_pos.y) {
-							// TODO: move to function
-							// TODO: generalise for any mineable tile
-							// Get time spent mining as percentage (0 -> 1)
-							float time_ratio = mined_tile_time / Tile::GetMiningTime(Tile::ID::AMETHYST_NODE);
-							// Multiply by amount of cycles of growth/shrinking
-							time_ratio *= 9;
-							// Fix to 0 -> 1 range
-							float integer_part; // NOTE: unused
-							time_ratio = std::modf(time_ratio, &integer_part);
-							// Move to -4 -> 4 range
-							time_ratio = (time_ratio - 0.5f) * 8;
-							// Clamp to more than 0
-							time_ratio = std::max(0.0f, time_ratio);
+							// Get the origin of the structure (the point around which the tilemap is based)
+							Vivium::Vector2<float> structure_origin = mined_tile_pos - Structure::GetTileOffset(mined_tile_id, structure_id);
 
-							tile_scale += time_ratio;
+							// If the current position we're iterating is within the bounds of the structure we're mining
+							if (Structure::IsWithinStructureBounds(Vivium::Vector2<int>(x, y), structure_origin, structure_id)) {
+								// Edit the mining scale
+								tile_scale = m_GetMiningTileScale(tile_scale, id);
+							}
+						}
+						// We're not mining a structure, so we just have to check if our iterating pos is the same as our mining pos
+						else if (x == mined_tile_pos.x && y == mined_tile_pos.y) {
+							tile_scale = m_GetMiningTileScale(tile_scale, id);
 						}
 					}
 
@@ -461,8 +467,8 @@ namespace Game {
 
 				if (items == nullptr) { continue; }
 
-				vertex_data.reserve(vertex_data.size() + 16 * items->size());
-				indexCoords.reserve(indexCoords.size() + 6 * items->size());
+				vertex_data.reserve(vertex_data.size() + (16 * items->size() * 3));
+				indexCoords.reserve(indexCoords.size() + (6 * items->size() * 3));
 
 				for (FloorItem& item : *items) {
 					// TODO: bit of a weird place, but having a separate UpdateFloorItem function would make us iterate all the regions twice
@@ -477,37 +483,45 @@ namespace Game {
 
 					std::array<float, 4>& faces = m_ItemsTextureCoords[(int)item_data.id];
 
-					float item_count_f = item_data.count;
-
-					// Bottom left, Bottom right, Top right, Top left
-					std::array<Vivium::Vector2<float>, 4> vertices = item_quad->GetVertices();
-
-					// TODO: wasting 3 * sizeof(float) bytes for each render, item_count_f only needed once
-					std::array<float, 16> this_vertex_data =
-					{
-						vertices[0].x, vertices[0].y, faces[0], faces[1],
-						vertices[1].x, vertices[1].y, faces[2], faces[1],
-						vertices[2].x, vertices[2].y, faces[2], faces[3],
-						vertices[3].x, vertices[3].y, faces[0], faces[3]
+					static const Vivium::Vector2<float> item_offsets[3] = {
+						Vivium::Vector2<float>( 0.0f,  0.0f) * World::PIXEL_SCALE * 0.5f,
+						Vivium::Vector2<float>( 0.3f,  0.3f) * World::PIXEL_SCALE * 0.5f,
+						Vivium::Vector2<float>(-0.3f,  0.3f) * World::PIXEL_SCALE * 0.5f
 					};
 
-					int stride = count * 4;
+					for (int i = 0; i < std::min(item_data.count, (uint16_t)3); i++) {
+						Vivium::Vector2<float> item_offset = item_offsets[i];
 
-					std::array<unsigned short, 6> this_indices =
-					{
-						0 + stride,
-						1 + stride,
-						2 + stride,
-						2 + stride,
-						3 + stride,
-						0 + stride,
-					};
+						// Bottom left, Bottom right, Top right, Top left
+						std::array<Vivium::Vector2<float>, 4> vertices = item_quad->GetVertices();
+
+						// TODO: wasting 3 * sizeof(float) bytes for each render, item_count_f only needed once
+						std::array<float, 16> this_vertex_data =
+						{
+							vertices[0].x + item_offset.x, vertices[0].y + item_offset.y, faces[0], faces[1],
+							vertices[1].x + item_offset.x, vertices[1].y + item_offset.y, faces[2], faces[1],
+							vertices[2].x + item_offset.x, vertices[2].y + item_offset.y, faces[2], faces[3],
+							vertices[3].x + item_offset.x, vertices[3].y + item_offset.y, faces[0], faces[3]
+						};
+
+						int stride = count * 4;
+
+						std::array<unsigned short, 6> this_indices =
+						{
+							0 + stride,
+							1 + stride,
+							2 + stride,
+							2 + stride,
+							3 + stride,
+							0 + stride,
+						};
 
 
-					indexCoords.insert(indexCoords.end(), this_indices.begin(), this_indices.end());
-					vertex_data.insert(vertex_data.end(), this_vertex_data.begin(), this_vertex_data.end());
+						indexCoords.insert(indexCoords.end(), this_indices.begin(), this_indices.end());
+						vertex_data.insert(vertex_data.end(), this_vertex_data.begin(), this_vertex_data.end());
 
-					count++;
+						count++;
+					}
 				}
 			}
 		}
@@ -523,6 +537,29 @@ namespace Game {
 
 			Vivium::Renderer::Submit(&vb, &ib, FloorItem::floor_shader, m_ItemsAtlas->GetAtlas().get());
 		}
+	}
+
+	float World::m_GetMiningTileScale(float tile_scale, const Tile::ID& id)
+	{
+		// TODO: cleanuop
+		// Its the currently mined tile
+		// TODO: move to function
+		// TODO: generalise for any mineable tile
+		// Get time spent mining as percentage (0 -> 1)
+		float time_ratio = mined_tile_time / Tile::GetMiningTime(id);
+		// Multiply by amount of cycles of growth/shrinking
+		time_ratio *= 9;
+		// Fix to 0 -> 1 range
+		float integer_part; // NOTE: unused
+		time_ratio = std::modf(time_ratio, &integer_part);
+		// Move to -4 -> 4 range
+		time_ratio = (time_ratio - 0.5f) * 8;
+		// Clamp to more than 0
+		time_ratio = std::max(0.0f, time_ratio);
+
+		tile_scale += time_ratio;
+
+		return tile_scale;
 	}
 
 	void World::m_GenWorld(const std::string& fullpath)
