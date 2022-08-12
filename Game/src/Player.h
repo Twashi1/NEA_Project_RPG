@@ -1,6 +1,7 @@
 #pragma once
 
 #include "World.h"
+#include "Inventory.h"
 
 namespace Game {
     class Player {
@@ -9,14 +10,20 @@ namespace Game {
         double m_Time = 0.0;
 
         void m_RenderSelectedTile();
+        void m_RenderInventory();
 
         // Update acceleration according to client inputs
         void m_UpdateMovement();
+        void m_UpdateInventory(World& world);
         void m_UpdateSelectedTile(World& world);
 
         Vivium::Quad* m_SelectedTileQuad;
         Vivium::Shader* m_SelectedTileShader;
         Vivium::TextureAtlas* m_GameIcons;
+
+        Inventory m_MainInventory;
+
+        bool m_isInventoryOpened = false;
 
     public:
         std::shared_ptr<Vivium::Body> body; // Describes physical properties of player and how it should interact with other objects

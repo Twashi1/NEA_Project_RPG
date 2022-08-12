@@ -47,6 +47,7 @@ int game(void)
     World::texture_shader = &texture_shader;
 
     FloorItem::Init();
+    Inventory::Init();
 
     // Test construct world
     World world(0, "testworld");
@@ -90,6 +91,7 @@ int game(void)
     LogInfo("Window closed");
 
     FloorItem::Terminate();
+    Inventory::Terminate();
     Application::Terminate();
 
     LogInfo("Ending program");

@@ -65,9 +65,11 @@ namespace Game {
 		static bool GetIsStackable(const Item::ID& id);
 		static Vivium::Vector2<int> GetAltasIndex(const Item::ID& id);
 
+		static constexpr uint16_t STACK_LIMIT = 999;
 		Item::ID id;
 		uint16_t count;
 
+		Item();
 		Item(const Item::ID& id, const uint16_t& count);
 
 	private:

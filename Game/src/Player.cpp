@@ -9,6 +9,14 @@ namespace Game {
         }
     }
 
+    void Player::m_RenderInventory()
+    {
+        if (m_isInventoryOpened) {
+            m_MainInventory.SetPos(Vivium::Application::GetScreenDim() / 2);
+            m_MainInventory.Render();
+        }
+    }
+
     void Player::m_UpdateMovement()
     {
         float current = Vivium::Timer::GetTime();
@@ -51,6 +59,14 @@ namespace Game {
         body->vel = body->vel + (body->acc * elapsed);
     }
 
+    void Player::m_UpdateInventory(World& world)
+    {
+        Vivium::Input::State e = Vivium::Input::GetKeyState(GLFW_KEY_E);
+
+        // Toggle inventory
+        if (e == Vivium::Input::State::PRESS) { m_isInventoryOpened = !m_isInventoryOpened; }
+    }
+
     void Player::m_UpdateSelectedTile(World& world)
     {
         // Convert cursor position to world position
@@ -60,6 +76,7 @@ namespace Game {
 
     void Player::Update(World& world)
     {
+        m_UpdateInventory(world);
         m_UpdateMovement();
         m_UpdateSelectedTile(world);
     }
@@ -68,9 +85,11 @@ namespace Game {
     {
         m_RenderSelectedTile();
         Vivium::Renderer::Submit(quad.get(), shader);
+        m_RenderInventory();
     }
 
     Player::Player()
+        : m_MainInventory(Inventory::ID::SMALL)
     {
         // Setup player quad and body
         quad = MakeRef(Vivium::Quad, 0.0f, 0.0f, 100.0f, 100.0f);

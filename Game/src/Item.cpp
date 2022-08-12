@@ -103,6 +103,10 @@ namespace Game {
 		: id(id), count(count)
 	{}
 
+	Item::Item()
+		: id(Item::ID::VOID), count(0)
+	{}
+
 	Vivium::Shader* FloorItem::floor_shader = nullptr;
 
 	void FloorItem::Init()

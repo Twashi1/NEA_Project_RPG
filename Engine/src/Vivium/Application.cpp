@@ -95,7 +95,10 @@ namespace Vivium {
         glPolygonMode(GL_FRONT_AND_BACK, GL_FILL);
     }
 
-    Vector2<int> Application::GetScreenDim() { return Vector2<int>(width, height); }
+    Vector2<int> Application::GetScreenDim()
+    {
+        return Vector2<int>(width, height);
+    }
 
     bool Application::IsRunning()
     {
