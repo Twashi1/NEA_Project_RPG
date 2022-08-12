@@ -34,8 +34,10 @@
 - [ ] Ambient particles/Particle system
 - [ ] Sound API
 - [ ] Physics system
+    - [x] Implement broad phase
     - [ ] Impulse resolution
 - [x] Input system
+    - [ ] Probably needs an API rework
     - [ ] Fix bad function names
 - [x] Serialiser
     - [x] Binary serialisation
@@ -45,18 +47,22 @@
 
 # Game
 ## World
+- [ ] World loads around player!!!!!!!!!!!
 - [ ] Terrain generation
     - [ ] Fix messy world generation code
-    - [ ] Better structure generation
-    - [ ] More versatile texture coords for tile atlas
+    - [x] Better structure generation
+    - [x] More versatile texture coords for tile atlas
 - [ ] Save files
     - [ ] Implement saving to/loading from file
 - [ ] Animating tiles / Drawing animated tiles
 - [x] Batch render tiles
 - [x] Drawing selection hover
-- [ ] Items/Floor drops
+- [x] Items/Floor drops
+     - [x] Items with counts of 2 will display 2 copies of the item texture, and counts of 3 or above will display 3 copies of the item texture
+     - [x] Items should move slightly immediately after being broken
 - [ ] Tiles should cleanly connect to each other
     - [ ] Draw possible transitions
+    - [ ] Create logic to select appropriate transition
 - [x] Tile breaking
     - [x] Implement selecting a tile to break and holding lmb to start timer
     - [ ] Only decor/top tiles can be broken
@@ -88,15 +94,13 @@
 - Better link to Resources folder/re-do file paths and file extension statics
 - Input box typing bar size is using magic numbers
 - Default statics are ugly
-- Better api for shader/texture/texture-atlas
+- Better api for shader/texture/texture-atlas (done?)
 - Inconsistent data layout between GUI objects
 - GL id should be private for GL abstractions
-- Allow void* user data for callback functions (mostly done?)
-- Batch rendering API (mostly done)
-- Change performance stats in Application to use a running average
+- Allow void* user data for callback functions (done?)
 - docs docs docs docs docs docs docs docs
 - INL file for Vector2
-- Physics system is still has massive performance issues, also not accurate anymore
+- Test new broad phase for physics system
 
 # Bugs
 - Cursor no longer switches when hovering text input box

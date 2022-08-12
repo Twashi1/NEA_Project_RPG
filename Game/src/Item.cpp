@@ -4,16 +4,20 @@ namespace Game {
 	std::array<Item::Properties, (uint16_t)Item::ID::MAX> Item::m_Properties = {
 		Item::Properties("void",				false,	Vivium::Vector2<int>(INT_MAX)),
 		Item::Properties("amethyst crystal",	true,	Vivium::Vector2<int>(1, 0)),
+		Item::Properties("emerald crystal",		true,	Vivium::Vector2<int>(1, 1)),
+		Item::Properties("ruby crystal",		true,	Vivium::Vector2<int>(1, 2)),
+		Item::Properties("sapphire crystal",	true,	Vivium::Vector2<int>(1, 3)),
+		Item::Properties("topaz crystal",		true,	Vivium::Vector2<int>(1, 4)),
 		Item::Properties("log", 				true,	Vivium::Vector2<int>(0, 5))
 	};
 
-	Item::DropData::DropData()
-		: drop_table({{1.0f, Item::ID::VOID}}) // Certain chance of getting nothing
+	Item::DropTable::DropTable()
+		: drop_table({{1.0f, Item::DropData(Item::ID::VOID, 0, 0)}}) // Certain chance of getting nothing
 	{
 		m_Sum = 1.0f;
 	}
 
-	Item::DropData::DropData(const DropTable_t& drop_table)
+	Item::DropTable::DropTable(const DropTableMap_t& drop_table)
 		: drop_table(drop_table)
 	{
 		for (const auto& it : drop_table) {
@@ -21,29 +25,38 @@ namespace Game {
 		}
 	}
 
-	Item::ID Item::DropData::GetRandomDrop()
+	Item Item::DropTable::GetRandomDrop()
 	{
 		// https://stackoverflow.com/questions/1761626/weighted-random-numbers
 		// TODO: utils/math function for weighted sum?
 		float value = Vivium::Random::GetFloat(0.0f, m_Sum);
 
-		for (const auto& [weight, id] : drop_table) {
-			if (value < weight) { return id; }
+		for (const auto& [weight, drop_data] : drop_table) {
+			if (value < weight) {
+				// If id is void, return no item
+				if (drop_data.id == Item::ID::VOID) return Item(Item::ID::VOID, 0);
+
+				// Get count of object
+				uint16_t count = Vivium::Random::GetInt(drop_data.min_count, drop_data.max_count);
+
+				// Return item
+				return Item(drop_data.id, count);
+			}
 
 			value -= weight;
 		}
 
 		LogError("GetRandomDrop couldn't return an id, bad DropTable?");
 
-		return Item::ID::VOID;
+		return Item(Item::ID::VOID, 0);
 	}
 
-	void Item::DropData::Write(Vivium::Serialiser& s) const
+	void Item::DropTable::Write(Vivium::Serialiser& s) const
 	{
 		// TODO
 	}
 
-	void Item::DropData::Read(Vivium::Serialiser& s)
+	void Item::DropTable::Read(Vivium::Serialiser& s)
 	{
 		// TODO
 	}
@@ -154,5 +167,23 @@ namespace Game {
 	bool FloorItem::CheckDespawned()
 	{
 		return false;
+	}
+
+	Item::DropData::DropData(const Item::ID& id, const uint16_t& min_count, const uint16_t& max_count)
+		: id(id), min_count(min_count), max_count(max_count)
+	{}
+
+	Item::DropData::DropData(const Item::ID& id, const uint16_t & count)
+		: id(id), min_count(count), max_count(count)
+	{}
+
+	void Item::DropData::Write(Vivium::Serialiser & s) const
+	{
+		// TODO
+	}
+
+	void Item::DropData::Read(Vivium::Serialiser& s)
+	{
+		// TODO
 	}
 }

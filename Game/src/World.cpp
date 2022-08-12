@@ -230,7 +230,7 @@ namespace Game {
 
 				Tile::ID tile_id = Tile::ID::GRASS;
 
-				// TODO better world generation
+				// TODO better world generation (biomes/worley noise for ore clumps/better noise generators)
 
 				if (noise_value < 0.4) { tile_id = Tile::ID::GROUND; }
 				if (noise_value < 0.3) { tile_id = Tile::ID::SAND; }
@@ -241,11 +241,21 @@ namespace Game {
 				float tree_noise = m_NoiseTrees.Get(x + y * Region::LENGTH);
 
 				if (tree_noise < 0.03 && noise_value > 0.2) {
-					tile.top = Tile::ID::AMETHYST_NODE;
+					// TODO: shouldn't use true randomness here
+					int index = Vivium::Random::GetInt((uint16_t)Tile::ID::AMETHYST_NODE, (uint16_t)Tile::ID::TOPAZ_NODE);
+					tile.top = (Tile::ID)index;
 				}
 
 				if (tree_noise > 0.8 && noise_value > 0.6) {
-					structures[Vivium::Vector2<int>(x, y)] = Structure::ID::TREE;
+					if (tree_noise > 0.95) {
+						structures[Vivium::Vector2<int>(x, y)] = Structure::ID::TREE;
+					}
+					else if (tree_noise > 0.85) {
+						tile.top = Tile::ID::BUSH;
+					}
+					else {
+						tile.top = Tile::ID::BUSH_FRUIT;
+					}
 				}
 
 				region.Index(x, y) = tile;
@@ -295,12 +305,11 @@ namespace Game {
 				// TODO: mined tile could be decor/top
 				// TODO: big temporary
 				// Create floor item
-				Item::ID item_id = Tile::GetDropData(tile.top).GetRandomDrop();
-				uint16_t item_count = Vivium::Random::GetInt(1, 3);
+				Item item_data = Tile::GetDropData(tile.top).GetRandomDrop();
 
-				if (item_id != Item::ID::VOID) {
+				if (item_data.id != Item::ID::VOID) {
 					FloorItem new_item(
-						Item(item_id, item_count),
+						item_data,
 						Vivium::Vector2<float>(mined_tile_pos * World::PIXEL_SCALE),
 						Vivium::Vector2<float>(World::PIXEL_SCALE * 0.5f)
 					);
@@ -378,11 +387,7 @@ namespace Game {
 				for (const Tile::ID& id : { tile.base, tile.mid, tile.top }) {
 					if (id == Tile::ID::VOID) { continue; }
 
-					float tile_scale = halfscale;
-
-					// TODO: lots of magic numbers
-					// TODO: generalise for any tile that needs different scale
-					if (id == Tile::ID::AMETHYST_NODE) { tile_scale -= 10.0f; }
+					float tile_scale = halfscale * Tile::GetScale(id);
 
 					// If our current tile is mineable, and we are currently mining at ile
 					if (Tile::GetIsMineable(id) && mined_tile_id != Tile::ID::VOID)
@@ -467,11 +472,12 @@ namespace Game {
 
 				if (items == nullptr) { continue; }
 
+				// Reserve space needed for the given list of items, assuming all items have a count of 3+
 				vertex_data.reserve(vertex_data.size() + (16 * items->size() * 3));
 				indexCoords.reserve(indexCoords.size() + (6 * items->size() * 3));
 
 				for (FloorItem& item : *items) {
-					// TODO: bit of a weird place, but having a separate UpdateFloorItem function would make us iterate all the regions twice
+					// NOTE: bit of a weird place, but having a separate UpdateFloorItem function would make us iterate all the regions twice
 					item.Update();
 
 					// TODO: potential for item data to be uninitialised
@@ -483,6 +489,10 @@ namespace Game {
 
 					std::array<float, 4>& faces = m_ItemsTextureCoords[(int)item_data.id];
 
+					float angle = item_quad->GetAngle();
+					float cos_angle = std::cos(angle);
+					float sin_angle = std::sin(angle);
+
 					static const Vivium::Vector2<float> item_offsets[3] = {
 						Vivium::Vector2<float>( 0.0f,  0.0f) * World::PIXEL_SCALE * 0.5f,
 						Vivium::Vector2<float>( 0.3f,  0.3f) * World::PIXEL_SCALE * 0.5f,
@@ -490,7 +500,7 @@ namespace Game {
 					};
 
 					for (int i = 0; i < std::min(item_data.count, (uint16_t)3); i++) {
-						Vivium::Vector2<float> item_offset = item_offsets[i];
+						Vivium::Vector2<float> item_offset = Vivium::Math::Rotate(item_offsets[i], cos_angle, sin_angle);
 
 						// Bottom left, Bottom right, Top right, Top left
 						std::array<Vivium::Vector2<float>, 4> vertices = item_quad->GetVertices();
@@ -557,6 +567,7 @@ namespace Game {
 		// Clamp to more than 0
 		time_ratio = std::max(0.0f, time_ratio);
 
+		// TODO get time_ratio as percentage of tile scale
 		tile_scale += time_ratio;
 
 		return tile_scale;

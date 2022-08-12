@@ -31,6 +31,7 @@ namespace Vivium {
 		Quad Peek(float dt);
 		Rect PeekRect(float dt);
 		Math::AABB PeekAABB(float dt);
+		Vector2<float> PeekPos(float dt);
 
 		bool operator==(const Body& other) const {
 			return *quad == *other.quad

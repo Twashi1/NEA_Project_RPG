@@ -1,8 +1,6 @@
 #include "Player.h"
 
 namespace Game {
-
-
     void Player::m_RenderSelectedTile()
     {
         if (selected_tile.base != Tile::ID::VOID) {
@@ -76,7 +74,7 @@ namespace Game {
     {
         // Setup player quad and body
         quad = MakeRef(Vivium::Quad, 0.0f, 0.0f, 100.0f, 100.0f);
-        body = MakeRef(Vivium::Body, quad, true, 0.0f, 1.0f);
+        body = MakeRef(Vivium::Body, quad, true, 0.0f, 10.0f);
 
         // Setup shader and uniforms
         shader = new Vivium::Shader("world_vertex", "color_frag");

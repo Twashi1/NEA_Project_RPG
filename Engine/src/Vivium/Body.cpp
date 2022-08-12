@@ -92,4 +92,12 @@ namespace Vivium {
 
 		return Math::AABB(next_pos.x, next_pos.y, dim.x, dim.y);
 	}
+
+	Vector2<float> Body::PeekPos(float dt)
+	{
+		// Calculate future velocity
+		Vector2<float> next_vel = vel + (acc * dt);
+		// Calculate future position and return
+		return quad->GetCenter() + (next_vel * dt);
+	}
 }

@@ -10,15 +10,25 @@ namespace Vivium {
 					Ref(Body) a = layer[i];
 					Ref(Body) b = layer[j];
 
-					Math::AABB future_aabb_a = a->PeekAABB(elapsed);
-					Math::AABB future_aabb_b = b->PeekAABB(elapsed);
+					Vector2<float> future_pos_a = a->PeekPos(elapsed);
+					Vector2<float> future_pos_b = b->PeekPos(elapsed);
 
-					// "haha what an amazing broad and narrow phase physics system so well designed"
+					// TODO: come up with a way to explain this
+					// Create a circle to represent the maximum extents of the body
+
+					float radius_a = a->quad->GetDim().MaxComponent() * 0.5f;
+					float radius_b = b->quad->GetDim().MaxComponent() * 0.5f;
+
+					// Test if there is a collision between them
+					// https://stackoverflow.com/questions/697188/fast-circle-collision-detection
+					float radius_sum = radius_a + radius_b;
+					float dx = future_pos_a.x - future_pos_b.x;
+					float dy = future_pos_a.y - future_pos_b.y;
 
 					// If either quad contains any points of the other quad (intersecting)
-					if (future_aabb_a.IsIntersecting(future_aabb_b)) {
+					if (radius_sum * radius_sum > (dx * dx + dy * dy)) {
 						// Calculate future positions of bodies
-						Rect future_rect_a = a->PeekRect(elapsed); // TODO: derive from AABB + some angle information
+						Rect future_rect_a = a->PeekRect(elapsed); // TODO: derive from previous peeked information + extra stuff
 						Rect future_rect_b = b->PeekRect(elapsed);
 
 						if (future_rect_a.IsIntersecting(future_rect_b)) {

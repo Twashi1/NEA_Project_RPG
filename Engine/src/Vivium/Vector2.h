@@ -56,6 +56,8 @@ namespace Vivium {
 		Vector2 floor() const requires FloatingPoint<T> { return Vector2(std::floor(x), std::floor(y)); }
 		Vector2 ceil() const requires FloatingPoint<T> { return Vector2(std::floor(x), std::floor(y)); }
 
+		T MaxComponent() const { return std::max(x, y); }
+
 		// Cast to arithmetic type
 		template <typename C>
 		operator Vector2<C>() const requires Arithmetic<C> { return Vector2<C>((C)x, (C)y); }

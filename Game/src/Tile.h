@@ -17,6 +17,10 @@ namespace Game {
 			BUSH,
 			BUSH_FRUIT,
 			AMETHYST_NODE,
+			EMERALD_NODE,
+			RUBY_NODE,
+			SAPPHIRE_NODE,
+			TOPAZ_NODE,
 			MAX
 		};
 
@@ -27,9 +31,10 @@ namespace Game {
 			bool isPlaceable;					// If its a tile that can be placed
 			float mining_time;					// Amount of time it takes to mine this tile
 			Vivium::Vector2<int> atlas_index;   // Coordinate of sprite in atlas
-			Item::DropData drop_data;			// Drop table for item
+			float scale;						// Scale of tile when drawn
+			Item::DropTable drop_data;			// Drop table for item
 
-			Properties(std::string name, bool isPhysical, bool isMineable, bool isPlaceable, float mining_time, Vivium::Vector2<int> atlas_data, Item::DropData drop_data);
+			Properties(std::string name, bool isPhysical, bool isMineable, bool isPlaceable, float mining_time, Vivium::Vector2<int> atlas_data, float scale, Item::DropTable drop_data);
 
 			void Write(Vivium::Serialiser& s) const override;
 			void Read(Vivium::Serialiser& s) override;
@@ -41,7 +46,8 @@ namespace Game {
 		static bool GetIsMineable(const Tile::ID& id);
 		static float GetMiningTime(const Tile::ID& id);
 		static Vivium::Vector2<int> GetAltasIndex(const Tile::ID& id);
-		static Item::DropData GetDropData(const Tile::ID& id);
+		static float GetScale(const Tile::ID& id);
+		static Item::DropTable GetDropData(const Tile::ID& id);
 
 		Tile::ID base; // TODO: rename to bot
 		Tile::ID mid;

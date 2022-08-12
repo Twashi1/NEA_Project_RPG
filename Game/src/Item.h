@@ -8,6 +8,10 @@ namespace Game {
 		enum class ID : uint16_t {
 			VOID,
 			AMETHYST_CRYSTAL,
+			EMERALD_CRYSTAL,
+			RUBY_CRYSTAL,
+			SAPPHIRE_CRYSTAL,
+			TOPAZ_CRYSTAL,
 			LOG,
 			MAX
 		};
@@ -25,18 +29,32 @@ namespace Game {
 		};
 
 		struct DropData : Vivium::IStreamable {
+		public:
+			Item::ID id;
+			uint16_t min_count;
+			uint16_t max_count;
+
+			DropData(const Item::ID& id, const uint16_t& min_count, const uint16_t& max_count);
+			DropData(const Item::ID& id, const uint16_t& count);
+
+			void Write(Vivium::Serialiser& s) const override;
+			void Read(Vivium::Serialiser& s) override;
+		};
+
+		// TODO: should take in a count as well (maybe just map to Item class)
+		struct DropTable : Vivium::IStreamable {
 		private:
 			unsigned int m_Sum = 0;
 
 		public:
-			typedef std::unordered_map<float, Item::ID> DropTable_t;
+			typedef std::unordered_map<float, DropData> DropTableMap_t;
 
-			DropTable_t drop_table;
+			DropTableMap_t drop_table;
 
-			DropData();
-			DropData(const DropTable_t& drop_table);
+			DropTable();
+			DropTable(const DropTableMap_t& drop_table);
 
-			Item::ID GetRandomDrop();
+			Item GetRandomDrop();
 
 			void Write(Vivium::Serialiser& s) const override;
 			void Read(Vivium::Serialiser& s) override;
