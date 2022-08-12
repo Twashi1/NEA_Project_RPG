@@ -20,7 +20,7 @@ namespace Vivium {
         static void m_WindowResizeCallback(GLFWwindow* window, int nwidth, int nheight);
         // TODO: ugly
         // Maps a name for each debug stat to a text renderable object
-        static std::unordered_map<::std::string, Text> m_DebugStatsText;
+        static std::unordered_map<std::string, Ref(Text)> m_DebugStatsText;
 
         static int m_FPS; // Frames per second
         static double m_TimePerFrame; // Time per frame in seconds

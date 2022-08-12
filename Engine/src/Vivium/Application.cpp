@@ -13,7 +13,7 @@ namespace Vivium {
     int Application::m_FPS = 0;
     double Application::m_TimePerFrame = 0.0;
 
-    std::unordered_map<std::string, Text> Application::m_DebugStatsText{};
+    std::unordered_map<std::string, Ref(Text)> Application::m_DebugStatsText{};
     unsigned int Application::m_FramesProcessed = 0;
     double Application::m_ProcessingTime = 0.0;
     bool Application::isStatsEnabled = true;
@@ -214,12 +214,17 @@ namespace Vivium {
 
         // Create all text renderables for stats
         if (isStatsEnabled) {
-            m_DebugStatsText.insert({ "Average TPF",            Text("", Vector2<float>(5, height - 15), 0.25)  });
-            m_DebugStatsText.insert({ "Percentage Processing",  Text("", Vector2<float>(5, height - 30), 0.25)  });
-            m_DebugStatsText.insert({ "FPS",                    Text("", Vector2<float>(5, height - 45), 0.25)  });
-            m_DebugStatsText.insert({ "Player pos",             Text("", Vector2<float>(5, height - 100), 0.25) });
-            m_DebugStatsText.insert({ "Player vel",             Text("", Vector2<float>(5, height - 115), 0.25) });
-            m_DebugStatsText.insert({ "Player acc",             Text("", Vector2<float>(5, height - 130), 0.25) });
+            m_DebugStatsText.insert({ "Average TPF",            MakeRef(Text, "", Vector2<float>(5, -15), 0.25)  });
+            m_DebugStatsText.insert({ "Percentage Processing",  MakeRef(Text, "", Vector2<float>(5, -30), 0.25)  });
+            m_DebugStatsText.insert({ "FPS",                    MakeRef(Text, "", Vector2<float>(5, -45), 0.25)  });
+            m_DebugStatsText.insert({ "Player pos",             MakeRef(Text, "", Vector2<float>(5, -100), 0.25) });
+            m_DebugStatsText.insert({ "Player vel",             MakeRef(Text, "", Vector2<float>(5, -115), 0.25) });
+            m_DebugStatsText.insert({ "Player acc",             MakeRef(Text, "", Vector2<float>(5, -130), 0.25) });
+
+            // Anchor the text objects
+            for (auto& [name, text] : m_DebugStatsText) {
+                window_panel->Anchor(Panel::ANCHOR::LEFT, Panel::ANCHOR::TOP, text);
+            }
         }
 
         // Finished loading
@@ -268,12 +273,11 @@ namespace Vivium {
 
             std::string text = std::format("Average time per frame: {:.3f}ms/{:.3f}ms", avg_tpf_ms, m_TimePerFrame * 1000);
 
-            Text& t = m_DebugStatsText["Average TPF"];
-            t.shader->Bind(); t.shader->SetUniform3f("u_TextColor", color.r, color.g, color.b);
-            t.text = text;
-            t.pos = Vector2<float>(5, height - 15);
+            Ref(Text) t = m_DebugStatsText["Average TPF"];
+            t->shader->Bind(); t->shader->SetUniform3f("u_TextColor", color.r, color.g, color.b);
+            t->text = text;
 
-            Renderer::Submit(&t);
+            Renderer::Submit(t.get());
         }
 
         {
@@ -285,12 +289,11 @@ namespace Vivium {
 
             std::string text = std::format("Processing time: {:.3f}%", percentage_processing);
 
-            Text& t = m_DebugStatsText["Percentage Processing"];
-            t.shader->Bind(); t.shader->SetUniform3f("u_TextColor", color.r, color.g, color.b);
-            t.text = text;
-            t.pos = Vector2<float>(5, height - 30);
+            Ref(Text) t = m_DebugStatsText["Percentage Processing"];
+            t->shader->Bind(); t->shader->SetUniform3f("u_TextColor", color.r, color.g, color.b);
+            t->text = text;
 
-            Renderer::Submit(&t);
+            Renderer::Submit(t.get());
         }
 
         {
@@ -311,12 +314,11 @@ namespace Vivium {
                 text = std::format("Max FPS: {:.3f}; Actual FPS: {}", fps, m_FPS);
             }
 
-            Text& t = m_DebugStatsText["FPS"];
-            t.shader->Bind(); t.shader->SetUniform3f("u_TextColor", color.r, color.g, color.b);
-            t.text = text;
-            t.pos = Vector2<float>(5, height - 45);
+            Ref(Text) t = m_DebugStatsText["FPS"];
+            t->shader->Bind(); t->shader->SetUniform3f("u_TextColor", color.r, color.g, color.b);
+            t->text = text;
 
-            Renderer::Submit(&t);
+            Renderer::Submit(t.get());
         }
 
         {
@@ -324,12 +326,11 @@ namespace Vivium {
 
             std::string text = std::format("Player position: [{:.3f}, {:.3f}]", player_position.x, player_position.y);
 
-            Text& t = m_DebugStatsText["Player pos"];
-            t.shader->Bind(); t.shader->SetUniform3f("u_TextColor", RGBColor::WHITE);
-            t.text = text;
-            t.pos = Vector2<float>(5, height - 100);
+            Ref(Text) t = m_DebugStatsText["Player pos"];
+            t->shader->Bind(); t->shader->SetUniform3f("u_TextColor", RGBColor::WHITE);
+            t->text = text;
 
-            Renderer::Submit(&t);
+            Renderer::Submit(t.get());
         }
 
         {
@@ -337,12 +338,11 @@ namespace Vivium {
 
             std::string text = std::format("Player velocity: [{:.3f}, {:.3f}]", player_velocity.x, player_velocity.y);
 
-            Text& t = m_DebugStatsText["Player vel"];
-            t.shader->Bind(); t.shader->SetUniform3f("u_TextColor", RGBColor::WHITE);
-            t.text = text;
-            t.pos = Vector2<float>(5, height - 115);
+            Ref(Text) t = m_DebugStatsText["Player vel"];
+            t->shader->Bind(); t->shader->SetUniform3f("u_TextColor", RGBColor::WHITE);
+            t->text = text;
 
-            Renderer::Submit(&t);
+            Renderer::Submit(t.get());
         }
 
         {
@@ -350,12 +350,11 @@ namespace Vivium {
 
             std::string text = std::format("Player acceleration: [{:.3f}, {:.3f}]", player_acceleration.x, player_acceleration.y);
 
-            Text& t = m_DebugStatsText["Player acc"];
-            t.shader->Bind(); t.shader->SetUniform3f("u_TextColor", RGBColor::WHITE);
-            t.text = text;
-            t.pos = Vector2<float>(5, height - 130);
+            Ref(Text) t = m_DebugStatsText["Player acc"];
+            t->shader->Bind(); t->shader->SetUniform3f("u_TextColor", RGBColor::WHITE);
+            t->text = text;
 
-            Renderer::Submit(&t);
+            Renderer::Submit(t.get());
         }
     }
 }
