@@ -13,12 +13,17 @@ int sandbox(void)
 {
     Application::Init(WIDTH, HEIGHT, FPS, true);
 
-    Quad random(0.0f, 0.0f, 32.0f, 32.0f, 0.0f);
-    Body body(random, true, 1.0f, 1.0f);
+    Ref(Text) my_text = MakeRef(Text, "Hello world", Vivium::Vector2<float>{ 15, 150 }, 0.25f);
+    Ref(Quad) panel_quad = MakeRef(Quad, 100, 100, 500, 500);
+    Panel my_panel(panel_quad);
+
+    my_panel.Anchor(Panel::ANCHOR::LEFT, Panel::ANCHOR::TOP, my_text);
 
     while (Application::IsRunning()) {
+        my_panel.Update();
+
         Application::BeginFrame();
-        if (Application::isStatsEnabled) Application::UpdateStats(body); // Draw stats information
+        Renderer::Submit(my_text.get());
         Application::EndFrame();
     }
 
@@ -50,9 +55,6 @@ int game(void)
     Application::physics->Register(player.body, 0);
 
     Application::SetBGColor(RGBColor::BLACK);
-
-    // TODO: remove
-    // Application::EnableWireframe();
 
     // Loop until window is closed by user
     while (Application::IsRunning())

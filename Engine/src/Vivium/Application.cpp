@@ -52,6 +52,8 @@ namespace Vivium {
         // Record time of frame beginning
         m_Timer.Start();
 
+        window_panel->Update();
+
         // Clear the screen
         glClear(GL_COLOR_BUFFER_BIT);
 

@@ -7,7 +7,9 @@ namespace Vivium {
 		case Type::QUAD:
 			quad->SetCenter(pos); break;
 		case Type::POINT:
-			*point = pos; break;
+		{
+			point->x = pos.x; point->y = pos.y;
+		} break;
 		case Type::PANEL:
 			panel->SetPos(pos); break;
 		}
@@ -23,7 +25,7 @@ namespace Vivium {
 		case Type::QUAD:
 			pos = quad->GetCenter(); break;
 		case Type::POINT:
-			pos = *point; break;
+			pos = Vector2<float>(point->x, point->y); break;
 		case Type::PANEL:
 			pos = panel->GetQuad().GetCenter(); break;
 		}
@@ -215,8 +217,8 @@ namespace Vivium {
 
 	void Panel::Anchor(ANCHOR x, ANCHOR y, Ref(Button) button)
 	{
-		//Anchor(x, y, Ref(Quad)(&button->quad));
-		//Anchor(x, y, Ref(Text)(button->text));
+		Anchor(x, y, Ref(Quad)(&button->quad));
+		Anchor(x, y, Ref(Text)(button->text));
 	}
 
 	void Panel::Anchor(ANCHOR x, ANCHOR y, Ref(Slider) slider)
@@ -227,12 +229,12 @@ namespace Vivium {
 
 	void Panel::Anchor(ANCHOR x, ANCHOR y, Ref(Text) text)
 	{
-		//Anchor(x, y, Ref(Vector2<float>)(&text->pos));
+		Anchor(x, y, Ref(Vector2<float>)(&text->pos));
 	}
 
 	void Panel::Anchor(ANCHOR x, ANCHOR y, Ref(TextInput) text_input)
 	{
-		//Anchor(x, y, text_input->m_Text);
-		//Anchor(x, y, Ref(Quad)(&text_input->quad));
+		Anchor(x, y, text_input->m_Text);
+		Anchor(x, y, Ref(Quad)(&text_input->quad));
 	}
 }
