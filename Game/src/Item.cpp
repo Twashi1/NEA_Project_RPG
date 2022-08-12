@@ -1,4 +1,5 @@
 #include "Item.h"
+#include "Inventory.h"
 
 namespace Game {
 	std::array<Item::Properties, (uint16_t)Item::ID::MAX> Item::m_Properties = {

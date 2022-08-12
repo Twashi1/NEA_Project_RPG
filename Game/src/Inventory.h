@@ -32,8 +32,14 @@ namespace Game {
 			Vivium::Vector2<int> top_left_index;
 			Vivium::Vector2<int> bottom_right_index;
 			Vivium::Vector2<float> sprite_size;
+			std::unordered_map<Slot, Vivium::Vector2<float>> slot_coords;
 
-			Properties(const Slot& start_slot, const uint8_t& inventory_size, const Vivium::Vector2<int>& top_left_index, const Vivium::Vector2<int>& bottom_right_index, const Vivium::Vector2<float>& sprite_size);
+			Properties(
+				const Slot& start_slot, const uint8_t& inventory_size,
+				const Vivium::Vector2<int>& top_left_index, const Vivium::Vector2<int>& bottom_right_index,
+				const Vivium::Vector2<float>& sprite_size,
+				const std::unordered_map<Slot, Vivium::Vector2<float>>& slot_coords
+			);
 		};
 
 		static const std::array<Properties, (uint8_t)ID::MAX> m_Properties;
@@ -47,6 +53,8 @@ namespace Game {
 		static Vivium::TextureAtlas* m_InventoryAtlas;
 
 		static constexpr float m_InventorySpriteScale = 8.0f;
+		
+		void m_RenderItems();
 
 	public:
 		static Properties GetProperties(const Inventory::ID& id);
@@ -59,6 +67,7 @@ namespace Game {
 		void SetPos(const Vivium::Vector2<float>& new_pos);
 		Vivium::Vector2<float> GetPos() const;
 
+		void Update(const Vivium::Vector2<float>& player_pos, World& world);
 		void Render();
 
 		Inventory(const ID& inventory_id);

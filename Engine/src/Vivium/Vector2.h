@@ -55,6 +55,23 @@ namespace Vivium {
 
 		Vector2 floor() const requires FloatingPoint<T> { return Vector2(std::floor(x), std::floor(y)); }
 		Vector2 ceil() const requires FloatingPoint<T> { return Vector2(std::floor(x), std::floor(y)); }
+		Vector2 normalise() const { return *this / magnitude(); }
+
+		T magnitude() const { return std::sqrt(x * x + y * y); }
+
+		T distance(const Vector2& other) const
+		{ 
+			T dx = x - other.x;
+			T dy = y - other.y;
+			return std::sqrt(dx * dx + dy * dy);
+		}
+
+		T sqr_distance(const Vector2& other) const
+		{
+			T dx = x - other.x;
+			T dy = y - other.y;
+			return dx * dx + dy * dy;
+		}
 
 		T MaxComponent() const { return std::max(x, y); }
 

@@ -61,6 +61,8 @@ namespace Game {
 
     void Player::m_UpdateInventory(World& world)
     {
+        m_MainInventory.Update(quad->GetCenter(), world);
+
         Vivium::Input::State e = Vivium::Input::GetKeyState(GLFW_KEY_E);
 
         // Toggle inventory

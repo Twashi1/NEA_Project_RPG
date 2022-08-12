@@ -7,13 +7,10 @@
 
 namespace Game {
 	class Player;
+	class Inventory;
 
 	class World {
 	private:
-		// Converts a coordinate in the world to the index of the chunk that coordinate is in
-		static Vivium::Vector2<int> m_GetRegionIndex(const Vivium::Vector2<int>& pos);
-		static Vivium::Vector2<int> m_GetRegionIndex(int x, int y);
-
 		// Some constants for noise
 		static constexpr float m_Amplitude = 1.0f;
 		static constexpr int m_Wavelength = 4;
@@ -55,8 +52,6 @@ namespace Game {
 		void m_LoadRegions(const Vivium::Vector2<int>& center, int radius);
 		Region& m_LoadRegion(const Vivium::Vector2<int>& index);
 
-		std::vector<FloorItem>* m_GetFloorItems(const Vivium::Vector2<int>& pos);
-
 		void m_SerialiseRegion(const Vivium::Vector2<int>& index);
 		void m_DeserialiseRegion(const std::string& filename, const Vivium::Vector2<int>& index);
 		void m_GenerateRegion(const Vivium::Vector2<int>& index);
@@ -81,6 +76,12 @@ namespace Game {
 		RegionMap_t regions; // Maps a region index to a Region object
 		FloorItemMap_t floor_items; // Maps a region index to a list of floor items, so only items within adjacent regions are drawn
 
+		// Converts a coordinate in the world to the index of the chunk that coordinate is in
+		static Vivium::Vector2<int> GetRegionIndex(const Vivium::Vector2<int>& pos);
+		static Vivium::Vector2<int> GetRegionIndex(int x, int y);
+
+		std::vector<FloorItem>* GetFloorItems(const Vivium::Vector2<int>& pos);
+		
 		void Render(const Vivium::Vector2<int>& pos);
 		void Update(Player* player);
 
@@ -94,5 +95,7 @@ namespace Game {
 		// Generates new world
 		World(const uint32_t& seed, const std::string& world_name);
 		~World();
+
+		friend Inventory;
 	};
 }

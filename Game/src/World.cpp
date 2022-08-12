@@ -1,5 +1,6 @@
 #include "World.h"
 #include "Player.h"
+#include "Inventory.h"
 
 namespace Game {
 	// TODO: path is complicated
@@ -51,7 +52,7 @@ namespace Game {
 	Tile& World::GetTile(const Vivium::Vector2<int>& pos)
 	{
 		// Find region tile is in
-		Vivium::Vector2<int> region_pos = m_GetRegionIndex(pos);
+		Vivium::Vector2<int> region_pos = GetRegionIndex(pos);
 		Region& region = m_LoadRegion(region_pos);
 		// Get coordinate of tile within region
 		Vivium::Vector2<int> relative = pos - (region_pos * Region::LENGTH);
@@ -80,7 +81,7 @@ namespace Game {
 		m_UpdateTimer.Start();
 	}
 
-	Vivium::Vector2<int> World::m_GetRegionIndex(const Vivium::Vector2<int>& pos)
+	Vivium::Vector2<int> World::GetRegionIndex(const Vivium::Vector2<int>& pos)
 	{
 		return Vivium::Vector2<int>(
 			std::floor((double)pos.x / (double)Region::LENGTH),
@@ -88,7 +89,7 @@ namespace Game {
 			);
 	}
 
-	Vivium::Vector2<int> World::m_GetRegionIndex(int x, int y)
+	Vivium::Vector2<int> World::GetRegionIndex(int x, int y)
 	{
 		return Vivium::Vector2<int>(
 			std::floor((double)x / (double)Region::LENGTH),
@@ -139,16 +140,15 @@ namespace Game {
 		m_GenerateRegion(index); return regions.at(index);
 	}
 
-	std::vector<FloorItem>* World::m_GetFloorItems(const Vivium::Vector2<int>& pos)
+	std::vector<FloorItem>* World::GetFloorItems(const Vivium::Vector2<int>& pos)
 	{
 		auto it = floor_items.find(pos);
 
-		if (it == floor_items.end()) {
-			return nullptr;
-		}
-		else {
+		if (it != floor_items.end()) {
 			return &it->second;
 		}
+
+		return nullptr;
 	}
 
 	World::~World()
@@ -298,7 +298,7 @@ namespace Game {
 			if (mined_tile_time > Tile::GetMiningTime(player->selected_tile.top)) {
 				// TODO: Break tile and drop item
 				// TODO: add function for getting tile *ref* in world
-				Vivium::Vector2<int> region_pos = m_GetRegionIndex(mined_tile_pos);
+				Vivium::Vector2<int> region_pos = GetRegionIndex(mined_tile_pos);
 				Region& region = m_LoadRegion(region_pos);
 				// Get tile
 				Tile& tile = region.Index(mined_tile_pos - region_pos * Region::LENGTH);
@@ -366,7 +366,7 @@ namespace Game {
 			for (int x = pos.x - frame.x; x <= pos.x + frame.x; x++) {
 				// TODO: GetTile?
 				// Calculate region index
-				Vivium::Vector2<int> region_index = m_GetRegionIndex(x, y);
+				Vivium::Vector2<int> region_index = GetRegionIndex(x, y);
 				// Calculate relative coords
 				int rx = x - (region_index.x * Region::LENGTH);
 				int ry = y - (region_index.y * Region::LENGTH);
@@ -458,7 +458,7 @@ namespace Game {
 	{
 		// TODO: instead of always reading the 9 surrounding regions, do some calculations to figure out which regions need to be rendered
 		// Pos is in tile coordinates, convert to region coordinates
-		Vivium::Vector2<int> center_region = m_GetRegionIndex(pos);
+		Vivium::Vector2<int> center_region = GetRegionIndex(pos);
 
 		std::vector<float> vertex_data;
 		std::vector<unsigned short> indexCoords;
@@ -468,7 +468,7 @@ namespace Game {
 		for (int y = center_region.y - 1; y <= center_region.y + 1; y++) {
 			for (int x = center_region.x - 1; x <= center_region.x + 1; x++) {
 				// Get list of floor items for a given region
-				std::vector<FloorItem>* items = m_GetFloorItems(Vivium::Vector2<int>(x, y));
+				std::vector<FloorItem>* items = GetFloorItems(Vivium::Vector2<int>(x, y));
 
 				if (items == nullptr) { continue; }
 
