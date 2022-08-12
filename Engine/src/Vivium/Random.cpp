@@ -7,8 +7,8 @@ namespace Vivium {
 	void Random::m_Init()
 	{
 		m_Generator = std::mt19937(
-			// i actually remembered this you know, im proud of myself
-			std::chrono::duration_cast<std::chrono::seconds>(std::chrono::system_clock::now().time_since_epoch()).count()
+			// TODO: seems to give same seed every time
+			time(NULL)
 		);
 	}
 

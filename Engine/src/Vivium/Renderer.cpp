@@ -133,6 +133,13 @@ namespace Vivium {
 		glDrawElements(GL_TRIANGLES, ib->GetCount(), ib->GetType(), nullptr);
 	}
 
+	void Renderer::Submit(const VertexBuffer* vb, Shader* shader, unsigned int count)
+	{
+		vb->Bind(); shader->Bind();
+
+		glDrawArrays(GL_TRIANGLES, 0, count);
+	}
+
 	void Renderer::Submit(const VertexBuffer* vb, const IndexBuffer* ib, Shader* shader)
 	{
 		vb->Bind(); ib->Bind(); shader->Bind();

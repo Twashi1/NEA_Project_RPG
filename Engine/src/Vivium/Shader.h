@@ -33,6 +33,7 @@ namespace Vivium {
         void SetUniform3f(const char* name, const RGBColor& color);
         void SetUniform4f(const char* name, float x, float y, float z, float w);
         void SetUniform1fv(const char* name, unsigned int count, const float* values);
+        void SetUniform1iv(const char* name, unsigned int count, const int* values);
         void SetUniform1uiv(const char* name, unsigned int count, const unsigned int* values);
         void SetUniformMat4fv(const char* name, const glm::mat4& mat);
     };

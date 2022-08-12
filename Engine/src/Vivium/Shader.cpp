@@ -159,6 +159,12 @@ namespace Vivium {
         glUniform1fv(location, count, values);
     }
 
+    void Shader::SetUniform1iv(const char* name, unsigned int count, const int* values)
+    {
+        GLuint location = glGetUniformLocation(id, name);
+        glUniform1iv(location, count, values);
+    }
+
     void Shader::SetUniform1uiv(const char* name, unsigned int count, const unsigned int* values)
     {
         GLuint location = glGetUniformLocation(id, name);

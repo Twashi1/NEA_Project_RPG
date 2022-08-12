@@ -48,10 +48,12 @@ namespace Game {
 
 	void Inventory::m_RenderItems()
 	{
+		static const float itemScale = 0.4f;
+		
 		static const Vivium::Vector2<float> itemCountOffsets[3] = {
-			Vivium::Vector2<float>( 0.0f, 0.0f) * World::PIXEL_SCALE * 0.5f,
-			Vivium::Vector2<float>(-0.3f, 0.3f) * World::PIXEL_SCALE * 0.5f,
-			Vivium::Vector2<float>( 0.3f, 0.3f) * World::PIXEL_SCALE * 0.5f
+			Vivium::Vector2<float>( 0.0f, 0.0f) * World::PIXEL_SCALE * 0.5f * itemScale * m_InventorySpriteScale * 0.25f,
+			Vivium::Vector2<float>(-0.3f, 0.3f) * World::PIXEL_SCALE * 0.5f * itemScale * m_InventorySpriteScale * 0.25f,
+			Vivium::Vector2<float>( 0.3f, 0.3f) * World::PIXEL_SCALE * 0.5f * itemScale * m_InventorySpriteScale * 0.25f
 		};
 
 		Properties inven_properties = GetProperties(m_InventoryID);
@@ -59,11 +61,18 @@ namespace Game {
 		std::vector<float> coords;
 		std::vector<unsigned short> indexCoords;
 
+		std::vector<float> text_vertices;
+		std::vector<unsigned short> text_indices;
+
 		unsigned short count = 0;
+		unsigned short text_count = 0;
 		unsigned int max_count = inven_properties.inventory_size;
 
-		coords.reserve(16 * max_count * 3);
+		coords.reserve(16 * max_count * 3); // Maximum of 3 copies of texture
 		indexCoords.reserve(6 * max_count * 3);
+
+		text_vertices.reserve(16 * max_count * 3); // Maximum of 3 characters per item (999)
+		text_indices.reserve(6 * max_count * 3);
 
 		// TODO: make InventoryData_t iterable
 		for (uint8_t slot = (uint8_t)inven_properties.start_slot; slot < (uint8_t)inven_properties.start_slot + inven_properties.inventory_size; slot++) {
@@ -77,16 +86,15 @@ namespace Game {
 			// Get coord offset to render item at
 			Vivium::Vector2<float> offset = inven_properties.slot_coords.at((Slot)slot);
 
+			float dx = m_InventoryQuad->Left() + (offset.x * m_InventorySpriteScale);
+			float dy = m_InventoryQuad->Top() - (offset.y * m_InventorySpriteScale); // TODO: inverse?
+
+			float tile_scale = World::PIXEL_SCALE * 0.5f * m_InventorySpriteScale * 0.25f * itemScale;
+
 			for (int i = std::min(item.count, (uint16_t)3) - 1; i >= 0; i--) {
 				Vivium::Vector2<float> itemOffset = itemCountOffsets[i];
 
 				std::array<float, 4>& faces = World::m_ItemsTextureCoords[(uint16_t)item.id];
-
-				float dx = m_InventoryQuad->Left() + (offset.x * m_InventorySpriteScale);
-				float dy = m_InventoryQuad->Top() - (offset.y * m_InventorySpriteScale); // TODO: inverse?
-
-				// TODO: base on sprite scale
-				float tile_scale = World::PIXEL_SCALE * 0.5f - 5.5f;
 
 				std::array<float, 16> this_coords =
 				{
@@ -114,6 +122,61 @@ namespace Game {
 
 				count++;
 			}
+
+			// Now we need to render the text
+			// Get rendering pos
+			Vivium::Vector2<float> rendering_pos(dx, dy);
+			rendering_pos += Vivium::Vector2<float>(1.0f, -4.0f) * m_InventorySpriteScale;
+
+			// Get item count as text
+			std::string item_count_string = std::to_string(item.count);
+
+			// Load our textures onto the shader we're using
+
+			// Iterate through characters in text
+			for (char c : item_count_string) {
+				// TODO: precalc
+				Vivium::Font::Character ch = Vivium::Text::GetDefaultFont()->character_map.at(c);
+
+				float x = rendering_pos.x + ch.bearing.x * m_TextObject->scale;
+				float y = rendering_pos.y - (ch.size.y - ch.bearing.y) * m_TextObject->scale;
+				float w = ch.size.x * m_TextObject->scale;
+				float h = ch.size.y * m_TextObject->scale;
+
+				// TODO: precalc this
+				// Bottom left
+				// Bottom right
+				// Top right
+				// Top left
+				std::array<float, 8> tex_coords = m_TextFontAtlas->GetCoordsArray(c);
+
+				// Calculate vertices
+				std::vector<float> this_vertices = {
+					x,		y,		tex_coords[0], tex_coords[5], // Bottom left
+					x + w,	y,		tex_coords[2], tex_coords[7], // Bottom right
+					x + w,	y + h,	tex_coords[4], tex_coords[1], // Top right
+					x,		y + h,	tex_coords[6], tex_coords[3]  // Top left
+				};
+
+				int stride = text_count * 4;
+
+				std::array<unsigned short, 6> this_indices =
+				{
+					0 + stride,
+					1 + stride,
+					2 + stride,
+					2 + stride,
+					3 + stride,
+					0 + stride,
+				};
+
+				text_vertices.insert(text_vertices.end(), this_vertices.begin(), this_vertices.end());
+				text_indices.insert(text_indices.end(), this_indices.begin(), this_indices.end());
+
+				rendering_pos.x += (ch.advance >> 6) * m_TextObject->scale * m_InventorySpriteScale / 8.0f * 0.45f;
+
+				text_count++;
+			}
 		}
 
 		static const Vivium::BufferLayout layout = {
@@ -121,12 +184,22 @@ namespace Game {
 			Vivium::GLSLDataType::VEC2  // tex coords
 		};
 
+		static const Vivium::BufferLayout text_layout = {
+			Vivium::GLSLDataType::VEC4 // position
+		};
+
 		if (count > 0) {
 			Vivium::VertexBuffer vb(coords, layout);
 			Vivium::IndexBuffer ib(indexCoords);
 
-			// TODO: use different shader
-			Vivium::Renderer::Submit(&vb, &ib, m_InventoryShader, World::m_ItemsAtlas->GetAtlas().get());
+			Vivium::Renderer::Submit(&vb, &ib, m_ItemShader, World::m_ItemsAtlas->GetAtlas().get());
+		}
+
+		if (text_count > 0) {
+			Vivium::VertexBuffer vb(text_vertices, text_layout);
+			Vivium::IndexBuffer ib(text_indices);
+
+			Vivium::Renderer::Submit(&vb, &ib, m_TextShader, m_TextFontTexture.get());
 		}
 	}
 
@@ -135,19 +208,37 @@ namespace Game {
 		return m_Properties[(uint8_t)id];
 	}
 
-	Vivium::Shader* Inventory::m_InventoryShader;
-	Vivium::TextureAtlas* Inventory::m_InventoryAtlas;
+	Vivium::Shader* Inventory::m_InventoryShader = nullptr;
+	Vivium::Shader* Inventory::m_TextShader = nullptr;
+	Vivium::Shader* Inventory::m_ItemShader = nullptr;
+	Vivium::TextureAtlas* Inventory::m_InventoryAtlas = nullptr;
+	Vivium::Text* Inventory::m_TextObject = nullptr;
+	Ref(Vivium::Texture) Inventory::m_TextFontTexture = nullptr;
+	Vivium::TextureAtlas* Inventory::m_TextFontAtlas = nullptr;
 
 	void Inventory::Init()
 	{
 		m_InventoryAtlas = new Vivium::TextureAtlas("inventory.png", { 32, 32 });
 		m_InventoryShader = new Vivium::Shader("static_texture_vertex", "texture_frag");
+		
+		m_TextShader = new Vivium::Shader("text_vertex", "text_frag");
+		m_TextShader->Bind();
+		m_TextShader->SetUniform3f("u_TextColor", Vivium::RGBColor::WHITE);
+
+		m_ItemShader = new Vivium::Shader("static_texture_vertex", "texture_frag");
+		m_TextObject = new Vivium::Text("", {0, 0}, 0.6f); // TODO: pretty ugly, later use font or something
+
+		m_TextFontTexture = MakeRef(Vivium::Texture, Vivium::Text::GetDefaultFont().get());
+		m_TextFontAtlas = new Vivium::TextureAtlas(m_TextFontTexture, { 64, 64 });
 	}
 
 	void Inventory::Terminate()
 	{
 		delete m_InventoryAtlas;
 		delete m_InventoryShader;
+		delete m_TextShader;
+		delete m_ItemShader;
+		delete m_TextFontAtlas;
 	}
 
 	bool Inventory::AddItem(const Item& item)

@@ -1,5 +1,6 @@
 #define STB_IMAGE_IMPLEMENTATION
 #include "Texture.h"
+#include "Font.h"
 
 namespace Vivium {
 	std::string Texture::PATH = "";
@@ -57,7 +58,55 @@ namespace Vivium {
 		stbi_image_free(image_data);
 	}
 
+	Texture::Texture(Font* font)
+		: width(font->buffer_width), height(font->buffer_height)
+	{
+		glGenTextures(1, &id);
+		glBindTexture(GL_TEXTURE_2D, id);
+
+		glPixelStorei(GL_UNPACK_ALIGNMENT, 1);
+		glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_MIN_FILTER, GL_LINEAR);
+		glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_MAG_FILTER, GL_LINEAR);
+		glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_WRAP_S, GL_CLAMP_TO_EDGE);
+		glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_WRAP_T, GL_CLAMP_TO_EDGE);
+
+		glTexImage2D(GL_TEXTURE_2D, 0, GL_RED, font->buffer_width, font->buffer_height, 0, GL_RED, GL_UNSIGNED_BYTE, &font->buffer->at(0));
+	}
+
 	Texture::~Texture() {
 		glDeleteTextures(1, &id);
+	}
+
+	void TextureArray::Unbind()
+	{
+		glBindTexture(GL_TEXTURE_2D_ARRAY, 0);
+	}
+
+	void TextureArray::Bind(uint8_t slot) const
+	{
+		glBindTexture(GL_TEXTURE_2D_ARRAY, id);
+	}
+
+	TextureArray::TextureArray(int width, int height, int count, unsigned char* data)
+		: width(width), height(height)
+	{
+		glGenTextures(1, &id);
+		glBindTexture(GL_TEXTURE_2D_ARRAY, id);
+
+		glTexImage3D(GL_TEXTURE_2D_ARRAY,
+			0,
+			GL_RGBA8,
+			width,
+			height,
+			count,
+			0,
+			GL_RGBA,
+			GL_UNSIGNED_BYTE,
+			(void*)data
+		);
+	}
+
+	TextureArray::~TextureArray()
+	{
 	}
 }

@@ -12,3 +12,6 @@
 #include "Vivium/TextureAtlas.h"
 #include "Vivium/Sprite.h"
 #include "Vivium/Random.h"
+
+// This is defined by Windows.h
+#undef VOID

@@ -49,6 +49,7 @@ namespace Vivium {
 		// Draw specific scene
 		static void DrawScene(int id);
 
+		static void Submit(const VertexBuffer* vb, Shader* shader, unsigned int count);
 		static void Submit(const VertexBuffer* vb, const IndexBuffer* ib, Shader* shader);
 		static void Submit(const VertexBuffer* vb, const IndexBuffer* ib, Shader* shader, const Texture* texture, uint8_t slot = 0);
 		static void Submit(const VertexBuffer* vb, const IndexBuffer* ib, Shader* shader, const Framebuffer* fb, uint8_t slot = 0);

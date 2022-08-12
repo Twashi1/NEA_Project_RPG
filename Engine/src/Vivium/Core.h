@@ -27,6 +27,7 @@
 #include <type_traits>
 #include <unordered_map>
 #include <vector>
+#include <Windows.h>
 
 // Extern libraries
 #include <entt.hpp>

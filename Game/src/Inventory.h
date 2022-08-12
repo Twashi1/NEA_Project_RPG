@@ -50,7 +50,12 @@ namespace Game {
 		ID m_InventoryID;
 		Vivium::Quad* m_InventoryQuad;
 		static Vivium::Shader* m_InventoryShader;
+		static Vivium::Shader* m_TextShader;
+		static Vivium::Shader* m_ItemShader;
 		static Vivium::TextureAtlas* m_InventoryAtlas;
+		static Vivium::Text* m_TextObject;
+		static Ref(Vivium::Texture) m_TextFontTexture;
+		static Vivium::TextureAtlas* m_TextFontAtlas;
 
 		static constexpr float m_InventorySpriteScale = 8.0f;
 		

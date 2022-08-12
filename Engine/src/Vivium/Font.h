@@ -4,6 +4,7 @@
 #include "Logger.h"
 #include "Texture.h"
 #include "Vector2.h"
+#include "Utils.h"
 
 #include <ft2build.h>
 #include FT_FREETYPE_H
@@ -18,8 +19,11 @@ namespace Vivium {
 		static std::string PATH;
 
 		uint32_t max_height = 0;
+		std::vector<unsigned char>* buffer = nullptr;
+		uint32_t buffer_width = 128 * 64;
+		uint32_t buffer_height = 64;
 
-		struct Character {
+		struct VIVIUM_API Character {
 			uint32_t texture_id;  // ID of glyph
 			Vector2<int> size;	  // Size of glyph
 			Vector2<int> bearing; // Offset from baseline to top left of glyph
@@ -36,5 +40,6 @@ namespace Vivium {
 		uint32_t vertex_array_id, vertex_buffer_id;
 
 		Font(const char* font_path);
+		~Font();
 	};
 }

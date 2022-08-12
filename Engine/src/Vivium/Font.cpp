@@ -11,6 +11,7 @@ namespace Vivium {
 	}
 
 	Font::Font(const char* font_path) {
+		// TODO: initialising entire library every time seems bad
 		// Initialise FT library
 		FT_Library ft;
 		if (FT_Init_FreeType(&ft)) {
@@ -24,7 +25,10 @@ namespace Vivium {
 		}
 
 		// TODO: non-set font size
-		FT_Set_Pixel_Sizes(face, 0, 64); // Extract a font size of 48
+		FT_Set_Pixel_Sizes(face, 0, 64); // Extract a font size of 64
+
+		buffer = new std::vector<unsigned char>(128 * 64 * 64, 0);
+		int buffer_offset = 0;
 
 		glPixelStorei(GL_UNPACK_ALIGNMENT, 1); // Disable byte-alignment restriction
 
@@ -36,6 +40,25 @@ namespace Vivium {
 			uint32_t tmp_height = face->glyph->bitmap.rows;
 
 			if (tmp_height > max_height) max_height = tmp_height;
+
+			// https://stackoverflow.com/questions/27270822/rendering-fonts-with-freetype-and-opengl
+			{
+				int advance = face->glyph->advance.x >> 6;
+				int bW = face->glyph->bitmap.width;
+				int bH = face->glyph->bitmap.rows;
+
+				for (int h = 0; h < bH; ++h) {
+					for (int w = 0; w < bW; ++w) {
+						unsigned char value = face->glyph->bitmap.buffer[w + bW * h];
+
+						buffer->at(h * (128 * 64) + buffer_offset + w) = value;
+					}
+				}
+
+				buffer_offset += 64;
+			}
+
+			Utils::SaveAsBitmap(&buffer->at(0), buffer_width, buffer_height, 1, "../Resources/image.bmp");
 
 			// Generate texture
 			uint32_t id;
@@ -85,6 +108,11 @@ namespace Vivium {
 		glVertexAttribPointer(0, 4, GL_FLOAT, GL_FALSE, 4 * sizeof(float), 0);
 		glBindBuffer(GL_ARRAY_BUFFER, 0);
 		glBindVertexArray(0);
+	}
+
+	Font::~Font()
+	{
+		delete buffer;
 	}
 
 	Font::Character::Character(uint32_t texture_id, Vector2<int> size, Vector2<int> bearing, uint32_t advance)
