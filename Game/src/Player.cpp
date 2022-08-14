@@ -3,7 +3,7 @@
 namespace Game {
     void Player::m_RenderSelectedTile()
     {
-        if (selected_tile.base != Tile::ID::VOID) {
+        if (selected_tile.bot != Tile::ID::VOID) {
             m_SelectedTileQuad->SetCenter(selected_tile_pos * World::PIXEL_SCALE);
             Vivium::Renderer::Submit(m_SelectedTileQuad, m_SelectedTileShader, m_GameIcons->GetAtlas().get());
         }
@@ -107,6 +107,8 @@ namespace Game {
         m_SelectedTileShader = new Vivium::Shader("texture_vertex", "texture_frag");
 
         m_GameIcons->Set(m_SelectedTileQuad, 0); // Set texture from index in texture atlas
+
+        Vivium::Application::physics->Register(body, 0);
 
         m_Time = Vivium::Timer::GetTime();
     }

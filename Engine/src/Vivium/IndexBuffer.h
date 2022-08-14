@@ -12,6 +12,8 @@ namespace Vivium {
 	public:
 		IndexBuffer(const std::vector<uint16_t>& indices);
 		IndexBuffer(const std::vector<uint8_t>& indices);
+		IndexBuffer(const uint8_t* data, const std::size_t& count);
+		IndexBuffer(const uint16_t* data, const std::size_t& count);
 		IndexBuffer(const void* data, const std::size_t& size, const std::size_t& count, GLenum gl_type);
 		~IndexBuffer();
 

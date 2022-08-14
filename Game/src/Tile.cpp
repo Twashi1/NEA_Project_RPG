@@ -61,7 +61,7 @@ namespace Game {
 
 	void Tile::CopyRealTiles(const Tile& other)
 	{
-		base = other.base == Tile::ID::VOID ? base : other.base;
+		bot = other.bot == Tile::ID::VOID ? bot : other.bot;
 		mid = other.mid == Tile::ID::VOID ? mid : other.mid;
 		top = other.top == Tile::ID::VOID ? top : other.top;
 	}
@@ -73,15 +73,15 @@ namespace Game {
 	}
 
 	Tile::Tile()
-		: base(Tile::ID::VOID), mid(Tile::ID::VOID), top(Tile::ID::VOID)
+		: bot(Tile::ID::VOID), mid(Tile::ID::VOID), top(Tile::ID::VOID)
 	{}
 
-	Tile::Tile(const Tile::ID& base, const Tile::ID& mid, const Tile::ID& top)
-		: base(base), mid(mid), top(top)
+	Tile::Tile(const Tile::ID& bot, const Tile::ID& mid, const Tile::ID& top)
+		: bot(bot), mid(mid), top(top)
 	{}
 
 	Tile::Tile(const Tile& other)
-		: base(other.base), mid(other.mid), top(other.top)
+		: bot(other.bot), mid(other.mid), top(other.top)
 	{}
 
 	Tile::Properties::Properties(std::string name, bool isPhysical, bool isMineable, bool isPlaceable, float mining_time, Vivium::Vector2<int> atlas_index, float scale, Item::DropTable drop_data)

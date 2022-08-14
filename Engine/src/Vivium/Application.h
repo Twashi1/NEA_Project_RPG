@@ -44,6 +44,8 @@ namespace Vivium {
         static int width;           // Width of window
         static int height;          // Height of window
 
+        static std::string resources_path; // Path to resources file
+
         static Ref(Physics) physics;
 
         static Ref(Panel) window_panel;  // For attaching things to the window
@@ -51,7 +53,7 @@ namespace Vivium {
         // Set clear screen/background color
         static void SetBGColor(const RGBColor& color);
 
-        static void Init(int nwidth, int nheight, int nfps, bool nisStatsEnabled = false);
+        static void Init(int nwidth, int nheight, int nfps, bool nisStatsEnabled = false, const char* resources_path = "../Resources");
         static void Terminate();
 
         // Updates all Text objects for stats to display correct information for that frame

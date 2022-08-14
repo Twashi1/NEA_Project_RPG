@@ -3,7 +3,7 @@ namespace Vivium {
 	void Physics::Update() {
 		float elapsed = m_Timer.GetElapsed();
 
-		for (auto& [layer_index, layer] : layers) {
+		for (auto& [layer_index, layer] : m_Layers) {
 			for (int i = 0; i < layer.size(); i++) {
 				for (int j = i + 1; j < layer.size(); j++) {
 					// Get pointers to bodies
@@ -44,10 +44,17 @@ namespace Vivium {
 		}
 
 		// Iterate over every body and update it
-		for (auto& [layer_index, layer] : layers) {
+		for (auto& [layer_index, layer] : m_Layers) {
 			for (int i = 0; i < layer.size(); i++) {
 				layer[i]->Update(elapsed);
 			}
+		}
+	}
+
+	void Physics::Register(Ref(Body) body, const std::vector<int>& layer_indices)
+	{
+		for (const int& layer : layer_indices) {
+			Register(body, layer);
 		}
 	}
 
@@ -55,20 +62,20 @@ namespace Vivium {
 	{
 		// TODO: use find
 		// If layers already contains index
-		if (layers.contains(layer_index)) {
+		if (m_Layers.contains(layer_index)) {
 			// Add to existing index
-			layers[layer_index].push_back(body);
+			m_Layers[layer_index].push_back(body);
 		}
 		else {
 			// Add new layer
-			layers[layer_index] = layer_t{ body };
+			m_Layers[layer_index] = Layer_t{ body };
 		}
 	}
 
 	void Physics::Unregister(Ref(Body) body, int layer_index)
 	{
 		// Get layer body is in
-		layer_t& layer = layers[layer_index];
+		Layer_t& layer = m_Layers.at(layer_index);
 		// Find ourselves in the layer
 		auto it = std::find(layer.begin(), layer.end(), body);
 		// We exist in layer, delete ourselves
@@ -78,7 +85,7 @@ namespace Vivium {
 	void Physics::Unregister(Ref(Body) body)
 	{
 		// Iterate over each layer
-		for (auto& [layer_index, layer] : layers) {
+		for (auto& [layer_index, layer] : m_Layers) {
 			// Search for body in layer
 			auto it = std::find(layer.begin(), layer.end(), body);
 			// If we exist in that layer, delete ourselves

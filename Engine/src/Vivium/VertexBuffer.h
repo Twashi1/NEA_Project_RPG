@@ -24,7 +24,6 @@ namespace Vivium {
 			return *this;
 		}
 
-		// TODO make private with getter functions
 		unsigned int size;
 		unsigned int gl_type;
 		unsigned int component_count;
@@ -87,6 +86,9 @@ namespace Vivium {
 
 	public:
 		VertexBuffer(const std::vector<float>& data, const BufferLayout& layout);
+		// Takes ptr to array of floats, total count (not memory), and layout
+		VertexBuffer(const float* data, const std::size_t& count, const BufferLayout& layout);
+		// Takes ptr to array of data, total size (memory) of data, and layout
 		VertexBuffer(const void* data, const std::size_t& size, const BufferLayout& layout);
 		~VertexBuffer();
 

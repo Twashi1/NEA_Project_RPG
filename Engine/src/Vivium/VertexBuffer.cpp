@@ -45,7 +45,31 @@ namespace Vivium {
 				element.type.component_count,	// Amount of components of type
 				element.type.gl_type,			// GL base type
 				GL_FALSE,						// Is normalised
-				m_Layout.GetStride(),				// Stride
+				m_Layout.GetStride(),			// Stride
+				(const void*)element.offset		// Offset
+			);
+		}
+	}
+
+	VertexBuffer::VertexBuffer(const float* data, const std::size_t& count, const BufferLayout& layout)
+		: m_ID(0), m_Layout(layout)
+	{
+		glGenBuffers(1, &m_ID);
+		glBindBuffer(GL_ARRAY_BUFFER, m_ID);
+		glBufferData(GL_ARRAY_BUFFER, count * sizeof(float), data, GL_DYNAMIC_DRAW);
+
+		const std::vector<BufferElement>& elements = m_Layout.GetElements();
+
+		for (int i = 0; i < elements.size(); i++) {
+			const BufferElement& element = elements[i];
+
+			glEnableVertexAttribArray(i);
+			glVertexAttribPointer(
+				i,								// Layout location
+				element.type.component_count,	// Amount of components of type
+				element.type.gl_type,			// GL base type
+				GL_FALSE,						// Is normalised
+				m_Layout.GetStride(),			// Stride
 				(const void*)element.offset		// Offset
 			);
 		}

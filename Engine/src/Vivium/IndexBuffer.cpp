@@ -7,8 +7,6 @@ namespace Vivium {
 		glGenBuffers(1, &m_ID);
 		glBindBuffer(GL_ELEMENT_ARRAY_BUFFER, m_ID);
 		glBufferData(GL_ELEMENT_ARRAY_BUFFER, m_Count * sizeof(uint16_t), &indices[0], GL_STATIC_DRAW);
-
-		Bind();
 	}
 
 	IndexBuffer::IndexBuffer(const std::vector<uint8_t>& indices)
@@ -17,8 +15,22 @@ namespace Vivium {
 		glGenBuffers(1, &m_ID);
 		glBindBuffer(GL_ELEMENT_ARRAY_BUFFER, m_ID);
 		glBufferData(GL_ELEMENT_ARRAY_BUFFER, m_Count * sizeof(uint8_t), &indices[0], GL_STATIC_DRAW);
+	}
 
-		Bind();
+	IndexBuffer::IndexBuffer(const uint8_t* data, const std::size_t& count)
+		: m_ID(0), m_Count(count), m_GLType(GL_UNSIGNED_BYTE)
+	{
+		glGenBuffers(1, &m_ID);
+		glBindBuffer(GL_ELEMENT_ARRAY_BUFFER, m_ID);
+		glBufferData(GL_ELEMENT_ARRAY_BUFFER, count * sizeof(uint8_t), data, GL_STATIC_DRAW);
+	}
+
+	IndexBuffer::IndexBuffer(const uint16_t* data, const std::size_t& count)
+		: m_ID(0), m_Count(count), m_GLType(GL_UNSIGNED_SHORT)
+	{
+		glGenBuffers(1, &m_ID);
+		glBindBuffer(GL_ELEMENT_ARRAY_BUFFER, m_ID);
+		glBufferData(GL_ELEMENT_ARRAY_BUFFER, count * sizeof(uint16_t), data, GL_STATIC_DRAW);
 	}
 
 	IndexBuffer::IndexBuffer(const void* data, const std::size_t& size, const std::size_t& count, GLenum gl_type)
@@ -27,8 +39,6 @@ namespace Vivium {
 		glGenBuffers(1, &m_ID);
 		glBindBuffer(GL_ELEMENT_ARRAY_BUFFER, m_ID);
 		glBufferData(GL_ELEMENT_ARRAY_BUFFER, size, data, GL_STATIC_DRAW);
-
-		Bind();
 	}
 
 	IndexBuffer::~IndexBuffer()

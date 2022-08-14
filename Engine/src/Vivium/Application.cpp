@@ -26,6 +26,8 @@ namespace Vivium {
     int Application::width = 0;
     int Application::height = 0;
 
+    std::string Application::resources_path = "../Resources/";
+
     Ref(Physics) Application::physics = nullptr;
 
     Ref(Panel) Application::window_panel = nullptr;
@@ -110,20 +112,24 @@ namespace Vivium {
         glClearColor(color.r, color.g, color.b, 1.0f);
     }
 
-    void Application::Init(int nwidth, int nheight, int nfps, bool nisStatsEnabled)
+    void Application::Init(int nwidth, int nheight, int nfps, bool nisStatsEnabled, const char* nresources_path)
     {
         Application::width = nwidth;
         Application::height = nheight;
-        Application::m_FPS = nfps; Application::m_TimePerFrame = 1.0 / double(m_FPS);
+        Application::m_FPS = nfps; Application::m_TimePerFrame = 1.0 / (double)m_FPS;
         Application::isStatsEnabled = nisStatsEnabled;
 
         LogInfo("Application starting");
 
+        std::regex path_cleaner("(\\/|(\\\\){2})$");
+
+        resources_path = std::regex_replace(nresources_path, path_cleaner, "") + "/";
+
         // Set texture statics
-        Texture::PATH = "../Resources/sprites/";
+        Texture::PATH = resources_path + "sprites/";
 
         // Set font statics
-        Font::PATH = "../Resources/fonts/";
+        Font::PATH = resources_path + "fonts/";
 
         // Make stb_image flip all images vertically so textures display correct way up
         stbi_set_flip_vertically_on_load(1);

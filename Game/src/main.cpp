@@ -53,7 +53,6 @@ int game(void)
     World world(0, "testworld");
 
     Player player = Player();
-    Application::physics->Register(player.body, 0);
 
     Application::SetBGColor(RGBColor::BLACK);
 

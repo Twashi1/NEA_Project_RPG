@@ -48,11 +48,10 @@ namespace Game {
 		void m_LoadWorld(const std::string& fullpath);
 		void m_GenWorld(const std::string& fullpath);
 
-		// TODO: m_LoadRegions just destroys the entire game for some reason
-		void m_LoadRegions(const Vivium::Vector2<int>& center, int radius);
+		void m_LoadRegions(Player* player);
 		Region& m_LoadRegion(const Vivium::Vector2<int>& index);
 
-		void m_SerialiseRegion(const Vivium::Vector2<int>& index);
+		void m_SerialiseRegion(const Vivium::Vector2<int>& index, const Region& region);
 		void m_DeserialiseRegion(const std::string& filename, const Vivium::Vector2<int>& index);
 		void m_GenerateRegion(const Vivium::Vector2<int>& index);
 

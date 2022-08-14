@@ -49,7 +49,7 @@ namespace Game {
 		static float GetScale(const Tile::ID& id);
 		static Item::DropTable GetDropData(const Tile::ID& id);
 
-		Tile::ID base; // TODO: rename to bot
+		Tile::ID bot;
 		Tile::ID mid;
 		Tile::ID top;
 
@@ -58,11 +58,11 @@ namespace Game {
 		bool CompareRealTiles(const Tile& other);
 
 		Tile();
-		Tile(const Tile::ID& base, const Tile::ID& mid = Tile::ID::VOID, const Tile::ID& top = Tile::ID::VOID);
+		Tile(const Tile::ID& bot, const Tile::ID& mid = Tile::ID::VOID, const Tile::ID& top = Tile::ID::VOID);
 		Tile(const Tile& other);
 
 	private:
-		// TODO: Load properties data from file instead?
+		// TODO: Load properties data from file instead
 		static std::array<Properties, (uint16_t)ID::MAX> m_Properties;
 	};
 }

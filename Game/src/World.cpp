@@ -102,14 +102,57 @@ namespace Game {
 		return std::format("region{}_{}{}", index.x, index.y, FILE_EXTENSION);
 	}
 
-	void World::m_LoadRegions(const Vivium::Vector2<int>& center, int radius)
+	void World::m_LoadRegions(Player* player)
 	{
-		// TODO: doesn't delete old regions
-		for (int y = center.y - radius; y < center.y + radius + 1; y++) {
-			for (int x = center.x - radius; x < center.x + radius + 1; x++) {
-				// Get index
-				Vivium::Vector2<int> index(x, y);
-				// Load region
+		Vivium::Vector2<float> player_pos;
+		if (player != nullptr) {
+			player_pos = player->quad->GetCenter() / World::PIXEL_SCALE;
+		}
+
+		// Calculate bounds of tiles we need to render
+		Vivium::Vector2<int> frame = Vivium::Application::GetScreenDim() / World::PIXEL_SCALE + Vivium::Vector2<int>(1, 1);
+		Vivium::Vector2<int> bottom_left = GetRegionIndex(player_pos - frame);
+		Vivium::Vector2<int> top_right = GetRegionIndex(player_pos + frame);
+
+		std::vector<Vivium::Vector2<int>> regions_to_load;
+		regions_to_load.reserve(9);
+
+		bool regions_map_empty = regions.empty();
+
+		// Iterate and add to regions to load
+		for (int y = bottom_left.y; y <= top_right.y; y++) {
+			for (int x = bottom_left.x; x <= top_right.x; x++) {
+				if (!regions_map_empty) {
+					regions_to_load.push_back({ x, y });
+				}
+				else {
+					m_LoadRegion({ x, y });
+				}
+			}
+		}
+
+		if (!regions_map_empty) {
+			// Iterate loaded regions
+			for (auto it = regions.begin(); it != regions.end();) {
+				auto find_it = std::find(regions_to_load.begin(), regions_to_load.end(), it->first);
+
+				// If index is already in our regions to load, remove from our regions to load
+				if (find_it != regions_to_load.end()) {
+					regions_to_load.erase(find_it);
+					it++;
+				}
+				// If it wasn't in our regions to load, erase it
+				else {
+					// TODO: multithreading
+					m_SerialiseRegion(it->first, it->second);
+					it = regions.erase(it);
+				}
+			}
+		}
+
+		if (!regions_map_empty) {
+			for (auto& index : regions_to_load) {
+				// TODO: multithreading here as well
 				m_LoadRegion(index);
 			}
 		}
@@ -129,10 +172,10 @@ namespace Game {
 		// Since that region doesn't exist already, try load from serialised file
 		std::string region_name = m_ToRegionName(index);
 		// Checks if region is serialised
-		if (std::filesystem::exists(m_ToRegionName(index))) {
+		if (std::filesystem::exists(region_name)) {
 			// File exists lets deserialise it
 			m_DeserialiseRegion(region_name, index);
-			// Exit
+			// Return region
 			return regions.at(index);
 		}
 
@@ -166,7 +209,7 @@ namespace Game {
 		Region region;
 
 		m_Serialiser->BeginRead((PATH + m_WorldName + "/" + filename).c_str());
-		m_Serialiser->Read((char*)region.tiles, Region::MEMORY_SIZE);
+		m_Serialiser->Read((char*)region.tiles.get(), Region::MEMORY_SIZE);
 		m_Serialiser->EndRead();
 
 		// Add region to region map
@@ -202,17 +245,16 @@ namespace Game {
 	void World::m_SaveWorld()
 	{
 		for (auto& [index, region] : regions) {
-			m_SerialiseRegion(index);
+			m_SerialiseRegion(index, region);
 		}
 	}
 
-	void World::m_SerialiseRegion(const Vivium::Vector2<int>& index)
+	void World::m_SerialiseRegion(const Vivium::Vector2<int>& index, const Region& region)
 	{
-		Region& region = regions[index];
 		std::string region_path = PATH + m_WorldName + "/" + m_ToRegionName(index);
 
 		m_Serialiser->BeginWrite(region_path.c_str());
-		m_Serialiser->Write((char*)region.tiles, Region::MEMORY_SIZE);
+		m_Serialiser->Write((char*)region.tiles.get(), Region::MEMORY_SIZE);
 		m_Serialiser->EndWrite();
 	}
 
@@ -236,7 +278,7 @@ namespace Game {
 				if (noise_value < 0.3) { tile_id = Tile::ID::SAND; }
 				if (noise_value < 0.2) { tile_id = Tile::ID::WATER; }
 
-				tile.base = tile_id;
+				tile.bot = tile_id;
 
 				float tree_noise = m_NoiseTrees.Get(x + y * Region::LENGTH);
 
@@ -349,18 +391,16 @@ namespace Game {
 
 	void World::m_RenderTiles(const Vivium::Vector2<int>& pos)
 	{
-		std::vector<float> coords;
-		std::vector<unsigned short> indexCoords;
-
 		Vivium::Vector2<int> frame = Vivium::Application::GetScreenDim() / (PIXEL_SCALE * 2.0f) + Vivium::Vector2<int>(1, 1);
 
 		unsigned short count = 0;
 		unsigned int max_count = (frame.x * 2 + 1) * (frame.y * 2 + 1) * 3;
 
-		// TODO: use VertexBuffer::StartMap and EndMap
+		float* vertex_data = new float[16 * max_count];
+		std::size_t vertex_data_index = 0;
 
-		coords.reserve(16 * max_count);
-		indexCoords.reserve(6 * max_count);
+		unsigned short* index_coords = new unsigned short[6 * max_count];
+		std::size_t index_coords_index = 0;
 
 		for (int y = pos.y - frame.y; y <= pos.y + frame.y; y++) {
 			for (int x = pos.x - frame.x; x <= pos.x + frame.x; x++) {
@@ -384,7 +424,7 @@ namespace Game {
 				float halfscale = World::PIXEL_SCALE * 0.5f;
 
 				// Iterate over each tile id
-				for (const Tile::ID& id : { tile.base, tile.mid, tile.top }) {
+				for (const Tile::ID& id : { tile.bot, tile.mid, tile.top }) {
 					if (id == Tile::ID::VOID) { continue; }
 
 					float tile_scale = halfscale * Tile::GetScale(id);
@@ -414,29 +454,35 @@ namespace Game {
 
 					std::array<float, 4>& faces = m_TextureCoords[(int)id];
 
-					std::array<float, 16> this_coords =
-					{
-						dx - tile_scale, dy - tile_scale, faces[0], faces[1], // bottom left
-						dx + tile_scale, dy - tile_scale, faces[2], faces[1], // bottom right
-						dx + tile_scale, dy + tile_scale, faces[2], faces[3], // top right
-						dx - tile_scale, dy + tile_scale, faces[0], faces[3]  // top left
-					};
+					// Bottom left vertex
+					vertex_data[vertex_data_index++] = dx - tile_scale;
+					vertex_data[vertex_data_index++] = dy - tile_scale;
+					vertex_data[vertex_data_index++] = faces[0];
+					vertex_data[vertex_data_index++] = faces[1];
+					// Bottom right vertex
+					vertex_data[vertex_data_index++] = dx + tile_scale;
+					vertex_data[vertex_data_index++] = dy - tile_scale;
+					vertex_data[vertex_data_index++] = faces[2];
+					vertex_data[vertex_data_index++] = faces[1];
+					// Top right vertex
+					vertex_data[vertex_data_index++] = dx + tile_scale;
+					vertex_data[vertex_data_index++] = dy + tile_scale;
+					vertex_data[vertex_data_index++] = faces[2];
+					vertex_data[vertex_data_index++] = faces[3];
+					// Top left vertex
+					vertex_data[vertex_data_index++] = dx - tile_scale;
+					vertex_data[vertex_data_index++] = dy + tile_scale;
+					vertex_data[vertex_data_index++] = faces[0];
+					vertex_data[vertex_data_index++] = faces[3];
+
 
 					int stride = count * 4;
-
-					std::array<unsigned short, 6> this_indices =
-					{
-						0 + stride,
-						1 + stride,
-						2 + stride,
-						2 + stride,
-						3 + stride,
-						0 + stride,
-					};
-
-
-					indexCoords.insert(indexCoords.end(), this_indices.begin(), this_indices.end());
-					coords.insert(coords.end(), this_coords.begin(), this_coords.end());
+					index_coords[index_coords_index++] = 0 + stride;
+					index_coords[index_coords_index++] = 1 + stride;
+					index_coords[index_coords_index++] = 2 + stride;
+					index_coords[index_coords_index++] = 2 + stride;
+					index_coords[index_coords_index++] = 3 + stride;
+					index_coords[index_coords_index++] = 0 + stride;
 
 					count++;
 				}
@@ -448,10 +494,13 @@ namespace Game {
 			Vivium::GLSLDataType::VEC2  // tex coords
 		};
 
-		Vivium::VertexBuffer vb(coords, layout);
-		Vivium::IndexBuffer ib(indexCoords);
+		Vivium::VertexBuffer vb(vertex_data, vertex_data_index + 1, layout);
+		Vivium::IndexBuffer ib(index_coords, index_coords_index + 1);
 
 		Vivium::Renderer::Submit(&vb, &ib, texture_shader, m_TextureAtlas->GetAtlas().get());
+
+		delete[] vertex_data;
+		delete[] index_coords;
 	}
 
 	void World::m_RenderFloorItems(const Vivium::Vector2<int>& pos)
@@ -578,8 +627,6 @@ namespace Game {
 		// TODO
 		m_NoiseTerrain = Vivium::Noise::Interpolated(m_Seed, m_Amplitude, m_Wavelength);
 		m_NoiseTrees = Vivium::Noise::White(m_Seed, 1.0f, 1);
-
-		m_LoadRegions(Vivium::Vector2<int>(0, 0), 3);
 	}
 
 	void World::Render(const Vivium::Vector2<int>& pos)
@@ -591,6 +638,9 @@ namespace Game {
 	void World::Update(Player* player)
 	{
 		float elapsed = m_UpdateTimer.GetElapsed();
+		
+		m_LoadRegions(player);
+
 		m_UpdateMining(player, elapsed);
 	}
 }

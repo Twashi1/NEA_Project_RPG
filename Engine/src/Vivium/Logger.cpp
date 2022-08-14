@@ -16,8 +16,10 @@ namespace Vivium {
 			msg
 		);
 	}
-	void __LogBase(const std::string& msg, int line, const char* func_sig, const char* log_level)
+	void __LogBase(const std::string& msg, int line, const char* func_sig, const char* error_severity_text, int severity)
 	{
+		if (severity < Logger::GetLogLevel()) return;
+
 		// Matches __something and the whitespace after
 		const std::regex cleaner("__\\S+\\s");
 		std::string function_cleaned = std::regex_replace(func_sig, cleaner, "");
@@ -25,16 +27,22 @@ namespace Vivium {
 		std::cout << std::format(
 			"[{}] ({}) {}:{} {}",
 			Timer::GetTimeString(),
-			log_level,
+			error_severity_text,
 			function_cleaned,
 			line,
 			msg
 		) << std::endl;
 
-		if (log_level == "Fatal") { exit(EXIT_FAILURE); }
+		if (error_severity_text == "Fatal") { exit(EXIT_FAILURE); }
 	}
 	void GLAPIENTRY __GLLogCallback(GLenum source, GLenum type, GLuint id, GLenum severity, GLsizei length, const GLchar* message, const void* userParam)
 	{
+		int log_severity = Logger::GetGLSeverity();
+
+		if (log_severity == -1 || log_severity < severity) {
+			return;
+		}
+
 		// TODO set a flag to set notification level
 		if (severity > GL_DEBUG_SEVERITY_NOTIFICATION) {
 			std::cout << std::format("[{}] ({}) ({}:{}) from {}; {}",
@@ -86,4 +94,32 @@ namespace Vivium {
 		}
 	}
 #endif
+
+	int Logger::s_LogLevel = VIVIUM_TRACE;
+
+	void Logger::SetLogLevel(int level)
+	{
+		s_LogLevel = level;
+	}
+
+	int Logger::GetLogLevel()
+	{
+		return s_LogLevel;
+	}
+
+	int Logger::GetGLSeverity()
+	{
+		switch (s_LogLevel) {
+		case VIVIUM_TRACE:
+		case VIVIUM_INFO:
+			return GL_DEBUG_SEVERITY_LOW;
+		case VIVIUM_WARN:
+			return GL_DEBUG_SEVERITY_MEDIUM;
+		case VIVIUM_ERROR:
+			return GL_DEBUG_SEVERITY_HIGH;
+		case VIVIUM_FATAL:
+			return -1;
+		default: return -1;
+		}
+	}
 }

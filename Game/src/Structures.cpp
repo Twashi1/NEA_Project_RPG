@@ -18,7 +18,7 @@ namespace Game {
 
 	bool Structure::m_CheckOverlapTile(const Tile& structure_tile, const Tile& world_tile)
 	{
-		return !((world_tile.base != Tile::ID::VOID && structure_tile.base != Tile::ID::VOID) ||
+		return !((world_tile.bot != Tile::ID::VOID && structure_tile.bot != Tile::ID::VOID) ||
 			(world_tile.mid != Tile::ID::VOID && structure_tile.mid != Tile::ID::VOID) ||
 			(world_tile.top != Tile::ID::VOID && structure_tile.top != Tile::ID::VOID));
 	}
@@ -73,7 +73,7 @@ namespace Game {
 		for (auto& [pos, tile] : tilemap) {
 			Tile& world_tile = world->GetTile(pos);
 
-			if (tile.base != Tile::ID::VOID) { world_tile.base = Tile::ID::VOID; }
+			if (tile.bot != Tile::ID::VOID) { world_tile.bot = Tile::ID::VOID; }
 			if (tile.mid != Tile::ID::VOID) { world_tile.mid = Tile::ID::VOID; }
 			if (tile.top != Tile::ID::VOID) { world_tile.top = Tile::ID::VOID; }
 		}

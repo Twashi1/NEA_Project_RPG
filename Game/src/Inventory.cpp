@@ -5,33 +5,33 @@ namespace Game {
 		Inventory::Properties(
 			Inventory::Slot::INV_0, 27, {0, 0}, {3, 1}, {114.0f, 46.0f},
 			{
-				{Slot::INV_0,  {18.3f,  15.4f}},
-				{Slot::INV_1,  {18.3f + 9.8f,  15.4f}},
-				{Slot::INV_2,  {18.3f + 9.8f * 2,  15.4f}},
-				{Slot::INV_3,  {18.3f + 9.8f * 3,  15.4f}},
+				{Slot::INV_0,  {18.3f + 9.8f * 0, 15.4f}},
+				{Slot::INV_1,  {18.3f + 9.8f * 1, 15.4f}},
+				{Slot::INV_2,  {18.3f + 9.8f * 2, 15.4f}},
+				{Slot::INV_3,  {18.3f + 9.8f * 3, 15.4f}},
 				{Slot::INV_4,  {18.3f + 9.8f * 4, 15.4f}},
 				{Slot::INV_5,  {18.3f + 9.8f * 5, 15.4f}},
 				{Slot::INV_6,  {18.3f + 9.8f * 6, 15.4f}},
 				{Slot::INV_7,  {18.3f + 9.8f * 7, 15.4f}},
 				{Slot::INV_8,  {18.3f + 9.8f * 8, 15.4f}}, // TODO: other tex coords, also relative
-				{Slot::INV_9,  {10.0f,  40.0f}},
-				{Slot::INV_10, {20.0f,  40.0f}},
-				{Slot::INV_11, {30.0f,  40.0f}},
-				{Slot::INV_12, {40.0f,  40.0f}},
-				{Slot::INV_13, {50.0f, 40.0f}},
-				{Slot::INV_14, {60.0f, 40.0f}},
-				{Slot::INV_15, {70.0f, 40.0f}},
-				{Slot::INV_16, {80.0f, 40.0f}},
-				{Slot::INV_17, {90.0f, 40.0f}},
-				{Slot::INV_18, {10.0f,  60.0f}},
-				{Slot::INV_19, {20.0f,  60.0f}},
-				{Slot::INV_20, {30.0f,  60.0f}},
-				{Slot::INV_21, {40.0f,  60.0f}},
-				{Slot::INV_22, {50.0f, 60.0f}},
-				{Slot::INV_23, {60.0f, 60.0f}},
-				{Slot::INV_24, {70.0f, 60.0f}},
-				{Slot::INV_25, {80.0f, 60.0f}},
-				{Slot::INV_26, {90.0f, 60.0f}}
+				{Slot::INV_9,  {18.3f + 9.8f * 0, 40.0f}},
+				{Slot::INV_10, {18.3f + 9.8f * 1, 40.0f}},
+				{Slot::INV_11, {18.3f + 9.8f * 2, 40.0f}},
+				{Slot::INV_12, {18.3f + 9.8f * 3, 40.0f}},
+				{Slot::INV_13, {18.3f + 9.8f * 4, 40.0f}},
+				{Slot::INV_14, {18.3f + 9.8f * 5, 40.0f}},
+				{Slot::INV_15, {18.3f + 9.8f * 6, 40.0f}},
+				{Slot::INV_16, {18.3f + 9.8f * 7, 40.0f}},
+				{Slot::INV_17, {18.3f + 9.8f * 8, 40.0f}},
+				{Slot::INV_18, {18.3f + 9.8f * 0, 60.0f}},
+				{Slot::INV_19, {18.3f + 9.8f * 1, 60.0f}},
+				{Slot::INV_20, {18.3f + 9.8f * 2, 60.0f}},
+				{Slot::INV_21, {18.3f + 9.8f * 3, 60.0f}},
+				{Slot::INV_22, {18.3f + 9.8f * 4, 60.0f}},
+				{Slot::INV_23, {18.3f + 9.8f * 5, 60.0f}},
+				{Slot::INV_24, {18.3f + 9.8f * 6, 60.0f}},
+				{Slot::INV_25, {18.3f + 9.8f * 7, 60.0f}},
+				{Slot::INV_26, {18.3f + 9.8f * 8, 60.0f}}
 			}
 		), // SMALL
 		Inventory::Properties(
@@ -40,6 +40,7 @@ namespace Game {
 				{Slot::INV_0, {20.0f, 20.0f}}
 			}
 		), // LARGE
+		// TODO: LARGE
 		Inventory::Properties(
 			Inventory::Slot::HOTBAR_0, 9, INT_MAX, INT_MAX, 0.0f,
 			{}
@@ -185,7 +186,7 @@ namespace Game {
 		};
 
 		static const Vivium::BufferLayout text_layout = {
-			Vivium::GLSLDataType::VEC4 // position
+			Vivium::GLSLDataType::VEC4 // position xy, tex coords zw
 		};
 
 		if (count > 0) {

@@ -13,19 +13,16 @@ namespace Vivium {
 	private:
 		Timer m_Timer;
 
-		// Shorthands for various types
-		typedef std::vector<Ref(Body)> layer_t;
-		typedef std::unordered_map<int, layer_t> layermap_t;
-		typedef std::vector<Collision> collisions_t;
+		typedef std::vector<Ref(Body)> Layer_t;
+		typedef std::unordered_map<int, Layer_t> LayerMap_t;
 
-		// TODO: style
-		// TODO: bodies should be allowed to interact with a list of layers, specified by user
-		layermap_t layers; // Objects within one layer cannot interact with objects in other layers
+		LayerMap_t m_Layers; // Objects within one layer cannot interact with objects in other layers
 
 	public:
 		// Update all bodies tracked, and resolve collisions
 		void Update();
 
+		void Register(Ref(Body) body, const std::vector<int>& layer_indices);
 		void Register(Ref(Body) body, int layer_index);
 		void Unregister(Ref(Body) body, int layer_index);
 		void Unregister(Ref(Body) body);
