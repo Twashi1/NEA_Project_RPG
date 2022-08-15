@@ -58,7 +58,7 @@ namespace Vivium {
 				buffer_offset += 64;
 			}
 
-			Utils::SaveAsBitmap(&buffer->at(0), buffer_width, buffer_height, 1, "../Resources/image.bmp");
+			// Utils::SaveAsBitmap(&buffer->at(0), buffer_width, buffer_height, 1, "../Resources/image.bmp");
 
 			// Generate texture
 			uint32_t id;

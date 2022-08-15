@@ -100,8 +100,8 @@ namespace Game {
 	public:
 		static constexpr float DESPAWN_TIME = 600.0f; // TODO: implement despawning
 		static constexpr float PICKUP_RANGE = 100.0f;
-		static constexpr float MAGNET_RANGE = 300.0f;
-		static constexpr float MAGNET_SPEED = 50000.0f; // TODO: why does it have to be so big?
+		static constexpr float MAGNET_RANGE = 230.0f;
+		static constexpr float MAGNET_SPEED = 50000.0f;
 		static Vivium::Shader* floor_shader;
 
 		static void Init();

@@ -3,6 +3,8 @@
 #include "Core.h"
 #include "Logger.h"
 
+#include <stb_image_write.h>
+
 namespace Vivium {
 	namespace Utils {
 		template <typename T>
@@ -32,7 +34,6 @@ namespace Vivium {
 		// Splits string by delimiter
 		VIVIUM_API std::vector<std::string> SplitString(const ::std::string& s, const ::std::string& delim);
 
-		// https://www.technical-recipes.com/2011/creating-bitmap-files-from-raw-pixel-data-in-c/
 		VIVIUM_API void SaveAsBitmap(unsigned char* data, int width, int height, int bpp, const char* path);
 	}
 }

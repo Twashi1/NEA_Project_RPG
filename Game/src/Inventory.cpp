@@ -326,8 +326,18 @@ namespace Game {
 				if (cursor_item.id != Item::ID::VOID) {
 					Item& our_item = m_InventoryData.at((uint8_t)item_slot);
 
-					// Swap item in cursor with item we're updating
-					std::swap(cursor_item, our_item);
+					// If our item counts are the same and our counts are less than the stack limit, stack the items
+					if (cursor_item.id == our_item.id && cursor_item.count + our_item.count < Item::STACK_LIMIT) {
+						our_item.count += cursor_item.count;
+
+						// Delete cursor item
+						cursor_item.id = Item::ID::VOID;
+						cursor_item.count = 0;
+					}
+					// If our items are different, or the sum of our counts are above the stack limit, swap items
+					else if (cursor_item.id != our_item.id) {
+						std::swap(cursor_item, our_item);
+					}
 				}
 			}
 		}

@@ -3,7 +3,7 @@
 #include "Renderer.h"
 #include "Logger.h"
 
-#include "stb_image.h"
+#include <stb_image.h>
 
 namespace Vivium {
 	class Font;

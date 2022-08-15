@@ -102,6 +102,7 @@
 - Test new broad phase for physics system
 
 # Bugs
+- Items dont stack correctly (take free slot first)
 - World just keeps repeating?
 - Cursor no longer switches when hovering text input box
 - Renderer::BeginScene and EndScene interfere with transparency (Application clear color is mixed in?)
