@@ -59,38 +59,38 @@ namespace Vivium {
 	const char* __GLDebugSeverityToString(GLenum severity)
 	{
 		switch (severity) {
-		case GL_DEBUG_SEVERITY_NOTIFICATION: return "Info";
-		case GL_DEBUG_SEVERITY_LOW: return "Low";
-		case GL_DEBUG_SEVERITY_MEDIUM: return "Medium";
-		case GL_DEBUG_SEVERITY_HIGH: return "High";
-		default: return "InvalidSeverity";
+		case GL_DEBUG_SEVERITY_NOTIFICATION:	return "Info";
+		case GL_DEBUG_SEVERITY_LOW:				return "Low";
+		case GL_DEBUG_SEVERITY_MEDIUM:			return "Medium";
+		case GL_DEBUG_SEVERITY_HIGH:			return "High";
+		default:								return "InvalidSeverity";
 		}
 	}
 
 	const char* __GLDebugTypeToString(GLenum type)
 	{
 		switch (type) {
-		case GL_DEBUG_TYPE_ERROR: return "Error";
+		case GL_DEBUG_TYPE_ERROR:				return "Error";
 		case GL_DEBUG_TYPE_DEPRECATED_BEHAVIOR: return "Deprecated";
-		case GL_DEBUG_TYPE_UNDEFINED_BEHAVIOR: return "Undefined";
-		case GL_DEBUG_TYPE_PORTABILITY: return "Portability";
-		case GL_DEBUG_TYPE_PERFORMANCE: return "Performance";
-		case GL_DEBUG_TYPE_OTHER: return "Other";
-		case GL_DEBUG_TYPE_MARKER: return "Marker";
-		default: return "InvalidType";
+		case GL_DEBUG_TYPE_UNDEFINED_BEHAVIOR:	return "Undefined";
+		case GL_DEBUG_TYPE_PORTABILITY:			return "Portability";
+		case GL_DEBUG_TYPE_PERFORMANCE:			return "Performance";
+		case GL_DEBUG_TYPE_OTHER:				return "Other";
+		case GL_DEBUG_TYPE_MARKER:				return "Marker";
+		default:								return "InvalidType";
 		}
 	}
 
 	const char* __GLDebugSourceToString(GLenum source)
 	{
 		switch (source) {
-		case GL_DEBUG_SOURCE_API: return "API";
-		case GL_DEBUG_SOURCE_WINDOW_SYSTEM: return "Window";
-		case GL_DEBUG_SOURCE_SHADER_COMPILER: return "Shader";
-		case GL_DEBUG_SOURCE_THIRD_PARTY: return "Third party";
-		case GL_DEBUG_SOURCE_APPLICATION: return "Application";
-		case GL_DEBUG_SOURCE_OTHER: return "Other";
-		default: return "InvalidSource";
+		case GL_DEBUG_SOURCE_API:				return "API";
+		case GL_DEBUG_SOURCE_WINDOW_SYSTEM:		return "Window";
+		case GL_DEBUG_SOURCE_SHADER_COMPILER:	return "Shader";
+		case GL_DEBUG_SOURCE_THIRD_PARTY:		return "Third party";
+		case GL_DEBUG_SOURCE_APPLICATION:		return "Application";
+		case GL_DEBUG_SOURCE_OTHER:				return "Other";
+		default:								return "InvalidSource";
 		}
 	}
 #endif

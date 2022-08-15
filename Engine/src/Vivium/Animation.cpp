@@ -84,7 +84,7 @@ namespace Vivium {
 	void Animation::m_Construct()
 	{
 		// Calculate dimensions of atlas (in terms of sprites)
-		m_AtlasDimRelative = Vector2<int>(m_Atlas->width / m_SpriteSize.x, m_Atlas->height / m_SpriteSize.y);
+		m_AtlasDimRelative = Vector2<int>(m_Atlas->GetWidth() / m_SpriteSize.x, m_Atlas->GetHeight() / m_SpriteSize.y);
 	}
 
 	const std::shared_ptr<Texture> Animation::GetAtlas() const

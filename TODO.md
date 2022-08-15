@@ -96,12 +96,12 @@
 - Default statics are ugly
 - Better api for shader/texture/texture-atlas (done?)
 - Inconsistent data layout between GUI objects
-- GL id should be private for GL abstractions
 - Allow void* user data for callback functions (done?)
 - docs docs docs docs docs docs docs docs
 - INL file for Vector2
 - Test new broad phase for physics system
 
 # Bugs
+- World just keeps repeating?
 - Cursor no longer switches when hovering text input box
 - Renderer::BeginScene and EndScene interfere with transparency (Application clear color is mixed in?)

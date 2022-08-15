@@ -135,8 +135,8 @@ namespace Vivium {
 	void Quad::SetTextureCoords(const Texture& atlas, const Vector2<int>& index, const Vector2<int>& size)
 	{
 		// Inverse width and height of atlas
-		float inv_width = 1.0f / atlas.width;
-		float inv_height = 1.0f / atlas.height;
+		float inv_width = 1.0f / atlas.GetWidth();
+		float inv_height = 1.0f / atlas.GetHeight();
 
 		// Calculate faces
 		float left = index.x * inv_width * size.x;
@@ -159,8 +159,8 @@ namespace Vivium {
 	void Quad::SetTextureCoords(const Texture& atlas, const Vector2<int>& top_left, const Vector2<int>& bottom_right, const Vector2<int>& size)
 	{
 		// Inverse width and height of atlas
-		float inv_width = 1.0f / atlas.width;
-		float inv_height = 1.0f / atlas.height;
+		float inv_width = 1.0f / atlas.GetWidth();
+		float inv_height = 1.0f / atlas.GetHeight();
 
 		// Calculate faces
 		float left = top_left.x * inv_width * size.x;

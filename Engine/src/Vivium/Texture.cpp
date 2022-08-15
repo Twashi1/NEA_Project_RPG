@@ -14,15 +14,29 @@ namespace Vivium {
 	{
 		if (slot > Renderer::MAX_TEXTURE_SLOT) { LogError("Attempted to bind texture to invalid slot: {}", (int)slot); }
 		glActiveTexture(GL_TEXTURE0 + slot);
-		glBindTexture(GL_TEXTURE_2D, id);
-		glActiveTexture(GL_TEXTURE0);
+		glBindTexture(GL_TEXTURE_2D, m_ID);
 	}
 
-	Texture::Texture(Ref(uint8_t[]) buffer, unsigned int width, unsigned int height)
-		: width(width), height(height), id(0)
+	int Texture::GetWidth() const
 	{
-		glGenTextures(1, &id);
-		glBindTexture(GL_TEXTURE_2D, id);
+		return m_Width;
+	}
+
+	int Texture::GetHeight() const
+	{
+		return m_Height;
+	}
+
+	Vector2<int> Texture::GetDim() const
+	{
+		return Vector2<int>(m_Width, m_Height);
+	}
+
+	Texture::Texture(Ref(uint8_t[]) buffer, int width, int height)
+		: m_Width(width), m_Height(height), m_ID(0)
+	{
+		glGenTextures(1, &m_ID);
+		glBindTexture(GL_TEXTURE_2D, m_ID);
 
 		glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_MIN_FILTER, GL_NEAREST);
 		glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_MAG_FILTER, GL_NEAREST);
@@ -33,36 +47,32 @@ namespace Vivium {
 	}
 
 	Texture::Texture(const std::string& filename)
-		: id(0)
+		: m_ID(0)
 	{
 		std::string full_path = PATH + filename;
 
 		// Load pixel data into our buffer, and set width/height of image
-		int iwidth, iheight, bpp;
-		uint8_t* image_data = stbi_load(full_path.c_str(), &iwidth, &iheight, &bpp, STBI_rgb_alpha);
+		int bpp;
+		uint8_t* image_data = stbi_load(full_path.c_str(), &m_Width, &m_Height, &bpp, STBI_rgb_alpha);
 
-		// Set image width/height
-		width = iwidth;
-		height = iheight;
-
-		glGenTextures(1, &id);
-		glBindTexture(GL_TEXTURE_2D, id);
+		glGenTextures(1, &m_ID);
+		glBindTexture(GL_TEXTURE_2D, m_ID);
 
 		glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_MIN_FILTER, GL_NEAREST);
 		glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_MAG_FILTER, GL_NEAREST);
 		glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_WRAP_S, GL_CLAMP_TO_BORDER);
 		glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_WRAP_T, GL_CLAMP_TO_BORDER);
 
-		glTexImage2D(GL_TEXTURE_2D, 0, GL_RGBA8, width, height, 0, GL_RGBA, GL_UNSIGNED_BYTE, image_data);
+		glTexImage2D(GL_TEXTURE_2D, 0, GL_RGBA8, m_Width, m_Height, 0, GL_RGBA, GL_UNSIGNED_BYTE, image_data);
 
 		stbi_image_free(image_data);
 	}
 
 	Texture::Texture(Font* font)
-		: width(font->buffer_width), height(font->buffer_height)
+		: m_Width(font->buffer_width), m_Height(font->buffer_height)
 	{
-		glGenTextures(1, &id);
-		glBindTexture(GL_TEXTURE_2D, id);
+		glGenTextures(1, &m_ID);
+		glBindTexture(GL_TEXTURE_2D, m_ID);
 
 		glPixelStorei(GL_UNPACK_ALIGNMENT, 1);
 		glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_MIN_FILTER, GL_LINEAR);
@@ -74,7 +84,7 @@ namespace Vivium {
 	}
 
 	Texture::~Texture() {
-		glDeleteTextures(1, &id);
+		glDeleteTextures(1, &m_ID);
 	}
 
 	void TextureArray::Unbind()
