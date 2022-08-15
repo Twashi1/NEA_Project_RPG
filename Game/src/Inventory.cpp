@@ -494,6 +494,9 @@ namespace Game {
 		m_RenderItems();
 	}
 
+	// Just leave everything uninitialised since this should only be called before Inventory::Read
+	Inventory::Inventory() {}
+
 	Inventory::Inventory(const ID& inventory_id)
 		: m_InventoryID(inventory_id)
 	{
@@ -506,6 +509,28 @@ namespace Game {
 	Inventory::~Inventory()
 	{
 		delete m_InventoryQuad;
+	}
+
+	void Inventory::Write(Vivium::Serialiser& s) const
+	{
+		// Write inventory type
+		s.Write((uint8_t)m_InventoryID);
+		// Write all items
+		s.Write(m_InventoryData);
+	}
+
+	void Inventory::Read(Vivium::Serialiser& s)
+	{
+		// Read in inventory type
+		s.Read((uint8_t*)&m_InventoryID);
+		// Read all items
+		s.Read(&m_InventoryData);
+
+		// Init quad and the atlas coords for quad
+		Properties properties = Inventory::GetProperties(m_InventoryID);
+		m_InventoryQuad = new Vivium::Quad(Vivium::Vector2<float>(0.0f), properties.sprite_size * m_InventorySpriteScale);
+
+		m_InventoryAtlas->Set(m_InventoryQuad, properties.top_left_index, properties.bottom_right_index);
 	}
 
 	Inventory::Properties::Properties(

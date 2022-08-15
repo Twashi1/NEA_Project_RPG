@@ -347,17 +347,19 @@ namespace Game {
 				// TODO: mined tile could be decor/top
 				// TODO: big temporary
 				// Create floor item
-				Item item_data = Tile::GetDropData(tile.top).GetRandomDrop();
+				std::vector<Item> item_drops = Tile::GetDropData(tile.top).GetRandomDrop();
 
-				if (item_data.id != Item::ID::VOID) {
-					FloorItem new_item(
-						item_data,
-						Vivium::Vector2<float>(mined_tile_pos * World::PIXEL_SCALE),
-						Vivium::Vector2<float>(World::PIXEL_SCALE * 0.5f)
-					);
+				for (Item& item : item_drops) {
+					if (item.id != Item::ID::VOID) {
+						FloorItem new_floor_item(
+							item,
+							Vivium::Vector2<float>(mined_tile_pos * World::PIXEL_SCALE),
+							Vivium::Vector2<float>(World::PIXEL_SCALE * 0.5f)
+						);
 
-					// Add new item to floor item map
-					m_AddFloorItem(region_pos, new_item);
+						// Add new item to floor item map
+						m_AddFloorItem(region_pos, new_floor_item);
+					}
 				}
 				
 				// TODO: top tile only

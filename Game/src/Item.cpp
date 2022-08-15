@@ -13,7 +13,7 @@ namespace Game {
 	};
 
 	Item::DropTable::DropTable()
-		: drop_table({{1.0f, Item::DropData(Item::ID::VOID, 0, 0)}}) // Certain chance of getting nothing
+		: drop_table({{1.0f, {}}}) // Certain chance of getting nothing
 	{
 		m_Sum = 1.0f;
 	}
@@ -26,7 +26,7 @@ namespace Game {
 		}
 	}
 
-	Item Item::DropTable::GetRandomDrop()
+	std::vector<Item> Item::DropTable::GetRandomDrop()
 	{
 		// https://stackoverflow.com/questions/1761626/weighted-random-numbers
 		// TODO: utils/math function for weighted sum?
@@ -34,14 +34,22 @@ namespace Game {
 
 		for (const auto& [weight, drop_data] : drop_table) {
 			if (value < weight) {
-				// If id is void, return no item
-				if (drop_data.id == Item::ID::VOID) return Item(Item::ID::VOID, 0);
+				// If no drops in drop data, return empty vector
+				if (drop_data.empty()) return {};
 
-				// Get count of object
-				uint16_t count = Vivium::Random::GetInt(drop_data.min_count, drop_data.max_count);
+				// Otherwise, create drop list
+				std::vector<Item> item_drops;
+				item_drops.resize(drop_data.size());
 
-				// Return item
-				return Item(drop_data.id, count);
+				// Iterate over all drops in vector
+				for (int i = 0; i < drop_data.size(); i++) {
+					// Get count of object
+					uint16_t count = Vivium::Random::GetInt(drop_data[i].min_count, drop_data[i].max_count);
+					// Add item to item drops
+					item_drops[i] = Item(drop_data[i].id, count);
+				}
+
+				return item_drops;
 			}
 
 			value -= weight;
@@ -49,7 +57,7 @@ namespace Game {
 
 		LogError("GetRandomDrop couldn't return an id, bad DropTable?");
 
-		return Item(Item::ID::VOID, 0);
+		return {};
 	}
 
 	void Item::DropTable::Write(Vivium::Serialiser& s) const
@@ -122,6 +130,18 @@ namespace Game {
 		count = other.count;
 
 		return *this;
+	}
+
+	void Item::Write(Vivium::Serialiser& s) const
+	{
+		s.Write((uint16_t)id);
+		s.Write(count);
+	}
+
+	void Item::Read(Vivium::Serialiser& s)
+	{
+		s.Read((uint16_t*)&id);
+		s.Read(&count);
 	}
 
 	Vivium::Shader* FloorItem::floor_shader = nullptr;

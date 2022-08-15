@@ -3,7 +3,7 @@
 #include "World.h"
 
 namespace Game {
-	class Inventory {
+	class Inventory : Vivium::IStreamable {
 	public:
 		enum class Slot : uint8_t {
 			INVALID,
@@ -101,7 +101,11 @@ namespace Game {
 		void Update(const Vivium::Vector2<float>& player_pos, World& world);
 		void Render();
 
+		Inventory();
 		Inventory(const ID& inventory_id);
 		~Inventory();
+
+		void Write(Vivium::Serialiser& s) const override;
+		void Read(Vivium::Serialiser& s) override;
 	};
 }

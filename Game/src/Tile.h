@@ -25,14 +25,14 @@ namespace Game {
 		};
 
 		struct Properties : Vivium::IStreamable {
-			std::string name;					// Tile::ID as string
-			bool isPhysical;					// If tile is something the player can collide with
-			bool isMineable;					// If player can mine the item
-			bool isPlaceable;					// If its a tile that can be placed
-			float mining_time;					// Amount of time it takes to mine this tile
-			Vivium::Vector2<int> atlas_index;   // Coordinate of sprite in atlas
-			float scale;						// Scale of tile when drawn
-			Item::DropTable drop_data;			// Drop table for item
+			std::string name;						// Tile::ID as string
+			bool isPhysical;						// If tile is something the player can collide with
+			bool isMineable;						// If player can mine the item
+			bool isPlaceable;						// If its a tile that can be placed
+			float mining_time;						// Amount of time it takes to mine this tile
+			Vivium::Vector2<int> atlas_index;		// Coordinate of sprite in atlas
+			float scale;							// Scale of tile when drawn
+			Item::DropTable drop_data;				// Drop table for item
 
 			Properties(std::string name, bool isPhysical, bool isMineable, bool isPlaceable, float mining_time, Vivium::Vector2<int> atlas_data, float scale, Item::DropTable drop_data);
 

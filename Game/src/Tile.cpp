@@ -6,17 +6,17 @@ namespace Game {
 		Tile::Properties("void",				false,	false,	false, 0.0f, {0,  0}, 1.0f, {}),
 		Tile::Properties("ground",				false,	false,	false, 0.0f, {1,  0}, 1.0f, {}),
 		Tile::Properties("grass",				false,	false,	false, 0.0f, {2,  0}, 1.0f, {}),
-		Tile::Properties("tree_0",				true,	true,	false, 2.0f, {3,  1}, 1.0f, Item::DropTable({{1.0f, Item::DropData(Item::ID::LOG, 2)}})),
-		Tile::Properties("tree_1",				false,	true,	false, 2.0f, {3,  0}, 1.0f, Item::DropTable({{1.0f, Item::DropData(Item::ID::LOG, 2)}})),
+		Tile::Properties("tree_0",				true,	true,	false, 2.0f, {3,  1}, 1.0f, Item::DropTable({{1.0f, {Item::DropData(Item::ID::LOG, 2)}}})),
+		Tile::Properties("tree_1",				false,	true,	false, 2.0f, {3,  0}, 1.0f, Item::DropTable({{1.0f, {Item::DropData(Item::ID::LOG, 2)}}})),
 		Tile::Properties("sand",				false,	false,	false, 0.0f, {4,  0}, 1.0f, {}),
 		Tile::Properties("water",				false,	false,	false, 0.0f, {5,  0}, 1.0f, {}),
 		Tile::Properties("bush",				true,	true,	false, 1.0f, {6,  0}, 0.8f, {}), // TODO drop table
 		Tile::Properties("bush_fruit",			true,	true,	false, 0.5f, {7,  0}, 0.8f, {}), // TODO drop table
-		Tile::Properties("amethyst_node",		true,	true,	false, 1.0f, {8,  0}, 0.8f, Item::DropTable({{1.0f, Item::DropData(Item::ID::AMETHYST_CRYSTAL, 10, 15)}})),
-		Tile::Properties("emerald_node",		true,	true,	false, 1.0f, {9,  0}, 0.8f, Item::DropTable({{1.0f, Item::DropData(Item::ID::EMERALD_CRYSTAL, 1, 3)}})),
-		Tile::Properties("ruby_node",			true,	true,	false, 1.0f, {10, 0}, 0.8f, Item::DropTable({{1.0f, Item::DropData(Item::ID::RUBY_CRYSTAL, 1, 3)}})),
-		Tile::Properties("sapphire_node",		true,	true,	false, 1.0f, {11, 0}, 0.8f, Item::DropTable({{1.0f, Item::DropData(Item::ID::SAPPHIRE_CRYSTAL, 1, 3)}})),
-		Tile::Properties("topaz_node",			true,	true,	false, 1.0f, {12, 0}, 0.8f, Item::DropTable({{1.0f, Item::DropData(Item::ID::TOPAZ_CRYSTAL, 1, 3)}}))
+		Tile::Properties("amethyst_node",		true,	true,	false, 1.0f, {8,  0}, 0.8f, Item::DropTable({{1.0f, {Item::DropData(Item::ID::AMETHYST_CRYSTAL, 10, 15)}}})),
+		Tile::Properties("emerald_node",		true,	true,	false, 1.0f, {9,  0}, 0.8f, Item::DropTable({{1.0f, {Item::DropData(Item::ID::EMERALD_CRYSTAL, 1, 3)}}})),
+		Tile::Properties("ruby_node",			true,	true,	false, 1.0f, {10, 0}, 0.8f, Item::DropTable({{1.0f, {Item::DropData(Item::ID::RUBY_CRYSTAL, 1, 3)}}})),
+		Tile::Properties("sapphire_node",		true,	true,	false, 1.0f, {11, 0}, 0.8f, Item::DropTable({{1.0f, {Item::DropData(Item::ID::SAPPHIRE_CRYSTAL, 1, 3)}}})),
+		Tile::Properties("topaz_node",			true,	true,	false, 1.0f, {12, 0}, 0.8f, Item::DropTable({{1.0f, {Item::DropData(Item::ID::TOPAZ_CRYSTAL, 1, 3)}}}))
 	};
 
 	Tile::Properties Tile::GetProperties(const Tile::ID& id)

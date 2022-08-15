@@ -222,6 +222,25 @@ namespace Vivium {
 			}
 		}
 
+		template <typename T, std::size_t Size>
+		void Write(const std::array<T, Size>& object) {
+			if constexpr (!IsStreamable<T>) {
+				LogError("Object type {} is not Streamable", typeid(T).name());
+			}
+			// If the object inherits IStreamable, call IStreamable's write
+			else if constexpr (std::is_base_of_v<IStreamable, T>) {
+				Write<unsigned int>(Size);
+
+				for (unsigned int i = 0; i < Size; i++) {
+					Write<T>(object[i]);
+				}
+			}
+			// Its a trivial type
+			else {
+				m_WriteBinary(m_Stream, object);
+			}
+		}
+
 		template <typename T>
 		void Write(const T* object_array, const unsigned int& length) {
 			if constexpr (!IsStreamable<T>) {
@@ -270,6 +289,24 @@ namespace Vivium {
 				memory->resize(size);
 
 				for (unsigned int i = 0; i < size; i++) {
+					Read<T>(&memory->at(i));
+				}
+			}
+			// Its a trivial type
+			else {
+				m_ReadBinary(m_Stream, memory);
+			}
+		}
+
+		template <typename T, std::size_t Size>
+		void Read(std::array<T, Size>* memory) {
+			// Ensure object is streamable
+			if constexpr (!IsStreamable<T>) {
+				LogError("Object type {} is not Streamable", typeid(T).name());
+			}
+			// If the object inherits IStreamable, call IStreamable's read
+			else if constexpr (std::is_base_of_v<IStreamable, T>) {
+				for (unsigned int i = 0; i < Size; i++) {
 					Read<T>(&memory->at(i));
 				}
 			}

@@ -3,7 +3,7 @@
 #include <Vivium.h>
 
 namespace Game {
-	class Item {
+	class Item : Vivium::IStreamable {
 	public:
 		enum class ID : uint16_t {
 			VOID,
@@ -16,6 +16,7 @@ namespace Game {
 			MAX
 		};
 
+		// Global properties per item
 		struct Properties : Vivium::IStreamable {
 		public:
 			std::string name;
@@ -41,20 +42,20 @@ namespace Game {
 			void Read(Vivium::Serialiser& s) override;
 		};
 
-		// TODO: should take in a count as well (maybe just map to Item class)
+		// Stored per tile, maps weights to list of potential drops
 		struct DropTable : Vivium::IStreamable {
 		private:
 			unsigned int m_Sum = 0;
 
 		public:
-			typedef std::unordered_map<float, DropData> DropTableMap_t;
+			typedef std::unordered_map<float, std::vector<DropData>> DropTableMap_t;
 
 			DropTableMap_t drop_table;
 
 			DropTable();
 			DropTable(const DropTableMap_t& drop_table);
 
-			Item GetRandomDrop();
+			std::vector<Item> GetRandomDrop();
 
 			void Write(Vivium::Serialiser& s) const override;
 			void Read(Vivium::Serialiser& s) override;
@@ -75,6 +76,9 @@ namespace Game {
 		Item(const Item::ID& id, const uint16_t& count);
 
 		Item& operator=(const Item& other);
+
+		void Write(Vivium::Serialiser& s) const override;
+		void Read(Vivium::Serialiser& s) override;
 
 	private:
 		static std::array<Properties, (uint16_t)ID::MAX> m_Properties;
@@ -116,17 +120,6 @@ namespace Game {
 		friend Inventory;
 	};
 }
-
-/*
-VOID,
-			AMETHYST_CRYSTAL,
-			EMERALD_CRYSTAL,
-			RUBY_CRYSTAL,
-			SAPPHIRE_CRYSTAL,
-			TOPAZ_CRYSTAL,
-			LOG,
-			MAX
-*/
 
 namespace std {
 	template <>
