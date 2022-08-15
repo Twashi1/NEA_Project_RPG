@@ -3,7 +3,6 @@
 #include "World.h"
 
 namespace Game {
-	// TODO: move rendering information to here
 	class Inventory {
 	public:
 		enum class Slot : uint8_t {
@@ -20,12 +19,19 @@ namespace Game {
 
 		enum class ID : uint8_t {
 			SMALL,
-			LARGE,
-			HOTBAR, // TODO: Implement
+			LARGE,  // TODO: implement
+			HOTBAR, // TODO: implement
 			MAX
 		};
 
 	private:
+		// TODO: needs more cleanup
+		static constexpr float s_ItemScale = 0.4f;
+		static const Vivium::Vector2<float> s_ItemCountOffsets[3];
+		// Max offsets used for bounds of each item (used when picking up/re-organising items)
+		static const float s_MaxOffsetWidth;
+		static const float s_MaxOffsetHeight;
+
 		struct Properties {
 			Slot start_slot;
 			uint8_t inventory_size;
@@ -53,7 +59,7 @@ namespace Game {
 		static Vivium::Shader* m_TextShader;
 		static Vivium::Shader* m_ItemShader;
 		static Vivium::TextureAtlas* m_InventoryAtlas;
-		static Vivium::Text* m_TextObject;
+		static Vivium::Text* m_TextObject; // TODO: remove this
 		static Ref(Vivium::Texture) m_TextFontTexture;
 		static Vivium::TextureAtlas* m_TextFontAtlas;
 
