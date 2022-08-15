@@ -17,7 +17,7 @@ TODO: map/unordered map
 namespace Vivium {
 	class IStreamable;
 	// TODO still ugly
-	template <typename T> inline constexpr bool __BaseStreamableTypes = std::is_arithmetic_v<T> || std::is_same_v<T, std::string>;
+	template <typename T> inline constexpr bool __BaseStreamableTypes = std::is_arithmetic_v<T> || std::is_same_v<T, std::string> || std::is_same_v<T, bool>;
 	template <typename T> concept IsBaseStreamable = __BaseStreamableTypes<T>;
 	template <typename T> concept IsStreamable = std::is_base_of_v<IStreamable, T>
 	|| __BaseStreamableTypes<T>

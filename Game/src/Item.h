@@ -86,7 +86,7 @@ namespace Game {
 
 	class Inventory;
 
-	class FloorItem {
+	class FloorItem : Vivium::IStreamable {
 	private:
 		Item m_ItemData;
 		Ref(Vivium::Quad) m_Quad;
@@ -111,11 +111,15 @@ namespace Game {
 		const Ref(Vivium::Quad) GetQuad() const;
 
 		void Update();
-
+		
+		FloorItem();
 		FloorItem(const FloorItem& other);
 		FloorItem(const Item& item_data, const Vivium::Vector2<float>& pos, const Vivium::Vector2<float> dim);
 
 		bool CheckDespawned();
+
+		void Write(Vivium::Serialiser& s) const override;
+		void Read(Vivium::Serialiser& s) override;
 
 		friend Inventory;
 	};

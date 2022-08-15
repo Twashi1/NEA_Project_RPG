@@ -131,7 +131,7 @@ namespace Game {
 			}
 		}
 
-		// Render cursor
+		// Render item at cursor
 		{
 			Item& cursor_item = m_InventoryData.at((uint8_t)Slot::CURSOR_0);
 

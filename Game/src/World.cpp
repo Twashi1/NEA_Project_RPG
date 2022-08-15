@@ -6,7 +6,7 @@ namespace Game {
 	// TODO: path is complicated
 
 	std::string World::PATH = "../Resources/saves/";
-	std::string World::FILE_EXTENSION = ".data";
+	std::string World::FILE_EXTENSION = ".txt";
 	std::string World::GENERAL_FILE = "general";
 	Vivium::Shader* World::texture_shader = nullptr;
 
@@ -99,7 +99,7 @@ namespace Game {
 
 	std::string World::m_ToRegionName(const Vivium::Vector2<int>& index) const
 	{
-		return std::format("region{}_{}{}", index.x, index.y, FILE_EXTENSION);
+		return std::format("{}{}/region{}_{}{}", PATH, m_WorldName, index.x, index.y, FILE_EXTENSION);
 	}
 
 	void World::m_LoadRegions(Player* player)
@@ -208,8 +208,16 @@ namespace Game {
 		// Construct empty region object
 		Region region;
 
-		m_Serialiser->BeginRead((PATH + m_WorldName + "/" + filename).c_str());
+		m_Serialiser->BeginRead(filename.c_str());
 		m_Serialiser->Read((char*)region.tiles.get(), Region::MEMORY_SIZE);
+
+		std::vector<FloorItem> region_floor_items;
+		m_Serialiser->Read(&region_floor_items);
+
+		if (!region_floor_items.empty()) {
+			floor_items[index] = region_floor_items;
+		}
+
 		m_Serialiser->EndRead();
 
 		// Add region to region map
@@ -218,6 +226,7 @@ namespace Game {
 
 	void World::m_LoadWorld(const std::string& fullpath)
 	{
+		// TODO: old code
 		m_Serialiser->BeginRead((fullpath + GENERAL_FILE + FILE_EXTENSION).c_str());
 
 		// Get version number
@@ -251,10 +260,24 @@ namespace Game {
 
 	void World::m_SerialiseRegion(const Vivium::Vector2<int>& index, const Region& region)
 	{
-		std::string region_path = PATH + m_WorldName + "/" + m_ToRegionName(index);
+		std::string region_path = m_ToRegionName(index);
 
 		m_Serialiser->BeginWrite(region_path.c_str());
+
+		// Write tiles of region
 		m_Serialiser->Write((char*)region.tiles.get(), Region::MEMORY_SIZE);
+
+		// Get the floor items for the region
+		std::vector<FloorItem>* region_floor_items = GetFloorItems(index);
+		// If there are floor items in the region, write the vector
+		if (region_floor_items != nullptr) {
+			m_Serialiser->Write(*region_floor_items);
+		}
+		// Otherwise just write a 0 to indicate there are no floor items
+		else {
+			m_Serialiser->Write<unsigned int>(0);
+		}
+
 		m_Serialiser->EndWrite();
 	}
 

@@ -210,6 +210,38 @@ namespace Game {
 		return false;
 	}
 
+	// Leave everything uninitialised
+	FloorItem::FloorItem() {}
+
+	void FloorItem::Write(Vivium::Serialiser& s) const
+	{
+		s.Write(m_ItemData);
+		s.Write(m_Quad->GetCenter());
+		s.Write(m_Quad->GetDim());
+		s.Write(m_Quad->GetAngle());
+		s.Write(velocity);
+		s.Write(acceleration);
+		s.Write(m_RemainingMovingTime);
+		s.Write(m_InitialMotionEnded);
+	}
+
+	void FloorItem::Read(Vivium::Serialiser& s)
+	{
+		s.Read(&m_ItemData);
+		Vivium::Vector2<float> pos, dim;
+		float angle;
+		s.Read(&pos);
+		s.Read(&dim);
+		s.Read(&angle);
+
+		m_Quad = MakeRef(Vivium::Quad, pos, dim, angle);
+
+		s.Read(&velocity);
+		s.Read(&acceleration);
+		s.Read(&m_RemainingMovingTime);
+		s.Read(&m_InitialMotionEnded);
+	}
+
 	Item::DropData::DropData(const Item::ID& id, const uint16_t& min_count, const uint16_t& max_count)
 		: id(id), min_count(min_count), max_count(max_count)
 	{}
