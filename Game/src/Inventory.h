@@ -60,6 +60,26 @@ namespace Game {
 		static constexpr float m_InventorySpriteScale = 8.0f;
 		
 		void m_RenderItems();
+		void m_RenderItem(
+			const Item& item,
+			const Vivium::Vector2<float>& pos,
+			const Vivium::Vector2<float>& halfsize,
+			float* vertex_data,
+			std::size_t& vertex_data_index,
+			uint16_t* vertex_indices,
+			std::size_t& vertex_indices_index
+		);
+		void m_RenderItemCount(
+			char c,
+			const Vivium::Vector2<float>& pos,
+			const Vivium::Vector2<float>& size,
+			float* vertex_data,
+			std::size_t& vertex_data_index,
+			uint16_t* vertex_indices,
+			std::size_t& vertex_indices_index
+		);
+
+		void m_UpdateItem(float x, float y, float width, float height, const Slot& item_slot);
 
 	public:
 		static Properties GetProperties(const Inventory::ID& id);

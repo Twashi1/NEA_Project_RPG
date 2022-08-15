@@ -93,6 +93,14 @@ namespace Vivium {
 			: x(x), y(y), hw(w * 0.5f), hh(h * 0.5f)
 		{}
 
+		bool AABB::Contains(const Vector2<float>& other)
+		{
+			if (x - hw > other.x || x + hw < other.x) return false;
+			if (y - hh > other.y || y + hh < other.y) return false;
+
+			return true;
+		}
+
 		bool AABB::IsIntersecting(const AABB& other)
 		{
 			// Our left > Their right / Our right < Their left

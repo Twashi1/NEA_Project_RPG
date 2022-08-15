@@ -70,7 +70,11 @@ namespace Game {
 		uint16_t count;
 
 		Item();
+		Item(Item&& other) noexcept;
+		Item(const Item& other);
 		Item(const Item::ID& id, const uint16_t& count);
+
+		Item& operator=(const Item& other);
 
 	private:
 		static std::array<Properties, (uint16_t)ID::MAX> m_Properties;
@@ -112,3 +116,46 @@ namespace Game {
 		friend Inventory;
 	};
 }
+
+/*
+VOID,
+			AMETHYST_CRYSTAL,
+			EMERALD_CRYSTAL,
+			RUBY_CRYSTAL,
+			SAPPHIRE_CRYSTAL,
+			TOPAZ_CRYSTAL,
+			LOG,
+			MAX
+*/
+
+namespace std {
+	template <>
+	struct formatter<Game::Item::ID> : formatter<string> {
+		auto format(Game::Item::ID id, format_context& ctx) {
+			std::string id_string;
+
+			switch (id) {
+			case Game::Item::ID::VOID:				id_string = "Void";				break;
+			case Game::Item::ID::AMETHYST_CRYSTAL:	id_string = "Amethyst crystal"; break;
+			case Game::Item::ID::EMERALD_CRYSTAL:	id_string = "Emerald crystal";	break;
+			case Game::Item::ID::RUBY_CRYSTAL:		id_string = "Ruby crystal";		break;
+			case Game::Item::ID::SAPPHIRE_CRYSTAL:	id_string = "Sapphire crystal"; break;
+			case Game::Item::ID::TOPAZ_CRYSTAL:		id_string = "Topaz crystal";	break;
+			case Game::Item::ID::LOG:				id_string = "Log";				break;
+			default:								id_string = "InvalidID";		break;
+			}
+
+			return formatter<string>::format(
+				id_string, ctx);
+		}
+	};
+
+	template <>
+	struct formatter<Game::Item> : formatter<string> {
+		auto format(Game::Item item, format_context& ctx) {
+			return formatter<string>::format(
+				std::format("{{{}, {}}}", item.id, item.count), ctx);
+		}
+	};
+}
+

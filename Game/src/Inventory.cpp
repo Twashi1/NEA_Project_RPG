@@ -5,33 +5,33 @@ namespace Game {
 		Inventory::Properties(
 			Inventory::Slot::INV_0, 27, {0, 0}, {3, 1}, {114.0f, 46.0f},
 			{
-				{Slot::INV_0,  {18.3f + 9.8f * 0, 15.4f}},
-				{Slot::INV_1,  {18.3f + 9.8f * 1, 15.4f}},
-				{Slot::INV_2,  {18.3f + 9.8f * 2, 15.4f}},
-				{Slot::INV_3,  {18.3f + 9.8f * 3, 15.4f}},
-				{Slot::INV_4,  {18.3f + 9.8f * 4, 15.4f}},
-				{Slot::INV_5,  {18.3f + 9.8f * 5, 15.4f}},
-				{Slot::INV_6,  {18.3f + 9.8f * 6, 15.4f}},
-				{Slot::INV_7,  {18.3f + 9.8f * 7, 15.4f}},
-				{Slot::INV_8,  {18.3f + 9.8f * 8, 15.4f}}, // TODO: other tex coords, also relative
-				{Slot::INV_9,  {18.3f + 9.8f * 0, 40.0f}},
-				{Slot::INV_10, {18.3f + 9.8f * 1, 40.0f}},
-				{Slot::INV_11, {18.3f + 9.8f * 2, 40.0f}},
-				{Slot::INV_12, {18.3f + 9.8f * 3, 40.0f}},
-				{Slot::INV_13, {18.3f + 9.8f * 4, 40.0f}},
-				{Slot::INV_14, {18.3f + 9.8f * 5, 40.0f}},
-				{Slot::INV_15, {18.3f + 9.8f * 6, 40.0f}},
-				{Slot::INV_16, {18.3f + 9.8f * 7, 40.0f}},
-				{Slot::INV_17, {18.3f + 9.8f * 8, 40.0f}},
-				{Slot::INV_18, {18.3f + 9.8f * 0, 60.0f}},
-				{Slot::INV_19, {18.3f + 9.8f * 1, 60.0f}},
-				{Slot::INV_20, {18.3f + 9.8f * 2, 60.0f}},
-				{Slot::INV_21, {18.3f + 9.8f * 3, 60.0f}},
-				{Slot::INV_22, {18.3f + 9.8f * 4, 60.0f}},
-				{Slot::INV_23, {18.3f + 9.8f * 5, 60.0f}},
-				{Slot::INV_24, {18.3f + 9.8f * 6, 60.0f}},
-				{Slot::INV_25, {18.3f + 9.8f * 7, 60.0f}},
-				{Slot::INV_26, {18.3f + 9.8f * 8, 60.0f}}
+				{Slot::INV_0,  {18.3f + 9.8f * 0, 15.4f + 8.0f * 0}},
+				{Slot::INV_1,  {18.3f + 9.8f * 1, 15.4f + 8.0f * 0}},
+				{Slot::INV_2,  {18.3f + 9.8f * 2, 15.4f + 8.0f * 0}},
+				{Slot::INV_3,  {18.3f + 9.8f * 3, 15.4f + 8.0f * 0}},
+				{Slot::INV_4,  {18.3f + 9.8f * 4, 15.4f + 8.0f * 0}},
+				{Slot::INV_5,  {18.3f + 9.8f * 5, 15.4f + 8.0f * 0}},
+				{Slot::INV_6,  {18.3f + 9.8f * 6, 15.4f + 8.0f * 0}},
+				{Slot::INV_7,  {18.3f + 9.8f * 7, 15.4f + 8.0f * 0}},
+				{Slot::INV_8,  {18.3f + 9.8f * 8, 15.4f + 8.0f * 0}}, // TODO: other tex coords, also relative
+				{Slot::INV_9,  {18.3f + 9.8f * 0, 15.4f + 8.0f * 1}},
+				{Slot::INV_10, {18.3f + 9.8f * 1, 15.4f + 8.0f * 1}},
+				{Slot::INV_11, {18.3f + 9.8f * 2, 15.4f + 8.0f * 1}},
+				{Slot::INV_12, {18.3f + 9.8f * 3, 15.4f + 8.0f * 1}},
+				{Slot::INV_13, {18.3f + 9.8f * 4, 15.4f + 8.0f * 1}},
+				{Slot::INV_14, {18.3f + 9.8f * 5, 15.4f + 8.0f * 1}},
+				{Slot::INV_15, {18.3f + 9.8f * 6, 15.4f + 8.0f * 1}},
+				{Slot::INV_16, {18.3f + 9.8f * 7, 15.4f + 8.0f * 1}},
+				{Slot::INV_17, {18.3f + 9.8f * 8, 15.4f + 8.0f * 1}},
+				{Slot::INV_18, {18.3f + 9.8f * 0, 15.4f + 8.0f * 2}},
+				{Slot::INV_19, {18.3f + 9.8f * 1, 15.4f + 8.0f * 2}},
+				{Slot::INV_20, {18.3f + 9.8f * 2, 15.4f + 8.0f * 2}},
+				{Slot::INV_21, {18.3f + 9.8f * 3, 15.4f + 8.0f * 2}},
+				{Slot::INV_22, {18.3f + 9.8f * 4, 15.4f + 8.0f * 2}},
+				{Slot::INV_23, {18.3f + 9.8f * 5, 15.4f + 8.0f * 2}},
+				{Slot::INV_24, {18.3f + 9.8f * 6, 15.4f + 8.0f * 2}},
+				{Slot::INV_25, {18.3f + 9.8f * 7, 15.4f + 8.0f * 2}},
+				{Slot::INV_26, {18.3f + 9.8f * 8, 15.4f + 8.0f * 2}}
 			}
 		), // SMALL
 		Inventory::Properties(
@@ -49,38 +49,38 @@ namespace Game {
 
 	void Inventory::m_RenderItems()
 	{
-		static const float itemScale = 0.4f;
+		// TODO: needs more cleanup
+		static const float s_ItemScale = 0.4f;
 		
-		static const Vivium::Vector2<float> itemCountOffsets[3] = {
-			Vivium::Vector2<float>( 0.0f, 0.0f) * World::PIXEL_SCALE * 0.5f * itemScale * m_InventorySpriteScale * 0.25f,
-			Vivium::Vector2<float>(-0.3f, 0.3f) * World::PIXEL_SCALE * 0.5f * itemScale * m_InventorySpriteScale * 0.25f,
-			Vivium::Vector2<float>( 0.3f, 0.3f) * World::PIXEL_SCALE * 0.5f * itemScale * m_InventorySpriteScale * 0.25f
+		static const Vivium::Vector2<float> s_ItemCountOffsets[3] = {
+			Vivium::Vector2<float>( 0.0f, 0.0f) * World::PIXEL_SCALE * 0.5f * s_ItemScale * m_InventorySpriteScale * 0.25f,
+			Vivium::Vector2<float>(-0.3f, 0.3f) * World::PIXEL_SCALE * 0.5f * s_ItemScale * m_InventorySpriteScale * 0.25f,
+			Vivium::Vector2<float>( 0.3f, 0.3f) * World::PIXEL_SCALE * 0.5f * s_ItemScale * m_InventorySpriteScale * 0.25f
 		};
 
+		// Max offsets used for bounds of each item (used when picking up/re-organising items)
+		static const float max_offset_width = s_ItemCountOffsets[2].x;
+		static const float max_offset_height = s_ItemCountOffsets[2].y;
+
+		// Get properties of the inventory type we have
 		Properties inven_properties = GetProperties(m_InventoryID);
 
-		std::vector<float> coords;
-		std::vector<unsigned short> indexCoords;
+		unsigned int max_count = inven_properties.inventory_size + 1; // Adding one for cursor
 
-		std::vector<float> text_vertices;
-		std::vector<unsigned short> text_indices;
+		// Allocate memory for vertex data and indices
+		float* item_vertex_data = new float[16 * max_count * 3]; std::size_t item_vertex_index = 0;
+		uint16_t* item_indices = new uint16_t[6 * max_count * 3]; std::size_t item_indices_index = 0;
 
-		unsigned short count = 0;
-		unsigned short text_count = 0;
-		unsigned int max_count = inven_properties.inventory_size;
+		float* text_vertex_data = new float[16 * max_count * 3]; std::size_t text_vertex_index = 0;
+		uint16_t* text_indices = new uint16_t[6 * max_count * 3]; std::size_t text_indices_index = 0;
 
-		coords.reserve(16 * max_count * 3); // Maximum of 3 copies of texture
-		indexCoords.reserve(6 * max_count * 3);
-
-		text_vertices.reserve(16 * max_count * 3); // Maximum of 3 characters per item (999)
-		text_indices.reserve(6 * max_count * 3);
+		// Counters for amount of items/strings we're rendering
+		uint16_t item_draw_count = 0;
+		uint16_t text_draw_count = 0;
 
 		// TODO: make InventoryData_t iterable
 		for (uint8_t slot = (uint8_t)inven_properties.start_slot; slot < (uint8_t)inven_properties.start_slot + inven_properties.inventory_size; slot++) {
 			Item& item = m_InventoryData.at(slot);
-
-			// If item is void, go to next item
-			if (item.id == Item::ID::VOID) { continue; }
 
 			// TODO: draw multiple copies of texture for multiple items
 			// TODO: draw text to represent count
@@ -88,55 +88,41 @@ namespace Game {
 			Vivium::Vector2<float> offset = inven_properties.slot_coords.at((Slot)slot);
 
 			float dx = m_InventoryQuad->Left() + (offset.x * m_InventorySpriteScale);
-			float dy = m_InventoryQuad->Top() - (offset.y * m_InventorySpriteScale); // TODO: inverse?
+			float dy = m_InventoryQuad->Top() - (offset.y * m_InventorySpriteScale); // TODO: - sign here is weird
 
-			float tile_scale = World::PIXEL_SCALE * 0.5f * m_InventorySpriteScale * 0.25f * itemScale;
+			float tile_scale = World::PIXEL_SCALE * 0.5f * m_InventorySpriteScale * 0.25f * s_ItemScale;
 
+			m_UpdateItem(dx, dy, (tile_scale + max_offset_width) * 2.0f, (tile_scale + max_offset_height) * 2.0f, (Slot)slot);
+
+			// If item is void, go to next item
+			if (item.id == Item::ID::VOID) { continue; }
+
+			// Draw a maximum of 3 copies of the item
 			for (int i = std::min(item.count, (uint16_t)3) - 1; i >= 0; i--) {
-				Vivium::Vector2<float> itemOffset = itemCountOffsets[i];
+				Vivium::Vector2<float> item_offset = s_ItemCountOffsets[i];
 
-				std::array<float, 4>& faces = World::m_ItemsTextureCoords[(uint16_t)item.id];
+				m_RenderItem(
+					item,
+					Vivium::Vector2<float>(dx, dy) + item_offset,
+					tile_scale,
+					item_vertex_data, item_vertex_index,
+					item_indices, item_indices_index
+				);
 
-				std::array<float, 16> this_coords =
-				{
-					dx - tile_scale + itemOffset.x, dy - tile_scale + itemOffset.y, faces[0], faces[1], // bottom left
-					dx + tile_scale + itemOffset.x, dy - tile_scale + itemOffset.y, faces[2], faces[1], // bottom right
-					dx + tile_scale + itemOffset.x, dy + tile_scale + itemOffset.y, faces[2], faces[3], // top right
-					dx - tile_scale + itemOffset.x, dy + tile_scale + itemOffset.y, faces[0], faces[3]  // top left
-				};
-
-				int stride = count * 4;
-
-				std::array<unsigned short, 6> this_indices =
-				{
-					0 + stride,
-					1 + stride,
-					2 + stride,
-					2 + stride,
-					3 + stride,
-					0 + stride,
-				};
-
-
-				indexCoords.insert(indexCoords.end(), this_indices.begin(), this_indices.end());
-				coords.insert(coords.end(), this_coords.begin(), this_coords.end());
-
-				count++;
+				item_draw_count++;
 			}
 
 			// Now we need to render the text
 			// Get rendering pos
 			Vivium::Vector2<float> rendering_pos(dx, dy);
+			// Little offset so it draws to the bottom right of the item
 			rendering_pos += Vivium::Vector2<float>(1.0f, -4.0f) * m_InventorySpriteScale;
 
 			// Get item count as text
 			std::string item_count_string = std::to_string(item.count);
 
-			// Load our textures onto the shader we're using
-
 			// Iterate through characters in text
 			for (char c : item_count_string) {
-				// TODO: precalc
 				Vivium::Font::Character ch = Vivium::Text::GetDefaultFont()->character_map.at(c);
 
 				float x = rendering_pos.x + ch.bearing.x * m_TextObject->scale;
@@ -144,41 +130,55 @@ namespace Game {
 				float w = ch.size.x * m_TextObject->scale;
 				float h = ch.size.y * m_TextObject->scale;
 
-				// TODO: precalc this
-				// Bottom left
-				// Bottom right
-				// Top right
-				// Top left
-				std::array<float, 8> tex_coords = m_TextFontAtlas->GetCoordsArray(c);
+				m_RenderItemCount(c, { x, y }, { w, h }, text_vertex_data, text_vertex_index, text_indices, text_indices_index);
 
-				// Calculate vertices
-				std::vector<float> this_vertices = {
-					x,		y,		tex_coords[0], tex_coords[5], // Bottom left
-					x + w,	y,		tex_coords[2], tex_coords[7], // Bottom right
-					x + w,	y + h,	tex_coords[4], tex_coords[1], // Top right
-					x,		y + h,	tex_coords[6], tex_coords[3]  // Top left
-				};
-
-				int stride = text_count * 4;
-
-				std::array<unsigned short, 6> this_indices =
-				{
-					0 + stride,
-					1 + stride,
-					2 + stride,
-					2 + stride,
-					3 + stride,
-					0 + stride,
-				};
-
-				text_vertices.insert(text_vertices.end(), this_vertices.begin(), this_vertices.end());
-				text_indices.insert(text_indices.end(), this_indices.begin(), this_indices.end());
-
+				text_draw_count++;
 				rendering_pos.x += (ch.advance >> 6) * m_TextObject->scale * m_InventorySpriteScale / 8.0f * 0.45f;
-
-				text_count++;
 			}
 		}
+
+		// Render cursor
+		{
+			Item& cursor_item = m_InventoryData.at((uint8_t)Slot::CURSOR_0);
+
+			if (cursor_item.id != Item::ID::VOID) {
+				Vivium::Vector2<float> draw_coords = Vivium::Input::GetCursorPos();
+
+				float tile_scale = World::PIXEL_SCALE * 0.5f * m_InventorySpriteScale * 0.25f * s_ItemScale;
+
+				for (int i = std::min(cursor_item.count, (uint16_t)3) - 1; i >= 0; i--) {
+					Vivium::Vector2<float> itemOffset = s_ItemCountOffsets[i];
+
+					m_RenderItem(cursor_item, draw_coords + itemOffset, tile_scale, item_vertex_data, item_vertex_index, item_indices, item_indices_index);
+					item_draw_count++;
+				}
+
+				// Get rendering pos
+				Vivium::Vector2<float> rendering_pos(draw_coords);
+				rendering_pos += Vivium::Vector2<float>(1.0f, -4.0f) * m_InventorySpriteScale;
+
+				// Get item count as text
+				std::string item_count_string = std::to_string(cursor_item.count);
+
+				// Load our textures onto the shader we're using
+
+				// Iterate through characters in text
+				for (char c : item_count_string) {
+					// TODO: precalc
+					Vivium::Font::Character ch = Vivium::Text::GetDefaultFont()->character_map.at(c);
+
+					float x = rendering_pos.x + ch.bearing.x * m_TextObject->scale;
+					float y = rendering_pos.y - (ch.size.y - ch.bearing.y) * m_TextObject->scale;
+					float w = ch.size.x * m_TextObject->scale;
+					float h = ch.size.y * m_TextObject->scale;
+
+					m_RenderItemCount(c, { x, y }, { w, h }, text_vertex_data, text_vertex_index, text_indices, text_indices_index);
+
+					text_draw_count++;
+					rendering_pos.x += (ch.advance >> 6) * m_TextObject->scale * m_InventorySpriteScale / 8.0f * 0.45f;
+				}
+			}
+ 		}
 
 		static const Vivium::BufferLayout layout = {
 			Vivium::GLSLDataType::VEC2, // position
@@ -189,18 +189,140 @@ namespace Game {
 			Vivium::GLSLDataType::VEC4 // position xy, tex coords zw
 		};
 
-		if (count > 0) {
-			Vivium::VertexBuffer vb(coords, layout);
-			Vivium::IndexBuffer ib(indexCoords);
+		if (item_draw_count > 0) {
+			Vivium::VertexBuffer vb(item_vertex_data, item_vertex_index + 1, layout);
+			Vivium::IndexBuffer ib(item_indices, item_indices_index + 1);
 
 			Vivium::Renderer::Submit(&vb, &ib, m_ItemShader, World::m_ItemsAtlas->GetAtlas().get());
 		}
 
-		if (text_count > 0) {
-			Vivium::VertexBuffer vb(text_vertices, text_layout);
-			Vivium::IndexBuffer ib(text_indices);
+		if (text_draw_count > 0) {
+			Vivium::VertexBuffer vb(text_vertex_data, text_vertex_index + 1, text_layout);
+			Vivium::IndexBuffer ib(text_indices, text_indices_index + 1);
 
 			Vivium::Renderer::Submit(&vb, &ib, m_TextShader, m_TextFontTexture.get());
+		}
+
+		delete[] item_vertex_data;
+		delete[] item_indices;
+
+		delete[] text_vertex_data;
+		delete[] text_indices;
+	}
+
+	void Inventory::m_RenderItem(const Item& item, const Vivium::Vector2<float>& pos, const Vivium::Vector2<float>& halfsize, float* vertex_data, std::size_t& vertex_data_index, uint16_t* vertex_indices, std::size_t& vertex_indices_index)
+	{
+		std::array<float, 4>& faces = World::m_ItemsTextureCoords[(uint16_t)item.id];
+
+		// Bottom left
+		vertex_data[vertex_data_index++] = pos.x - halfsize.x;
+		vertex_data[vertex_data_index++] = pos.y - halfsize.y;
+		vertex_data[vertex_data_index++] = faces[0];
+		vertex_data[vertex_data_index++] = faces[1];
+		// Bottom right
+		vertex_data[vertex_data_index++] = pos.x + halfsize.x;
+		vertex_data[vertex_data_index++] = pos.y - halfsize.y;
+		vertex_data[vertex_data_index++] = faces[2];
+		vertex_data[vertex_data_index++] = faces[1];
+		// Top right
+		vertex_data[vertex_data_index++] = pos.x + halfsize.x;
+		vertex_data[vertex_data_index++] = pos.y + halfsize.y;
+		vertex_data[vertex_data_index++] = faces[2];
+		vertex_data[vertex_data_index++] = faces[3];
+		// Top left
+		vertex_data[vertex_data_index++] = pos.x - halfsize.x;
+		vertex_data[vertex_data_index++] = pos.y + halfsize.y;
+		vertex_data[vertex_data_index++] = faces[0];
+		vertex_data[vertex_data_index++] = faces[3];
+
+		int stride = vertex_indices_index / 6 * 4;
+
+		vertex_indices[vertex_indices_index++] = 0 + stride;
+		vertex_indices[vertex_indices_index++] = 1 + stride;
+		vertex_indices[vertex_indices_index++] = 2 + stride;
+		vertex_indices[vertex_indices_index++] = 2 + stride;
+		vertex_indices[vertex_indices_index++] = 3 + stride;
+		vertex_indices[vertex_indices_index++] = 0 + stride;
+	}
+
+	void Inventory::m_RenderItemCount(char c, const Vivium::Vector2<float>& pos, const Vivium::Vector2<float>& size, float* vertex_data, std::size_t& vertex_data_index, uint16_t* vertex_indices, std::size_t& vertex_indices_index)
+	{
+		// TODO: precalc this
+		// Bottom left
+		// Bottom right
+		// Top right
+		// Top left
+		std::array<float, 8> tex_coords = m_TextFontAtlas->GetCoordsArray(c);
+
+		// Bottom left
+		vertex_data[vertex_data_index++] = pos.x;
+		vertex_data[vertex_data_index++] = pos.y;
+		vertex_data[vertex_data_index++] = tex_coords[0];
+		vertex_data[vertex_data_index++] = tex_coords[5];
+		// Bottom left
+		vertex_data[vertex_data_index++] = pos.x + size.x;
+		vertex_data[vertex_data_index++] = pos.y;
+		vertex_data[vertex_data_index++] = tex_coords[2];
+		vertex_data[vertex_data_index++] = tex_coords[7];
+		// Bottom left
+		vertex_data[vertex_data_index++] = pos.x + size.x;
+		vertex_data[vertex_data_index++] = pos.y + size.y;
+		vertex_data[vertex_data_index++] = tex_coords[4];
+		vertex_data[vertex_data_index++] = tex_coords[1];
+		// Bottom left
+		vertex_data[vertex_data_index++] = pos.x;
+		vertex_data[vertex_data_index++] = pos.y + size.y;
+		vertex_data[vertex_data_index++] = tex_coords[6];
+		vertex_data[vertex_data_index++] = tex_coords[3];
+
+		int stride = vertex_indices_index / 6 * 4;
+
+		vertex_indices[vertex_indices_index++] = 0 + stride;
+		vertex_indices[vertex_indices_index++] = 1 + stride;
+		vertex_indices[vertex_indices_index++] = 2 + stride;
+		vertex_indices[vertex_indices_index++] = 2 + stride;
+		vertex_indices[vertex_indices_index++] = 3 + stride;
+		vertex_indices[vertex_indices_index++] = 0 + stride;
+	}
+
+	void Inventory::m_UpdateItem(float x, float y, float width, float height, const Slot& item_slot) // TODO: take item ref instead?
+	{
+		Vivium::Math::AABB item_rect(x, y, width, height);
+		Vivium::Vector2<float> cursor_pos = Vivium::Input::GetCursorPos();
+
+		Vivium::Input::State lmb_state = Vivium::Input::GetMouseState(GLFW_MOUSE_BUTTON_1);
+
+		// TODO: not perfect
+		// We have clicked on this item
+		if (item_rect.Contains(cursor_pos)) {
+			if (lmb_state == Vivium::Input::State::PRESS) {
+				// Get cursor item
+				Item& cursor_item = m_InventoryData.at((uint8_t)Slot::CURSOR_0);
+
+				// If we have nothing in the cursor slot
+				if (cursor_item.id == Item::ID::VOID) {
+					// Move our item to that cursor slot
+					Item& our_item = m_InventoryData.at((uint8_t)item_slot);
+					cursor_item.id = our_item.id;
+					cursor_item.count = our_item.count;
+
+					// Delete our item
+					our_item.id = Item::ID::VOID;
+					our_item.count = 0;
+				}
+			}
+			else if (lmb_state == Vivium::Input::State::RELEASE) {
+				// Get cursor item
+				Item& cursor_item = m_InventoryData.at((uint8_t)Slot::CURSOR_0);
+
+				// If cursor item is NOT nothing
+				if (cursor_item.id != Item::ID::VOID) {
+					Item& our_item = m_InventoryData.at((uint8_t)item_slot);
+
+					// Swap item in cursor with item we're updating
+					std::swap(cursor_item, our_item);
+				}
+			}
 		}
 	}
 

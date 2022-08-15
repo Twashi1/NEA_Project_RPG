@@ -108,6 +108,22 @@ namespace Game {
 		: id(Item::ID::VOID), count(0)
 	{}
 
+	Item::Item(const Item& other)
+		: id(other.id), count(other.count)
+	{}
+
+	Item::Item(Item&& other) noexcept
+		: id(std::move(other.id)), count(std::move(other.count))
+	{}
+
+	Item& Item::operator=(const Item & other)
+	{
+		id = other.id;
+		count = other.count;
+
+		return *this;
+	}
+
 	Vivium::Shader* FloorItem::floor_shader = nullptr;
 
 	void FloorItem::Init()

@@ -28,6 +28,7 @@ namespace Vivium {
 			AABB(float x, float y, float w, float h);
 			AABB(const AABB& other) = default;
 
+			bool Contains(const Vector2<float>& other);
 			bool IsIntersecting(const AABB& other);
 		};
 	}
