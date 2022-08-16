@@ -91,7 +91,7 @@ namespace Game {
     }
 
     Player::Player()
-        : m_MainInventory(Inventory::ID::SMALL)
+        : m_MainInventory(Inventory::ID::SMALL_WITH_HOTBAR)
     {
         // Setup player quad and body
         quad = MakeRef(Vivium::Quad, 0.0f, 0.0f, 100.0f, 100.0f);

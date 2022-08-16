@@ -13,7 +13,8 @@ namespace Game {
 				{Slot::INV_5,  {18.3f + 9.8f * 5, 15.4f + 8.0f * 0}},
 				{Slot::INV_6,  {18.3f + 9.8f * 6, 15.4f + 8.0f * 0}},
 				{Slot::INV_7,  {18.3f + 9.8f * 7, 15.4f + 8.0f * 0}},
-				{Slot::INV_8,  {18.3f + 9.8f * 8, 15.4f + 8.0f * 0}}, // TODO: other tex coords, also relative
+				{Slot::INV_8,  {18.3f + 9.8f * 8, 15.4f + 8.0f * 0}},
+
 				{Slot::INV_9,  {18.3f + 9.8f * 0, 15.4f + 8.0f * 1}},
 				{Slot::INV_10, {18.3f + 9.8f * 1, 15.4f + 8.0f * 1}},
 				{Slot::INV_11, {18.3f + 9.8f * 2, 15.4f + 8.0f * 1}},
@@ -23,6 +24,7 @@ namespace Game {
 				{Slot::INV_15, {18.3f + 9.8f * 6, 15.4f + 8.0f * 1}},
 				{Slot::INV_16, {18.3f + 9.8f * 7, 15.4f + 8.0f * 1}},
 				{Slot::INV_17, {18.3f + 9.8f * 8, 15.4f + 8.0f * 1}},
+
 				{Slot::INV_18, {18.3f + 9.8f * 0, 15.4f + 8.0f * 2}},
 				{Slot::INV_19, {18.3f + 9.8f * 1, 15.4f + 8.0f * 2}},
 				{Slot::INV_20, {18.3f + 9.8f * 2, 15.4f + 8.0f * 2}},
@@ -44,7 +46,51 @@ namespace Game {
 		Inventory::Properties(
 			Inventory::Slot::HOTBAR_0, 9, INT_MAX, INT_MAX, 0.0f,
 			{}
-		)  // TODO: HOTBAR
+		),  // TODO: HOTBAR
+		Inventory::Properties(
+			Inventory::Slot::INV_0, 36, {4, 0}, {7, 1}, {114.0f, 62.0f},
+			{
+				{Slot::INV_0,  {19.0f + 9.8f * 0, 13.0f + 10.5f * 0}},
+				{Slot::INV_1,  {19.0f + 9.8f * 1, 13.0f + 10.5f * 0}},
+				{Slot::INV_2,  {19.0f + 9.8f * 2, 13.0f + 10.5f * 0}},
+				{Slot::INV_3,  {19.0f + 9.8f * 3, 13.0f + 10.5f * 0}},
+				{Slot::INV_4,  {19.0f + 9.8f * 4, 13.0f + 10.5f * 0}},
+				{Slot::INV_5,  {19.0f + 9.8f * 5, 13.0f + 10.5f * 0}},
+				{Slot::INV_6,  {19.0f + 9.8f * 6, 13.0f + 10.5f * 0}},
+				{Slot::INV_7,  {19.0f + 9.8f * 7, 13.0f + 10.5f * 0}},
+				{Slot::INV_8,  {19.0f + 9.8f * 8, 13.0f + 10.5f * 0}},
+
+				{Slot::INV_9,  {19.0f + 9.8f * 0, 13.0f + 10.5f * 1}},
+				{Slot::INV_10, {19.0f + 9.8f * 1, 13.0f + 10.5f * 1}},
+				{Slot::INV_11, {19.0f + 9.8f * 2, 13.0f + 10.5f * 1}},
+				{Slot::INV_12, {19.0f + 9.8f * 3, 13.0f + 10.5f * 1}},
+				{Slot::INV_13, {19.0f + 9.8f * 4, 13.0f + 10.5f * 1}},
+				{Slot::INV_14, {19.0f + 9.8f * 5, 13.0f + 10.5f * 1}},
+				{Slot::INV_15, {19.0f + 9.8f * 6, 13.0f + 10.5f * 1}},
+				{Slot::INV_16, {19.0f + 9.8f * 7, 13.0f + 10.5f * 1}},
+				{Slot::INV_17, {19.0f + 9.8f * 8, 13.0f + 10.5f * 1}},
+
+				{Slot::INV_18, {19.0f + 9.8f * 0, 13.0f + 10.5f * 2}},
+				{Slot::INV_19, {19.0f + 9.8f * 1, 13.0f + 10.5f * 2}},
+				{Slot::INV_20, {19.0f + 9.8f * 2, 13.0f + 10.5f * 2}},
+				{Slot::INV_21, {19.0f + 9.8f * 3, 13.0f + 10.5f * 2}},
+				{Slot::INV_22, {19.0f + 9.8f * 4, 13.0f + 10.5f * 2}},
+				{Slot::INV_23, {19.0f + 9.8f * 5, 13.0f + 10.5f * 2}},
+				{Slot::INV_24, {19.0f + 9.8f * 6, 13.0f + 10.5f * 2}},
+				{Slot::INV_25, {19.0f + 9.8f * 7, 13.0f + 10.5f * 2}},
+				{Slot::INV_26, {19.0f + 9.8f * 8, 13.0f + 10.5f * 2}},
+
+				{Slot::INV_27, {19.0f + 9.8f * 0, 18.0f + 10.5f * 3}},
+				{Slot::INV_28, {19.0f + 9.8f * 1, 18.0f + 10.5f * 3}},
+				{Slot::INV_29, {19.0f + 9.8f * 2, 18.0f + 10.5f * 3}},
+				{Slot::INV_30, {19.0f + 9.8f * 3, 18.0f + 10.5f * 3}},
+				{Slot::INV_31, {19.0f + 9.8f * 4, 18.0f + 10.5f * 3}},
+				{Slot::INV_32, {19.0f + 9.8f * 5, 18.0f + 10.5f * 3}},
+				{Slot::INV_33, {19.0f + 9.8f * 6, 18.0f + 10.5f * 3}},
+				{Slot::INV_34, {19.0f + 9.8f * 7, 18.0f + 10.5f * 3}},
+				{Slot::INV_35, {19.0f + 9.8f * 8, 18.0f + 10.5f * 3}}
+			}
+		) // SMALL_WITH_HOTBAR
 	};
 
 	const Vivium::Vector2<float> Inventory::s_ItemCountOffsets[3] = {
@@ -56,6 +102,20 @@ namespace Game {
 	// Max offsets used for bounds of each item (used when picking up/re-organising items)
 	const float Inventory::s_MaxOffsetWidth = s_ItemCountOffsets[2].x;
 	const float Inventory::s_MaxOffsetHeight = s_ItemCountOffsets[2].y;
+
+	Inventory::Slot Inventory::m_GetNextOpenSlot()
+	{
+		Properties properties = Inventory::GetProperties(m_InventoryID);
+
+		for (uint8_t i = (uint8_t)properties.start_slot; i < (uint8_t)properties.start_slot + properties.inventory_size; i++) {
+			if (m_InventoryData[i].id == Item::ID::VOID) {
+				return (Slot)i;
+			}
+		}
+
+		// If we reached the end of the loop, no open slots
+		return Slot::INVALID;
+	}
 
 	void Inventory::m_RenderItems()
 	{
@@ -106,14 +166,14 @@ namespace Game {
 			// Increase draw count
 			item_draw_count += std::min(item.count, (uint16_t)3);
 
+			// Get item count as text
+			std::string item_count_string = std::to_string(item.count);
+
 			// Now we need to render the text
 			// Get rendering pos
 			Vivium::Vector2<float> rendering_pos(dx, dy);
 			// Little offset so it draws to the bottom right of the item
-			rendering_pos += Vivium::Vector2<float>(1.0f, -4.0f) * m_InventorySpriteScale;
-
-			// Get item count as text
-			std::string item_count_string = std::to_string(item.count);
+			rendering_pos += Vivium::Vector2<float>(3.5f - (item_count_string.length() * 1.5f), -3.0f) * m_InventorySpriteScale;
 
 			// Iterate through characters in text
 			for (char c : item_count_string) {
@@ -127,7 +187,7 @@ namespace Game {
 				m_RenderItemCount(c, { x, y }, { w, h }, text_vertex_data, text_vertex_index, text_indices, text_indices_index);
 
 				text_draw_count++;
-				rendering_pos.x += (ch.advance >> 6) * m_TextObject->scale * m_InventorySpriteScale / 8.0f * 0.45f;
+				rendering_pos.x += (ch.advance >> 6) * m_TextObject->scale * m_InventorySpriteScale / 8.0f;
 			}
 		}
 
@@ -254,6 +314,8 @@ namespace Game {
 
 	void Inventory::m_RenderItemCount(char c, const Vivium::Vector2<float>& pos, const Vivium::Vector2<float>& size, float* vertex_data, std::size_t& vertex_data_index, uint16_t* vertex_indices, std::size_t& vertex_indices_index)
 	{
+		// TODO: cleanup
+		Vivium::Font::Character ch = Vivium::Text::GetDefaultFont()->character_map.at(c);
 		// TODO: precalc this
 		// Bottom left
 		// Bottom right
@@ -261,26 +323,31 @@ namespace Game {
 		// Top left
 		std::array<float, 8> tex_coords = m_TextFontAtlas->GetCoordsArray(c);
 
+		float left = tex_coords[0];
+		float top = tex_coords[1];
+		float right = left + ((float)ch.size.x / (float)m_TextFontAtlas->GetAtlas()->GetWidth());
+		float bottom = top + ((float)ch.size.y / (float)m_TextFontAtlas->GetAtlas()->GetHeight());
+
 		// Bottom left
 		vertex_data[vertex_data_index++] = pos.x;
 		vertex_data[vertex_data_index++] = pos.y;
-		vertex_data[vertex_data_index++] = tex_coords[0];
-		vertex_data[vertex_data_index++] = tex_coords[5];
-		// Bottom left
+		vertex_data[vertex_data_index++] = left;
+		vertex_data[vertex_data_index++] = bottom;
+		// Bottom right
 		vertex_data[vertex_data_index++] = pos.x + size.x;
 		vertex_data[vertex_data_index++] = pos.y;
-		vertex_data[vertex_data_index++] = tex_coords[2];
-		vertex_data[vertex_data_index++] = tex_coords[7];
-		// Bottom left
+		vertex_data[vertex_data_index++] = right;
+		vertex_data[vertex_data_index++] = bottom;
+		// Top right
 		vertex_data[vertex_data_index++] = pos.x + size.x;
 		vertex_data[vertex_data_index++] = pos.y + size.y;
-		vertex_data[vertex_data_index++] = tex_coords[4];
-		vertex_data[vertex_data_index++] = tex_coords[1];
-		// Bottom left
+		vertex_data[vertex_data_index++] = right;
+		vertex_data[vertex_data_index++] = top;
+		// Top left
 		vertex_data[vertex_data_index++] = pos.x;
 		vertex_data[vertex_data_index++] = pos.y + size.y;
-		vertex_data[vertex_data_index++] = tex_coords[6];
-		vertex_data[vertex_data_index++] = tex_coords[3];
+		vertex_data[vertex_data_index++] = left;
+		vertex_data[vertex_data_index++] = top;
 
 		int stride = vertex_indices_index / 6 * 4;
 
@@ -298,8 +365,10 @@ namespace Game {
 		Vivium::Vector2<float> cursor_pos = Vivium::Input::GetCursorPos();
 
 		Vivium::Input::State lmb_state = Vivium::Input::GetMouseState(GLFW_MOUSE_BUTTON_1);
+		Vivium::Input::State rmb_state = Vivium::Input::GetMouseState(GLFW_MOUSE_BUTTON_2);
 
 		// TODO: not perfect
+		// TODO: some sort of pending system for splitting items
 		// We have clicked on this item
 		if (item_rect.Contains(cursor_pos)) {
 			if (lmb_state == Vivium::Input::State::PRESS) {
@@ -327,7 +396,7 @@ namespace Game {
 					Item& our_item = m_InventoryData.at((uint8_t)item_slot);
 
 					// If our item counts are the same and our counts are less than the stack limit, stack the items
-					if (cursor_item.id == our_item.id && cursor_item.count + our_item.count < Item::STACK_LIMIT) {
+					if (cursor_item.id == our_item.id && cursor_item.count + our_item.count <= Item::STACK_LIMIT) {
 						our_item.count += cursor_item.count;
 
 						// Delete cursor item
@@ -340,6 +409,31 @@ namespace Game {
 					}
 				}
 			}
+
+			// Spreading items if holding down rmb
+			/*
+			if (rmb_state == Vivium::Input::State::PRESS || rmb_state == Vivium::Input::State::HOLD) {
+				// Get cursor item
+				Item& cursor_item = m_InventoryData.at((uint8_t)Slot::CURSOR_0);
+
+				// If cursor item is NOT nothing
+				if (cursor_item.id != Item::ID::VOID) {
+					Item& our_item = m_InventoryData.at((uint8_t)item_slot);
+
+					// If our item ids are the same or it is an empty slot, and we can add one item to without exceeding the stack limit
+					if ((cursor_item.id == our_item.id || our_item.id == Item::ID::VOID) && our_item.count + 1 <= Item::STACK_LIMIT) {
+						++our_item.count;
+						--cursor_item.count;
+
+						our_item.id = cursor_item.id;
+
+						if (cursor_item.count == 0) {
+							cursor_item.id = Item::ID::VOID;
+						}
+					}
+				}
+			}
+			*/
 		}
 	}
 
@@ -366,7 +460,7 @@ namespace Game {
 		m_TextShader->SetUniform3f("u_TextColor", Vivium::RGBColor::WHITE);
 
 		m_ItemShader = new Vivium::Shader("static_texture_vertex", "texture_frag");
-		m_TextObject = new Vivium::Text("", {0, 0}, 0.6f); // TODO: pretty ugly, later use font or something
+		m_TextObject = new Vivium::Text("", {0, 0}, 0.35f); // TODO: pretty ugly, later use font or something
 
 		m_TextFontTexture = MakeRef(Vivium::Texture, Vivium::Text::GetDefaultFont().get());
 		m_TextFontAtlas = new Vivium::TextureAtlas(m_TextFontTexture, { 64, 64 });
@@ -383,18 +477,17 @@ namespace Game {
 
 	bool Inventory::AddItem(const Item& item)
 	{
-		// TODO: hotbar test
 		bool itemIsStackable = Item::GetIsStackable(item.id);
 
 		Properties properties = Inventory::GetProperties(m_InventoryID);
 
-		for (uint8_t i = (uint8_t)properties.start_slot; i < (uint8_t)properties.start_slot + properties.inventory_size; i++) {
-			Item& inventory_item = m_InventoryData[i];
+		// If our item is stackable, search the inventory first to look if we already have a place to stack the item
+		if (itemIsStackable) {
+			for (uint8_t i = (uint8_t)properties.start_slot; i < (uint8_t)properties.start_slot + properties.inventory_size; i++) {
+				Item& inventory_item = m_InventoryData[i];
 
-			// If our items have the same id
-			if (item.id == inventory_item.id) {
-				// If both our current item is stackable, and their item is stackable
-				if (itemIsStackable && Item::GetIsStackable(inventory_item.id)) {
+				// If our items have the same id
+				if (item.id == inventory_item.id) {
 					// If the sum of our counts is less than the stack limit
 					if (item.count + inventory_item.count <= Item::STACK_LIMIT) {
 						// Stack the items together
@@ -405,15 +498,18 @@ namespace Game {
 					}
 				}
 			}
-			else {
-				// If the inventory item is void (empty slot), replace it with our item
-				if (inventory_item.id == Item::ID::VOID) {
-					inventory_item = item;
+		}
 
-					// Successful in adding item
-					return true;
-				}
-			}
+		// Couldn't find anywhere to stack the item if we're here, so get next open slot
+		Slot open_slot = m_GetNextOpenSlot();
+
+		// Will return invalid if there is no open slot
+		if (open_slot != Slot::INVALID) {
+			// Set the open slot to our item
+			m_InventoryData[(uint8_t)open_slot] = item;
+
+			// Return that item was added to inventory
+			return true;
 		}
 
 		// If we reached the end of the loop, we haven't found anywhere to stack the item, so return that we weren't successful

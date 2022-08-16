@@ -24,6 +24,7 @@ namespace Vivium {
 		std::array<float, 8> GetCoordsArray(const Vector2<int>& top_left, const Vector2<int>& bottom_right) const;
 
 		const Ref(Texture) GetAtlas() const;
+		Vector2<int> GetSpriteSize() const;
 
 		void Set(Quad* quad, int index) const;
 		void Set(Quad* quad, const Vector2<int>& index) const;

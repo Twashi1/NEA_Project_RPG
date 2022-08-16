@@ -21,6 +21,7 @@ namespace Game {
 			SMALL,
 			LARGE,  // TODO: implement
 			HOTBAR, // TODO: implement
+			SMALL_WITH_HOTBAR,
 			MAX
 		};
 
@@ -64,6 +65,8 @@ namespace Game {
 		static Vivium::TextureAtlas* m_TextFontAtlas;
 
 		static constexpr float m_InventorySpriteScale = 8.0f;
+
+		Slot m_GetNextOpenSlot();
 		
 		void m_RenderItems();
 		void m_RenderItem(

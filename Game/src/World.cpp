@@ -75,10 +75,23 @@ namespace Game {
 
 		m_Serialiser = new Vivium::Serialiser(Vivium::Stream::Flags::BINARY | Vivium::Stream::Flags::TRUNC);
 
+		m_DaylightFramebuffer = new Vivium::Framebuffer(Vivium::Application::GetScreenDim());
+		m_DaylightShader = new Vivium::Shader("daylight_vertex", "daylight_frag");
+
 		// Generate world
 		m_GenWorld(fullpath);
 
 		m_UpdateTimer.Start();
+	}
+
+	void World::Init()
+	{
+		texture_shader = new Vivium::Shader("texture_vertex", "texture_frag");
+	}
+
+	void World::Terminate()
+	{
+		delete texture_shader;
 	}
 
 	Vivium::Vector2<int> World::GetRegionIndex(const Vivium::Vector2<int>& pos)
@@ -201,6 +214,9 @@ namespace Game {
 		delete m_TextureAtlas;
 		delete m_ItemsAtlas;
 		delete m_Serialiser;
+
+		delete m_DaylightFramebuffer;
+		delete m_DaylightShader;
 	}
 
 	void World::m_DeserialiseRegion(const std::string& filename, const Vivium::Vector2<int>& index)
@@ -208,8 +224,10 @@ namespace Game {
 		// Construct empty region object
 		Region region;
 
+		char* raw_tile_memory = (char*)region.tiles.get();
+
 		m_Serialiser->BeginRead(filename.c_str());
-		m_Serialiser->Read((char*)region.tiles.get(), Region::MEMORY_SIZE);
+		m_Serialiser->Read(&raw_tile_memory, Region::MEMORY_SIZE);
 
 		std::vector<FloorItem> region_floor_items;
 		m_Serialiser->Read(&region_floor_items);
@@ -288,8 +306,11 @@ namespace Game {
 		std::unordered_map<Vivium::Vector2<int>, Structure::ID> structures; // Maps bottom left corner of structure to a structure
 
 		for (int y = 0; y < Region::LENGTH; y++) {
+			int world_y = y + index.y * Region::LENGTH;
 			for (int x = 0; x < Region::LENGTH; x++) {
-				float noise_value = m_NoiseTerrain.Get(x, y); // Returns noise value from 0 - 1
+				int world_x = x + index.x * Region::LENGTH;
+
+				float noise_value = m_NoiseTerrain.Get(world_x, world_y); // Returns noise value from 0 - 1
 
 				Tile tile;
 
@@ -303,7 +324,7 @@ namespace Game {
 
 				tile.bot = tile_id;
 
-				float tree_noise = m_NoiseTrees.Get(x + y * Region::LENGTH);
+				float tree_noise = m_NoiseTrees.Get(world_x + world_y * Region::LENGTH);
 
 				if (tree_noise < 0.03 && noise_value > 0.2) {
 					// TODO: shouldn't use true randomness here
@@ -311,11 +332,11 @@ namespace Game {
 					tile.top = (Tile::ID)index;
 				}
 
-				if (tree_noise > 0.8 && noise_value > 0.6) {
-					if (tree_noise > 0.95) {
-						structures[Vivium::Vector2<int>(x, y)] = Structure::ID::TREE;
+				if (tree_noise > 0.7 && noise_value > 0.4) {
+					if (tree_noise > 0.9) {
+						structures[Vivium::Vector2<int>(world_x, world_y)] = Structure::ID::TREE;
 					}
-					else if (tree_noise > 0.85) {
+					else if (tree_noise > 0.8) {
 						tile.top = Tile::ID::BUSH;
 					}
 					else {
@@ -656,8 +677,24 @@ namespace Game {
 
 	void World::Render(const Vivium::Vector2<int>& pos)
 	{
+		// TODO: some sort of registry system to auto-update these framebuffers
+		// Check if framebuffer dim is different to screen dim, if so update
+		Vivium::Vector2<int> screen_dim = Vivium::Application::GetScreenDim();
+		if (m_DaylightFramebuffer->GetDim() != screen_dim) {
+			m_DaylightFramebuffer->Resize(screen_dim.x, screen_dim.y);
+		}
+
+		// Drawing onto daylight framebuffer
+		m_DaylightFramebuffer->Bind();
 		m_RenderTiles(pos);
 		m_RenderFloorItems(pos);
+		m_DaylightFramebuffer->Unbind();
+
+		// Drawing from daylight framebuffer onto screen
+		Vivium::Quad screen_quad((Vivium::Vector2<float>)screen_dim * 0.5f, (Vivium::Vector2<float>)screen_dim); // TODO: could be static
+		Vivium::Renderer::Submit(&screen_quad, m_DaylightShader, m_DaylightFramebuffer, 0);
+
+		m_DaylightFramebuffer->Clear();
 	}
 
 	void World::Update(Player* player)

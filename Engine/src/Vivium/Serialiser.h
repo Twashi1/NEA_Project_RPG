@@ -65,24 +65,24 @@ namespace Vivium {
 
 		template <typename T>
 		void m_WriteBinary(Stream& s, const std::vector<T>& data) {
-			unsigned int size = data.size();
-			m_WriteBinary<unsigned int>(s, size);
+			std::size_t size = data.size();
+			m_WriteBinary<std::size_t>(s, size);
 
 			s.out->write((char*)&data[0], sizeof(T) * size);
 		}
 
 		template <>
 		void m_WriteBinary(Stream& s, const std::vector<std::string>& data) {
-			unsigned int size = data.size();
-			m_WriteBinary<unsigned int>(s, size);
+			std::size_t size = data.size();
+			m_WriteBinary<std::size_t>(s, size);
 
-			for (unsigned int i = 0; i < size; i++) {
+			for (std::size_t i = 0; i < size; i++) {
 				m_WriteBinary<std::string>(s, data[i]);
 			}
 		}
 
 		template <typename T>
-		void m_WriteBinary(Stream& s, const T* data, const unsigned int& length) {
+		void m_WriteBinary(Stream& s, const T* data, std::size_t length) {
 			static_assert(!std::is_same_v<T, std::string>, "Cannot write array of strings, use std::vector instead");
 
 			s.out->write((char*)data, sizeof(T) * length);
@@ -124,8 +124,8 @@ namespace Vivium {
 		template <typename T>
 		void m_ReadBinary(Stream& s, std::vector<T>* memory) {
 			// Get size of vector
-			unsigned int size;
-			m_ReadBinary<unsigned int>(s, &size);
+			std::size_t size;
+			m_ReadBinary<std::size_t>(s, &size);
 
 			char* readbuff = new char[sizeof(T) * size];
 			s.in->read(readbuff, sizeof(T) * size);
@@ -140,18 +140,31 @@ namespace Vivium {
 
 		template <>
 		void m_ReadBinary(Stream& s, std::vector<std::string>* memory) {
-			unsigned int size;
-			m_ReadBinary<unsigned int>(s, &size);
+			std::size_t size;
+			m_ReadBinary<std::size_t>(s, &size);
 
 			memory->resize(size);
 
-			for (unsigned int i = 0; i < size; i++) {
+			for (std::size_t i = 0; i < size; i++) {
 				m_ReadBinary<std::string>(s, &memory->at(i));
 			}
 		}
 
 		template <typename T>
-		void m_ReadBinary(Stream& s, T* memory, const unsigned int& length) {
+		void m_ReadBinary(Stream& s, T* memory[], std::size_t length) {
+			static_assert(!std::is_same_v<T, std::string>, "Cannot read array of strings, use std::vector instead");
+
+			// Assuming memory has already been allocated
+			char* readbuff = new char[sizeof(T) * length];
+			s.in->read(readbuff, sizeof(T) * length);
+
+			std::memcpy(*memory, readbuff, sizeof(T) * length);
+
+			delete[] readbuff;
+		}
+
+		template <typename T>
+		void m_ReadBinary(Stream& s, T memory[], std::size_t length) {
 			static_assert(!std::is_same_v<T, std::string>, "Cannot read array of strings, use std::vector instead");
 
 			// Assuming memory has already been allocated
@@ -209,10 +222,10 @@ namespace Vivium {
 			}
 			// If the object inherits IStreamable, call IStreamable's write
 			else if constexpr (std::is_base_of_v<IStreamable, T>) {
-				unsigned int size = object.size();
-				Write<unsigned int>(size);
+				std::size_t size = object.size();
+				Write<std::size_t>(size);
 
-				for (unsigned int i = 0; i < size; i++) {
+				for (std::size_t i = 0; i < size; i++) {
 					Write<T>(object[i]);
 				}
 			}
@@ -229,9 +242,9 @@ namespace Vivium {
 			}
 			// If the object inherits IStreamable, call IStreamable's write
 			else if constexpr (std::is_base_of_v<IStreamable, T>) {
-				Write<unsigned int>(Size);
+				Write<std::size_t>(Size);
 
-				for (unsigned int i = 0; i < Size; i++) {
+				for (std::size_t i = 0; i < Size; i++) {
 					Write<T>(object[i]);
 				}
 			}
@@ -242,13 +255,13 @@ namespace Vivium {
 		}
 
 		template <typename T>
-		void Write(const T* object_array, const unsigned int& length) {
+		void Write(const T* object_array, std::size_t length) {
 			if constexpr (!IsStreamable<T>) {
 				LogError("Object type {} is not Streamable", typeid(T).name());
 			}
 			// If the object inherits IStreamable, call IStreamable's write
 			else if constexpr (std::is_base_of_v<IStreamable, T>) {
-				for (unsigned int i = 0; i < length; i++) {
+				for (std::size_t i = 0; i < length; i++) {
 					Write<T>(object_array[i]);
 				}
 			}
@@ -283,12 +296,12 @@ namespace Vivium {
 			}
 			// If the object inherits IStreamable, call IStreamable's read
 			else if constexpr (std::is_base_of_v<IStreamable, T>) {
-				unsigned int size;
-				Read<unsigned int>(&size);
+				std::size_t size;
+				Read<std::size_t>(&size);
 
 				memory->resize(size);
 
-				for (unsigned int i = 0; i < size; i++) {
+				for (std::size_t i = 0; i < size; i++) {
 					Read<T>(&memory->at(i));
 				}
 			}
@@ -306,7 +319,7 @@ namespace Vivium {
 			}
 			// If the object inherits IStreamable, call IStreamable's read
 			else if constexpr (std::is_base_of_v<IStreamable, T>) {
-				for (unsigned int i = 0; i < Size; i++) {
+				for (std::size_t i = 0; i < Size; i++) {
 					Read<T>(&memory->at(i));
 				}
 			}
@@ -317,14 +330,32 @@ namespace Vivium {
 		}
 
 		template <typename T>
-		void Read(T* memory, const unsigned int& length) {
+		void Read(T* memory[], std::size_t length) {
 			// Ensure object is streamable
 			if constexpr (!IsStreamable<T>) {
 				LogError("Object type {} is not Streamable", typeid(T).name());
 			}
 			// If the object inherits IStreamable, call IStreamable's read
 			else if constexpr (std::is_base_of_v<IStreamable, T>) {
-				for (unsigned int i = 0; i < length; i++) {
+				for (std::size_t i = 0; i < length; i++) {
+					Read<T>(&(*memory)[i]);
+				}
+			}
+			// Its a trivial type
+			else {
+				m_ReadBinary(m_Stream, memory, length);
+			}
+		}
+
+		template <typename T>
+		void Read(T memory[], std::size_t length) {
+			// Ensure object is streamable
+			if constexpr (!IsStreamable<T>) {
+				LogError("Object type {} is not Streamable", typeid(T).name());
+			}
+			// If the object inherits IStreamable, call IStreamable's read
+			else if constexpr (std::is_base_of_v<IStreamable, T>) {
+				for (std::size_t i = 0; i < length; i++) {
 					Read<T>(&memory[i]);
 				}
 			}

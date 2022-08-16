@@ -259,6 +259,11 @@ namespace Vivium {
 		return m_Atlas;
 	}
 
+	Vector2<int> TextureAtlas::GetSpriteSize() const
+	{
+		return m_SpriteSize;
+	}
+
 	TextureAtlas::TextureAtlas(Ref(Texture) atlas, const Vector2<int>& sprite_size)
 		: m_Atlas(atlas), m_SpriteSize(sprite_size)
 	{

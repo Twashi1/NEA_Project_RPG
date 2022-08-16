@@ -3,6 +3,12 @@
 #include "Renderer.h"
 
 namespace Vivium {
+	Framebuffer::Framebuffer(const Vector2<int>& dim)
+		: m_Width(dim.x), m_Height(dim.y)
+	{
+		Resize(dim.x, dim.y);
+	}
+
 	Framebuffer::Framebuffer(int width, int height)
 		: m_Width(width), m_Height(height)
 	{
@@ -62,10 +68,18 @@ namespace Vivium {
 		this->m_Width = width;
 		this->m_Height = height;
 
-		glCreateFramebuffers(1, &m_ID);
+		// If our object is uninitialised
+		if (m_ID == 0) {
+			glCreateFramebuffers(1, &m_ID);
+		}
+
 		glBindFramebuffer(GL_FRAMEBUFFER, m_ID);
 
-		glCreateTextures(GL_TEXTURE_2D, 1, &m_ColorAttachment);
+		// If colour attachment uninitialised
+		if (m_ColorAttachment == 0) {
+			glCreateTextures(GL_TEXTURE_2D, 1, &m_ColorAttachment);
+		}
+
 		glBindTexture(GL_TEXTURE_2D, m_ColorAttachment);
 		glTexImage2D(GL_TEXTURE_2D, 0, GL_RGBA8, width, height, 0, GL_RGBA, GL_UNSIGNED_BYTE, nullptr);
 		glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_MIN_FILTER, GL_NEAREST);
@@ -75,6 +89,7 @@ namespace Vivium {
 
 		if (glCheckFramebufferStatus(GL_FRAMEBUFFER) != GL_FRAMEBUFFER_COMPLETE) { LogError("Framebuffer is incomplete"); }
 
+		// Unbinds
 		glBindFramebuffer(GL_FRAMEBUFFER, 0);
 		glBindTexture(GL_TEXTURE_2D, 0);
 	}

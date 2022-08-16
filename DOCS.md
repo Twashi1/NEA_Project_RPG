@@ -11,6 +11,11 @@
 - [ GUI guide ](#GUIGuide)
 - [ Physics guide ](#PhysicsGuide)
 - [ Serialising guide ](#SerialisingGuide)
+    - [ Setup ](#SerialisingSetup)
+		- [ Basic types (POD) ](#PODSerialising)
+		- [ Arrays ](#ArraySerialising)
+		- [ Vectors ](#VectorSerialising)
+		- [ User-defined types ](#UserDefined)
 - [ Input guide ](#InputGuide)
 - [ Noise guide ](#NoiseGuide)
 
@@ -150,6 +155,129 @@ You can also use a texture atlas for rendering a texture
 ## Physics guide
 <a name="SerialisingGuide"></a>
 ## Serialising guide
+
+<a name="SerialisingSetup"></a>
+### Setup
+Create a serialiser
+>```c++
+>Serialiser s(Stream::Flags::BINARY | Stream::Flags::TRUNC);
+>```
+
+Open a file in read/write mode
+>```c++
+>s.BeginWrite("path_to_file.txt");
+>```
+
+Close a file after read/write
+>```c++
+>s.EndWrite();
+>```
+
+<a name="PODSerialising"></a>
+#### Basic types (POD)
+*Supports std::string*  
+
+Writing is as simple as
+>```c++
+>int x = 5;
+>serialiser.Write(x);
+>```
+
+And for reading
+>```c++
+>int x;
+>serialiser.Read(&x);
+>```
+
+<a name="ArraySerialising"></a>
+#### Arrays
+
+For std::array
+
+*Supports std::string*
+
+>```c++
+>std::array<int, 5> my_array = { 1, 2, 3, 4, 5 };
+>serialiser.Write(my_array);
+>```
+
+>```c++
+>std::array<int, 5> my_array;
+>serialiser.Read(&my_array);
+>```
+
+For c-style arrays
+
+*Doesn't support std::string*
+
+>```c++
+>int my_array[5] = { 1, 2, 3, 4, 5 };
+>serialiser.Write(my_array, 5);
+>```
+
+>```c++
+>int* my_array = new int[5];
+>serialiser.Read(&my_array, 5);
+>```
+
+*alternatively*
+>```c++
+>int my_array[5];
+>serialiser.Read(my_array, 5);
+>```
+
+<a name="VectorSerialising"></a>
+#### Vectors
+*Small memory overhead when writing vectors of 4 bytes - or sizeof(std::size_t)*  
+*Supports std::string*
+
+>```c++
+>std::vector<int> my_vector = {1, 2, 3, 4, 5};
+>serialiser.Write(my_vector);
+>```
+
+>```c++
+>std::vector<int> my_vector;
+>serialiser.Read(&my_vector);
+>```
+
+<a name="UserDefined"></a>
+#### User-defined types
+
+Defining a class that can be serialised
+>```c++
+>class MyStruct : IStreamable
+>{
+>	int x, y;
+>
+>	// Default constructor is useful for IStreamable::Read
+>	MyStruct() {}
+>	MyStruct(int x, int y) : x(x), y(y) {}
+>	
+>	void Read(Serialiser& s) override
+>	{
+>		s.Read(&x);
+>		s.Read(&y);
+>	}
+>	void Write(Serialiser& s) const override
+>	{
+>		s.Write(x);
+>		s.Write(y);
+>	}
+>}
+>```
+
+Serialising the class
+>```c++
+>MyStruct object(5, 3);
+>serialiser.Write(object);
+>```
+
+>```c++
+>MyStruct read_object{};
+>serialiser.Read(&read_object);
+>```
+
 <a name="InputGuide"></a>
 ## Input guide
 <a name="NoiseGuide"></a>

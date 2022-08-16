@@ -13,19 +13,21 @@ int sandbox(void)
 {
     Application::Init(WIDTH, HEIGHT, FPS, true);
 
-    Ref(Text) my_text = MakeRef(Text, "Hello world", Vivium::Vector2<float>{ 15, 150 }, 0.25f);
-    Ref(Quad) panel_quad = MakeRef(Quad, 100, 100, 500, 500);
-    Panel my_panel(panel_quad);
+    Serialiser s(Stream::Flags::BINARY | Stream::Flags::TRUNC);
+    int my_array[5] = { 1, 2, 3, 4, 5 };
+    int* read_array = new int[5];
 
-    my_panel.Anchor(Panel::ANCHOR::LEFT, Panel::ANCHOR::TOP, my_text);
+    s.BeginWrite("../Resources/new_file.txt");
+    s.Write(my_array, 5);
+    s.EndWrite();
 
-    while (Application::IsRunning()) {
-        my_panel.Update();
+    s.BeginRead("../Resources/new_file.txt");
+    s.Read<int>(&read_array, std::size_t(5));
+    s.EndRead();
 
-        Application::BeginFrame();
-        Renderer::Submit(my_text.get());
-        Application::EndFrame();
-    }
+    LogTrace("Read array {}", Logger::List(read_array, 5));
+
+    delete[] read_array;
 
     Application::Terminate();
 
@@ -44,8 +46,7 @@ int game(void)
     Shader static_color("static_vertex", "color_frag"); static_color.SetUniform3f("u_Color", 0.0, 0.0, 1.0);
     Shader static_texture("static_texture_vertex", "texture_frag");
 
-    World::texture_shader = &texture_shader;
-
+    World::Init();
     FloorItem::Init();
     Inventory::Init();
 
@@ -91,6 +92,7 @@ int game(void)
 
     FloorItem::Terminate();
     Inventory::Terminate();
+    World::Terminate();
     Application::Terminate();
 
     LogInfo("Ending program");

@@ -27,6 +27,9 @@ namespace Game {
 		Vivium::Serialiser* m_Serialiser; // TODO unique ptr
 		unsigned int m_Seed;
 
+		Vivium::Shader* m_DaylightShader;
+		Vivium::Framebuffer* m_DaylightFramebuffer;
+
 		std::string m_WorldName;
 
 		Vivium::Timer m_UpdateTimer;
@@ -74,6 +77,9 @@ namespace Game {
 
 		RegionMap_t regions; // Maps a region index to a Region object
 		FloorItemMap_t floor_items; // Maps a region index to a list of floor items, so only items within adjacent regions are drawn
+
+		static void Init();
+		static void Terminate();
 
 		// Converts a coordinate in the world to the index of the chunk that coordinate is in
 		static Vivium::Vector2<int> GetRegionIndex(const Vivium::Vector2<int>& pos);
