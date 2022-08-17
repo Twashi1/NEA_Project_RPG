@@ -3,8 +3,10 @@
 namespace Game {
 	const std::array<Inventory::Properties, (uint8_t)Inventory::ID::MAX> Inventory::m_Properties{
 		Inventory::Properties(
-			Inventory::Slot::INV_0, 27, {0, 0}, {3, 1}, {114.0f, 46.0f},
+			// SMALL VVV
+			Inventory::Slot::INV_0, 27, {0, 0}, {3, 1}, {4.0f * 32.0f, 2.0f * 32.0f},
 			{
+				// TODO: fix coords
 				{Slot::INV_0,  {18.3f + 9.8f * 0, 15.4f + 8.0f * 0}},
 				{Slot::INV_1,  {18.3f + 9.8f * 1, 15.4f + 8.0f * 0}},
 				{Slot::INV_2,  {18.3f + 9.8f * 2, 15.4f + 8.0f * 0}},
@@ -14,7 +16,6 @@ namespace Game {
 				{Slot::INV_6,  {18.3f + 9.8f * 6, 15.4f + 8.0f * 0}},
 				{Slot::INV_7,  {18.3f + 9.8f * 7, 15.4f + 8.0f * 0}},
 				{Slot::INV_8,  {18.3f + 9.8f * 8, 15.4f + 8.0f * 0}},
-
 				{Slot::INV_9,  {18.3f + 9.8f * 0, 15.4f + 8.0f * 1}},
 				{Slot::INV_10, {18.3f + 9.8f * 1, 15.4f + 8.0f * 1}},
 				{Slot::INV_11, {18.3f + 9.8f * 2, 15.4f + 8.0f * 1}},
@@ -24,7 +25,6 @@ namespace Game {
 				{Slot::INV_15, {18.3f + 9.8f * 6, 15.4f + 8.0f * 1}},
 				{Slot::INV_16, {18.3f + 9.8f * 7, 15.4f + 8.0f * 1}},
 				{Slot::INV_17, {18.3f + 9.8f * 8, 15.4f + 8.0f * 1}},
-
 				{Slot::INV_18, {18.3f + 9.8f * 0, 15.4f + 8.0f * 2}},
 				{Slot::INV_19, {18.3f + 9.8f * 1, 15.4f + 8.0f * 2}},
 				{Slot::INV_20, {18.3f + 9.8f * 2, 15.4f + 8.0f * 2}},
@@ -35,62 +35,68 @@ namespace Game {
 				{Slot::INV_25, {18.3f + 9.8f * 7, 15.4f + 8.0f * 2}},
 				{Slot::INV_26, {18.3f + 9.8f * 8, 15.4f + 8.0f * 2}}
 			}
-		), // SMALL
+		), // SMALL ^^^ LARGE VVV
 		Inventory::Properties(
-			Inventory::Slot::INV_0, 54, {0, 2}, {3, 4}, {114.0f, 90.0f},
+			Inventory::Slot::INV_0, 54, {0, 2}, {3, 4}, {4.0f * 32.0f, 3.0f * 32.0f},
 			{
 				{Slot::INV_0, {20.0f, 20.0f}}
 			}
-		), // LARGE
-		// TODO: LARGE
+		), // LARGE ^^^ HOTBAR VVV
 		Inventory::Properties(
-			Inventory::Slot::HOTBAR_0, 9, INT_MAX, INT_MAX, 0.0f,
-			{}
-		),  // TODO: HOTBAR
-		Inventory::Properties(
-			Inventory::Slot::INV_0, 36, {4, 0}, {7, 1}, {114.0f, 62.0f},
+			Inventory::Slot::INV_0, 9, {4, 3}, {7, 3}, {4.0f * 32.0f, 1 * 32.0f},
 			{
-				{Slot::INV_0,  {19.0f + 9.8f * 0, 13.0f + 10.5f * 0}},
-				{Slot::INV_1,  {19.0f + 9.8f * 1, 13.0f + 10.5f * 0}},
-				{Slot::INV_2,  {19.0f + 9.8f * 2, 13.0f + 10.5f * 0}},
-				{Slot::INV_3,  {19.0f + 9.8f * 3, 13.0f + 10.5f * 0}},
-				{Slot::INV_4,  {19.0f + 9.8f * 4, 13.0f + 10.5f * 0}},
-				{Slot::INV_5,  {19.0f + 9.8f * 5, 13.0f + 10.5f * 0}},
-				{Slot::INV_6,  {19.0f + 9.8f * 6, 13.0f + 10.5f * 0}},
-				{Slot::INV_7,  {19.0f + 9.8f * 7, 13.0f + 10.5f * 0}},
-				{Slot::INV_8,  {19.0f + 9.8f * 8, 13.0f + 10.5f * 0}},
-
-				{Slot::INV_9,  {19.0f + 9.8f * 0, 13.0f + 10.5f * 1}},
-				{Slot::INV_10, {19.0f + 9.8f * 1, 13.0f + 10.5f * 1}},
-				{Slot::INV_11, {19.0f + 9.8f * 2, 13.0f + 10.5f * 1}},
-				{Slot::INV_12, {19.0f + 9.8f * 3, 13.0f + 10.5f * 1}},
-				{Slot::INV_13, {19.0f + 9.8f * 4, 13.0f + 10.5f * 1}},
-				{Slot::INV_14, {19.0f + 9.8f * 5, 13.0f + 10.5f * 1}},
-				{Slot::INV_15, {19.0f + 9.8f * 6, 13.0f + 10.5f * 1}},
-				{Slot::INV_16, {19.0f + 9.8f * 7, 13.0f + 10.5f * 1}},
-				{Slot::INV_17, {19.0f + 9.8f * 8, 13.0f + 10.5f * 1}},
-
-				{Slot::INV_18, {19.0f + 9.8f * 0, 13.0f + 10.5f * 2}},
-				{Slot::INV_19, {19.0f + 9.8f * 1, 13.0f + 10.5f * 2}},
-				{Slot::INV_20, {19.0f + 9.8f * 2, 13.0f + 10.5f * 2}},
-				{Slot::INV_21, {19.0f + 9.8f * 3, 13.0f + 10.5f * 2}},
-				{Slot::INV_22, {19.0f + 9.8f * 4, 13.0f + 10.5f * 2}},
-				{Slot::INV_23, {19.0f + 9.8f * 5, 13.0f + 10.5f * 2}},
-				{Slot::INV_24, {19.0f + 9.8f * 6, 13.0f + 10.5f * 2}},
-				{Slot::INV_25, {19.0f + 9.8f * 7, 13.0f + 10.5f * 2}},
-				{Slot::INV_26, {19.0f + 9.8f * 8, 13.0f + 10.5f * 2}},
-
-				{Slot::INV_27, {19.0f + 9.8f * 0, 18.0f + 10.5f * 3}},
-				{Slot::INV_28, {19.0f + 9.8f * 1, 18.0f + 10.5f * 3}},
-				{Slot::INV_29, {19.0f + 9.8f * 2, 18.0f + 10.5f * 3}},
-				{Slot::INV_30, {19.0f + 9.8f * 3, 18.0f + 10.5f * 3}},
-				{Slot::INV_31, {19.0f + 9.8f * 4, 18.0f + 10.5f * 3}},
-				{Slot::INV_32, {19.0f + 9.8f * 5, 18.0f + 10.5f * 3}},
-				{Slot::INV_33, {19.0f + 9.8f * 6, 18.0f + 10.5f * 3}},
-				{Slot::INV_34, {19.0f + 9.8f * 7, 18.0f + 10.5f * 3}},
-				{Slot::INV_35, {19.0f + 9.8f * 8, 18.0f + 10.5f * 3}}
+				{Slot::INV_0, {20.5f + 11.0f * 0, 16.5f + 0.0f * 0}},
+				{Slot::INV_1, {20.5f + 11.0f * 1, 16.5f + 0.0f * 0}},
+				{Slot::INV_2, {20.5f + 11.0f * 2, 16.5f + 0.0f * 0}},
+				{Slot::INV_3, {20.5f + 11.0f * 3, 16.5f + 0.0f * 0}},
+				{Slot::INV_4, {20.5f + 11.0f * 4, 16.5f + 0.0f * 0}},
+				{Slot::INV_5, {20.5f + 11.0f * 5, 16.5f + 0.0f * 0}},
+				{Slot::INV_6, {20.5f + 11.0f * 6, 16.5f + 0.0f * 0}},
+				{Slot::INV_7, {20.5f + 11.0f * 7, 16.5f + 0.0f * 0}},
+				{Slot::INV_8, {20.5f + 11.0f * 8, 16.5f + 0.0f * 0}}
 			}
-		) // SMALL_WITH_HOTBAR
+		),  // HOTBAR ^^^ SMALL_WITH_HOTBAR VVV
+		Inventory::Properties(
+			Inventory::Slot::INV_0, 36, {4, 0}, {7, 1}, {4 * 32.0f, 2 * 32.0f},
+			{
+				{Slot::INV_0,  {21.5f + 11.0f * 0, 18.5f + 11.0f * 3}},
+				{Slot::INV_1,  {21.5f + 11.0f * 1, 18.5f + 11.0f * 3}},
+				{Slot::INV_2,  {21.5f + 11.0f * 2, 18.5f + 11.0f * 3}},
+				{Slot::INV_3,  {21.5f + 11.0f * 3, 18.5f + 11.0f * 3}},
+				{Slot::INV_4,  {21.5f + 11.0f * 4, 18.5f + 11.0f * 3}},
+				{Slot::INV_5,  {21.5f + 11.0f * 5, 18.5f + 11.0f * 3}},
+				{Slot::INV_6,  {21.5f + 11.0f * 6, 18.5f + 11.0f * 3}},
+				{Slot::INV_7,  {21.5f + 11.0f * 7, 18.5f + 11.0f * 3}},
+				{Slot::INV_8,  {21.5f + 11.0f * 8, 18.5f + 11.0f * 3}},
+				{Slot::INV_9,  {21.5f + 11.0f * 0, 14.0f + 11.0f * 1}},
+				{Slot::INV_10, {21.5f + 11.0f * 1, 14.0f + 11.0f * 1}},
+				{Slot::INV_11, {21.5f + 11.0f * 2, 14.0f + 11.0f * 1}},
+				{Slot::INV_12, {21.5f + 11.0f * 3, 14.0f + 11.0f * 1}},
+				{Slot::INV_13, {21.5f + 11.0f * 4, 14.0f + 11.0f * 1}},
+				{Slot::INV_14, {21.5f + 11.0f * 5, 14.0f + 11.0f * 1}},
+				{Slot::INV_15, {21.5f + 11.0f * 6, 14.0f + 11.0f * 1}},
+				{Slot::INV_16, {21.5f + 11.0f * 7, 14.0f + 11.0f * 1}},
+				{Slot::INV_17, {21.5f + 11.0f * 8, 14.0f + 11.0f * 1}},
+				{Slot::INV_18, {21.5f + 11.0f * 0, 14.0f + 11.0f * 2}},
+				{Slot::INV_19, {21.5f + 11.0f * 1, 14.0f + 11.0f * 2}},
+				{Slot::INV_20, {21.5f + 11.0f * 2, 14.0f + 11.0f * 2}},
+				{Slot::INV_21, {21.5f + 11.0f * 3, 14.0f + 11.0f * 2}},
+				{Slot::INV_22, {21.5f + 11.0f * 4, 14.0f + 11.0f * 2}},
+				{Slot::INV_23, {21.5f + 11.0f * 5, 14.0f + 11.0f * 2}},
+				{Slot::INV_24, {21.5f + 11.0f * 6, 14.0f + 11.0f * 2}},
+				{Slot::INV_25, {21.5f + 11.0f * 7, 14.0f + 11.0f * 2}},
+				{Slot::INV_26, {21.5f + 11.0f * 8, 14.0f + 11.0f * 2}},
+				{Slot::INV_27, {21.5f + 11.0f * 0, 14.0f + 11.0f * 0}},
+				{Slot::INV_28, {21.5f + 11.0f * 1, 14.0f + 11.0f * 0}},
+				{Slot::INV_29, {21.5f + 11.0f * 2, 14.0f + 11.0f * 0}},
+				{Slot::INV_30, {21.5f + 11.0f * 3, 14.0f + 11.0f * 0}},
+				{Slot::INV_31, {21.5f + 11.0f * 4, 14.0f + 11.0f * 0}},
+				{Slot::INV_32, {21.5f + 11.0f * 5, 14.0f + 11.0f * 0}},
+				{Slot::INV_33, {21.5f + 11.0f * 6, 14.0f + 11.0f * 0}},
+				{Slot::INV_34, {21.5f + 11.0f * 7, 14.0f + 11.0f * 0}},
+				{Slot::INV_35, {21.5f + 11.0f * 8, 14.0f + 11.0f * 0}},
+			 }
+		) // SMALL_WITH_HOTBAR ^^^
 	};
 
 	const Vivium::Vector2<float> Inventory::s_ItemCountOffsets[3] = {
@@ -521,6 +527,11 @@ namespace Game {
 		m_InventoryQuad->SetCenter(new_pos);
 	}
 
+	const Item& Inventory::GetItem(const Slot& slot)
+	{
+		return m_InventoryData.at((uint8_t)slot);
+	}
+
 	Vivium::Vector2<float> Inventory::GetPos() const
 	{
 		return m_InventoryQuad->GetCenter();
@@ -593,6 +604,17 @@ namespace Game {
 		}
 	}
 
+	std::vector<Item> Inventory::GetItems(const Slot& start_slot, uint8_t length)
+	{
+		std::vector<Item> items(length);
+
+		for (uint8_t i = 0; i < length; i++) {
+			items[i] = m_InventoryData.at((uint8_t)start_slot + i);
+		}
+
+		return items;
+	}
+
 	void Inventory::Render()
 	{
 		Vivium::Renderer::Submit(m_InventoryQuad, m_InventoryShader, m_InventoryAtlas->GetAtlas().get());
@@ -602,6 +624,13 @@ namespace Game {
 
 	// Just leave everything uninitialised since this should only be called before Inventory::Read
 	Inventory::Inventory() {}
+
+	void Inventory::SetItems(const std::vector<Item>& items, const Slot& slot)
+	{
+		for (uint8_t i = 0; i < items.size(); i++) {
+			m_InventoryData.at((uint8_t)slot + i) = items.at(i);
+		}
+	}
 
 	Inventory::Inventory(const ID& inventory_id)
 		: m_InventoryID(inventory_id)

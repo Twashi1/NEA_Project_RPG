@@ -7,7 +7,6 @@ namespace Game {
 	public:
 		enum class Slot : uint8_t {
 			INVALID,
-			HOTBAR_0, HOTBAR_1, HOTBAR_2, HOTBAR_3, HOTBAR_4, HOTBAR_5, HOTBAR_6, HOTBAR_7, HOTBAR_8, HOTBAR_9,
 			INV_0,  INV_1,  INV_2,  INV_3,  INV_4,  INV_5,  INV_6,  INV_7,  INV_8,  INV_9,
 			INV_10, INV_11, INV_12, INV_13, INV_14, INV_15, INV_16, INV_17, INV_18, INV_19,
 			INV_20, INV_21, INV_22, INV_23, INV_24, INV_25, INV_26, INV_27, INV_28, INV_29,
@@ -97,6 +96,12 @@ namespace Game {
 		static void Terminate();
 
 		bool AddItem(const Item& item);
+		const Item& GetItem(const Slot& slot);
+		// DropItem
+		// DeleteItem
+
+		std::vector<Item> GetItems(const Slot& start_slot, uint8_t length);
+		void SetItems(const std::vector<Item>& items, const Slot& slot);
 
 		void SetPos(const Vivium::Vector2<float>& new_pos);
 		Vivium::Vector2<float> GetPos() const;

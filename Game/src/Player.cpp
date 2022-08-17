@@ -11,9 +11,15 @@ namespace Game {
 
     void Player::m_RenderInventory()
     {
-        if (m_isInventoryOpened) {
-            m_MainInventory.SetPos(Vivium::Application::GetScreenDim() / 2);
+        Vivium::Vector2<float> screen_dim = Vivium::Application::GetScreenDim();
+
+        if (m_isMainInventoryOpened) {
+            m_MainInventory.SetPos(screen_dim * 0.5f);
             m_MainInventory.Render();
+        }
+        else {
+            m_HotbarInventory.SetPos({screen_dim.x * 0.5f, 100.0f});
+            m_HotbarInventory.Render();
         }
     }
 
@@ -61,12 +67,25 @@ namespace Game {
 
     void Player::m_UpdateInventory(World& world)
     {
+        // Update main inventory
         m_MainInventory.Update(quad->GetCenter(), world);
+        // Copy any changes to main inventory to hotbar inventory
+        std::vector<Item> hotbar_items = m_MainInventory.GetItems(Inventory::Slot::INV_0, 9);
+        m_HotbarInventory.SetItems(hotbar_items, Inventory::Slot::INV_0);
 
         Vivium::Input::State e = Vivium::Input::GetKeyState(GLFW_KEY_E);
 
         // Toggle inventory
-        if (e == Vivium::Input::State::PRESS) { m_isInventoryOpened = !m_isInventoryOpened; }
+        if (e == Vivium::Input::State::PRESS) {
+            // Switching from hotbar inventory to main inventory
+            if (!m_isMainInventoryOpened) {
+                // So copy items from hotbar inventory into main inventory
+                std::vector<Item> hotbar_items = m_HotbarInventory.GetItems(Inventory::Slot::INV_0, 9);
+                m_MainInventory.SetItems(hotbar_items, Inventory::Slot::INV_0);
+            }
+
+            m_isMainInventoryOpened = !m_isMainInventoryOpened;
+        }
     }
 
     void Player::m_UpdateSelectedTile(World& world)
@@ -91,7 +110,7 @@ namespace Game {
     }
 
     Player::Player()
-        : m_MainInventory(Inventory::ID::SMALL_WITH_HOTBAR)
+        : m_MainInventory(Inventory::ID::SMALL_WITH_HOTBAR), m_HotbarInventory(Inventory::ID::HOTBAR)
     {
         // Setup player quad and body
         quad = MakeRef(Vivium::Quad, 0.0f, 0.0f, 100.0f, 100.0f);

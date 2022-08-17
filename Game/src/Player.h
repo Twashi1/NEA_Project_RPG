@@ -22,12 +22,13 @@ namespace Game {
         Vivium::TextureAtlas* m_GameIcons;
 
         Inventory m_MainInventory;
+        Inventory m_HotbarInventory;
 
-        bool m_isInventoryOpened = false;
+        bool m_isMainInventoryOpened = false;
 
     public:
         std::shared_ptr<Vivium::Body> body; // Describes physical properties of player and how it should interact with other objects
-        Ref(Vivium::Quad) quad;                  // Holds vertex buffer and index buffer of player
+        Ref(Vivium::Quad) quad;             // Holds vertex buffer and index buffer of player
         Vivium::Shader* shader;             // Pointer to player shader
 
         Vivium::Vector2<int> selected_tile_pos; // World position of hovered tile

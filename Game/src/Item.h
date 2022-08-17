@@ -80,6 +80,29 @@ namespace Game {
 		void Write(Vivium::Serialiser& s) const override;
 		void Read(Vivium::Serialiser& s) override;
 
+		friend std::ostream& operator<<(std::ostream& os, const Item::ID& id) {
+			std::string id_string;
+
+			switch (id) {
+			case Game::Item::ID::VOID:				id_string = "Void";				break;
+			case Game::Item::ID::AMETHYST_CRYSTAL:	id_string = "Amethyst crystal"; break;
+			case Game::Item::ID::EMERALD_CRYSTAL:	id_string = "Emerald crystal";	break;
+			case Game::Item::ID::RUBY_CRYSTAL:		id_string = "Ruby crystal";		break;
+			case Game::Item::ID::SAPPHIRE_CRYSTAL:	id_string = "Sapphire crystal"; break;
+			case Game::Item::ID::TOPAZ_CRYSTAL:		id_string = "Topaz crystal";	break;
+			case Game::Item::ID::LOG:				id_string = "Log";				break;
+			default:								id_string = "InvalidID";		break;
+			}
+
+			os << id_string;
+			return os;
+		}
+
+		friend std::ostream& operator<<(std::ostream& os, const Item& item) {
+			os << "{" << item.id << ", " << item.count << "}";
+			return os;
+		}
+
 	private:
 		static std::array<Properties, (uint16_t)ID::MAX> m_Properties;
 	};
