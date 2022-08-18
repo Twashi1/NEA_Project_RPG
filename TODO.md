@@ -43,7 +43,7 @@
     - [x] Binary serialisation
     - [ ] Add text serialisation (JSON? Custom format?)
     - [ ] Add serialise helper functions generalised for containers
-    - [ ] Add serialise helper function for map and unordered_map
+    - [x] Add serialise helper function for map and unordered_map
 
 # Game
 ## World
@@ -102,7 +102,5 @@
 - Test new broad phase for physics system
 
 # Bugs
-- Items dont stack correctly (take free slot first)
-- World just keeps repeating?
 - Cursor no longer switches when hovering text input box
 - Renderer::BeginScene and EndScene interfere with transparency (Application clear color is mixed in?)

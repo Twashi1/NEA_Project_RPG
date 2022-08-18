@@ -8,26 +8,52 @@ const int FPS = 144;
 using namespace Vivium;
 using namespace Game;
 
+struct MyStruct : IStreamable {
+    int x, y;
+
+    MyStruct() {}
+    MyStruct(int x, int y) : x(x), y(y) {}
+
+    void Write(Serialiser& s) const override {
+        s.Write(x);
+        s.Write(y);
+    }
+
+    void Read(Serialiser& s) override {
+        s.Read(&x);
+        s.Read(&y);
+    }
+
+    friend std::ostream& operator<<(std::ostream& os, const MyStruct& s) {
+        os << "[" << s.x << ", " << s.y << "]";
+
+        return os;
+    }
+};
+
 int sandbox(void)
 {
     Application::Init(WIDTH, HEIGHT, FPS, true);
 
-    Timer a;
-    Timer b;
+    std::unordered_map<int, MyStruct> numbers0 = {
+        {1, MyStruct(0, 1)},
+        {2, MyStruct(2, 0)},
+        {3, MyStruct(3, 0)}
+    };
 
-    a.Start();
-    for (float i = 0.0f; i < 1000.0f; i += 0.1f) {
-        float x = InverseSquareRoot(i);
-    }
-    float a_time = a.GetElapsed();
+    Serialiser s(Stream::Flags::BINARY | Stream::Flags::TRUNC);
+    s.BeginWrite("../Resources/saves/mapfile.txt");
+    s.Write(numbers0);
+    s.EndWrite();
 
-    b.Start();
-    for (float i = 0.0f; i < 1000.0f; i += 0.1f) {
-        float x = 1.0f / std::sqrt(i);
-    }
-    float b_time = b.GetElapsed();
+    std::unordered_map<int, MyStruct> numbers1;
 
-    LogInfo("A took: {}, B took: {}", a_time, b_time);
+    s.BeginRead("../Resources/saves/mapfile.txt");
+    s.Read(&numbers1);
+    s.EndRead();
+
+    LogTrace("Map is: {}", Logger::PrettyPrint(numbers0));
+    LogTrace("Map after is: {}", Logger::PrettyPrint(numbers1));
 
     Application::Terminate();
 

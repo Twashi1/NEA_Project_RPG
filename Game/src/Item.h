@@ -144,6 +144,12 @@ namespace Game {
 		void Write(Vivium::Serialiser& s) const override;
 		void Read(Vivium::Serialiser& s) override;
 
+		friend std::ostream& operator<<(std::ostream& os, const FloorItem& object) {
+			os << "{" << object.m_ItemData << ", at " << object.m_Quad->GetCenter() << "}";
+
+			return os;
+		}
+
 		friend Inventory;
 	};
 }
@@ -175,6 +181,14 @@ namespace std {
 		auto format(Game::Item item, format_context& ctx) {
 			return formatter<string>::format(
 				std::format("{{{}, {}}}", item.id, item.count), ctx);
+		}
+	};
+
+	template <>
+	struct formatter<Game::FloorItem> : formatter<string> {
+		auto format(Game::FloorItem item, format_context& ctx) {
+			return formatter<string>::format(
+				std::format("{{{}, {}}}", item.GetItemData(), item.GetQuad()->GetCenter()), ctx);
 		}
 	};
 }

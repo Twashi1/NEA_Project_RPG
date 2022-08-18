@@ -254,6 +254,42 @@ namespace Vivium {
 			}
 		}
 
+		template <typename Key_t, typename Value_t>
+		void Write(const std::map<Key_t, Value_t>& object) {
+			if constexpr (!IsStreamable<Key_t> || !IsStreamable<Value_t>) {
+				LogError("Object contains type that is not Streamable");
+			}
+			else {
+				// Write amount of pairs in map
+				std::size_t size = object.size();
+				Write<std::size_t>(size);
+				// Iterate map
+				for (auto& [key, value] : object) {
+					// Write key and value
+					Write<Key_t>(key);
+					Write<Value_t>(value);
+				}
+			}
+		}
+
+		template <typename Key_t, typename Value_t>
+		void Write(const std::unordered_map<Key_t, Value_t>& object) {
+			if constexpr (!IsStreamable<Key_t> || !IsStreamable<Value_t>) {
+				LogError("Object contains type that is not Streamable");
+			}
+			else {
+				// Write amount of pairs in map
+				std::size_t size = object.size();
+				Write<std::size_t>(size);
+				// Iterate map
+				for (auto& [key, value] : object) {
+					// Write key and value
+					Write<Key_t>(key);
+					Write<Value_t>(value);
+				}
+			}
+		}
+
 		template <typename T>
 		void Write(const T* object_array, std::size_t length) {
 			if constexpr (!IsStreamable<T>) {
@@ -326,6 +362,60 @@ namespace Vivium {
 			// Its a trivial type
 			else {
 				m_ReadBinary(m_Stream, memory);
+			}
+		}
+
+		template <typename Key_t, typename Value_t>
+		void Read(std::map<Key_t, Value_t>* memory) {
+			assert(std::is_default_constructible_v<Key_t> && std::is_default_constructible_v<Value_t>, "Key or value are not default constructible");
+
+			if constexpr (!IsStreamable<Key_t> || !IsStreamable<Value_t>) {
+				LogError("Object contains type that is not Streamable");
+			}
+			else {
+				// Read size
+				std::size_t size = 0;
+				Read<std::size_t>(&size);
+
+				for (std::size_t i = 0; i < size; i++) {
+					// Requires default constructor
+					Key_t key;
+					Value_t value;
+
+					Read<Key_t>(&key);
+					Read<Value_t>(&value);
+
+					// Requires copy constructor?
+					memory->insert({ key, value });
+				}
+			}
+		}
+
+		template <typename Key_t, typename Value_t>
+		void Read(std::unordered_map<Key_t, Value_t>* memory) {
+			assert(std::is_default_constructible_v<Key_t> && std::is_default_constructible_v<Value_t>, "Key or value are not default constructible");
+
+			if constexpr (!IsStreamable<Key_t> || !IsStreamable<Value_t>) {
+				LogError("Object contains type that is not Streamable");
+			}
+			else {
+				// Read size
+				std::size_t size = 0;
+				Read<std::size_t>(&size);
+
+				memory->reserve(size);
+
+				for (std::size_t i = 0; i < size; i++) {
+					// Requires default constructor
+					Key_t key;
+					Value_t value;
+
+					Read<Key_t>(&key);
+					Read<Value_t>(&value);
+
+					// Requires copy constructor?
+					memory->insert({ key, value });
+				}
 			}
 		}
 

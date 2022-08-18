@@ -33,13 +33,29 @@ namespace Vivium {
 	class VIVIUM_API Logger {
 	public:
 		template <typename T>
-		static std::string List(const std::vector<T>& values)
+		static std::string PrettyPrint(const T& value)
+		{
+			std::stringstream ss;
+			ss << value;
+			return ss.str();
+		}
+
+		template <>
+		static std::string PrettyPrint(const std::string& value)
+		{
+			std::stringstream ss;
+			ss << "\"" << value << "\"";
+			return ss.str();
+		}
+
+		template <typename T>
+		static std::string PrettyPrint(const std::vector<T>& values)
 		{
 			std::stringstream ss;
 			ss << "[";
 
 			for (std::size_t i = 0; i < values.size(); i++) {
-				ss << values[i];
+				ss << PrettyPrint(values[i]);
 
 				if (i != values.size() - 1) {
 					ss << ", ";
@@ -52,13 +68,13 @@ namespace Vivium {
 		}
 
 		template <typename T>
-		static std::string List(const T* values, const std::size_t& length)
+		static std::string PrettyPrint(const T* values, const std::size_t& length)
 		{
 			std::stringstream ss;
 			ss << "[";
 
 			for (std::size_t i = 0; i < length; i++) {
-				ss << values[i];
+				ss << PrettyPrint(values[i]);
 
 				if (i != length - 1) {
 					ss << ", ";
@@ -66,6 +82,59 @@ namespace Vivium {
 			}
 
 			ss << "]";
+
+			return ss.str();
+		}
+		
+		// TODO: value_t might be list
+		template <typename Key_t, typename Value_t>
+		static std::string PrettyPrint(const std::map<Key_t, Value_t>& object)
+		{
+			std::stringstream ss;
+			ss << "{\n";
+
+			std::size_t i = 0;
+			std::size_t obj_size = object.size();
+
+			for (auto& [key, value] : object) {
+				ss << "    " << PrettyPrint(key) << ": " << PrettyPrint(value);
+
+				if (i != obj_size - 1) {
+					ss << ",";
+				}
+
+				ss << "\n";
+
+				i++;
+			}
+
+			ss << "}";
+
+			return ss.str();
+		}
+
+		template <typename Key_t, typename Value_t>
+		static std::string PrettyPrint(const std::unordered_map<Key_t, Value_t>& object)
+		{
+			std::stringstream ss;
+			ss << "{\n";
+
+			std::size_t i = 0;
+			std::size_t obj_size = object.size();
+
+			for (auto& [key, value] : object) {
+				ss << "    " << PrettyPrint(key) << ": " << PrettyPrint(value);
+
+				if (i != obj_size - 1) {
+					ss << ",";
+				}
+
+				ss << "\n";
+
+				i++;
+			}
+
+			ss << "}";
 
 			return ss.str();
 		}
