@@ -52,4 +52,14 @@
 
 namespace Vivium {
 	static entt::registry Registry;
+
+	template <typename T> concept Arithmetic = std::is_arithmetic_v<T>;
+	template <typename T> concept Signed = std::is_signed_v<T>;
+	template <typename T> concept Integral = std::is_integral_v<T>;
+	template <typename T> concept FloatingPoint = std::is_floating_point_v<T>;
+
+	// TODO: move
+	// Quake fast inverse square root
+	// https://en.wikipedia.org/wiki/Fast_inverse_square_root
+	VIVIUM_API float InverseSquareRoot(float number);
 }

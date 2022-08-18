@@ -1,4 +1,5 @@
 #include "Math.h"
+#include "Vector2.h"
 
 namespace Vivium {
 	namespace Math {

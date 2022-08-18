@@ -1,7 +1,6 @@
 #include "World.h"
 #include "Player.h"
 
-constexpr float PI_CONST = 3.14159265358979323846f;
 const int WIDTH = 1080;
 const int HEIGHT = 720;
 const int FPS = 144;
@@ -13,21 +12,22 @@ int sandbox(void)
 {
     Application::Init(WIDTH, HEIGHT, FPS, true);
 
-    Serialiser s(Stream::Flags::BINARY | Stream::Flags::TRUNC);
-    int my_array[5] = { 1, 2, 3, 4, 5 };
-    int* read_array = new int[5];
+    Timer a;
+    Timer b;
 
-    s.BeginWrite("../Resources/new_file.txt");
-    s.Write(my_array, 5);
-    s.EndWrite();
+    a.Start();
+    for (float i = 0.0f; i < 1000.0f; i += 0.1f) {
+        float x = InverseSquareRoot(i);
+    }
+    float a_time = a.GetElapsed();
 
-    s.BeginRead("../Resources/new_file.txt");
-    s.Read<int>(&read_array, std::size_t(5));
-    s.EndRead();
+    b.Start();
+    for (float i = 0.0f; i < 1000.0f; i += 0.1f) {
+        float x = 1.0f / std::sqrt(i);
+    }
+    float b_time = b.GetElapsed();
 
-    LogTrace("Read array {}", Logger::List(read_array, 5));
-
-    delete[] read_array;
+    LogInfo("A took: {}, B took: {}", a_time, b_time);
 
     Application::Terminate();
 
@@ -40,7 +40,7 @@ int game(void)
     Application::Init(WIDTH, HEIGHT, FPS, true);
 
     Shader texture_shader("texture_vertex", "texture_frag");
-    Shader colour_shader("world_vertex", "color_frag"); colour_shader.SetUniform3f("u_Color", 1.0, 0.0, 0.0);
+    Shader colour_shader("world_vertex", "color_frag"); colour_shader.SetUniform3f("u_Color", RGBColor::BLUE);
     Shader grey_shader("static_vertex", "transparency_frag"); grey_shader.SetUniform4f("u_Color", 0.3, 0.3, 0.3, 0.4f);
     Shader red_shader("static_vertex", "transparency_frag"); red_shader.SetUniform4f("u_Color", 1.0, 0.0, 0.0, 0.6f);
     Shader static_color("static_vertex", "color_frag"); static_color.SetUniform3f("u_Color", 0.0, 0.0, 1.0);
@@ -82,6 +82,8 @@ int game(void)
         world.Render(update_pos);
 
         player.Render();
+
+        // Renderer::DrawScene(Renderer::PHYSICS_DEBUG_SCENE);
 
         if (Application::isStatsEnabled) Application::UpdateStats(*player.body); // Draw stats information
 

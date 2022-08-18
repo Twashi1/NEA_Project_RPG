@@ -3,6 +3,9 @@
 #include "Core.h"
 #include "Logger.h"
 #include "Framebuffer.h"
+#include "Color.h"
+
+#define __VIVIUM_DEBUG_PHYSICS_SCENE 0xffff
 
 namespace Vivium {
 	class VertexBuffer;
@@ -25,16 +28,23 @@ namespace Vivium {
 		static std::map<int, Framebuffer*> m_Framebuffers;
 		static Shader* m_FramebufferShader;
 
+		static Shader* m_CircleShader;
+
 		static void m_Terminate();
 		static void m_Init();
 
 		static void m_ResizeFramebuffers(int width, int height);
+
+		static void m_BeginScene(int id);
 
 	public:
 		static Ref(Camera) camera; // Camera currently being used on all Renderable objects
 
 		static constexpr uint8_t INVALID_TEXTURE_SLOT = 0xff; // Constant to represent an invalid texture slot
 		static constexpr uint8_t MAX_TEXTURE_SLOT = 0xf; // TODO: get max texture slots from opengl
+
+		static constexpr int PHYSICS_DEBUG_SCENE = 0x4C2A5994; // Just some random number I made up
+		static const std::vector<int> RESERVED_SCENE_IDS;
 
 		// Gives a free texture slot
 		static uint8_t GetTextureSlot();
@@ -63,6 +73,8 @@ namespace Vivium {
 		static void Submit(TextInput* text_input);
 		static void Submit(Slider* slider);
 		static void Submit(Sprite* sprite);
+
+		static void DrawCircle(const Vector2<float>& center, float radius, const RGBColor& color);
 
 		friend Application;
 	};

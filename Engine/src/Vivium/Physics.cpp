@@ -1,4 +1,5 @@
 #include "Physics.h"
+
 namespace Vivium {
 	void Physics::Update() {
 		float elapsed = m_Timer.GetElapsed();
@@ -13,11 +14,18 @@ namespace Vivium {
 					Vector2<float> future_pos_a = a->PeekPos(elapsed);
 					Vector2<float> future_pos_b = b->PeekPos(elapsed);
 
-					// TODO: come up with a way to explain this
-					// Create a circle to represent the maximum extents of the body
+					// TODO: some sort of cache for a given shape?
+					Vector2<float> a_dim = a->quad->GetDim();
+					Vector2<float> b_dim = b->quad->GetDim();
 
-					float radius_a = a->quad->GetDim().MaxComponent() * 0.5f;
-					float radius_b = b->quad->GetDim().MaxComponent() * 0.5f;
+					float radius_a = 0.5f * a_dim.magnitude();
+					float radius_b = 0.5f * b_dim.magnitude();
+
+					// DEBUG 
+					{
+						Renderer::DrawCircle(future_pos_a, radius_a, RGBColor::RED);
+						Renderer::DrawCircle(future_pos_b, radius_b, RGBColor::BLUE);
+					}
 
 					// Test if there is a collision between them
 					// https://stackoverflow.com/questions/697188/fast-circle-collision-detection

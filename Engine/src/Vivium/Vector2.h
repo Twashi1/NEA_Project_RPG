@@ -3,11 +3,6 @@
 #include "Core.h"
 
 namespace Vivium {
-	template <typename T> concept Arithmetic = std::is_arithmetic_v<T>;
-	template <typename T> concept Signed = std::is_signed_v<T>;
-	template <typename T> concept Integral = std::is_integral_v<T>;
-	template <typename T> concept FloatingPoint = std::is_floating_point_v<T>;
-
 	template <typename T> requires Arithmetic<T>
 	struct VIVIUM_API Vector2 {
 	public:
@@ -55,7 +50,7 @@ namespace Vivium {
 
 		Vector2 floor() const requires FloatingPoint<T> { return Vector2(std::floor(x), std::floor(y)); }
 		Vector2 ceil() const requires FloatingPoint<T> { return Vector2(std::floor(x), std::floor(y)); }
-		Vector2 normalise() const { return *this / magnitude(); }
+		Vector2 normalise() const { return *this * InverseSquareRoot(x * x + y * y); }
 
 		T magnitude() const { return std::sqrt(x * x + y * y); }
 

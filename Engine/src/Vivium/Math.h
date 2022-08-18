@@ -1,12 +1,12 @@
 #pragma once
 
 #include "Core.h"
-#include "Logger.h"
 #include "Vector2.h"
 
 namespace Vivium {
 	namespace Math {
-		const float PI = 3.14159265358979323f;
+		const float PI = 3.14159265f;
+		const float ROOT2 = 1.41421356f;
 
 		VIVIUM_API Vector2<float> Rotate(const Vector2<float>& point, float angle, const Vector2<float>& pivot = NULL);
 		VIVIUM_API Vector2<float> Rotate(const Vector2<float>& point, float cos_angle, float sin_angle, const Vector2<float>& pivot = NULL);

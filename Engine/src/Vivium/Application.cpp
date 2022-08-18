@@ -65,8 +65,10 @@ namespace Vivium {
         // TODO: SLOW?
         glfwSetCursor(window, cursor);
 
+        Renderer::m_BeginScene(Renderer::PHYSICS_DEBUG_SCENE);
         // Update physics
         physics->Update();
+        Renderer::EndScene();
 
         // Poll and process events
         glfwPollEvents();

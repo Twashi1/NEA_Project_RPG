@@ -26,6 +26,7 @@
     <ClCompile Include="src\Vivium\Camera.cpp" />
     <ClCompile Include="src\Vivium\Collision.cpp" />
     <ClCompile Include="src\Vivium\Color.cpp" />
+    <ClCompile Include="src\Vivium\Core.cpp" />
     <ClCompile Include="src\Vivium\Font.cpp" />
     <ClCompile Include="src\Vivium\Framebuffer.cpp" />
     <ClCompile Include="src\Vivium\IndexBuffer.cpp" />

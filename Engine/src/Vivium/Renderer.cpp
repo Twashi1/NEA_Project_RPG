@@ -19,6 +19,9 @@ namespace Vivium {
 
 	std::map<int, Framebuffer*> Renderer::m_Framebuffers = {};
 	Shader* Renderer::m_FramebufferShader = nullptr;
+	Shader* Renderer::m_CircleShader = nullptr;
+
+	const std::vector<int> Renderer::RESERVED_SCENE_IDS = {Renderer::PHYSICS_DEBUG_SCENE};
 
 	void Renderer::m_Terminate()
 	{
@@ -31,6 +34,7 @@ namespace Vivium {
 		m_Framebuffers = {};
 
 		delete m_FramebufferShader;
+		delete m_CircleShader;
 	}
 
 	void Renderer::m_Init()
@@ -38,6 +42,7 @@ namespace Vivium {
 		camera = MakeRef(Camera, 0.0f, (float)Application::width, 0.0f, (float)Application::height);
 
 		m_FramebufferShader = new Shader("static_texture_vertex", "texture_frag");
+		m_CircleShader = new Shader("texture_vertex", "circle_frag");
 	}
 
 	void Renderer::m_ResizeFramebuffers(int width, int height)
@@ -47,7 +52,7 @@ namespace Vivium {
 		}
 	}
 
-	void Renderer::BeginScene(int id)
+	void Renderer::m_BeginScene(int id)
 	{
 		auto it = m_Framebuffers.find(id);
 
@@ -59,9 +64,24 @@ namespace Vivium {
 		else {
 			Vector2<int> screen_dim = Application::GetScreenDim();
 			Framebuffer* new_fb = new Framebuffer(screen_dim.x, screen_dim.y);
-			m_Framebuffers.insert({id, new_fb });
+			m_Framebuffers.insert({ id, new_fb });
 			new_fb->Bind();
 		}
+	}
+
+	void Renderer::BeginScene(int id)
+	{
+		// Using a reserved id
+		auto id_it = std::find(RESERVED_SCENE_IDS.begin(), RESERVED_SCENE_IDS.end(), id);
+
+		if (id_it == RESERVED_SCENE_IDS.end()) {
+			std::size_t index = std::distance(RESERVED_SCENE_IDS.begin(), id_it);
+			LogError("Attempted to use reserved scene id: {}", RESERVED_SCENE_IDS[index]);
+
+			return;
+		}
+
+		m_BeginScene(id);
 	}
 
 	void Renderer::EndScene()
@@ -352,5 +372,20 @@ namespace Vivium {
 	void Renderer::Submit(Sprite* sprite)
 	{
 		Renderer::Submit(sprite->quad.get(), sprite->shader.get(), sprite->texture.get());
+	}
+
+	void Renderer::DrawCircle(const Vector2<float>& center, float radius, const RGBColor& color)
+	{
+		m_CircleShader->Bind();
+		m_CircleShader->SetUniform3f("u_Color", color);
+		m_CircleShader->SetUniformMat4fv("u_ProjMat", camera->GetProjMat());
+		m_CircleShader->SetUniformMat4fv("u_ViewMat", camera->GetViewMat());
+		m_CircleShader->SetUniform1f("u_Time", Timer::GetTime());
+
+		Quad quad(center, { radius * 2.0f, radius * 2.0f });
+		quad.GetVertexBuffer()->Bind();
+		const IndexBuffer* ib = Quad::GetIndexBuffer(); ib->Bind();
+
+		glDrawElements(GL_TRIANGLES, ib->GetCount(), ib->GetType(), nullptr);
 	}
 }
