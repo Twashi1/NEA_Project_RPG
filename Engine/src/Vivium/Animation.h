@@ -5,9 +5,11 @@
 #include "Vector2.h"
 #include "Quad.h"
 #include "Texture.h"
+#include "TextureAtlas.h"
 
 // TODO: python scripting for animations? or python script to generate timings for animations?
 // TODO: better names
+// TODO: test after changes
 
 namespace Vivium {
 	class VIVIUM_API Animation {
@@ -23,15 +25,7 @@ namespace Vivium {
 	private:
 		Animation::Data m_AnimationData;
 
-		Vector2<int> m_SpriteSize; // Size of one sprite
-
-		Vector2<int> m_AtlasDimRelative; // Dimensions of atlas in terms of sprites
-		Ref(Texture) m_Atlas;		 // The texture atlas we got the sprites from
-
-		// Get index in texture atlas of the current frame
-		Vector2<int> m_GetIndex();
-
-		void m_Construct();
+		Ref(TextureAtlas) m_Atlas; // The texture atlas we got the sprites from
 
 		Timer m_Timer;	 // Timer to track elapsed time between updates
 		float m_FrameTime = 0.0; // Time spent displaying the current frame
@@ -46,7 +40,7 @@ namespace Vivium {
 		const Ref(Texture) GetAtlas() const;
 
 		// NOTE: data_filename refers to the filename of the .animation data file for the texture atlas
-		Animation(Ref(Quad) quad, Ref(Shader) shader, Ref(Texture) atlas, const Vector2<int>& sprite_size, const Animation::Data& animation_data);
+		Animation(Ref(Quad) quad, Ref(Shader) shader, Ref(TextureAtlas) atlas, const Animation::Data& animation_data);
 		~Animation();
 
 		// Updates the animation, takes current time

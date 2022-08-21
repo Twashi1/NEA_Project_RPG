@@ -10,7 +10,7 @@ namespace Vivium {
 	Ref(Shader) TextInput::m_TextShader = nullptr;
 	Ref(Shader) TextInput::m_TypingBarShader = nullptr;
 
-	void TextInput::m_Init(Ref(Texture) engine_icons)
+	void TextInput::m_Init(Ref(TextureAtlas) engine_icons)
 	{
 		m_TypingBarShader = MakeRef(Shader, "static_texture_vertex", "texture_frag");
 
@@ -18,7 +18,6 @@ namespace Vivium {
 			MakeRef(Quad, 150, 150, 128, 128, 0),
 			m_TypingBarShader,
 			engine_icons,
-			Vector2<int>(16, 16),
 			Animation::Data("engine_icons")
 		);
 
@@ -243,7 +242,7 @@ namespace Vivium {
 		return isTyping;
 	}
 
-	const Vector2<float>& TextInput::GetPos() const
+	Vector2<float> TextInput::GetPos() const
 	{
 		return quad.GetCenter();
 	}

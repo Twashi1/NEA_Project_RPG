@@ -83,6 +83,8 @@ int game(void)
 
     Application::SetBGColor(RGBColor::BLACK);
 
+    // Flag::Set(VIVIUM_FLAG_DRAW_PHYSICS_CIRCLES);
+
     // Loop until window is closed by user
     while (Application::IsRunning())
     {
@@ -108,8 +110,6 @@ int game(void)
         world.Render(update_pos);
 
         player.Render();
-
-        // Renderer::DrawScene(Renderer::PHYSICS_DEBUG_SCENE);
 
         if (Application::isStatsEnabled) Application::UpdateStats(*player.body); // Draw stats information
 

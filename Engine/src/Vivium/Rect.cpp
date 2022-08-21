@@ -14,8 +14,8 @@ namespace Vivium {
 
 		Vector2<float> halfdim = dim * 0.5f; // Calculate half width and height
 
-		float cos_angle = cos(angle);
-		float sin_angle = sin(angle);
+		float cos_angle = std::cos(angle);
+		float sin_angle = std::sin(angle);
 
 		for (int i = 0; i < 4; i++) {
 			vertices[i] = Math::Rotate(

@@ -47,7 +47,7 @@ namespace Vivium {
 		m_UpdatePos();
 	}
 
-	const Vector2<float>& Button::GetPos() const
+	Vector2<float> Button::GetPos() const
 	{
 		return quad.GetCenter();
 	}

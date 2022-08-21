@@ -26,7 +26,7 @@ namespace Vivium {
 
 		// TODO might need fixes
 		void SetPos(const Vector2<float>& pos);
-		const Vector2<float>& GetPos() const;
+		Vector2<float> GetPos() const;
 
 		Text();
 		Text(const Text& other);

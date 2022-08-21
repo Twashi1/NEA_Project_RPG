@@ -382,10 +382,26 @@ namespace Vivium {
 		m_CircleShader->SetUniformMat4fv("u_ViewMat", camera->GetViewMat());
 		m_CircleShader->SetUniform1f("u_Time", Timer::GetTime());
 
-		Quad quad(center, { radius * 2.0f, radius * 2.0f });
-		quad.GetVertexBuffer()->Bind();
-		const IndexBuffer* ib = Quad::GetIndexBuffer(); ib->Bind();
+		float vertices[16] = {
+			center.x - radius, center.y - radius, 0.0f, 0.0f, // Bottom left
+			center.x + radius, center.y - radius, 1.0f, 0.0f, // Bottom right
+			center.x + radius, center.y + radius, 1.0f, 1.0f, // Top right
+			center.x - radius, center.y + radius, 0.0f, 1.0f  // Top left
+		};
 
-		glDrawElements(GL_TRIANGLES, ib->GetCount(), ib->GetType(), nullptr);
+		uint8_t indices[6] = { 0, 1, 2, 2, 3, 0 };
+
+		static const BufferLayout layout = {
+			GLSLDataType::VEC2, // Position
+			GLSLDataType::VEC2  // Tex coords
+		};
+
+		VertexBuffer vb(vertices, 16, layout);
+		IndexBuffer ib(indices, 6);
+
+		vb.Bind();
+		ib.Bind();
+
+		glDrawElements(GL_TRIANGLES, 6, GL_UNSIGNED_BYTE, nullptr);
 	}
 }

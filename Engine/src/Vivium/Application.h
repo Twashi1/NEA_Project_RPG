@@ -37,7 +37,7 @@ namespace Vivium {
     public:
         static bool isStatsEnabled; // Determines if stats should be calculated and displayed
 
-        static Ref(Texture) engine_icons; // Texture for engine icons
+        static Ref(TextureAtlas) engine_icons; // Texture for engine icons
 
         static GLFWwindow* window;  // Pointer to GLFW window
         static GLFWcursor* cursor;  // Pointer to GLFW cursor

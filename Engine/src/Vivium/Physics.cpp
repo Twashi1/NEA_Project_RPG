@@ -22,7 +22,7 @@ namespace Vivium {
 					float radius_b = 0.5f * b_dim.magnitude();
 
 					// DEBUG 
-					{
+					if (Flag::Test(VIVIUM_FLAG_DRAW_PHYSICS_CIRCLES)) {
 						Renderer::DrawCircle(future_pos_a, radius_a, RGBColor::RED);
 						Renderer::DrawCircle(future_pos_b, radius_b, RGBColor::BLUE);
 					}
@@ -98,6 +98,18 @@ namespace Vivium {
 			auto it = std::find(layer.begin(), layer.end(), body);
 			// If we exist in that layer, delete ourselves
 			if (it != layer.end()); layer.erase(it);
+		}
+	}
+
+	void Physics::ClearLayer(int layer_index)
+	{
+		auto it = m_Layers.find(layer_index);
+
+		if (it != m_Layers.end()) {
+			it->second.clear();
+		}
+		else {
+			LogWarn("Couldn't find layer index {} in m_Layers", layer_index);
 		}
 	}
 

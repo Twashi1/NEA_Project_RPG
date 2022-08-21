@@ -127,8 +127,6 @@ namespace Game {
 
         m_GameIcons->Set(m_SelectedTileQuad, 0); // Set texture from index in texture atlas
 
-        Vivium::Application::physics->Register(body, 0);
-
         m_Time = Vivium::Timer::GetTime();
     }
 

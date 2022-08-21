@@ -1,7 +1,7 @@
 #include "Inventory.h"
 
 namespace Game {
-	const std::array<Inventory::Properties, (uint8_t)Inventory::ID::MAX> Inventory::m_Properties{
+	const std::array<Inventory::Properties, (Inventory::id_base_t)Inventory::ID::MAX> Inventory::m_Properties{
 		Inventory::Properties(
 			// SMALL VVV
 			Inventory::Slot::INV_0, 27, {0, 0}, {3, 1}, {4.0f * 32.0f, 2.0f * 32.0f},
@@ -111,9 +111,7 @@ namespace Game {
 
 	Inventory::Slot Inventory::m_GetNextOpenSlot()
 	{
-		Properties properties = Inventory::GetProperties(m_InventoryID);
-
-		for (uint8_t i = (uint8_t)properties.start_slot; i < (uint8_t)properties.start_slot + properties.inventory_size; i++) {
+		for (slot_base_t i = m_InventoryData.start_index(); i < m_InventoryData.end_index(); i++) {
 			if (m_InventoryData[i].id == Item::ID::VOID) {
 				return (Slot)i;
 			}
@@ -142,7 +140,7 @@ namespace Game {
 		uint16_t text_draw_count = 0;
 
 		// TODO: make InventoryData_t iterable
-		for (uint8_t slot = (uint8_t)inven_properties.start_slot; slot < (uint8_t)inven_properties.start_slot + inven_properties.inventory_size; slot++) {
+		for (slot_base_t slot = m_InventoryData.start_index(); slot < m_InventoryData.end_index(); slot++) {
 			Item& item = m_InventoryData.at(slot);
 
 			// TODO: draw multiple copies of texture for multiple items
@@ -445,7 +443,7 @@ namespace Game {
 
 	Inventory::Properties Inventory::GetProperties(const Inventory::ID& id)
 	{
-		return m_Properties[(uint8_t)id];
+		return m_Properties[(id_base_t)id];
 	}
 
 	Vivium::Shader* Inventory::m_InventoryShader = nullptr;
@@ -485,13 +483,9 @@ namespace Game {
 	{
 		bool itemIsStackable = Item::GetIsStackable(item.id);
 
-		Properties properties = Inventory::GetProperties(m_InventoryID);
-
 		// If our item is stackable, search the inventory first to look if we already have a place to stack the item
 		if (itemIsStackable) {
-			for (uint8_t i = (uint8_t)properties.start_slot; i < (uint8_t)properties.start_slot + properties.inventory_size; i++) {
-				Item& inventory_item = m_InventoryData[i];
-
+			for (Item& inventory_item : m_InventoryData) {
 				// If our items have the same id
 				if (item.id == inventory_item.id) {
 					// If the sum of our counts is less than the stack limit
@@ -512,7 +506,7 @@ namespace Game {
 		// Will return invalid if there is no open slot
 		if (open_slot != Slot::INVALID) {
 			// Set the open slot to our item
-			m_InventoryData[(uint8_t)open_slot] = item;
+			m_InventoryData[(slot_base_t)open_slot] = item;
 
 			// Return that item was added to inventory
 			return true;
@@ -622,8 +616,9 @@ namespace Game {
 		m_RenderItems();
 	}
 
-	// Just leave everything uninitialised since this should only be called before Inventory::Read
-	Inventory::Inventory() {}
+	Inventory::Inventory()
+		: m_InventoryData({}), m_InventoryID(ID::MAX), m_InventoryQuad(nullptr)
+	{}
 
 	void Inventory::SetItems(const std::vector<Item>& items, const Slot& slot)
 	{
@@ -633,7 +628,7 @@ namespace Game {
 	}
 
 	Inventory::Inventory(const ID& inventory_id)
-		: m_InventoryID(inventory_id)
+		: m_InventoryID(inventory_id), m_InventoryData(inventory_id)
 	{
 		Properties properties = Inventory::GetProperties(inventory_id);
 		m_InventoryQuad = new Vivium::Quad(Vivium::Vector2<float>(0.0f), properties.sprite_size * m_InventorySpriteScale);
@@ -649,7 +644,7 @@ namespace Game {
 	void Inventory::Write(Vivium::Serialiser& s) const
 	{
 		// Write inventory type
-		s.Write((uint8_t)m_InventoryID);
+		s.Write((id_base_t)m_InventoryID);
 		// Write all items
 		s.Write(m_InventoryData);
 	}
@@ -657,7 +652,7 @@ namespace Game {
 	void Inventory::Read(Vivium::Serialiser& s)
 	{
 		// Read in inventory type
-		s.Read((uint8_t*)&m_InventoryID);
+		s.Read((id_base_t*)&m_InventoryID);
 		// Read all items
 		s.Read(&m_InventoryData);
 
@@ -678,4 +673,47 @@ namespace Game {
 		top_left_index(top_left_index), bottom_right_index(bottom_right_index),
 		sprite_size(sprite_size), slot_coords(slot_coords)
 	{}
+
+	Inventory::Data::Data()
+		: m_Size(0), m_StartIndex(0)
+	{}
+
+	Inventory::Data::Data(const ID& id)
+	{
+		Inventory::Properties properties = GetProperties(id);
+
+		m_StartIndex = (uint16_t)properties.start_slot;
+		m_Size = properties.inventory_size;
+	}
+
+	Inventory::Data::Data(const Data& other)
+		: m_Data(other.m_Data), m_Size(other.m_Size), m_StartIndex(other.m_StartIndex)
+	{}
+
+	Inventory::Data::Data(Data && other) noexcept
+		: m_Data(std::move(other.m_Data)), m_Size(std::move(other.m_Size)), m_StartIndex(std::move(other.m_StartIndex))
+	{}
+
+	Inventory::Data::Iterator Inventory::Data::begin()
+	{
+		return Iterator(&m_Data[m_StartIndex]);
+	}
+	Inventory::Data::Iterator Inventory::Data::end()
+	{
+		return Iterator(&m_Data[m_StartIndex + m_Size]);
+	}
+
+	void Inventory::Data::Write(Vivium::Serialiser& s) const
+	{
+		s.Write(m_Data);
+		s.Write(m_Size);
+		s.Write(m_StartIndex);
+	}
+
+	void Inventory::Data::Read(Vivium::Serialiser& s)
+	{
+		s.Read(&m_Data);
+		s.Read(&m_Size);
+		s.Read(&m_StartIndex);
+	}
 }

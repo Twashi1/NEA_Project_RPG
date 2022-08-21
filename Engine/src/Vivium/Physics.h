@@ -27,6 +27,8 @@ namespace Vivium {
 		void Unregister(Ref(Body) body, int layer_index);
 		void Unregister(Ref(Body) body);
 
+		void ClearLayer(int layer_index);
+
 		Physics();
 	};
 }

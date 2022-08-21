@@ -69,6 +69,7 @@ namespace Game {
 
 	public:
 		static constexpr float PIXEL_SCALE = 64.0;
+		static constexpr int PHYSICS_TILE_LAYER = 0xff;
 
 		typedef std::unordered_map<Vivium::Vector2<int>, Region> RegionMap_t;
 		typedef std::unordered_map<Vivium::Vector2<int>, std::vector<FloorItem>> FloorItemMap_t;
@@ -94,6 +95,7 @@ namespace Game {
 		// TODO: functions assumes no scale/rotation, use camera
 		Vivium::Vector2<int> GetWorldPos(const Vivium::Vector2<float>& pos) const;
 		Tile& GetTile(const Vivium::Vector2<int>& tile);
+		Tile& GetTile(int x, int y);
 
 		// Loads from existing world
 		// World(const std::string& world_name);

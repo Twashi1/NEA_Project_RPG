@@ -1,6 +1,23 @@
 #include "Core.h"
 
 namespace Vivium {
+	uint32_t Flag::m_Flags = 0;
+
+	void Flag::Set(uint32_t flag)
+	{
+		m_Flags |= flag;
+	}
+
+	void Flag::Toggle(uint32_t flag)
+	{
+		m_Flags ^= flag;
+	}
+
+	bool Flag::Test(uint32_t flag)
+	{
+		return m_Flags & flag;
+	}
+
 	float InverseSquareRoot(float number)
 	{
 		long i;

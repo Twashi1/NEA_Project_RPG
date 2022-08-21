@@ -46,7 +46,7 @@ namespace Vivium {
 		void SetValue(float value, float scale);
 		void SetValue(float value, float min, float max);
 
-		const Vector2<float>& GetPos() const;
+		Vector2<float> GetPos() const;
 		void SetPos(const Vector2<float>& new_pos);
 
 		void SetUserParams(void* userParams) { m_UserParams = userParams; }

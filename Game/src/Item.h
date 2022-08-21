@@ -7,11 +7,19 @@ namespace Game {
 	public:
 		enum class ID : uint16_t {
 			VOID,
+			/* Crystals */
 			AMETHYST_CRYSTAL,
 			EMERALD_CRYSTAL,
 			RUBY_CRYSTAL,
 			SAPPHIRE_CRYSTAL,
 			TOPAZ_CRYSTAL,
+			/* Pickaxes */
+			AMETHYST_PICKAXE,
+			EMERALD_PICKAXE,
+			RUBY_PICKAXE,
+			SAPPHIRE_PICKAXE,
+			TOPAZ_PICKAXE,
+			/* End of ores */
 			LOG,
 			MAX
 		};

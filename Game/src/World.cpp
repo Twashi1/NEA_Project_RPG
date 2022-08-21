@@ -60,6 +60,20 @@ namespace Game {
 		return region.Index(relative);
 	}
 
+	Tile& World::GetTile(int x, int y)
+	{
+		// Find region tile is in
+		Vivium::Vector2<int> region_pos = GetRegionIndex(x, y);
+		Region& region = m_LoadRegion(region_pos);
+
+		// Get coordinate of tile within region
+		int rx = x - region_pos.x * Region::LENGTH;
+		int ry = y - region_pos.y * Region::LENGTH;
+
+		// Index tile and return
+		return region.Index(rx, ry);
+	}
+
 	World::World(const uint32_t& seed, const std::string& world_name)
 		: m_WorldName(world_name), m_Seed(seed)
 	{
@@ -450,18 +464,7 @@ namespace Game {
 
 		for (int y = pos.y - frame.y; y <= pos.y + frame.y; y++) {
 			for (int x = pos.x - frame.x; x <= pos.x + frame.x; x++) {
-				// TODO: GetTile?
-				// Calculate region index
-				Vivium::Vector2<int> region_index = GetRegionIndex(x, y);
-				// Calculate relative coords
-				int rx = x - (region_index.x * Region::LENGTH);
-				int ry = y - (region_index.y * Region::LENGTH);
-
-				// Get region
-				Region& region = m_LoadRegion(region_index); // NOTE: m_LoadRegion not really needed, since regions should always already be loaded
-
-				// Get tile from region
-				Tile& tile = region.Index(rx, ry);
+				Tile& tile = GetTile(x, y);
 
 				// Calculate draw coords
 				float dx = x * World::PIXEL_SCALE;
@@ -475,6 +478,7 @@ namespace Game {
 
 					float tile_scale = halfscale * Tile::GetScale(id);
 
+					/* TODO: UpdateMineable */
 					// If our current tile is mineable, and we are currently mining at ile
 					if (Tile::GetIsMineable(id) && mined_tile_id != Tile::ID::VOID)
 					{
@@ -498,6 +502,15 @@ namespace Game {
 						}
 					}
 
+					/* TODO: UpdatePhysics */
+					if (Tile::GetIsPhysical(id)) {
+						Ref(Vivium::Quad) quad = MakeRef(Vivium::Quad, Vivium::Vector2<float>(dx, dy), Vivium::Vector2<float>(halfscale));
+						Ref(Vivium::Body) body = MakeRef(Vivium::Body, quad, true, 0.0f, 0.0f);
+
+						Vivium::Application::physics->Register(body, World::PHYSICS_TILE_LAYER);
+					}
+
+					/* TODO: UpdateVertexData */
 					std::array<float, 4>& faces = m_TextureCoords[(int)id];
 
 					// Bottom left vertex
@@ -704,5 +717,8 @@ namespace Game {
 		m_LoadRegions(player);
 
 		m_UpdateMining(player, elapsed);
+
+		Vivium::Application::physics->ClearLayer(World::PHYSICS_TILE_LAYER);
+		Vivium::Application::physics->Register(player->body, World::PHYSICS_TILE_LAYER);
 	}
 }

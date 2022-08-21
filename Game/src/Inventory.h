@@ -24,6 +24,60 @@ namespace Game {
 			MAX
 		};
 
+		using slot_base_t = std::underlying_type<Slot>::type;
+		using id_base_t = std::underlying_type<ID>::type;
+
+		class Data : Vivium::IStreamable {
+		private:
+			std::array<Item, (slot_base_t)Slot::MAX> m_Data;
+			slot_base_t m_StartIndex;
+			slot_base_t m_Size;
+
+		public:
+			// https://www.internalpointers.com/post/writing-custom-iterators-modern-cpp
+			struct Iterator {
+			public:
+				using iterator_category = std::forward_iterator_tag;
+				using difference_type = std::ptrdiff_t;
+				using value_type = Item;
+				using pointer = Item*;
+				using reference = Item&;
+
+			private:
+				pointer m_ptr;
+
+			public:
+				Iterator(pointer ptr) : m_ptr(ptr) {}
+
+				reference operator*() const { return *m_ptr; }
+				pointer operator->() { return m_ptr; }
+
+				Iterator& operator++() { m_ptr++; return *this; }
+				Iterator operator++(int) { Iterator tmp = *this; ++(*this); return tmp; }
+
+				friend bool operator==(const Iterator& a, const Iterator& b) { return a.m_ptr == b.m_ptr; }
+				friend bool operator!=(const Iterator& a, const Iterator& b) { return a.m_ptr != b.m_ptr; }
+			};
+
+			Data();
+			Data(const ID& id);
+			Data(const Data& other);
+			Data(Data&& other) noexcept;
+
+			inline slot_base_t size() { return m_Size; }
+			inline slot_base_t start_index() { return m_StartIndex; }
+			inline slot_base_t end_index() { return m_StartIndex + m_Size; }
+
+			inline Item& operator[](const slot_base_t& index) { return m_Data[index]; }
+			inline Item& at(const slot_base_t& index) { return m_Data.at(index); }
+
+			Iterator begin();
+			Iterator end();
+
+			void Write(Vivium::Serialiser& s) const override;
+			void Read(Vivium::Serialiser& s) override;
+		};
+
 	private:
 		// TODO: needs more cleanup
 		static constexpr float s_ItemScale = 0.4f;
@@ -50,9 +104,7 @@ namespace Game {
 
 		static const std::array<Properties, (uint8_t)ID::MAX> m_Properties;
 
-		typedef std::array<Item, (uint8_t)Slot::MAX> InventoryData_t;
-
-		InventoryData_t m_InventoryData; // Small inventory largest slot is INV_26, large inventory is INV_53
+		Data m_InventoryData; // Small inventory largest slot is INV_26, large inventory is INV_53
 		ID m_InventoryID;
 		Vivium::Quad* m_InventoryQuad;
 		static Vivium::Shader* m_InventoryShader;

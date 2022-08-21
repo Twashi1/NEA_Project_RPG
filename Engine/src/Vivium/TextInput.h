@@ -45,7 +45,7 @@ namespace Vivium {
 		// Updates the text based on user input
 		void m_UpdateText();
 
-		static void m_Init(Ref(Texture) engine_icons);
+		static void m_Init(Ref(TextureAtlas) engine_icons);
 
 		CallbackFunc_t callback;
 		void* m_UserParams;
@@ -61,7 +61,7 @@ namespace Vivium {
 		Quad quad;
 
 		void SetPos(const Vector2<float>& new_pos);
-		const Vector2<float>& GetPos() const;
+		Vector2<float> GetPos() const;
 
 		Ref(Animation) GetTypingBar();
 		bool GetIsTyping();

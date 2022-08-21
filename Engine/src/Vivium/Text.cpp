@@ -28,7 +28,7 @@ namespace Vivium {
         this->pos = pos;
     }
 
-    const Vector2<float>& Text::GetPos() const
+    Vector2<float> Text::GetPos() const
     {
         return pos;
     }

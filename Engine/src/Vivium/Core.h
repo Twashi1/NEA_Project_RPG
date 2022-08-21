@@ -38,6 +38,8 @@
 
 #define __VIVIUM_EXPOSE
 
+#define VIVIUM_FLAG_DRAW_PHYSICS_CIRCLES 0x00000001
+
 #ifdef __VIVIUM_BUILD_DLL
 	//#define __VIVIUM_EXPOSE
 	#define VIVIUM_API __declspec(dllexport)
@@ -51,6 +53,16 @@
 #endif
 
 namespace Vivium {
+	class VIVIUM_API Flag {
+	private:
+		static uint32_t m_Flags;
+
+	public:
+		static void Set(uint32_t flag);
+		static void Toggle(uint32_t flag);
+		static bool Test(uint32_t flag);
+	};
+
 	static entt::registry Registry;
 
 	template <typename T> concept Arithmetic = std::is_arithmetic_v<T>;

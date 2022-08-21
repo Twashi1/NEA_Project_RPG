@@ -61,7 +61,7 @@ namespace Vivium {
 		m_SliderQuad->SetX(m_BarQuad->Left() + m_BarQuad->GetWidth() * m_Value);
 	}
 
-	const Vector2<float>& Slider::GetPos() const
+	Vector2<float> Slider::GetPos() const
 	{
 		return m_BarQuad->GetCenter();
 	}

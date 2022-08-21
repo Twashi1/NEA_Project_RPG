@@ -9,7 +9,7 @@
 namespace Vivium {
 	struct VIVIUM_API Body {
 	public:
-		Ref(Quad) quad;	// Pointer to quad which describes location and dimensions of Body
+		Ref(Quad) quad;		// Pointer to quad which describes location and dimensions of Body
 		bool isImmovable;	// If an object is immovable, collisions will not change velocity/acceleration of this body (infinite mass)
 		float restitution;	// Represents amount of velocity transferred to this object in collision, but has no link to actual coefficient of restitution in physics (basically just a bad name)
 		float mass;			// Mass of an object, also included in calculation of how much velocity is transferred to this object in a collision

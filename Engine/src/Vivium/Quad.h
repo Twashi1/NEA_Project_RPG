@@ -81,18 +81,8 @@ namespace Vivium {
 
 		void SetRect(const Rect& nrect);
 
-		// TODO: probably deprecated
-		const std::vector<float>& GetTexCoords() const;
-
 		bool ContainsAnyOf(const Quad& quad) const;
 		bool IsIntersecting(const Quad& quad) const;
-
-		// TODO: deprecated
-		// TODO move to a texture atlas class
-		// Changes texture coordinates so a specific texture from a texture atlas can be loaded
-		// Takes the atlas being loaded, the index of the image within the atlas, and the size (in px) of each image in the atlas
-		void SetTextureCoords(const Texture& atlas, const Vector2<int>& index, const Vector2<int>& size);
-		void SetTextureCoords(const Texture& atlas, const Vector2<int>& top_left, const Vector2<int>& bottom_right, const Vector2<int>& size);
 
 		void Write(Serialiser& s) const override;
 		void Read(Serialiser& s) override;

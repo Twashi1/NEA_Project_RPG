@@ -27,15 +27,15 @@ namespace Vivium {
 				0.0f, 1.0f
 		};
 
-		std::vector<float> buffer_data = {
-			vertices[Rect::BOTTOMLEFT].x, vertices[Rect::BOTTOMLEFT].y, m_TexCoords[0], m_TexCoords[1],
+		float vertex_data[16] = {
+			vertices[Rect::BOTTOMLEFT].x,  vertices[Rect::BOTTOMLEFT].y,  m_TexCoords[0], m_TexCoords[1],
 			vertices[Rect::BOTTOMRIGHT].x, vertices[Rect::BOTTOMRIGHT].y, m_TexCoords[2], m_TexCoords[3],
-			vertices[Rect::TOPRIGHT].x, vertices[Rect::TOPRIGHT].y, m_TexCoords[4], m_TexCoords[5],
-			vertices[Rect::TOPLEFT].x, vertices[Rect::TOPLEFT].y, m_TexCoords[6], m_TexCoords[7]
+			vertices[Rect::TOPRIGHT].x,    vertices[Rect::TOPRIGHT].y,    m_TexCoords[4], m_TexCoords[5],
+			vertices[Rect::TOPLEFT].x,     vertices[Rect::TOPLEFT].y,     m_TexCoords[6], m_TexCoords[7]
 		};
 
 		// Create buffer for vertex coords and tex coords
-		vb = MakeRef(VertexBuffer, buffer_data, *layout);
+		vb = MakeRef(VertexBuffer, vertex_data, 16, *layout);
 	}
 
 	void Quad::m_Init()
@@ -117,11 +117,6 @@ namespace Vivium {
 		m_Update();
 	}
 
-	const std::vector<float>& Quad::GetTexCoords() const
-	{
-		return m_TexCoords;
-	}
-
 	bool Quad::ContainsAnyOf(const Quad& quad) const
 	{
 		return ContainsAnyOf(quad.GetVertices());
@@ -130,54 +125,6 @@ namespace Vivium {
 	bool Quad::IsIntersecting(const Quad& quad) const
 	{
 		return ContainsAnyOf(quad.GetVertices()) || quad.ContainsAnyOf(GetVertices());
-	}
-
-	void Quad::SetTextureCoords(const Texture& atlas, const Vector2<int>& index, const Vector2<int>& size)
-	{
-		// Inverse width and height of atlas
-		float inv_width = 1.0f / atlas.GetWidth();
-		float inv_height = 1.0f / atlas.GetHeight();
-
-		// Calculate faces
-		float left = index.x * inv_width * size.x;
-		float right = (index.x + 1) * inv_width * size.x;
-		float bottom = index.y * inv_height * size.y;
-		float top = (index.y + 1) * inv_height * size.y;
-
-		// Create tex coords list
-		m_TexCoords = {
-				left, bottom,
-				right, bottom,
-				right, top,
-				left, top
-		};
-
-		// Update texture coords
-		vb->Set(1, &m_TexCoords[0], sizeof(float) * 8);
-	}
-
-	void Quad::SetTextureCoords(const Texture& atlas, const Vector2<int>& top_left, const Vector2<int>& bottom_right, const Vector2<int>& size)
-	{
-		// Inverse width and height of atlas
-		float inv_width = 1.0f / atlas.GetWidth();
-		float inv_height = 1.0f / atlas.GetHeight();
-
-		// Calculate faces
-		float left = top_left.x * inv_width * size.x;
-		float right = (bottom_right.x + 1) * inv_width * size.x;
-		float bottom = bottom_right.y * inv_height * size.y;
-		float top = (top_left.y + 1) * inv_height * size.y;
-
-		// Create tex coords list
-		m_TexCoords = {
-				left, bottom,
-				right, bottom,
-				right, top,
-				left, top
-		};
-
-		// Update texture coords
-		vb->Set(1, &m_TexCoords[0], sizeof(float) * 8);
 	}
 
 	void Quad::Write(Serialiser& s) const

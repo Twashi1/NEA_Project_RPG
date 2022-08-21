@@ -68,39 +68,16 @@ namespace Vivium {
 		delete filetext;
 	}
 
-	Vector2<int> Animation::m_GetIndex()
+	const Ref(Texture) Animation::GetAtlas() const
 	{
-		// Calculate y index
-		int y = (m_FrameIndex + m_AnimationData.start_index) / m_AtlasDimRelative.x;
-		// Calculate x index
-		int x = (m_FrameIndex + m_AnimationData.start_index) - (y * m_AtlasDimRelative.x);
-		// Invert y since we want to read top to bottom
-		y = (m_AtlasDimRelative.y - 1) - y;
-
-		// Return index
-		return Vector2<int>(x, y);
+		return m_Atlas->GetAtlas();
 	}
 
-	void Animation::m_Construct()
-	{
-		// Calculate dimensions of atlas (in terms of sprites)
-		m_AtlasDimRelative = Vector2<int>(m_Atlas->GetWidth() / m_SpriteSize.x, m_Atlas->GetHeight() / m_SpriteSize.y);
-	}
+	Animation::Animation(Ref(Quad) quad, Ref(Shader) shader, Ref(TextureAtlas) atlas, const Animation::Data& animation_data)
+		: quad(quad), shader(shader), m_Atlas(atlas), m_AnimationData(animation_data)
+	{}
 
-	const std::shared_ptr<Texture> Animation::GetAtlas() const
-	{
-		return m_Atlas;
-	}
-
-	Animation::Animation(Ref(Quad) quad, Ref(Shader) shader, Ref(Texture) atlas, const Vector2<int>& sprite_size, const Animation::Data& animation_data)
-		: quad(quad), shader(shader), m_Atlas(atlas), m_SpriteSize(sprite_size), m_AnimationData(animation_data)
-	{
-		m_Construct();
-	}
-
-	Animation::~Animation()
-	{
-	}
+	Animation::~Animation() {}
 
 	void Animation::Update()
 	{
@@ -124,7 +101,7 @@ namespace Vivium {
 			// Reset current frame time
 			m_FrameTime -= this_frame_timing;
 			// Change texture coordinates
-			quad->SetTextureCoords(*m_Atlas, m_GetIndex(), m_SpriteSize);
+			m_Atlas->Set(quad.get(), m_FrameIndex);
 		}
 	}
 }

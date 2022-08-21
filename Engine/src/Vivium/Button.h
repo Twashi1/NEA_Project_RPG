@@ -51,7 +51,7 @@ namespace Vivium {
 		Text* text; // Text object, stores information required to render text TODO: should be private
 
 		void SetPos(const Vector2<float>& pos);
-		const Vector2<float>& GetPos() const;
+		Vector2<float> GetPos() const;
 
 		// TODO better constructor?
 		Button(const Quad& quad, CallbackFunc_t callback, const std::string& idle_text, const std::string& pressed_text, Ref(Shader) idle_shader, Ref(Shader) pressed_shader, Ref(Texture) idle_texture, Ref(Texture) pressed_texture, void* userParams = nullptr);

@@ -19,7 +19,7 @@ namespace Vivium {
     bool Application::isStatsEnabled = true;
 
     VersionNumber Application::m_VersionNumber = "v0.0.2";
-    Ref(Texture) Application::engine_icons = nullptr;
+    Ref(TextureAtlas) Application::engine_icons = nullptr;
 
     GLFWwindow* Application::window = nullptr;
     GLFWcursor* Application::cursor = nullptr;
@@ -76,6 +76,10 @@ namespace Vivium {
 
     void Application::EndFrame()
     {
+        if (Flag::Test(VIVIUM_FLAG_DRAW_PHYSICS_CIRCLES)) {
+            Renderer::DrawScene(Renderer::PHYSICS_DEBUG_SCENE);
+        }
+
         // Update the screen from all the draw calls
         glFlush();
         glfwSwapBuffers(window);
@@ -183,7 +187,7 @@ namespace Vivium {
         Renderer::m_Init();
 
         // Create icons texture
-        engine_icons = MakeRef(Texture, "engine_icons.png");
+        engine_icons = MakeRef(TextureAtlas, "engine_icons.png", Vivium::Vector2<int>(16, 16));
 
         // Initialise input system
         Input::m_Init();
