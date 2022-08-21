@@ -170,28 +170,31 @@ namespace Game {
 			// Increase draw count
 			item_draw_count += std::min(item.count, (uint16_t)3);
 
-			// Get item count as text
-			std::string item_count_string = std::to_string(item.count);
+			// Only draw item count for non-stackable items
+			if (Item::GetIsStackable(item.id)) {
+				// Get item count as text
+				std::string item_count_string = std::to_string(item.count);
 
-			// Now we need to render the text
-			// Get rendering pos
-			Vivium::Vector2<float> rendering_pos(dx, dy);
-			// Little offset so it draws to the bottom right of the item
-			rendering_pos += Vivium::Vector2<float>(3.5f - (item_count_string.length() * 1.5f), -3.0f) * m_InventorySpriteScale;
+				// Now we need to render the text
+				// Get rendering pos
+				Vivium::Vector2<float> rendering_pos(dx, dy);
+				// Little offset so it draws to the bottom right of the item
+				rendering_pos += Vivium::Vector2<float>(3.5f - (item_count_string.length() * 1.5f), -3.0f) * m_InventorySpriteScale;
 
-			// Iterate through characters in text
-			for (char c : item_count_string) {
-				Vivium::Font::Character ch = Vivium::Text::GetDefaultFont()->character_map.at(c);
+				// Iterate through characters in text
+				for (char c : item_count_string) {
+					Vivium::Font::Character ch = Vivium::Text::GetDefaultFont()->character_map.at(c);
 
-				float x = rendering_pos.x + ch.bearing.x * m_TextObject->scale;
-				float y = rendering_pos.y - (ch.size.y - ch.bearing.y) * m_TextObject->scale;
-				float w = ch.size.x * m_TextObject->scale;
-				float h = ch.size.y * m_TextObject->scale;
+					float x = rendering_pos.x + ch.bearing.x * m_TextObject->scale;
+					float y = rendering_pos.y - (ch.size.y - ch.bearing.y) * m_TextObject->scale;
+					float w = ch.size.x * m_TextObject->scale;
+					float h = ch.size.y * m_TextObject->scale;
 
-				m_RenderItemCount(c, { x, y }, { w, h }, text_vertex_data, text_vertex_index, text_indices, text_indices_index);
+					m_RenderItemCount(c, { x, y }, { w, h }, text_vertex_data, text_vertex_index, text_indices, text_indices_index);
 
-				text_draw_count++;
-				rendering_pos.x += (ch.advance >> 6) * m_TextObject->scale * m_InventorySpriteScale / 8.0f;
+					text_draw_count++;
+					rendering_pos.x += (ch.advance >> 6) * m_TextObject->scale * m_InventorySpriteScale / 8.0f;
+				}
 			}
 		}
 
@@ -377,12 +380,12 @@ namespace Game {
 		if (item_rect.Contains(cursor_pos)) {
 			if (lmb_state == Vivium::Input::State::PRESS) {
 				// Get cursor item
-				Item& cursor_item = m_InventoryData.at((uint8_t)Slot::CURSOR_0);
+				Item& cursor_item = m_InventoryData.at((slot_base_t)Slot::CURSOR_0);
 
 				// If we have nothing in the cursor slot
 				if (cursor_item.id == Item::ID::VOID) {
 					// Move our item to that cursor slot
-					Item& our_item = m_InventoryData.at((uint8_t)item_slot);
+					Item& our_item = m_InventoryData.at((slot_base_t)item_slot);
 					cursor_item.id = our_item.id;
 					cursor_item.count = our_item.count;
 
@@ -393,11 +396,11 @@ namespace Game {
 			}
 			else if (lmb_state == Vivium::Input::State::RELEASE) {
 				// Get cursor item
-				Item& cursor_item = m_InventoryData.at((uint8_t)Slot::CURSOR_0);
+				Item& cursor_item = m_InventoryData.at((slot_base_t)Slot::CURSOR_0);
 
 				// If cursor item is NOT nothing
 				if (cursor_item.id != Item::ID::VOID) {
-					Item& our_item = m_InventoryData.at((uint8_t)item_slot);
+					Item& our_item = m_InventoryData.at((slot_base_t)item_slot);
 
 					// If our item counts are the same and our counts are less than the stack limit, stack the items
 					if (cursor_item.id == our_item.id && cursor_item.count + our_item.count <= Item::STACK_LIMIT) {
@@ -598,12 +601,12 @@ namespace Game {
 		}
 	}
 
-	std::vector<Item> Inventory::GetItems(const Slot& start_slot, uint8_t length)
+	std::vector<Item> Inventory::GetItems(const Slot& start_slot, slot_base_t length)
 	{
 		std::vector<Item> items(length);
 
-		for (uint8_t i = 0; i < length; i++) {
-			items[i] = m_InventoryData.at((uint8_t)start_slot + i);
+		for (slot_base_t i = 0; i < length; i++) {
+			items[i] = m_InventoryData.at((slot_base_t)start_slot + i);
 		}
 
 		return items;
@@ -641,6 +644,23 @@ namespace Game {
 		delete m_InventoryQuad;
 	}
 
+	Inventory::Data& Inventory::GetData()
+	{
+		return m_InventoryData;
+	}
+
+	std::vector<bool> Inventory::AddItems(const std::vector<Item>& items)
+	{
+		std::size_t items_size = items.size();
+		std::vector<bool> return_values(items_size);
+
+		for (std::size_t i = 0; i < items_size; i++) {
+			return_values[i] = AddItem(items[i]);
+		}
+
+		return return_values;
+	}
+
 	void Inventory::Write(Vivium::Serialiser& s) const
 	{
 		// Write inventory type
@@ -664,7 +684,7 @@ namespace Game {
 	}
 
 	Inventory::Properties::Properties(
-		const Slot& start_slot, const uint8_t& inventory_size,
+		const Slot& start_slot, const slot_base_t& inventory_size,
 		const Vivium::Vector2<int>& top_left_index, const Vivium::Vector2<int>& bottom_right_index,
 		const Vivium::Vector2<float>& sprite_size,
 		const std::unordered_map<Slot, Vivium::Vector2<float>>& slot_coords

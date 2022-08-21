@@ -1,7 +1,7 @@
 #include "Logger.h"
 
 namespace Vivium {
-#ifdef __VIVIUM_EXPOSE
+#ifdef VIVIUM_EXPOSE_CORE
 	std::string VIVIUM_API __SignatureToString(const std::string& msg, int line, const char* func_sig)
 	{
 		// Matches __something and the whitespace after

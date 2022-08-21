@@ -36,18 +36,17 @@
 #include <gtc/matrix_transform.hpp>
 #include <GLFW/glfw3.h>
 
-#define __VIVIUM_EXPOSE
-
+/* Flags */
 #define VIVIUM_FLAG_DRAW_PHYSICS_CIRCLES 0x00000001
 
 #ifdef __VIVIUM_BUILD_DLL
-	//#define __VIVIUM_EXPOSE
+	#define VIVIUM_EXPOSE_CORE
 	#define VIVIUM_API __declspec(dllexport)
 #else
 	#define VIVIUM_API __declspec(dllimport)
 #endif
 
-#ifdef __VIVIUM_EXPOSE
+#ifdef VIVIUM_EXPOSE_CORE
 	#define Ref(T) std::shared_ptr<T>
 	#define MakeRef(T, ...) std::make_shared<T>(__VA_ARGS__)
 #endif

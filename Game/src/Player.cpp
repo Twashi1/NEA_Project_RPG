@@ -97,6 +97,16 @@ namespace Game {
 
     void Player::Update(World& world)
     {
+        // TODO: VERY TEMPORARY
+        Vivium::Input::State o = Vivium::Input::GetKeyState(GLFW_KEY_0);
+
+        if (o == Vivium::Input::State::PRESS) {
+            auto recipe = Recipe::GetRecipe(Recipe::ID::AMETHYST_PICKAXE);
+
+            std::vector<Item> items = recipe.CraftFromInventory(m_MainInventory, 1);
+            m_MainInventory.AddItems(items);
+        }
+
         m_UpdateInventory(world);
         m_UpdateMovement();
         m_UpdateSelectedTile(world);

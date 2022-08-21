@@ -22,8 +22,7 @@ namespace Game {
 
 		Recipe(const std::initializer_list<Item>& ingredients, const std::initializer_list<Item>& results);
 
-		// Returns amount crafted
-		uint16_t CraftFromInventory(Inventory& inventory, uint16_t count);
+		std::vector<Item> CraftFromInventory(Inventory& inventory, uint16_t count);
 
 	private:
 		static const std::array<Recipe, (uint16_t)ID::MAX> m_Recipes;

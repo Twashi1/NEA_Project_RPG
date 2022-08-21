@@ -47,13 +47,13 @@
 
 # Game
 ## World
-- [ ] World loads around player!!!!!!!!!!!
+- [x] World loads around player
 - [ ] Terrain generation
     - [ ] Fix messy world generation code
     - [x] Better structure generation
     - [x] More versatile texture coords for tile atlas
-- [ ] Save files
-    - [ ] Implement saving to/loading from file
+- [x] Save files
+    - [x] Implement saving to/loading from file
 - [ ] Animating tiles / Drawing animated tiles
 - [x] Batch render tiles
 - [x] Drawing selection hover
@@ -72,7 +72,8 @@
 - [ ] Crafting
 - [ ] Complex movement
 - [ ] Inventory
-    - [ ] Hotbar
+    - [x] Hotbar
+    - [ ] Some sort of "pending item changes"
     - [ ] Keyboard shortcuts
 
 ## Enemies
@@ -99,7 +100,7 @@
 - Allow void* user data for callback functions (done?)
 - docs docs docs docs docs docs docs docs
 - INL file for Vector2
-- Test new broad phase for physics system
+- Test new broad phase for physics system (done?)
 
 # Bugs
 - Cursor no longer switches when hovering text input box

@@ -1,6 +1,6 @@
 #pragma once
 
-#include <Vivium.h>
+#include "Core.h"
 
 namespace Game {
 	class Item : Vivium::IStreamable {

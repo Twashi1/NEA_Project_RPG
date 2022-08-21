@@ -2,6 +2,7 @@
 
 #include "World.h"
 #include "Inventory.h"
+#include "Recipe.h"
 
 namespace Game {
     class Player {
