@@ -5,7 +5,7 @@
 #include "Recipe.h"
 
 namespace Game {
-    class Player {
+    class Player : Vivium::IStreamable {
     private:
         Vivium::Timer m_Timer; // Stores last time object was updated
         double m_Time = 0.0;
@@ -42,6 +42,11 @@ namespace Game {
         void Update(World& world);
 
         void Render();
+
+        void Write(Vivium::Serialiser& s) const override;
+        void Read(Vivium::Serialiser& s) override;
+
+        void Save(World& world);
 
         Player();
         ~Player();

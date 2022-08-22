@@ -28,6 +28,7 @@
     <ClCompile Include="src\Region.cpp" />
     <ClCompile Include="src\Structures.cpp" />
     <ClCompile Include="src\Tile.cpp" />
+    <ClCompile Include="src\TitleScreen.cpp" />
     <ClCompile Include="src\World.cpp" />
   </ItemGroup>
   <ItemGroup>
@@ -44,6 +45,7 @@
     <ClInclude Include="src\Region.h" />
     <ClInclude Include="src\Structures.h" />
     <ClInclude Include="src\Tile.h" />
+    <ClInclude Include="src\TitleScreen.h" />
     <ClInclude Include="src\World.h" />
   </ItemGroup>
   <PropertyGroup Label="Globals">
@@ -108,7 +110,7 @@
       <SDLCheck>true</SDLCheck>
       <PreprocessorDefinitions>WIN32;_DEBUG;_CONSOLE;%(PreprocessorDefinitions)</PreprocessorDefinitions>
       <ConformanceMode>true</ConformanceMode>
-      <AdditionalIncludeDirectories>$(SolutionDir)vendor\glew\include;$(SolutionDir)vendor\freetype\include;$(SolutionDir)vendor\glfw\include;$(SolutionDir)vendor\glm\glm;$(SolutionDir)vendor\stb_image;$(SolutionDir)vendor\entt;$(SolutionDir)Engine\src;%(AdditionalIncludeDirectories)</AdditionalIncludeDirectories>
+      <AdditionalIncludeDirectories>$(SolutionDir)vendor\glew\include;$(SolutionDir)vendor\freetype\include;$(SolutionDir)vendor\glfw\include;$(SolutionDir)vendor\glm\glm;$(SolutionDir)vendor\stb_image;$(SolutionDir)vendor\entt;$(SolutionDir)Engine\src;$(SolutionDir)vendor\irrKlang\include;%(AdditionalIncludeDirectories)</AdditionalIncludeDirectories>
       <LanguageStandard>stdcpp20</LanguageStandard>
     </ClCompile>
     <Link>

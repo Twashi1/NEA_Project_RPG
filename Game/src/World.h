@@ -37,11 +37,6 @@ namespace Game {
 		Vivium::Vector2<int> mined_tile_pos = Vivium::Vector2<int>(INT_MAX, INT_MAX);
 		Tile::ID mined_tile_id;
 		float mined_tile_time; // Time we've been mining tile for
-	
-		// TODO: weird statics
-		static std::string PATH;
-		static std::string FILE_EXTENSION;
-		static std::string GENERAL_FILE;
 
 		std::string m_ToRegionName(const Vivium::Vector2<int>& index) const;
 
@@ -68,6 +63,11 @@ namespace Game {
 		float m_GetMiningTileScale(float tile_scale, const Tile::ID& id);
 
 	public:
+		// TODO: weird statics
+		static std::string PATH;
+		static std::string FILE_EXTENSION;
+		static std::string GENERAL_FILE;
+
 		static constexpr float PIXEL_SCALE = 64.0;
 		static constexpr int PHYSICS_TILE_LAYER = 0xff;
 
@@ -90,6 +90,8 @@ namespace Game {
 		
 		void Render(const Vivium::Vector2<int>& pos);
 		void Update(Player* player);
+
+		std::string GetName() const;
 
 		// Converts from screen coordinate to world position
 		// TODO: functions assumes no scale/rotation, use camera

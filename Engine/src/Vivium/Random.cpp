@@ -12,6 +12,13 @@ namespace Vivium {
 		);
 	}
 
+	bool Random::GetBool()
+	{
+		std::uniform_int_distribution<int> dist(0, 1);
+
+		return dist(m_Generator);
+	}
+
 	int Random::GetInt(int min, int max)
 	{
 		std::uniform_int_distribution<int> dist(min, max);

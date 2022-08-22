@@ -26,6 +26,8 @@ namespace Vivium {
     int Application::width = 0;
     int Application::height = 0;
 
+    irrklang::ISoundEngine* Application::sound_engine = nullptr;
+
     std::string Application::resources_path = "../Resources/";
 
     Ref(Physics) Application::physics = nullptr;
@@ -89,8 +91,12 @@ namespace Vivium {
         // Update performance tracking variables and display warning if running behind
         m_CalculatePerformance(elapsed);
 
-        // TODO: this is bad probably
-        while (elapsed < m_TimePerFrame) { elapsed += m_Timer.GetElapsed(); }
+        long double sleep_time = m_TimePerFrame - elapsed;
+        double slept_for = 0.0;
+
+        while (slept_for < sleep_time) {
+            slept_for += m_Timer.GetElapsed();
+        }
     }
 
     void Application::EnableWireframe()
@@ -124,6 +130,12 @@ namespace Vivium {
         Application::height = nheight;
         Application::m_FPS = nfps; Application::m_TimePerFrame = 1.0 / (double)m_FPS;
         Application::isStatsEnabled = nisStatsEnabled;
+
+        sound_engine = irrklang::createIrrKlangDevice();
+
+        if (!sound_engine) {
+            LogFatal("Error initialising sound engine");
+        }
 
         LogInfo("Application starting");
 
@@ -252,6 +264,8 @@ namespace Vivium {
 
         Quad::m_Terminate();
 
+        sound_engine->drop();
+
         glfwTerminate();
     }
 
@@ -371,5 +385,11 @@ namespace Vivium {
 
             Renderer::Submit(t.get());
         }
+    }
+
+    void Application::StartSound(const std::string& file)
+    {
+        std::string path = resources_path + "sounds/" + file;
+        sound_engine->play2D(path.c_str());
     }
 }

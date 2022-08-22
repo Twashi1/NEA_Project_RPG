@@ -14,7 +14,7 @@ namespace Game {
 	{
 	}
 
-	std::vector<Item> Recipe::CraftFromInventory(Inventory& inventory, uint16_t count)
+	std::vector<Item> Recipe::CraftMaxFromInventory(Inventory& inventory, uint16_t count)
 	{
 		// TODO: Major cleanup needed
 		struct _IngredientData {

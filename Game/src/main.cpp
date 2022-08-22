@@ -1,5 +1,6 @@
 #include "World.h"
 #include "Player.h"
+#include "TitleScreen.h"
 
 const int WIDTH = 1080;
 const int HEIGHT = 720;
@@ -80,10 +81,13 @@ int game(void)
     World world(0, "testworld");
 
     Player player = Player();
+    // TODO: player.Load(world);
 
     Application::SetBGColor(RGBColor::BLACK);
 
     // Flag::Set(VIVIUM_FLAG_DRAW_PHYSICS_CIRCLES);
+
+    TitleScreen title_screen{};
 
     // Loop until window is closed by user
     while (Application::IsRunning())
@@ -100,16 +104,20 @@ int game(void)
         // Update GUI objects
         // ...
 
-        // Update player
-        player.Update(world);
+        title_screen.Update();
 
-        world.Update(&player);
+        // Update player
+        // player.Update(world);
+
+        // world.Update(&player);
 
         // Draw calls
         Vector2<int> update_pos = (Vector2<int>)(player.quad->GetCenter() / World::PIXEL_SCALE).floor();
-        world.Render(update_pos);
+        // world.Render(update_pos);
 
-        player.Render();
+        // player.Render();
+
+        title_screen.Render();
 
         if (Application::isStatsEnabled) Application::UpdateStats(*player.body); // Draw stats information
 
@@ -117,6 +125,8 @@ int game(void)
     }
 
     LogInfo("Window closed");
+
+    player.Save(world);
 
     FloorItem::Terminate();
     Inventory::Terminate();

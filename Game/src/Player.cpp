@@ -103,7 +103,7 @@ namespace Game {
         if (o == Vivium::Input::State::PRESS) {
             auto recipe = Recipe::GetRecipe(Recipe::ID::AMETHYST_PICKAXE);
 
-            std::vector<Item> items = recipe.CraftFromInventory(m_MainInventory, 1);
+            std::vector<Item> items = recipe.CraftMaxFromInventory(m_MainInventory, 1);
             m_MainInventory.AddItems(items);
         }
 
@@ -117,6 +117,32 @@ namespace Game {
         m_RenderSelectedTile();
         Vivium::Renderer::Submit(quad.get(), shader);
         m_RenderInventory();
+    }
+
+    void Player::Write(Vivium::Serialiser& s) const
+    {
+        s.Write(m_MainInventory);
+        s.Write(quad->GetCenter());
+    }
+
+    void Player::Read(Vivium::Serialiser& s)
+    {
+        s.Read(&m_MainInventory);
+        Vivium::Vector2<float> player_pos;
+        s.Read(&player_pos);
+
+        quad->SetCenter(player_pos);
+    }
+
+    void Player::Save(World& world)
+    {
+        Vivium::Serialiser s(Vivium::Stream::Flags::BINARY | Vivium::Stream::Flags::TRUNC);
+
+        std::string full_path = std::format("{}{}/{}{}", World::PATH, world.GetName(), World::GENERAL_FILE, World::FILE_EXTENSION);
+
+        s.BeginWrite(full_path.c_str());
+        Write(s);
+        s.EndWrite();
     }
 
     Player::Player()

@@ -721,4 +721,9 @@ namespace Game {
 		Vivium::Application::physics->ClearLayer(World::PHYSICS_TILE_LAYER);
 		Vivium::Application::physics->Register(player->body, World::PHYSICS_TILE_LAYER);
 	}
+
+	std::string World::GetName() const
+	{
+		return m_WorldName;
+	}
 }

@@ -7,6 +7,7 @@
 #include "Math.h"
 #include "Color.h"
 #include "Renderer.h"
+#include "Random.h"
 
 namespace Vivium {
     class Panel;
@@ -44,6 +45,8 @@ namespace Vivium {
         static int width;           // Width of window
         static int height;          // Height of window
 
+        static irrklang::ISoundEngine* sound_engine;
+
         static std::string resources_path; // Path to resources file
 
         static Ref(Physics) physics;
@@ -58,6 +61,8 @@ namespace Vivium {
 
         // Updates all Text objects for stats to display correct information for that frame
         static void UpdateStats(const Body& player_body);
+
+        static void StartSound(const std::string& file);
 
         // Executes all pre-rendering operations
         static void BeginFrame();

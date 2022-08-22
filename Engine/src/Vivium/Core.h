@@ -35,6 +35,7 @@
 #include <glm.hpp>
 #include <gtc/matrix_transform.hpp>
 #include <GLFW/glfw3.h>
+#include <irrKlang.h>
 
 /* Flags */
 #define VIVIUM_FLAG_DRAW_PHYSICS_CIRCLES 0x00000001
