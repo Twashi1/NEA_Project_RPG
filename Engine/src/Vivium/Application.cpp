@@ -56,10 +56,11 @@ namespace Vivium {
         // Record time of frame beginning
         m_Timer.Start();
 
-        window_panel->Update();
-
         // Clear the screen
         glClear(GL_COLOR_BUFFER_BIT);
+
+        // Update objects fixed to window panel
+        window_panel->Update();
 
         // Update Input
         Input::Update();
@@ -67,8 +68,8 @@ namespace Vivium {
         // TODO: SLOW?
         glfwSetCursor(window, cursor);
 
-        Renderer::m_BeginScene(Renderer::PHYSICS_DEBUG_SCENE);
         // Update physics
+        Renderer::m_BeginScene(Renderer::PHYSICS_DEBUG_SCENE);
         physics->Update();
         Renderer::EndScene();
 

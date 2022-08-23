@@ -6,17 +6,8 @@
 #include "Button.h"
 #include "TextInput.h"
 #include "Text.h"
+#include "Sprite.h"
 
-/*
-Panel p({200, 200, 300, 300});
-Button my_button(some_params); // the x and y given will be the offset from the anchor
-
-Application::window_panel->Anchor(ANCHOR::RIGHT, ANCHOR::TOP, &p);
-
-p.Anchor(my_button); // This will edit multiple parameters in button class, since both text and quad has to be moved
-or
-p.Anchor(quad_ptr);
-*/
 namespace Vivium {
 	class VIVIUM_API Panel {
 	public:
@@ -93,6 +84,7 @@ namespace Vivium {
 		void Anchor(ANCHOR x, ANCHOR y, Ref(Slider) slider);
 		void Anchor(ANCHOR x, ANCHOR y, Ref(TextInput) text_input);
 		void Anchor(ANCHOR x, ANCHOR y, Ref(Text) text);
+		void Anchor(ANCHOR x, ANCHOR y, Ref(Sprite) sprite);
 
 		// For moving/resizing panels (although this requires the panel to be drawn through something)
 		void Update();

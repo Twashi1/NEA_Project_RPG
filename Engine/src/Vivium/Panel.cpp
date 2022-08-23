@@ -217,8 +217,8 @@ namespace Vivium {
 
 	void Panel::Anchor(ANCHOR x, ANCHOR y, Ref(Button) button)
 	{
-		Anchor(x, y, Ref(Quad)(&button->quad));
-		Anchor(x, y, Ref(Text)(button->text));
+		Anchor(x, y, button->quad);
+		Anchor(x, y, button->text);
 	}
 
 	void Panel::Anchor(ANCHOR x, ANCHOR y, Ref(Slider) slider)
@@ -236,5 +236,10 @@ namespace Vivium {
 	{
 		Anchor(x, y, text_input->m_Text);
 		Anchor(x, y, Ref(Quad)(&text_input->quad));
+	}
+
+	void Panel::Anchor(ANCHOR x, ANCHOR y, Ref(Sprite) sprite)
+	{
+		Anchor(x, y, sprite->quad);
 	}
 }

@@ -45,7 +45,7 @@
     <ClCompile Include="src\Core.cpp">
       <Filter>Source Files</Filter>
     </ClCompile>
-    <ClCompile Include="src\TitleScreen.cpp">
+    <ClCompile Include="src\MainMenu.cpp">
       <Filter>Source Files</Filter>
     </ClCompile>
   </ItemGroup>
@@ -77,7 +77,7 @@
     <ClInclude Include="src\Core.h">
       <Filter>Header Files</Filter>
     </ClInclude>
-    <ClInclude Include="src\TitleScreen.h">
+    <ClInclude Include="src\MainMenu.h">
       <Filter>Header Files</Filter>
     </ClInclude>
   </ItemGroup>

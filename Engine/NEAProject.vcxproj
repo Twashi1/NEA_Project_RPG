@@ -40,6 +40,7 @@
     <ClCompile Include="src\Vivium\Random.cpp" />
     <ClCompile Include="src\Vivium\Rect.cpp" />
     <ClCompile Include="src\Vivium\Renderer.cpp" />
+    <ClCompile Include="src\Vivium\Scene.cpp" />
     <ClCompile Include="src\Vivium\Serialiser.cpp" />
     <ClCompile Include="src\Vivium\Shader.cpp" />
     <ClCompile Include="src\Vivium\Slider.cpp" />
@@ -77,6 +78,7 @@
     <ClInclude Include="src\Vivium\Random.h" />
     <ClInclude Include="src\Vivium\Rect.h" />
     <ClInclude Include="src\Vivium\Renderer.h" />
+    <ClInclude Include="src\Vivium\Scene.h" />
     <ClInclude Include="src\Vivium\Serialiser.h" />
     <ClInclude Include="src\Vivium\Shader.h" />
     <ClInclude Include="src\Vivium\Slider.h" />

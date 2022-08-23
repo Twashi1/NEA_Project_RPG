@@ -47,8 +47,8 @@ namespace Vivium {
 
 		bool isPressed = false; // If button is being pressed
 
-		Quad quad; // Stores position and dimensions of button
-		Text* text; // Text object, stores information required to render text TODO: should be private
+		Ref(Quad) quad; // Stores position and dimensions of button
+		Ref(Text) text; // Text object, stores information required to render text TODO: should be private
 
 		void SetPos(const Vector2<float>& pos);
 		Vector2<float> GetPos() const;

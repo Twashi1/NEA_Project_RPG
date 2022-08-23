@@ -28,7 +28,7 @@
     <ClCompile Include="src\Region.cpp" />
     <ClCompile Include="src\Structures.cpp" />
     <ClCompile Include="src\Tile.cpp" />
-    <ClCompile Include="src\TitleScreen.cpp" />
+    <ClCompile Include="src\MainMenu.cpp" />
     <ClCompile Include="src\World.cpp" />
   </ItemGroup>
   <ItemGroup>
@@ -45,7 +45,7 @@
     <ClInclude Include="src\Region.h" />
     <ClInclude Include="src\Structures.h" />
     <ClInclude Include="src\Tile.h" />
-    <ClInclude Include="src\TitleScreen.h" />
+    <ClInclude Include="src\MainMenu.h" />
     <ClInclude Include="src\World.h" />
   </ItemGroup>
   <PropertyGroup Label="Globals">

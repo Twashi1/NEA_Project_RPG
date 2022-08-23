@@ -12,7 +12,8 @@
 namespace Vivium {
 	class VIVIUM_API Sprite {
 	private:
-		static Ref(Shader) m_DefaultTextureShader;
+		static Ref(Shader) m_DefaultStaticTextureShader;
+		static Ref(Shader) m_DefaultWorldTextureShader;
 
 		static void m_Init();
 
@@ -22,8 +23,8 @@ namespace Vivium {
 		Ref(Texture) texture = nullptr;
 	
 		Sprite(Ref(Quad) quad, Ref(Shader) shader, Ref(Texture) texture = nullptr);
-		Sprite(Ref(Quad) quad, Ref(Texture) texture);
-		Sprite(const Vector2<float>& pos, const Vector2<float>& size, const std::string& sprite_name);
+		Sprite(Ref(Quad) quad, Ref(Texture) texture, bool isStatic = false);
+		Sprite(const Vector2<float>& pos, const Vector2<float>& size, const std::string& sprite_name, bool isStatic = false);
 	
 		friend Application;
 	};

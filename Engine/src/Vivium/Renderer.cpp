@@ -316,15 +316,15 @@ namespace Vivium {
 		const Texture* current_texture = btn->CurrentTexture().get();
 		if (current_texture != nullptr) {
 			// Render with texture
-			Renderer::Submit(&btn->quad, btn->CurrentShader().get(), current_texture);
+			Renderer::Submit(btn->quad.get(), btn->CurrentShader().get(), current_texture);
 		}
 		else {
 			// Render without texture
-			Renderer::Submit(&btn->quad, btn->CurrentShader().get());
+			Renderer::Submit(btn->quad.get(), btn->CurrentShader().get());
 		}
 
 		// Render text of button
-		Renderer::Submit(btn->text);
+		Renderer::Submit(btn->text.get());
 	}
 
 	void Renderer::Submit(Animation* animation)

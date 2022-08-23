@@ -53,11 +53,12 @@ namespace Vivium {
 		int m_Offset;
 
 	public:
-		::std::string typed_text = ""; // Text that user has typed/is typing in
+		std::string typed_text = ""; // Text that user has typed/is typing in
 
 		Ref(Texture) bg_texture = nullptr;
 		Ref(Shader) bg_shader;
 
+		// TODO: make ref
 		Quad quad;
 
 		void SetPos(const Vector2<float>& new_pos);

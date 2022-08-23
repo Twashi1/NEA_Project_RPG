@@ -1,6 +1,6 @@
 #include "World.h"
 #include "Player.h"
-#include "TitleScreen.h"
+#include "MainMenu.h"
 
 const int WIDTH = 1080;
 const int HEIGHT = 720;
@@ -77,56 +77,32 @@ int game(void)
     FloorItem::Init();
     Inventory::Init();
 
-    // Test construct world
-    World world(0, "testworld");
-
-    Player player = Player();
-    // TODO: player.Load(world);
-
     Application::SetBGColor(RGBColor::BLACK);
 
     // Flag::Set(VIVIUM_FLAG_DRAW_PHYSICS_CIRCLES);
 
-    TitleScreen title_screen{};
+    MainMenu main_menu{};
 
     // Loop until window is closed by user
     while (Application::IsRunning())
     {
-        Renderer::camera->SetCamera(
-            player.quad->GetCenter(),
-            { Application::width / 2.0f, Application::height / 2.0f },
-            1.0f,
-            0.0f
-        );
-
         Application::BeginFrame();
 
         // Update GUI objects
         // ...
 
-        title_screen.Update();
-
-        // Update player
-        // player.Update(world);
-
-        // world.Update(&player);
+        // Update title screen
+        main_menu.Update();
 
         // Draw calls
-        Vector2<int> update_pos = (Vector2<int>)(player.quad->GetCenter() / World::PIXEL_SCALE).floor();
-        // world.Render(update_pos);
-
-        // player.Render();
-
-        title_screen.Render();
-
-        if (Application::isStatsEnabled) Application::UpdateStats(*player.body); // Draw stats information
+        main_menu.Render();
 
         Application::EndFrame();
     }
 
     LogInfo("Window closed");
 
-    player.Save(world);
+    // title_screen.GetPlayer()->Save(*title_screen.GetWorld());
 
     FloorItem::Terminate();
     Inventory::Terminate();
