@@ -21,7 +21,9 @@ namespace Vivium {
 		if (severity < Logger::GetLogLevel()) return;
 
 		// Matches __something and the whitespace after
-		const std::regex cleaner("__\\S+\\s");
+		// TODO: better cleaner
+		//const std::regex cleaner("__\\S+\\s");
+		const std::regex cleaner("");
 		std::string function_cleaned = std::regex_replace(func_sig, cleaner, "");
 
 		std::cout << std::format(

@@ -35,5 +35,37 @@ namespace Vivium {
 		VIVIUM_API std::vector<std::string> SplitString(const ::std::string& s, const ::std::string& delim);
 
 		VIVIUM_API void SaveAsBitmap(unsigned char* data, int width, int height, int bpp, const char* path);
+
+		// TODO: some sort of indexing method would be nice
+		class VIVIUM_API VoidArray {
+		private:
+			template <typename T>
+			static void m_Make(void* arr, std::size_t offset, T arg)
+			{
+				char* char_arr = (char*)arr;
+				std::memcpy(char_arr + offset, &arg, sizeof(arg));
+			}
+
+			template <typename T, typename... Ts>
+			static void m_Make(void* arr, std::size_t offset, T arg, Ts... args)
+			{
+				char* char_arr = (char*)arr;
+				std::memcpy(char_arr + offset, &arg, sizeof(arg));
+
+				m_Make(arr, offset + sizeof(arg), args...);
+			}
+
+		public:
+			template <typename... Ts>
+			static void* Make(std::size_t& size, Ts... args)
+			{
+				size = (sizeof(Ts) + ... + 0);
+				void* data = malloc(size);
+
+				m_Make(data, 0, args...);
+
+				return data;
+			}
+		};
 	}
 }

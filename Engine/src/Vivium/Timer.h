@@ -15,6 +15,7 @@ namespace Vivium {
 
 		Timer();
 
+		double GetElapsedNoReset();
 		// Gets time since last GetElapsed or Start call
 		double GetElapsed();
 		// Start calculating elapsed time

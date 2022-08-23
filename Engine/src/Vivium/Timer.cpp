@@ -23,6 +23,11 @@ namespace Vivium {
 		: m_Time(GetTime())
 	{}
 
+	double Timer::GetElapsedNoReset()
+	{
+		return Timer::GetTime() - m_Time;
+	}
+
 	double Timer::GetElapsed()
 	{
 		// Get current time

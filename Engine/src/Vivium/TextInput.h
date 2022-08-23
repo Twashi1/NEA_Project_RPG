@@ -70,7 +70,7 @@ namespace Vivium {
 
 		void SetUserParams(void* userParams);
 
-		TextInput(const Quad& quad, CallbackFunc_t callback, void* userParams = nullptr, int offset = 0);
+		TextInput(const Quad& quad, CallbackFunc_t callback = nullptr, void* userParams = nullptr, int offset = 0);
 		TextInput(const Quad& quad, CallbackFunc_t callback, Ref(Shader) bg_shader, void* userParams = nullptr, int offset = 0);
 		TextInput(const Quad& quad, CallbackFunc_t callback, Ref(Shader) bg_shader, Ref(Texture) bg_texture, void* userParams = nullptr, int offset = 0);
 		TextInput(const Quad& quad, CallbackFunc_t callback, const RGBColor& typed_color, const RGBColor& empty_color, void* userParams = nullptr, int offset = 0);

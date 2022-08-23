@@ -9,52 +9,16 @@ const int FPS = 144;
 using namespace Vivium;
 using namespace Game;
 
-struct MyStruct : IStreamable {
-    int x, y;
-
-    MyStruct() {}
-    MyStruct(int x, int y) : x(x), y(y) {}
-
-    void Write(Serialiser& s) const override {
-        s.Write(x);
-        s.Write(y);
-    }
-
-    void Read(Serialiser& s) override {
-        s.Read(&x);
-        s.Read(&y);
-    }
-
-    friend std::ostream& operator<<(std::ostream& os, const MyStruct& s) {
-        os << "[" << s.x << ", " << s.y << "]";
-
-        return os;
-    }
-};
-
 int sandbox(void)
 {
     Application::Init(WIDTH, HEIGHT, FPS, true);
 
-    std::unordered_map<int, MyStruct> numbers0 = {
-        {1, MyStruct(0, 1)},
-        {2, MyStruct(2, 0)},
-        {3, MyStruct(3, 0)}
-    };
+    std::size_t size = 0;
+    void* result = Utils::VoidArray::Make<unsigned char, unsigned char, unsigned char>(size, 0xff, 0x00, 0xCC);
 
-    Serialiser s(Stream::Flags::BINARY | Stream::Flags::TRUNC);
-    s.BeginWrite("../Resources/saves/mapfile.txt");
-    s.Write(numbers0);
-    s.EndWrite();
+    free(result);
 
-    std::unordered_map<int, MyStruct> numbers1;
-
-    s.BeginRead("../Resources/saves/mapfile.txt");
-    s.Read(&numbers1);
-    s.EndRead();
-
-    LogTrace("Map is: {}", Logger::PrettyPrint(numbers0));
-    LogTrace("Map after is: {}", Logger::PrettyPrint(numbers1));
+    // Utils::Wrapper::VoidArray<int, float, float, int> v(5, 3.0f, 42.0f, 6);
 
     Application::Terminate();
 
