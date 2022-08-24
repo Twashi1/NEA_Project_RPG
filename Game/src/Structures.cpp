@@ -44,26 +44,32 @@ namespace Game {
 		return new_tilemap;
 	}
 
-	void Structure::Place(const Vivium::Vector2<int>& pos, const Structure::ID& id, World* world)
+	bool Structure::Place(const Vivium::Vector2<int>& pos, const Structure::ID& id, World* world)
 	{
 		TileMap_t tilemap = GetTilemap(pos, id);
 
 		for (auto& [pos, tile] : tilemap) {
-			Tile& world_tile = world->GetTile(pos);
+			Tile* world_tile = world->GetLoadedTile(pos);
 
-			if (!m_CheckOverlapTile(tile, world_tile))
+			// Tile was not loaded in the world
+			if (world_tile == nullptr) return false;
+
+			if (!m_CheckOverlapTile(tile, *world_tile))
 			{
 				// Exit function since one tile was invalid
-				return;
+				return false;
 			}
 		}
 
 		for (auto& [pos, tile] : tilemap) {
-			Tile& world_tile = world->GetTile(pos);
+			// No world tiles should be unloaded by this point
+			Tile* world_tile = world->GetLoadedTile(pos);
 
 			// We already know no tiles will overlap at this point so
-			world_tile.CopyRealTiles(tile);
+			world_tile->CopyRealTiles(tile);
 		}
+
+		return true;
 	}
 
 	void Structure::Delete(const Vivium::Vector2<int>& pos, const Structure::ID& id, World* world)

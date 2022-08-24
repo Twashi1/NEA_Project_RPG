@@ -13,8 +13,6 @@ namespace Game {
 
 	class __StartScene : public Vivium::IScene {
 	private:
-		using Vivium::IScene::m_SceneID;
-
 		MainMenu* m_Manager = nullptr;
 
 		Ref(Vivium::Sprite) m_TitleSprite;
@@ -22,7 +20,7 @@ namespace Game {
 		Ref(Vivium::Button) m_LoadWorldButton;
 
 	public:
-		__StartScene(int scene_id, MainMenu* menu);
+		__StartScene(MainMenu* menu);
 		~__StartScene();
 
 		void Render() override;
@@ -32,8 +30,6 @@ namespace Game {
 	// TODO
 	class __CreateWorldScene : public Vivium::IScene {
 	private:
-		using Vivium::IScene::m_SceneID;
-
 		Ref(Vivium::TextInput) m_NameInputBox;
 		Ref(Vivium::TextInput) m_SeedInputBox;
 		Ref(Vivium::Button) m_ConfirmButton;
@@ -52,17 +48,16 @@ namespace Game {
 		void m_ConfirmCallback(Vivium::Button* button, void* user_params);
 
 	public:
-		__CreateWorldScene(int scene_id, MainMenu* menu);
+		__CreateWorldScene(MainMenu* menu);
 		~__CreateWorldScene();
 
 		void Render() override;
 		void Update() override;
 	};
 
+	// TODO: Scrolling/scroll bar
 	class __LoadWorldScene : public Vivium::IScene {
 	private:
-		using Vivium::IScene::m_SceneID;
-
 		// user_params: __LoadWorldScene*, VisualWorldSelectable*
 		static void s_SelectedWorldCallback(Vivium::Button* button, void* user_params);
 		void m_SelectedWorldCallback(Vivium::Button* button, void* user_params);
@@ -92,7 +87,7 @@ namespace Game {
 		std::vector<VisualWorldSelectable> m_Worlds;
 
 	public:
-		__LoadWorldScene(int scene_id, MainMenu* menu);
+		__LoadWorldScene(MainMenu* menu);
 		~__LoadWorldScene();
 
 		void Render() override;
@@ -102,14 +97,11 @@ namespace Game {
 	// TODO
 	class __GameScene : public Vivium::IScene {
 	private:
-		using Vivium::IScene::m_SceneID;
-
 		World* m_World = nullptr;
 		Player* m_Player = nullptr;
 
 	public:
-		__GameScene(int scene_id);
-		__GameScene(int scene_id, uint32_t world_seed, const std::string& world_name);
+		__GameScene(uint32_t world_seed, const std::string& world_name);
 		~__GameScene();
 
 		void Render() override;
@@ -121,22 +113,10 @@ namespace Game {
 	class MainMenu {
 	public:
 		enum class SceneID : int {
-			/*
-			Starting screen contains title, button to create new world, and button to load sandbox world
-			*/
-			START = 0x0062BF01,
-			/*
-			Create world screen contains text input box to enter name of new world
-			*/
-			CREATE_WORLD = 0x0062BF02,
-			/*
-			Loading world screen contains a list of buttons for each potential world to load
-			*/
-			LOAD_WORLD = 0x0062BF03,
-			/*
-			Actual game with world player, etc.
-			*/
-			GAME = 0x0062BF04
+			START =			0x0062BF01,
+			CREATE_WORLD =	0x0062BF02,
+			LOAD_WORLD =	0x0062BF03,
+			GAME =			0x0062BF04
 		};
 
 	private:
@@ -185,6 +165,7 @@ namespace std {
 			switch (id) {
 			case Game::MainMenu::SceneID::START:		id_string = "Start";		break;
 			case Game::MainMenu::SceneID::CREATE_WORLD:	id_string = "Create World";	break;
+			case Game::MainMenu::SceneID::LOAD_WORLD:	id_string = "Load World";	break;
 			case Game::MainMenu::SceneID::GAME:			id_string = "Game";			break;
 			default:									id_string = "InvalidID";	break;
 			}

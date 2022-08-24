@@ -74,6 +74,32 @@ namespace Game {
 		return region.Index(rx, ry);
 	}
 
+	Tile* World::GetLoadedTile(const Vivium::Vector2<int>& pos)
+	{
+		Vivium::Vector2<int> region_index = GetRegionIndex(pos);
+
+		auto it = regions.find(region_index);
+		if (it != regions.end()) {
+			return &it->second.Index(pos - region_index * Region::LENGTH);
+		}
+		else {
+			return nullptr;
+		}
+	}
+
+	Tile* World::GetLoadedTile(int x, int y)
+	{
+		Vivium::Vector2<int> region_index = GetRegionIndex(x, y);
+
+		auto it = regions.find(region_index);
+		if (it != regions.end()) {
+			return &it->second.Index(Vivium::Vector2<int>(x, y) - region_index * Region::LENGTH);
+		}
+		else {
+			return nullptr;
+		}
+	}
+
 	World::World(const uint32_t& seed, const std::string& world_name)
 		: m_WorldName(world_name), m_Seed(seed)
 	{
@@ -152,6 +178,7 @@ namespace Game {
 				if (!regions_map_empty) {
 					regions_to_load.push_back({ x, y });
 				}
+				// If no regions are loaded, just directly start loading regions
 				else {
 					m_LoadRegion({ x, y });
 				}
@@ -364,6 +391,9 @@ namespace Game {
 
 		regions[index] = region;
 
+		// TODO: BUG HERE
+		// TODO: If a structure is placed at a region border, it may load adjacent regions if it overlaps into them, that region may then also have a structure at a chunk border,
+		//		causing it to load the next region, resulting in many extra regions being loaded
 		// Iterate and construct structures
 		for (auto& [pos, struct_id] : structures) {
 			Structure::Place(pos, struct_id, this);
@@ -396,14 +426,8 @@ namespace Game {
 
 			// TODO: allow different time for each object
 			if (mined_tile_time > Tile::GetMiningTime(player->selected_tile.top)) {
-				// TODO: Break tile and drop item
-				// TODO: add function for getting tile *ref* in world
-				Vivium::Vector2<int> region_pos = GetRegionIndex(mined_tile_pos);
-				Region& region = m_LoadRegion(region_pos);
-				// Get tile
-				Tile& tile = region.Index(mined_tile_pos - region_pos * Region::LENGTH);
+				Tile& tile = GetTile(mined_tile_pos);
 				// TODO: mined tile could be decor/top
-				// TODO: big temporary
 				// Create floor item
 				std::vector<Item> item_drops = Tile::GetDropData(tile.top).GetRandomDrop();
 
@@ -416,7 +440,7 @@ namespace Game {
 						);
 
 						// Add new item to floor item map
-						m_AddFloorItem(region_pos, new_floor_item);
+						m_AddFloorItem(GetRegionIndex(mined_tile_pos), new_floor_item);
 					}
 				}
 				

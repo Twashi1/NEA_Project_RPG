@@ -34,10 +34,10 @@ namespace Game {
 		}
 		else {
 			switch (id) {
-			case SceneID::START:		scene_ptr = new SceneType<MainMenu::SceneID::START>::type((int)id, this);			break;
-			case SceneID::CREATE_WORLD: scene_ptr = new SceneType<MainMenu::SceneID::CREATE_WORLD>::type((int)id, this);	break;
-			case SceneID::LOAD_WORLD:	scene_ptr = new SceneType<MainMenu::SceneID::LOAD_WORLD>::type((int)id, this);		break;
-			case SceneID::GAME:			scene_ptr = new SceneType<MainMenu::SceneID::GAME>::type((int)id);					break;
+			case SceneID::START:		scene_ptr = new SceneType<MainMenu::SceneID::START>::type(this);		break;
+			case SceneID::CREATE_WORLD: scene_ptr = new SceneType<MainMenu::SceneID::CREATE_WORLD>::type(this);	break;
+			case SceneID::LOAD_WORLD:	scene_ptr = new SceneType<MainMenu::SceneID::LOAD_WORLD>::type(this);	break;
+			case SceneID::GAME:			scene_ptr = new SceneType<MainMenu::SceneID::GAME>::type(0, "");		break;
 			default: LogWarn("Invalid scene ID"); break;
 			}
 		}
@@ -139,8 +139,8 @@ namespace Game {
 		}
 	}
 
-	__StartScene::__StartScene(int scene_id, MainMenu* menu)
-		: Vivium::IScene(scene_id), m_Manager(menu)
+	__StartScene::__StartScene(MainMenu* menu)
+		: m_Manager(menu)
 	{
 		m_TitleSprite = MakeRef(Vivium::Sprite, Vivium::Vector2<float>(0.0f, 100.0f), Vivium::Vector2<float>(256.0f, 256.0f), "title.png", true);
 		
@@ -223,14 +223,13 @@ namespace Game {
 
 		// Create instance of game scene
 		// NOTE: main menu will take care of freeing this
-		__GameScene* game_scene = new __GameScene((int)MainMenu::SceneID::GAME, m_Seed, m_Name);
+		__GameScene* game_scene = new __GameScene(m_Seed, m_Name);
 
 		// Start game
 		main_menu->m_LoadScene(MainMenu::SceneID::GAME, game_scene);
 	}
 
-	__CreateWorldScene::__CreateWorldScene(int scene_id, MainMenu* menu)
-		: Vivium::IScene(m_SceneID)
+	__CreateWorldScene::__CreateWorldScene(MainMenu* menu)
 	{
 		std::size_t __size_unused = 0;
 
@@ -266,9 +265,7 @@ namespace Game {
 
 	__CreateWorldScene::~__CreateWorldScene()
 	{
-		LogTrace("Unloading create world scene");
-		if (params != nullptr) free(params);
-		LogTrace("Finished unloading create world scene");
+		free(params);
 	}
 
 	void __CreateWorldScene::Render()
@@ -285,16 +282,7 @@ namespace Game {
 		m_ConfirmButton->Update();
 	}
 
-	__GameScene::__GameScene(int scene_id)
-		: Vivium::IScene(scene_id)
-	{
-		LogWarn("Using deprecated game scene constructor");
-		m_World = new World(0, "getnamehere");
-		m_Player = new Player();
-	}
-
-	__GameScene::__GameScene(int scene_id, uint32_t world_seed, const std::string& world_name)
-		: Vivium::IScene(scene_id)
+	__GameScene::__GameScene(uint32_t world_seed, const std::string& world_name)
 	{
 		LogInfo("Creating world with seed {}, and name {}", world_seed, world_name);
 		m_World = new World(world_seed, world_name);
@@ -368,16 +356,16 @@ namespace Game {
 		std::string world_name = callback_data->world_name;
 
 		// TODO: world seed needs to be stored
-		__GameScene* game = new __GameScene((int)MainMenu::SceneID::GAME, 0U, world_name);
+		__GameScene* game = new __GameScene(0U, world_name);
 
 		m_Manager->m_LoadScene(MainMenu::SceneID::GAME, game);
 	}
 
-	__LoadWorldScene::__LoadWorldScene(int scene_id, MainMenu* menu)
-		: Vivium::IScene(scene_id), m_Manager(menu)
+	__LoadWorldScene::__LoadWorldScene(MainMenu* menu)
+		: m_Manager(menu)
 	{
 		std::string path = Vivium::Application::resources_path + "saves/";
-		Vivium::Vector2<float> current_offset = -100.0f;
+		Vivium::Vector2<float> current_offset = {0.0f, -100.0f};
 
 		for (auto& it : std::filesystem::directory_iterator(path)) {
 			if (it.is_directory()) {

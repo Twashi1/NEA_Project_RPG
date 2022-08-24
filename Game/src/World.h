@@ -99,6 +99,9 @@ namespace Game {
 		Tile& GetTile(const Vivium::Vector2<int>& tile);
 		Tile& GetTile(int x, int y);
 
+		Tile* GetLoadedTile(const Vivium::Vector2<int>& pos);
+		Tile* GetLoadedTile(int x, int y);
+
 		// Loads from existing world
 		// World(const std::string& world_name);
 		// Generates new world
