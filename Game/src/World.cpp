@@ -100,8 +100,8 @@ namespace Game {
 		}
 	}
 
-	World::World(const uint32_t& seed, const std::string& world_name)
-		: m_WorldName(world_name), m_Seed(seed)
+	World::World(const uint32_t& seed, const std::string& world_name, Player* player)
+		: m_WorldName(world_name), m_Seed(seed), m_Player(player)
 	{
 		std::string fullpath = PATH + world_name + "/";
 
@@ -120,6 +120,14 @@ namespace Game {
 
 		// Generate world
 		m_GenWorld(fullpath);
+
+		LogTrace("Loading regions around player");
+		m_LoadRegions(player);
+		LogTrace("Finished loading world");
+
+		m_WorldMap = new WorldMap({48, 48});
+
+		m_WorldMap->GenerateFullMap({ 0, 0 }, *this);
 
 		m_UpdateTimer.Start();
 	}
@@ -171,6 +179,8 @@ namespace Game {
 		regions_to_load.reserve(9);
 
 		bool regions_map_empty = regions.empty();
+
+		// std::thread loading_thread;
 
 		// Iterate and add to regions to load
 		for (int y = bottom_left.y; y <= top_right.y; y++) {
@@ -258,6 +268,8 @@ namespace Game {
 
 		delete m_DaylightFramebuffer;
 		delete m_DaylightShader;
+
+		delete m_WorldMap;
 	}
 
 	void World::m_DeserialiseRegion(const std::string& filename, const Vivium::Vector2<int>& index)
@@ -312,6 +324,10 @@ namespace Game {
 
 	void World::m_SaveWorld()
 	{
+		// Serialise player
+		m_Player->Save(*this);
+
+		// Serialising region tiles and floor items
 		for (auto& [index, region] : regions) {
 			m_SerialiseRegion(index, region);
 		}
@@ -731,19 +747,25 @@ namespace Game {
 		Vivium::Quad screen_quad((Vivium::Vector2<float>)screen_dim * 0.5f, (Vivium::Vector2<float>)screen_dim); // TODO: could be static
 		Vivium::Renderer::Submit(&screen_quad, m_DaylightShader, m_DaylightFramebuffer, 0);
 
+		m_WorldMap->Render(screen_dim - Vivium::Vector2<int>(100, 100));
+
 		m_DaylightFramebuffer->Clear();
 	}
 
-	void World::Update(Player* player)
+	void World::Update()
 	{
 		float elapsed = m_UpdateTimer.GetElapsed();
 		
-		m_LoadRegions(player);
+		m_LoadRegions(m_Player);
 
-		m_UpdateMining(player, elapsed);
+		m_UpdateMining(m_Player, elapsed);
+
+		// std::thread world_map_thread(&WorldMap::GenerateFullMap, std::ref(*m_WorldMap), (m_Player->quad->GetCenter()), std::ref(*this));
+
+		m_WorldMap->GenerateFullMap(m_Player->quad->GetCenter(), *this);
 
 		Vivium::Application::physics->ClearLayer(World::PHYSICS_TILE_LAYER);
-		Vivium::Application::physics->Register(player->body, World::PHYSICS_TILE_LAYER);
+		Vivium::Application::physics->Register(m_Player->body, World::PHYSICS_TILE_LAYER);
 	}
 
 	std::string World::GetName() const

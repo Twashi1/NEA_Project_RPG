@@ -57,6 +57,8 @@ namespace Game {
 		void CopyRealTiles(const Tile& other);
 		bool CompareRealTiles(const Tile& other);
 
+		Tile::ID GetHighestRealTile() const;
+
 		Tile();
 		Tile(const Tile::ID& bot, const Tile::ID& mid = Tile::ID::VOID, const Tile::ID& top = Tile::ID::VOID);
 		Tile(const Tile& other);

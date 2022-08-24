@@ -49,6 +49,8 @@ namespace Vivium {
 
         // Update viewport
         glViewport(0, 0, width, height);
+
+        LogTrace("Resized to [{}, {}]", width, height);
     }
 
     void Application::BeginFrame()

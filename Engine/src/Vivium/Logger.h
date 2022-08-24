@@ -47,6 +47,25 @@ namespace Vivium {
 			return ss.str();
 		}
 
+		template <typename T, std::size_t Size>
+		static std::string PrettyPrint(const std::array<T, Size>& values)
+		{
+			std::stringstream ss;
+			ss << "[";
+
+			for (std::size_t i = 0; i < Size; i++) {
+				ss << PrettyPrint(values[i]);
+
+				if (i != Size - 1) {
+					ss << ", ";
+				}
+			}
+
+			ss << "]";
+
+			return ss.str();
+		}
+
 		template <typename T>
 		static std::string PrettyPrint(const std::vector<T>& values)
 		{

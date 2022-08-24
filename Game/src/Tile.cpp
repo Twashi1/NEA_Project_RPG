@@ -72,6 +72,15 @@ namespace Game {
 		return false;
 	}
 
+	Tile::ID Tile::GetHighestRealTile() const
+	{
+		if (top != Tile::ID::VOID) return top;
+		if (mid != Tile::ID::VOID) return mid;
+		if (bot != Tile::ID::VOID) return bot;
+
+		return Tile::ID::VOID;
+	}
+
 	Tile::Tile()
 		: bot(Tile::ID::VOID), mid(Tile::ID::VOID), top(Tile::ID::VOID)
 	{}

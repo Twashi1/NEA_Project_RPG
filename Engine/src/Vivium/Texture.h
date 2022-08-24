@@ -9,9 +9,18 @@ namespace Vivium {
 	class Font;
 
 	class VIVIUM_API Texture {
+	public:
+		enum class Format : int {
+			RGB = GL_RGB,
+			RGBA = GL_RGBA,
+			GRAYSCALE = GL_LUMINANCE
+		};
+
 	private:
 		GLuint m_ID;
 		int m_Width, m_Height;
+
+		static int m_GetInternalFormat(const Format& format);
 
 	public:
 		static std::string PATH;
@@ -23,9 +32,7 @@ namespace Vivium {
 		int GetHeight() const;
 		Vector2<int> GetDim() const;
 
-		// TODO: allow grayscale, RGB textures
-		// Construct from RGBA data (4 bytes per pixel), and width/height of image
-		Texture(Ref(uint8_t[]) buffer, int width, int height);
+		Texture(uint8_t* buffer, int width, int height, const Format& format = Format::RGBA);
 		// Construct from png
 		Texture(const std::string& filename);
 		// Construct from font

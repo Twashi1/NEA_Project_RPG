@@ -173,3 +173,24 @@ namespace Game {
 		void Read(Vivium::Serialiser& s) override;
 	};
 }
+
+namespace std {
+	template <>
+	struct formatter<Game::Inventory> : formatter<string> {
+		auto format(Game::Inventory inven, format_context& ctx) {
+			std::stringstream ss;
+			ss << "{\n";
+			
+			Game::Inventory::Data& data = inven.GetData();
+
+			for (Game::Inventory::slot_base_t i = data.start_index(); i < data.end_index(); i++) {
+				ss << "    " << data[i] << "\n";
+			}
+
+			ss << "}\n";
+
+			return formatter<string>::format(
+				ss.str(), ctx);
+		}
+	};
+}

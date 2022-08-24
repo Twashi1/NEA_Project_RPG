@@ -13,13 +13,6 @@ int sandbox(void)
 {
     Application::Init(WIDTH, HEIGHT, FPS, true);
 
-    std::size_t size = 0;
-    void* result = Utils::VoidArray::Make<unsigned char, unsigned char, unsigned char>(size, 0xff, 0x00, 0xCC);
-
-    free(result);
-
-    // Utils::Wrapper::VoidArray<int, float, float, int> v(5, 3.0f, 42.0f, 6);
-
     Application::Terminate();
 
     return EXIT_SUCCESS;
@@ -38,6 +31,7 @@ int game(void)
     Shader static_texture("static_texture_vertex", "texture_frag");
 
     World::Init();
+    WorldMap::Init();
     FloorItem::Init();
     Inventory::Init();
 
@@ -66,10 +60,9 @@ int game(void)
 
     LogInfo("Window closed");
 
-    // title_screen.GetPlayer()->Save(*title_screen.GetWorld());
-
-    FloorItem::Terminate();
     Inventory::Terminate();
+    FloorItem::Terminate();
+    WorldMap::Terminate();
     World::Terminate();
     Application::Terminate();
 

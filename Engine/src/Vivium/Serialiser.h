@@ -242,8 +242,6 @@ namespace Vivium {
 			}
 			// If the object inherits IStreamable, call IStreamable's write
 			else if constexpr (std::is_base_of_v<IStreamable, T>) {
-				Write<std::size_t>(Size);
-
 				for (std::size_t i = 0; i < Size; i++) {
 					Write<T>(object[i]);
 				}

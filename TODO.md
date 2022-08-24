@@ -47,6 +47,9 @@
 
 # Game
 ## World
+- [x] Small world map in corner
+    - Fix performance issues
+    - Fix ugly black border for unloaded chunks
 - [x] World loads around player
 - [ ] Terrain generation
     - [ ] Fix messy world generation code
@@ -91,17 +94,15 @@
 
 # Other
 - ECS API
-- Sleep in engine `Application::EndFrame`
+- Tiny little map in the corner is taking up majority of performance
 - Better link to Resources folder/re-do file paths and file extension statics
 - Input box typing bar size is using magic numbers
 - Default statics are ugly
-- Better api for shader/texture/texture-atlas (done?)
 - Inconsistent data layout between GUI objects
-- Allow void* user data for callback functions (done?)
 - docs docs docs docs docs docs docs docs
 - INL file for Vector2
-- Test new broad phase for physics system (done?)
 
 # Bugs
+- Going fullscreen crashes game sometimes
 - Cursor no longer switches when hovering text input box
 - Renderer::BeginScene and EndScene interfere with transparency (Application clear color is mixed in?)

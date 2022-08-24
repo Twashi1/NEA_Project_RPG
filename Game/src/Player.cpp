@@ -138,11 +138,23 @@ namespace Game {
     {
         Vivium::Serialiser s(Vivium::Stream::Flags::BINARY | Vivium::Stream::Flags::TRUNC);
 
-        std::string full_path = std::format("{}{}/{}{}", World::PATH, world.GetName(), World::GENERAL_FILE, World::FILE_EXTENSION);
+        std::string full_path = std::format("{}{}/{}{}", World::PATH, world.GetName(), "player_data", World::FILE_EXTENSION);
 
         s.BeginWrite(full_path.c_str());
         Write(s);
         s.EndWrite();
+    }
+
+    Player::Player(const std::string& world_name)
+        : Player() // Call default player constructor
+    {
+        Vivium::Serialiser s(Vivium::Stream::Flags::BINARY | Vivium::Stream::Flags::TRUNC);
+
+        std::string full_path = std::format("{}{}/{}{}", World::PATH, world_name, "player_data", World::FILE_EXTENSION);
+
+        s.BeginRead(full_path.c_str());
+        Read(s);
+        s.EndRead();
     }
 
     Player::Player()

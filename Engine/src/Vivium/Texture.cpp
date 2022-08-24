@@ -5,6 +5,16 @@
 namespace Vivium {
 	std::string Texture::PATH = "";
 
+	int Texture::m_GetInternalFormat(const Format& format)
+	{
+		switch (format) {
+		case Format::RGB: return GL_RGB8;
+		case Format::RGBA: return GL_RGBA8;
+		case Format::GRAYSCALE: return GL_LUMINANCE8;
+		default: LogWarn("Invalid format passed to m_GetInternalFormat"); return GL_RGBA8;
+		}
+	}
+
 	void Texture::Unbind()
 	{
 		glBindTexture(GL_TEXTURE_2D, 0);
@@ -32,7 +42,7 @@ namespace Vivium {
 		return Vector2<int>(m_Width, m_Height);
 	}
 
-	Texture::Texture(Ref(uint8_t[]) buffer, int width, int height)
+	Texture::Texture(uint8_t* buffer, int width, int height, const Format& format)
 		: m_Width(width), m_Height(height), m_ID(0)
 	{
 		glGenTextures(1, &m_ID);
@@ -43,7 +53,7 @@ namespace Vivium {
 		glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_WRAP_S, GL_CLAMP_TO_BORDER);
 		glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_WRAP_T, GL_CLAMP_TO_BORDER);
 
-		glTexImage2D(GL_TEXTURE_2D, 0, GL_RGBA8, width, height, 0, GL_RGBA, GL_UNSIGNED_BYTE, buffer.get());
+		glTexImage2D(GL_TEXTURE_2D, 0, Texture::m_GetInternalFormat(format), width, height, 0, (int)format, GL_UNSIGNED_BYTE, buffer);
 	}
 
 	Texture::Texture(const std::string& filename)

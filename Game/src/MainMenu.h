@@ -3,6 +3,7 @@
 #include "Core.h"
 #include "World.h"
 #include "Player.h"
+#include "WorldMap.h"
 
 namespace Game {
 	class MainMenu;
@@ -33,6 +34,8 @@ namespace Game {
 		Ref(Vivium::TextInput) m_NameInputBox;
 		Ref(Vivium::TextInput) m_SeedInputBox;
 		Ref(Vivium::Button) m_ConfirmButton;
+
+		Ref(Vivium::Button) m_BackButton; // Takes back to start screen
 
 		void* params;
 
@@ -86,6 +89,8 @@ namespace Game {
 
 		std::vector<VisualWorldSelectable> m_Worlds;
 
+		Ref(Vivium::Button) m_BackButton; // Takes back to start screen
+
 	public:
 		__LoadWorldScene(MainMenu* menu);
 		~__LoadWorldScene();
@@ -101,7 +106,7 @@ namespace Game {
 		Player* m_Player = nullptr;
 
 	public:
-		__GameScene(uint32_t world_seed, const std::string& world_name);
+		__GameScene(uint32_t world_seed, const std::string& world_name, bool new_world);
 		~__GameScene();
 
 		void Render() override;
@@ -130,6 +135,9 @@ namespace Game {
 
 		std::unordered_map<SceneID, Vivium::IScene*> m_Scenes;
 		SceneID m_CurrentSceneID;
+
+		static void s_BackButtonCallback(Vivium::Button* button, void* params);
+		void m_BackButtonCallback(Vivium::Button* button);
 
 		static void s_CreateWorldCallback(Vivium::Button* button, void* params);
 		void m_CreateWorldCallback(Vivium::Button* button);

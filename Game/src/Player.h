@@ -48,6 +48,8 @@ namespace Game {
 
         void Save(World& world);
 
+        // Load from world
+        Player(const std::string& world_name);
         Player();
         ~Player();
     };

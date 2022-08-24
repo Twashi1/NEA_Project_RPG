@@ -695,7 +695,7 @@ namespace Game {
 	{}
 
 	Inventory::Data::Data()
-		: m_Size(0), m_StartIndex(0)
+		: m_Data(), m_Size(0), m_StartIndex(0)
 	{}
 
 	Inventory::Data::Data(const ID& id)

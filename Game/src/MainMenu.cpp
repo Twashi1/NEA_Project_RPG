@@ -1,6 +1,17 @@
 #include "MainMenu.h"
 
 namespace Game {
+	void MainMenu::s_BackButtonCallback(Vivium::Button* button, void* params)
+	{
+		MainMenu* main_menu_instance = (MainMenu*)params;
+		main_menu_instance->m_BackButtonCallback(button);
+	}
+
+	void MainMenu::m_BackButtonCallback(Vivium::Button* button)
+	{
+		m_LoadScene(SceneID::START);
+	}
+
 	void MainMenu::s_CreateWorldCallback(Vivium::Button* button, void* params)
 	{
 		// Params contains a pointer to an instance of the title screen class
@@ -37,7 +48,7 @@ namespace Game {
 			case SceneID::START:		scene_ptr = new SceneType<MainMenu::SceneID::START>::type(this);		break;
 			case SceneID::CREATE_WORLD: scene_ptr = new SceneType<MainMenu::SceneID::CREATE_WORLD>::type(this);	break;
 			case SceneID::LOAD_WORLD:	scene_ptr = new SceneType<MainMenu::SceneID::LOAD_WORLD>::type(this);	break;
-			case SceneID::GAME:			scene_ptr = new SceneType<MainMenu::SceneID::GAME>::type(0, "");		break;
+			case SceneID::GAME:			scene_ptr = new SceneType<MainMenu::SceneID::GAME>::type(0, "", true);	break;
 			default: LogWarn("Invalid scene ID"); break;
 			}
 		}
@@ -223,7 +234,7 @@ namespace Game {
 
 		// Create instance of game scene
 		// NOTE: main menu will take care of freeing this
-		__GameScene* game_scene = new __GameScene(m_Seed, m_Name);
+		__GameScene* game_scene = new __GameScene(m_Seed, m_Name, true);
 
 		// Start game
 		main_menu->m_LoadScene(MainMenu::SceneID::GAME, game_scene);
@@ -231,6 +242,13 @@ namespace Game {
 
 	__CreateWorldScene::__CreateWorldScene(MainMenu* menu)
 	{
+		m_BackButton = MakeRef(Vivium::Button,
+			Vivium::Quad(-200.0f, 100.0f, 200.0f, 100.0f),
+			&MainMenu::s_BackButtonCallback,
+			"Go Back",
+			menu
+		);
+
 		std::size_t __size_unused = 0;
 
 		uintptr_t intaddr0 = reinterpret_cast<uintptr_t>(this);
@@ -258,6 +276,7 @@ namespace Game {
 			params
 		);
 
+		Vivium::Application::window_panel->Anchor(Vivium::Panel::ANCHOR::RIGHT, Vivium::Panel::ANCHOR::BOTTOM, m_BackButton);
 		Vivium::Application::window_panel->Anchor(Vivium::Panel::ANCHOR::CENTER, Vivium::Panel::ANCHOR::CENTER, m_NameInputBox);
 		Vivium::Application::window_panel->Anchor(Vivium::Panel::ANCHOR::CENTER, Vivium::Panel::ANCHOR::CENTER, m_SeedInputBox);
 		Vivium::Application::window_panel->Anchor(Vivium::Panel::ANCHOR::CENTER, Vivium::Panel::ANCHOR::CENTER, m_ConfirmButton);
@@ -270,6 +289,7 @@ namespace Game {
 
 	void __CreateWorldScene::Render()
 	{
+		Vivium::Renderer::Submit(m_BackButton.get());
 		Vivium::Renderer::Submit(m_NameInputBox.get());
 		Vivium::Renderer::Submit(m_SeedInputBox.get());
 		Vivium::Renderer::Submit(m_ConfirmButton.get());
@@ -277,16 +297,25 @@ namespace Game {
 
 	void __CreateWorldScene::Update()
 	{
+		m_BackButton->Update();
 		m_NameInputBox->Update();
 		m_SeedInputBox->Update();
 		m_ConfirmButton->Update();
 	}
 
-	__GameScene::__GameScene(uint32_t world_seed, const std::string& world_name)
+	__GameScene::__GameScene(uint32_t world_seed, const std::string& world_name, bool new_world)
 	{
-		LogInfo("Creating world with seed {}, and name {}", world_seed, world_name);
-		m_World = new World(world_seed, world_name);
-		m_Player = new Player();
+		if (new_world) {
+			LogInfo("Creating world with seed {}, and name {}", world_seed, world_name);
+			m_Player = new Player();
+			m_World = new World(world_seed, world_name, m_Player);
+		}
+		else {
+			LogInfo("Loading world with name {}", world_name);
+			// TODO: shouldn't take seed
+			m_Player = new Player(world_name);
+			m_World = new World(world_seed, world_name, m_Player);
+		}
 	}
 
 	__GameScene::~__GameScene()
@@ -314,7 +343,7 @@ namespace Game {
 		);
 
 		m_Player->Update(*m_World);
-		m_World->Update(m_Player);
+		m_World->Update();
 	}
 
 	__LoadWorldScene::VisualWorldSelectable::VisualWorldSelectable(const Vivium::Vector2<float> pos, const std::string& world_name, __LoadWorldScene* world_scene)
@@ -332,7 +361,6 @@ namespace Game {
 			world_name,
 			(void*)params
 		);
-
 
 		Vivium::Application::window_panel->Anchor(Vivium::Panel::ANCHOR::CENTER, Vivium::Panel::ANCHOR::TOP, panel);
 		panel->Anchor(Vivium::Panel::ANCHOR::CENTER, Vivium::Panel::ANCHOR::CENTER, select_button);
@@ -356,7 +384,7 @@ namespace Game {
 		std::string world_name = callback_data->world_name;
 
 		// TODO: world seed needs to be stored
-		__GameScene* game = new __GameScene(0U, world_name);
+		__GameScene* game = new __GameScene(0U, world_name, false);
 
 		m_Manager->m_LoadScene(MainMenu::SceneID::GAME, game);
 	}
@@ -364,6 +392,15 @@ namespace Game {
 	__LoadWorldScene::__LoadWorldScene(MainMenu* menu)
 		: m_Manager(menu)
 	{
+		m_BackButton = MakeRef(Vivium::Button,
+			Vivium::Quad(-200.0f, 100.0f, 200.0f, 100.0f),
+			&MainMenu::s_BackButtonCallback,
+			"Go Back",
+			menu
+		);
+
+		Vivium::Application::window_panel->Anchor(Vivium::Panel::ANCHOR::RIGHT, Vivium::Panel::ANCHOR::BOTTOM, m_BackButton);
+
 		std::string path = Vivium::Application::resources_path + "saves/";
 		Vivium::Vector2<float> current_offset = {0.0f, -100.0f};
 
@@ -390,6 +427,8 @@ namespace Game {
 
 	void __LoadWorldScene::Render()
 	{
+		Vivium::Renderer::Submit(m_BackButton.get());
+
 		for (VisualWorldSelectable& selectable : m_Worlds) {
 			Vivium::Renderer::Submit(selectable.select_button.get());
 		}
@@ -397,6 +436,8 @@ namespace Game {
 
 	void __LoadWorldScene::Update()
 	{
+		m_BackButton->Update();
+
 		for (VisualWorldSelectable& selectable : m_Worlds) {
 			selectable.panel->Update();
 			selectable.select_button->Update();

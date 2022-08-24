@@ -80,15 +80,24 @@ namespace Vivium {
 			return os;
 		}
 	};
+
+	// Stolen from boost
+	template <typename T>
+	inline void hash_combine(std::size_t& seed, const T& v) {
+		std::hash<T> hasher;
+		seed ^= hasher(v) + 0x9e3779b9 + (seed << 6) + (seed >> 2);
+	}
 }
 
 namespace std {
 	template <typename T>
 	struct hash<Vivium::Vector2<T>> {
-		unsigned int operator()(const Vivium::Vector2<T>& k) const noexcept {
-			unsigned int x_hash = std::hash<T>()(k.x);
-			unsigned int y_hash = std::hash<T>()(k.y) << 1;
-			return x_hash ^ y_hash;
+		std::size_t operator()(const Vivium::Vector2<T>& k) const noexcept {
+			std::size_t hash = 0;
+			Vivium::hash_combine<T>(hash, k.x);
+			Vivium::hash_combine<T>(hash, k.y);
+
+			return hash;
 		}
 	};
 

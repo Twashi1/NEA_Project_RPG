@@ -30,6 +30,7 @@
     <ClCompile Include="src\Tile.cpp" />
     <ClCompile Include="src\MainMenu.cpp" />
     <ClCompile Include="src\World.cpp" />
+    <ClCompile Include="src\WorldMap.cpp" />
   </ItemGroup>
   <ItemGroup>
     <ProjectReference Include="..\Engine\NEAProject.vcxproj">
@@ -47,6 +48,7 @@
     <ClInclude Include="src\Tile.h" />
     <ClInclude Include="src\MainMenu.h" />
     <ClInclude Include="src\World.h" />
+    <ClInclude Include="src\WorldMap.h" />
   </ItemGroup>
   <PropertyGroup Label="Globals">
     <VCProjectVersion>16.0</VCProjectVersion>

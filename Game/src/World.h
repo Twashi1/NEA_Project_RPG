@@ -2,6 +2,7 @@
 
 #include "Region.h"
 #include "Structures.h"
+#include "WorldMap.h"
 
 // TODO: world should serialise/deserialise around player
 
@@ -30,6 +31,8 @@ namespace Game {
 		Vivium::Shader* m_DaylightShader;
 		Vivium::Framebuffer* m_DaylightFramebuffer;
 
+		WorldMap* m_WorldMap;
+
 		std::string m_WorldName;
 
 		Vivium::Timer m_UpdateTimer;
@@ -37,6 +40,8 @@ namespace Game {
 		Vivium::Vector2<int> mined_tile_pos = Vivium::Vector2<int>(INT_MAX, INT_MAX);
 		Tile::ID mined_tile_id;
 		float mined_tile_time; // Time we've been mining tile for
+
+		Player* m_Player;
 
 		std::string m_ToRegionName(const Vivium::Vector2<int>& index) const;
 
@@ -89,7 +94,7 @@ namespace Game {
 		std::vector<FloorItem>* GetFloorItems(const Vivium::Vector2<int>& pos);
 		
 		void Render(const Vivium::Vector2<int>& pos);
-		void Update(Player* player);
+		void Update();
 
 		std::string GetName() const;
 
@@ -102,12 +107,10 @@ namespace Game {
 		Tile* GetLoadedTile(const Vivium::Vector2<int>& pos);
 		Tile* GetLoadedTile(int x, int y);
 
-		// Loads from existing world
-		// World(const std::string& world_name);
-		// Generates new world
-		World(const uint32_t& seed, const std::string& world_name);
+		World(const uint32_t& seed, const std::string& world_name, Player* player);
 		~World();
 
 		friend Inventory;
+		friend WorldMap;
 	};
 }
