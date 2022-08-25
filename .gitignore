@@ -4,3 +4,5 @@ bin-int/
 Resources/saves/testworld/
 
 .user
+countlines.bat
+cloc-1.94.exe

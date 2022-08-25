@@ -20,6 +20,7 @@ int sandbox(void)
 
 int game(void)
 {
+    Vivium::Flag::Set(VIVIUM_FLAG_ENABLE_FUNCTION_SIGNATURE_LOGGING, false);
     // Construct engine instance
     Application::Init(WIDTH, HEIGHT, FPS, true);
 

@@ -80,7 +80,7 @@ namespace Game {
 
 		auto it = regions.find(region_index);
 		if (it != regions.end()) {
-			return &it->second.Index(pos - region_index * Region::LENGTH);
+			return &it->second->Index(pos - region_index * Region::LENGTH);
 		}
 		else {
 			return nullptr;
@@ -93,7 +93,7 @@ namespace Game {
 
 		auto it = regions.find(region_index);
 		if (it != regions.end()) {
-			return &it->second.Index(Vivium::Vector2<int>(x, y) - region_index * Region::LENGTH);
+			return &it->second->Index(Vivium::Vector2<int>(x, y) - region_index * Region::LENGTH);
 		}
 		else {
 			return nullptr;
@@ -172,25 +172,19 @@ namespace Game {
 
 		// Calculate bounds of tiles we need to render
 		Vivium::Vector2<int> frame = Vivium::Application::GetScreenDim() / World::PIXEL_SCALE + Vivium::Vector2<int>(1, 1);
-		Vivium::Vector2<int> bottom_left = GetRegionIndex(player_pos - frame);
-		Vivium::Vector2<int> top_right = GetRegionIndex(player_pos + frame);
+		Vivium::Vector2<int> bottom_left = GetRegionIndex(player_pos - frame) - 2; // Adding/Subtracting 2 because map is larger than world
+		Vivium::Vector2<int> top_right = GetRegionIndex(player_pos + frame) + 2;
 
 		std::vector<Vivium::Vector2<int>> regions_to_load;
-		regions_to_load.reserve(9);
+		regions_to_load.reserve(30);
 
 		bool regions_map_empty = regions.empty();
-
-		// std::thread loading_thread;
 
 		// Iterate and add to regions to load
 		for (int y = bottom_left.y; y <= top_right.y; y++) {
 			for (int x = bottom_left.x; x <= top_right.x; x++) {
 				if (!regions_map_empty) {
 					regions_to_load.push_back({ x, y });
-				}
-				// If no regions are loaded, just directly start loading regions
-				else {
-					m_LoadRegion({ x, y });
 				}
 			}
 		}
@@ -209,6 +203,7 @@ namespace Game {
 				else {
 					// TODO: multithreading
 					m_SerialiseRegion(it->first, it->second);
+					delete it->second;
 					it = regions.erase(it);
 				}
 			}
@@ -230,7 +225,7 @@ namespace Game {
 		// If region at that index exists
 		if (it != regions.end()) {
 			// We don't have to do anything its already loaded
-			return regions.at(index);
+			return *regions.at(index);
 		}
 
 		// Since that region doesn't exist already, try load from serialised file
@@ -240,11 +235,11 @@ namespace Game {
 			// File exists lets deserialise it
 			m_DeserialiseRegion(region_name, index);
 			// Return region
-			return regions.at(index);
+			return *regions.at(index);
 		}
 
 		// Region isn't already loaded and hasn't been serialised, so we have to generate it
-		m_GenerateRegion(index); return regions.at(index);
+		m_GenerateRegion(index); return *regions.at(index);
 	}
 
 	std::vector<FloorItem>* World::GetFloorItems(const Vivium::Vector2<int>& pos)
@@ -262,6 +257,10 @@ namespace Game {
 	{
 		m_SaveWorld();
 
+		for (auto& [index, region] : regions) {
+			delete region;
+		}
+
 		delete m_TextureAtlas;
 		delete m_ItemsAtlas;
 		delete m_Serialiser;
@@ -275,12 +274,12 @@ namespace Game {
 	void World::m_DeserialiseRegion(const std::string& filename, const Vivium::Vector2<int>& index)
 	{
 		// Construct empty region object
-		Region region;
+		regions.emplace(index, new Region());
 
-		char* raw_tile_memory = (char*)region.tiles.get();
+		Region* region = regions.at(index);
 
 		m_Serialiser->BeginRead(filename.c_str());
-		m_Serialiser->Read(&raw_tile_memory, Region::MEMORY_SIZE);
+		m_Serialiser->Read((char*)&region->tiles[0], Region::MEMORY_SIZE);
 
 		std::vector<FloorItem> region_floor_items;
 		m_Serialiser->Read(&region_floor_items);
@@ -290,9 +289,6 @@ namespace Game {
 		}
 
 		m_Serialiser->EndRead();
-
-		// Add region to region map
-		regions[index] = region;
 	}
 
 	void World::m_LoadWorld(const std::string& fullpath)
@@ -333,14 +329,14 @@ namespace Game {
 		}
 	}
 
-	void World::m_SerialiseRegion(const Vivium::Vector2<int>& index, const Region& region)
+	void World::m_SerialiseRegion(const Vivium::Vector2<int>& index, const Region* region)
 	{
 		std::string region_path = m_ToRegionName(index);
 
 		m_Serialiser->BeginWrite(region_path.c_str());
 
 		// Write tiles of region
-		m_Serialiser->Write((char*)region.tiles.get(), Region::MEMORY_SIZE);
+		m_Serialiser->Write((char*)&region->tiles[0], Region::MEMORY_SIZE);
 
 		// Get the floor items for the region
 		std::vector<FloorItem>* region_floor_items = GetFloorItems(index);
@@ -358,7 +354,9 @@ namespace Game {
 
 	void World::m_GenerateRegion(const Vivium::Vector2<int>& index)
 	{
-		Region region;
+		regions.emplace(index, new Region());
+
+		Region* region = regions.at(index);
 
 		std::unordered_map<Vivium::Vector2<int>, Structure::ID> structures; // Maps bottom left corner of structure to a structure
 
@@ -401,11 +399,9 @@ namespace Game {
 					}
 				}
 
-				region.Index(x, y) = tile;
+				region->Index(x, y) = tile;
 			}
 		}
-
-		regions[index] = region;
 
 		// TODO: BUG HERE
 		// TODO: If a structure is placed at a region border, it may load adjacent regions if it overlaps into them, that region may then also have a structure at a chunk border,

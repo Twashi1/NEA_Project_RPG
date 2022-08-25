@@ -219,28 +219,30 @@ namespace Game {
 
 				// Increase draw count
 				item_draw_count += std::min(cursor_item.count, (uint16_t)3);
+				
+				if (Item::GetIsStackable(cursor_item.id)) {
+					// Get rendering pos
+					Vivium::Vector2<float> rendering_pos(draw_coords);
+					rendering_pos += Vivium::Vector2<float>(1.0f, -4.0f) * m_InventorySpriteScale;
 
-				// Get rendering pos
-				Vivium::Vector2<float> rendering_pos(draw_coords);
-				rendering_pos += Vivium::Vector2<float>(1.0f, -4.0f) * m_InventorySpriteScale;
+					// Get item count as text
+					std::string item_count_string = std::to_string(cursor_item.count);
 
-				// Get item count as text
-				std::string item_count_string = std::to_string(cursor_item.count);
+					// Iterate through characters in text
+					for (char c : item_count_string) {
+						// TODO: precalc
+						Vivium::Font::Character ch = Vivium::Text::GetDefaultFont()->character_map.at(c);
 
-				// Iterate through characters in text
-				for (char c : item_count_string) {
-					// TODO: precalc
-					Vivium::Font::Character ch = Vivium::Text::GetDefaultFont()->character_map.at(c);
+						float x = rendering_pos.x + ch.bearing.x * m_TextObject->scale;
+						float y = rendering_pos.y - (ch.size.y - ch.bearing.y) * m_TextObject->scale;
+						float w = ch.size.x * m_TextObject->scale;
+						float h = ch.size.y * m_TextObject->scale;
 
-					float x = rendering_pos.x + ch.bearing.x * m_TextObject->scale;
-					float y = rendering_pos.y - (ch.size.y - ch.bearing.y) * m_TextObject->scale;
-					float w = ch.size.x * m_TextObject->scale;
-					float h = ch.size.y * m_TextObject->scale;
+						m_RenderItemCount(c, { x, y }, { w, h }, text_vertex_data, text_vertex_index, text_indices, text_indices_index);
 
-					m_RenderItemCount(c, { x, y }, { w, h }, text_vertex_data, text_vertex_index, text_indices, text_indices_index);
-
-					text_draw_count++;
-					rendering_pos.x += (ch.advance >> 6) * m_TextObject->scale * m_InventorySpriteScale / 8.0f * 0.45f;
+						text_draw_count++;
+						rendering_pos.x += (ch.advance >> 6) * m_TextObject->scale * m_InventorySpriteScale / 8.0f * 0.45f;
+					}
 				}
 			}
  		}

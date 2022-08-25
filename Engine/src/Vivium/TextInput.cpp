@@ -10,6 +10,8 @@ namespace Vivium {
 	Ref(Shader) TextInput::m_TextShader = nullptr;
 	Ref(Shader) TextInput::m_TypingBarShader = nullptr;
 
+	bool TextInput::m_TypingOnAnyInput = false;
+
 	void TextInput::m_Init(Ref(TextureAtlas) engine_icons)
 	{
 		m_TypingBarShader = MakeRef(Shader, "static_texture_vertex", "texture_frag");
@@ -33,20 +35,23 @@ namespace Vivium {
 		m_TextShader->Bind(); m_TextShader->SetUniform3f("u_TextColor", m_DefaultEmptyColor.r, m_DefaultEmptyColor.g, m_DefaultEmptyColor.b);
 	}
 
+	void TextInput::m_ResetTypingStatus()
+	{
+		m_TypingOnAnyInput = false;
+	}
+
 	void TextInput::SetUserParams(void* userParams) { m_UserParams = userParams; }
 
 	void TextInput::CheckClicked(const Vector2<float>& cursor_pos, const Input::State& lmb_state)
 	{
-		bool withinQuad = quad.Contains(cursor_pos);
+		bool withinQuad = quad->Contains(cursor_pos);
 
-		// TODO: cursor changes
 		if (withinQuad || isTyping) {
-			glfwDestroyCursor(Application::cursor);
-			Application::cursor = glfwCreateStandardCursor(GLFW_IBEAM_CURSOR);
+			m_TypingOnAnyInput = true;
+			Application::SetCursor(Application::CURSOR_TYPE::TYPING);
 		}
-		else {
-			glfwDestroyCursor(Application::cursor);
-			Application::cursor = glfwCreateStandardCursor(GLFW_ARROW_CURSOR);
+		else if (!m_TypingOnAnyInput) {
+			Application::SetCursor(Application::CURSOR_TYPE::POINTER);
 		}
 
 		if (lmb_state == Input::State::RELEASE) {
@@ -63,7 +68,7 @@ namespace Vivium {
 
 	void TextInput::m_Construct()
 	{
-		Vector2<float> pos = Vector2<float>(quad.GetX() - (quad.GetWidth() / 2.0f) + m_Offset, quad.GetY());
+		Vector2<float> pos = Vector2<float>(quad->GetX() - (quad->GetWidth() / 2.0f) + m_Offset, quad->GetY());
 		m_Text = MakeRef(Text, empty_text, pos, m_TextShader, m_DefaultScale);
 	}
 
@@ -164,42 +169,42 @@ namespace Vivium {
 	}
 
 	TextInput::TextInput(const Quad& quad, CallbackFunc_t callback, void* userParams, int offset)
-		: quad(quad), callback(callback), bg_shader(m_DefaultBgShader), bg_texture(nullptr), empty_text(m_DefaultEmptyText),
+		: quad(MakeRef(Quad, quad)), callback(callback), bg_shader(m_DefaultBgShader), bg_texture(nullptr), empty_text(m_DefaultEmptyText),
 		m_EmptyColor(m_DefaultEmptyColor), m_TypedColor(m_DefaultTypedColor), m_Offset(offset), m_UserParams(userParams)
 	{
 		m_Construct();
 	}
 
 	TextInput::TextInput(const Quad& quad, CallbackFunc_t callback, Ref(Shader) bg_shader, void* userParams, int offset)
-		: quad(quad), callback(callback), bg_shader(bg_shader), bg_texture(nullptr), empty_text(m_DefaultEmptyText),
+		: quad(MakeRef(Quad, quad)), callback(callback), bg_shader(bg_shader), bg_texture(nullptr), empty_text(m_DefaultEmptyText),
 		m_EmptyColor(m_DefaultEmptyColor), m_TypedColor(m_DefaultTypedColor), m_Offset(offset), m_UserParams(userParams)
 	{
 		m_Construct();
 	}
 
 	TextInput::TextInput(const Quad& quad, CallbackFunc_t callback, Ref(Shader) bg_shader, Ref(Texture) bg_texture, void* userParams, int offset)
-		: quad(quad), callback(callback), bg_shader(bg_shader), bg_texture(bg_texture), empty_text(m_DefaultEmptyText),
+		: quad(MakeRef(Quad, quad)), callback(callback), bg_shader(bg_shader), bg_texture(bg_texture), empty_text(m_DefaultEmptyText),
 		m_EmptyColor(m_DefaultEmptyColor), m_TypedColor(m_DefaultTypedColor), m_Offset(offset), m_UserParams(userParams)
 	{
 		m_Construct();
 	}
 
 	TextInput::TextInput(const Quad& quad, CallbackFunc_t callback, const RGBColor& typed_color, const RGBColor& empty_color, void* userParams, int offset)
-		: quad(quad), callback(callback), bg_shader(m_DefaultBgShader), bg_texture(nullptr), empty_text(m_DefaultEmptyText),
+		: quad(MakeRef(Quad, quad)), callback(callback), bg_shader(m_DefaultBgShader), bg_texture(nullptr), empty_text(m_DefaultEmptyText),
 		m_EmptyColor(empty_color), m_TypedColor(typed_color), m_Offset(offset), m_UserParams(userParams)
 	{
 		m_Construct();
 	}
 
 	TextInput::TextInput(const Quad& quad, CallbackFunc_t callback, const RGBColor& typed_color, const RGBColor& empty_color, Ref(Shader) bg_shader, void* userParams, int offset)
-		: quad(quad), callback(callback), bg_shader(bg_shader), bg_texture(nullptr), empty_text(m_DefaultEmptyText),
+		: quad(MakeRef(Quad, quad)), callback(callback), bg_shader(bg_shader), bg_texture(nullptr), empty_text(m_DefaultEmptyText),
 		m_EmptyColor(empty_color), m_TypedColor(typed_color), m_Offset(offset), m_UserParams(userParams)
 	{
 		m_Construct();
 	}
 
 	TextInput::TextInput(const Quad& quad, CallbackFunc_t callback, const RGBColor& typed_color, const RGBColor& empty_color, Ref(Shader) bg_shader, Ref(Texture) bg_texture, void* userParams, int offset)
-		: quad(quad), callback(callback), bg_shader(bg_shader), bg_texture(bg_texture), empty_text(m_DefaultEmptyText),
+		: quad(MakeRef(Quad, quad)), callback(callback), bg_shader(bg_shader), bg_texture(bg_texture), empty_text(m_DefaultEmptyText),
 		m_EmptyColor(empty_color), m_TypedColor(typed_color), m_Offset(offset), m_UserParams(userParams)
 	{
 		m_Construct();
@@ -207,8 +212,8 @@ namespace Vivium {
 
 	void TextInput::SetPos(const Vector2<float>& new_pos)
 	{
-		quad.SetCenter(new_pos);
-		m_Text->pos = Vector2<float>(new_pos.x - (quad.GetWidth() / 2.0f) + m_Offset, new_pos.y);
+		quad->SetCenter(new_pos);
+		*m_Text->pos = Vector2<float>(new_pos.x - (quad->GetWidth() / 2.0f) + m_Offset, new_pos.y);
 	}
 
 	Ref(Animation) TextInput::GetTypingBar()
@@ -219,17 +224,17 @@ namespace Vivium {
 		Font::Character& ch = TextInput::m_DefaultFont->character_map.at('|');
 		float char_x = ch.advance >> 6; // Convert advance to pixels
 
-		// TODO
+		// TODO magic numbers
 		float size = m_DefaultFont->max_height * m_DefaultScale * 1.1;
 
 		m_TypingBar->quad->SetDim(Vector2<float>(size, size));
 
 		// TODO: figure out how to position the typing bar
 
-		float left = quad.GetX() - (quad.GetWidth() / 2.0f) + (char_x * m_TypingIndex * m_DefaultScale) + (m_TypingBar->quad->GetWidth() / 2.0f);
+		float left = quad->GetX() - (quad->GetWidth() / 2.0f) + (char_x * m_TypingIndex * m_DefaultScale) + (m_TypingBar->quad->GetWidth() / 2.0f);
 		Vector2<float> pos = Vector2<float>(
 			left + m_Offset,
-			quad.GetY() + m_TypingBar->quad->GetHeight() / 2.0f - (size * 0.2)
+			quad->GetY() + m_TypingBar->quad->GetHeight() / 2.0f - (size * 0.2)
 			);
 
 		m_TypingBar->quad->SetCenter(pos);
@@ -244,7 +249,7 @@ namespace Vivium {
 
 	Vector2<float> TextInput::GetPos() const
 	{
-		return quad.GetCenter();
+		return quad->GetCenter();
 	}
 
 	Ref(Text) TextInput::GetText()

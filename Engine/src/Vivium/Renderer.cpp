@@ -47,8 +47,8 @@ namespace Vivium {
 
 	void Renderer::m_ResizeFramebuffers(int width, int height)
 	{
-		for (auto [id, fb] : m_Framebuffers) {
-			fb->Resize(width, height);
+		for (auto& it : m_Framebuffers) {
+			it.second->Resize(width, height);
 		}
 	}
 
@@ -267,7 +267,7 @@ namespace Vivium {
 		glBindVertexArray(text->font->vertex_array_id);
 
 		// Copy position to rendering_pos (so we can increment it to write subsequent characters)
-		Vector2<float> rendering_pos = text->pos;
+		Vector2<float> rendering_pos = *text->pos;
 
 		// Iterate through characters in text
 		for (char c : text->text) {
@@ -335,10 +335,10 @@ namespace Vivium {
 	void Renderer::Submit(TextInput* text_input)
 	{
 		if (text_input->bg_texture != nullptr) {
-			Renderer::Submit(&text_input->quad, text_input->bg_shader.get(), text_input->bg_texture.get());
+			Renderer::Submit(text_input->quad.get(), text_input->bg_shader.get(), text_input->bg_texture.get());
 		}
 		else {
-			Renderer::Submit(&text_input->quad, text_input->bg_shader.get());
+			Renderer::Submit(text_input->quad.get(), text_input->bg_shader.get());
 		}
 
 		Renderer::Submit(text_input->GetText().get());

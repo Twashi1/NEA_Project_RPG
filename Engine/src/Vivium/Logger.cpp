@@ -26,14 +26,24 @@ namespace Vivium {
 		const std::regex cleaner("");
 		std::string function_cleaned = std::regex_replace(func_sig, cleaner, "");
 
-		std::cout << std::format(
-			"[{}] ({}) {}:{} {}",
-			Timer::GetTimeString(),
-			error_severity_text,
-			function_cleaned,
-			line,
-			msg
-		) << std::endl;
+		if (Vivium::Flag::Test(VIVIUM_FLAG_ENABLE_FUNCTION_SIGNATURE_LOGGING)) {
+			std::cout << std::format(
+				"[{}] ({}) {}:{} {}",
+				Timer::GetTimeString(),
+				error_severity_text,
+				function_cleaned,
+				line,
+				msg
+			) << std::endl;
+		}
+		else {
+			std::cout << std::format(
+				"[{}] ({}) {}",
+				Timer::GetTimeString(),
+				error_severity_text,
+				msg
+			) << std::endl;
+		}
 
 		if (error_severity_text == "Fatal") { exit(EXIT_FAILURE); }
 	}

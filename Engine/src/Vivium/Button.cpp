@@ -174,6 +174,6 @@ namespace Vivium {
 	{
 		// Subtracting half the size of the text being displayed
 		// from the center of the background so that the text is centered
-		text->pos = quad->GetCenter() - (m_GetTextDim(isPressed ? pressed_text : idle_text) * 0.5f);
+		*text->pos = quad->GetCenter() - (m_GetTextDim(isPressed ? pressed_text : idle_text) * 0.5f);
 	}
 }

@@ -8,6 +8,8 @@
 #include "Text.h"
 #include "Sprite.h"
 
+// TODO: add some defaults, and find some workaround for when references are deleted
+
 namespace Vivium {
 	class VIVIUM_API Panel {
 	public:
@@ -63,6 +65,7 @@ namespace Vivium {
 		Vector2<float> old_pos;
 		Ref(Quad) m_Quad;
 
+		bool m_VerifyObject(Data& panel_object);
 		void m_Update(Data& panel_object, const Rect& new_rect);
 
 	public:

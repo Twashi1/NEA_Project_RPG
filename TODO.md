@@ -48,9 +48,10 @@
 # Game
 ## World
 - [x] Small world map in corner
-    - Fix performance issues
-    - Fix ugly black border for unloaded chunks
+    - ~~Fix performance issues~~
+    - ~~Fix ugly black border for unloaded chunks~~
 - [x] World loads around player
+    - [ ] Multithreading to stop lagspike when loading new regions
 - [ ] Terrain generation
     - [ ] Fix messy world generation code
     - [x] Better structure generation
@@ -103,6 +104,6 @@
 - INL file for Vector2
 
 # Bugs
-- Going fullscreen crashes game sometimes
+- ~~Going fullscreen crashes game~~
 - Cursor no longer switches when hovering text input box
 - Renderer::BeginScene and EndScene interfere with transparency (Application clear color is mixed in?)

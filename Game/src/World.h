@@ -54,7 +54,7 @@ namespace Game {
 		void m_LoadRegions(Player* player);
 		Region& m_LoadRegion(const Vivium::Vector2<int>& index);
 
-		void m_SerialiseRegion(const Vivium::Vector2<int>& index, const Region& region);
+		void m_SerialiseRegion(const Vivium::Vector2<int>& index, const Region* region);
 		void m_DeserialiseRegion(const std::string& filename, const Vivium::Vector2<int>& index);
 		void m_GenerateRegion(const Vivium::Vector2<int>& index);
 
@@ -76,7 +76,7 @@ namespace Game {
 		static constexpr float PIXEL_SCALE = 64.0;
 		static constexpr int PHYSICS_TILE_LAYER = 0xff;
 
-		typedef std::unordered_map<Vivium::Vector2<int>, Region> RegionMap_t;
+		typedef std::unordered_map<Vivium::Vector2<int>, Region*> RegionMap_t;
 		typedef std::unordered_map<Vivium::Vector2<int>, std::vector<FloorItem>> FloorItemMap_t;
 
 		static Vivium::Shader* texture_shader;

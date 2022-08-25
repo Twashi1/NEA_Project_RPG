@@ -21,6 +21,8 @@ namespace Vivium {
 		static Ref(Shader) m_TextShader;
 		static Ref(Shader) m_TypingBarShader;
 
+		static bool m_TypingOnAnyInput;
+
 		static GLFWcursor* m_Cursor;
 
 		static constexpr float m_DefaultScale = 0.25f; // Standard scaling factor for text (1/4 size)
@@ -47,6 +49,8 @@ namespace Vivium {
 
 		static void m_Init(Ref(TextureAtlas) engine_icons);
 
+		static void m_ResetTypingStatus();
+
 		CallbackFunc_t callback;
 		void* m_UserParams;
 
@@ -58,8 +62,7 @@ namespace Vivium {
 		Ref(Texture) bg_texture = nullptr;
 		Ref(Shader) bg_shader;
 
-		// TODO: make ref
-		Quad quad;
+		Ref(Quad) quad;
 
 		void SetPos(const Vector2<float>& new_pos);
 		Vector2<float> GetPos() const;

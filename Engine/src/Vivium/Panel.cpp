@@ -5,6 +5,7 @@ namespace Vivium {
 	{
 		switch (m_Type) {
 		case Type::QUAD:
+			// If we're the only one using this ref
 			quad->SetCenter(pos); break;
 		case Type::POINT:
 		{
@@ -109,36 +110,49 @@ namespace Vivium {
 
 	const Quad& Panel::GetQuad() const { return *m_Quad; }
 
+	bool Panel::m_VerifyObject(Data& panel_object)
+	{
+		switch (panel_object.m_Type) {
+		case Data::Type::PANEL: return panel_object.panel.use_count() > 1;
+		case Data::Type::QUAD: return panel_object.quad.use_count() > 1;
+		case Data::Type::POINT: return panel_object.point.use_count() > 1;
+		default:
+			LogWarn("Invalid data type"); return false;
+		}
+	}
+
 	void Panel::m_Update(Data& panel_object, const Rect& new_rect)
 	{
-		// Find difference between current and last position to find change in offset, then add to old offset to get new offset
-		Vector2<float> current_offset = panel_object.GetPos() - panel_object.last_pos + panel_object.offset;
-		// Update new offset
-		panel_object.offset = current_offset;
+		if (m_VerifyObject(panel_object)) {
+			// Find difference between current and last position to find change in offset, then add to old offset to get new offset
+			Vector2<float> current_offset = panel_object.GetPos() - panel_object.last_pos + panel_object.offset;
+			// Update new offset
+			panel_object.offset = current_offset;
 
-		Vector2<float> new_pos = current_offset;
+			Vector2<float> new_pos = current_offset;
 
-		// Do calculations to fix to side
-		switch (panel_object.x_anchor) {
-		case ANCHOR::LEFT:
-			new_pos.x += m_Quad->Left(); break;
-		case ANCHOR::RIGHT:
-			new_pos.x += m_Quad->Right(); break;
-		case ANCHOR::CENTER:
-			new_pos.x += m_Quad->GetX(); break;
+			// Do calculations to fix to side
+			switch (panel_object.x_anchor) {
+			case ANCHOR::LEFT:
+				new_pos.x += m_Quad->Left(); break;
+			case ANCHOR::RIGHT:
+				new_pos.x += m_Quad->Right(); break;
+			case ANCHOR::CENTER:
+				new_pos.x += m_Quad->GetX(); break;
+			}
+
+			switch (panel_object.y_anchor) {
+			case ANCHOR::BOTTOM:
+				new_pos.y += m_Quad->Bottom(); break;
+			case ANCHOR::TOP:
+				new_pos.y += m_Quad->Top(); break;
+			case ANCHOR::CENTER:
+				new_pos.y += m_Quad->GetY(); break;
+			}
+
+			// Set pos of panel object
+			panel_object.SetPos(new_pos);
 		}
-
-		switch (panel_object.y_anchor) {
-		case ANCHOR::BOTTOM:
-			new_pos.y += m_Quad->Bottom(); break;
-		case ANCHOR::TOP:
-			new_pos.y += m_Quad->Top(); break;
-		case ANCHOR::CENTER:
-			new_pos.y += m_Quad->GetY(); break;
-		}
-
-		// Set pos of panel object
-		panel_object.SetPos(new_pos);
 	}
 
 	Panel::Panel(Ref(Quad) quad)
@@ -229,13 +243,13 @@ namespace Vivium {
 
 	void Panel::Anchor(ANCHOR x, ANCHOR y, Ref(Text) text)
 	{
-		Anchor(x, y, Ref(Vector2<float>)(&text->pos));
+		Anchor(x, y, text->pos);
 	}
 
 	void Panel::Anchor(ANCHOR x, ANCHOR y, Ref(TextInput) text_input)
 	{
 		Anchor(x, y, text_input->m_Text);
-		Anchor(x, y, Ref(Quad)(&text_input->quad));
+		Anchor(x, y, text_input->quad);
 	}
 
 	void Panel::Anchor(ANCHOR x, ANCHOR y, Ref(Sprite) sprite)

@@ -13,35 +13,55 @@ namespace Vivium {
     class Panel;
 
     class VIVIUM_API Application {
+    public:
+        enum class CURSOR_TYPE : int {
+            __START             = GLFW_ARROW_CURSOR,
+            POINTER             = GLFW_ARROW_CURSOR,
+            TYPING              = GLFW_IBEAM_CURSOR,
+            CROSSHAIR           = GLFW_CROSSHAIR_CURSOR,
+            HAND                = GLFW_HAND_CURSOR,
+            HORIZONTAL_RESIZE   = GLFW_HRESIZE_CURSOR,
+            VERTICAL_RESIZE     = GLFW_VRESIZE_CURSOR,
+            __MAX               = GLFW_VRESIZE_CURSOR + 1
+        };
+
     private:
         // Stores time last frame began, used for calculating elapsed time
         static Timer m_Timer;
 
         // Updates projection matrix, viewport, etc. when window dimensions are changed
         static void m_WindowResizeCallback(GLFWwindow* window, int nwidth, int nheight);
-        // TODO: ugly
-        // Maps a name for each debug stat to a text renderable object
-        static std::unordered_map<std::string, Ref(Text)> m_DebugStatsText;
 
         static int m_FPS; // Frames per second
         static double m_TimePerFrame; // Time per frame in seconds
 
+        enum class STATS_INDEX : int {
+            AVERAGE_TPF,
+            FPS,
+            PROCESSING_PERCENTAGE,
+            PLAYER_POS
+        };
+
         static constexpr double POLL_INTERVAL = 1.0; // Determines how often average performance is calculated (in seconds)
         static unsigned int m_FramesProcessed; // Tracks amount of frames that have been processed since the last poll
         static double m_ProcessingTime; // Tracks time spent processing since the last poll
+
+        static std::unordered_map<STATS_INDEX, Ref(Text)> m_StatsTextMap;
 
         static VersionNumber m_VersionNumber; // Application version number
 
         // Calculates average time per frame, and will display warning if engine is running behind
         static void m_CalculatePerformance(double dt);
 
+        static std::unordered_map<CURSOR_TYPE, GLFWcursor*> m_CursorMap;
+
     public:
+        // TODO use flags system instead
         static bool isStatsEnabled; // Determines if stats should be calculated and displayed
 
         static Ref(TextureAtlas) engine_icons; // Texture for engine icons
 
         static GLFWwindow* window;  // Pointer to GLFW window
-        static GLFWcursor* cursor;  // Pointer to GLFW cursor
         static int width;           // Width of window
         static int height;          // Height of window
 
@@ -59,15 +79,16 @@ namespace Vivium {
         static void Init(int nwidth, int nheight, int nfps, bool nisStatsEnabled = false, const char* resources_path = "../Resources");
         static void Terminate();
 
-        // Updates all Text objects for stats to display correct information for that frame
-        static void UpdateStats(const Body& player_body);
-
         static void StartSound(const std::string& file);
 
         // Executes all pre-rendering operations
         static void BeginFrame();
         // Executes all post-rendering operations
         static void EndFrame();
+
+        static void SetCursor(const CURSOR_TYPE& cursor);
+
+        static void UpdateStats(const Body& player_body);
 
         static void EnableWireframe();
         static void DisableWireframe();

@@ -3,9 +3,14 @@
 namespace Vivium {
 	uint32_t Flag::m_Flags = 0;
 
-	void Flag::Set(uint32_t flag)
+	void Flag::Set(uint32_t flag, bool val)
 	{
-		m_Flags |= flag;
+		if (val) {
+			m_Flags |= flag;
+		}
+		else {
+			m_Flags &= ~flag;
+		}
 	}
 
 	void Flag::Toggle(uint32_t flag)

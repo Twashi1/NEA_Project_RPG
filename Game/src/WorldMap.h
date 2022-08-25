@@ -15,6 +15,8 @@ namespace Game {
 		std::size_t m_TextureSize = 0;
 		uint8_t* m_PixelData = nullptr;
 
+		void m_LoadPixelDataFromRegion(const Vivium::Vector2<int>& region_index, World& world, int left, int right, int bottom, int top);
+
 	public:
 		static void Init();
 		static void Terminate();

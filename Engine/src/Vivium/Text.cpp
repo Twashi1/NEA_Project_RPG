@@ -25,12 +25,12 @@ namespace Vivium {
 
     void Text::SetPos(const Vector2<float>& pos)
     {
-        this->pos = pos;
+        *this->pos = pos;
     }
 
     Vector2<float> Text::GetPos() const
     {
-        return pos;
+        return *pos;
     }
 
     Text::Text()
@@ -47,25 +47,25 @@ namespace Vivium {
     }
 
     Text::Text(const std::string& text, const Vector2<float>& pos, float scale)
-        : text(text), pos(pos), font(m_DefaultFont), shader(m_DefaultShader), scale(scale)
+        : text(text), pos(MakeRef(Vector2<float>, pos)), font(m_DefaultFont), shader(m_DefaultShader), scale(scale)
     {
         m_Construct();
     }
 
     Text::Text(const std::string& text, const Vector2<float>& pos, Ref(Font) font, float scale)
-        : text(text), pos(pos), font(font), shader(m_DefaultShader), scale(scale)
+        : text(text), pos(MakeRef(Vector2<float>, pos)), font(font), shader(m_DefaultShader), scale(scale)
     {
         m_Construct();
     }
 
     Text::Text(const std::string& text, const Vector2<float>& pos, Ref(Shader) shader, float scale)
-        : text(text), pos(pos), font(m_DefaultFont), shader(shader), scale(scale)
+        : text(text), pos(MakeRef(Vector2<float>, pos)), font(m_DefaultFont), shader(shader), scale(scale)
     {
         m_Construct();
     }
 
     Text::Text(const std::string& text, const Vector2<float>& pos, Ref(Font) font, Ref(Shader) shader, float scale)
-        : text(text), pos(pos), font(font), shader(shader), scale(scale)
+        : text(text), pos(MakeRef(Vector2<float>, pos)), font(font), shader(shader), scale(scale)
     {
         m_Construct();
     }

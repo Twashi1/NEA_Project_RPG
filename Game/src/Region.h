@@ -8,10 +8,11 @@ namespace Game {
 		static constexpr unsigned int SIZE = LENGTH * LENGTH;
 		static constexpr unsigned int MEMORY_SIZE = SIZE * sizeof(Tile);
 
-		std::shared_ptr<Tile[]> tiles; // 1D array of tile ids
+		std::array<Tile, SIZE> tiles; // 1D array of tile ids
 
 		Region();
-		Region(const Region& other);
+		Region(const Region& other) = delete;
+		Region(Region&& other) noexcept;
 		~Region();
 
 		Tile& Index(int x, int y);

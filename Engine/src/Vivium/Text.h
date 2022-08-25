@@ -17,9 +17,9 @@ namespace Vivium {
 
 	public:
 		std::string text;			// Text to render
-		Vector2<float> pos;			// Position to render text
-		Ref(Font) font;			// Pointer to font
-		Ref(Shader) shader;		// Shader for text
+		Ref(Vector2<float>) pos;	// Position to render text
+		Ref(Font) font;				// Pointer to font
+		Ref(Shader) shader;			// Shader for text
 		float scale;				// Scale for text
 
 		static Ref(Font) GetDefaultFont();

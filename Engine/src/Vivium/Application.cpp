@@ -13,16 +13,17 @@ namespace Vivium {
     int Application::m_FPS = 0;
     double Application::m_TimePerFrame = 0.0;
 
-    std::unordered_map<std::string, Ref(Text)> Application::m_DebugStatsText{};
+    std::unordered_map<Application::STATS_INDEX, Ref(Text)> Application::m_StatsTextMap{};
+    std::unordered_map<Application::CURSOR_TYPE, GLFWcursor*> Application::m_CursorMap{};
+
     unsigned int Application::m_FramesProcessed = 0;
     double Application::m_ProcessingTime = 0.0;
     bool Application::isStatsEnabled = true;
 
-    VersionNumber Application::m_VersionNumber = "v0.0.2";
+    VersionNumber Application::m_VersionNumber = "v0.0.0";
     Ref(TextureAtlas) Application::engine_icons = nullptr;
 
     GLFWwindow* Application::window = nullptr;
-    GLFWcursor* Application::cursor = nullptr;
     int Application::width = 0;
     int Application::height = 0;
 
@@ -67,9 +68,6 @@ namespace Vivium {
         // Update Input
         Input::Update();
 
-        // TODO: SLOW?
-        glfwSetCursor(window, cursor);
-
         // Update physics
         Renderer::m_BeginScene(Renderer::PHYSICS_DEBUG_SCENE);
         physics->Update();
@@ -89,6 +87,8 @@ namespace Vivium {
         glFlush();
         glfwSwapBuffers(window);
 
+        TextInput::m_ResetTypingStatus();
+
         double elapsed = m_Timer.GetElapsed();
 
         // Update performance tracking variables and display warning if running behind
@@ -100,6 +100,11 @@ namespace Vivium {
         while (slept_for < sleep_time) {
             slept_for += m_Timer.GetElapsed();
         }
+    }
+
+    void Application::SetCursor(const CURSOR_TYPE& cursor)
+    {
+        glfwSetCursor(window, m_CursorMap.at(cursor));
     }
 
     void Application::EnableWireframe()
@@ -184,9 +189,6 @@ namespace Vivium {
             exit(EXIT_FAILURE);
         }
 
-        // Set cursor
-        cursor = glfwCreateStandardCursor(GLFW_ARROW_CURSOR);
-
         // Set background color
         glClearColor(1.0f, 1.0f, 1.0f, 1.0f);
 
@@ -229,8 +231,6 @@ namespace Vivium {
         Ref(Quad) panel_quad = MakeRef(Quad, width * 0.5f, height * 0.5f, (float)width, (float)height);
         window_panel = MakeRef(Panel, panel_quad);
 
-        glfwSetCursor(window, cursor);
-
         // Setup message callbacks
         glEnable(GL_DEBUG_OUTPUT);
         glDebugMessageCallback(__GLLogCallback, NULL);
@@ -244,17 +244,22 @@ namespace Vivium {
 
         // Create all text renderables for stats
         if (isStatsEnabled) {
-            m_DebugStatsText.insert({ "Average TPF",            MakeRef(Text, "", Vector2<float>(5, -15), 0.25)  });
-            m_DebugStatsText.insert({ "Percentage Processing",  MakeRef(Text, "", Vector2<float>(5, -30), 0.25)  });
-            m_DebugStatsText.insert({ "FPS",                    MakeRef(Text, "", Vector2<float>(5, -45), 0.25)  });
-            m_DebugStatsText.insert({ "Player pos",             MakeRef(Text, "", Vector2<float>(5, -100), 0.25) });
-            m_DebugStatsText.insert({ "Player vel",             MakeRef(Text, "", Vector2<float>(5, -115), 0.25) });
-            m_DebugStatsText.insert({ "Player acc",             MakeRef(Text, "", Vector2<float>(5, -130), 0.25) });
+            m_StatsTextMap.insert({ STATS_INDEX::AVERAGE_TPF,            MakeRef(Text, "", Vector2<float>(5, -15), 0.25)  });
+            m_StatsTextMap.insert({ STATS_INDEX::PROCESSING_PERCENTAGE,  MakeRef(Text, "", Vector2<float>(5, -30), 0.25)  });
+            m_StatsTextMap.insert({ STATS_INDEX::FPS,                    MakeRef(Text, "", Vector2<float>(5, -45), 0.25)  });
+            m_StatsTextMap.insert({ STATS_INDEX::PLAYER_POS,             MakeRef(Text, "", Vector2<float>(5, -100), 0.25) });
 
             // Anchor the text objects
-            for (auto& [name, text] : m_DebugStatsText) {
+            for (auto& [index, text] : m_StatsTextMap) {
                 window_panel->Anchor(Panel::ANCHOR::LEFT, Panel::ANCHOR::TOP, text);
             }
+        }
+
+        // Initialise cursor objects
+        for (int i = (int)CURSOR_TYPE::__START; i < (int)CURSOR_TYPE::__MAX; i++) {
+            m_CursorMap.insert(
+                {(CURSOR_TYPE)i, glfwCreateStandardCursor(i)}
+            );
         }
 
         // Finished loading
@@ -269,6 +274,7 @@ namespace Vivium {
 
         sound_engine->drop();
 
+        // NOTE: takes cares of the cursors we create as well
         glfwTerminate();
     }
 
@@ -305,7 +311,7 @@ namespace Vivium {
 
             std::string text = std::format("Average time per frame: {:.3f}ms/{:.3f}ms", avg_tpf_ms, m_TimePerFrame * 1000);
 
-            Ref(Text) t = m_DebugStatsText["Average TPF"];
+            Ref(Text) t = m_StatsTextMap[STATS_INDEX::AVERAGE_TPF];
             t->shader->Bind(); t->shader->SetUniform3f("u_TextColor", color.r, color.g, color.b);
             t->text = text;
 
@@ -321,7 +327,7 @@ namespace Vivium {
 
             std::string text = std::format("Processing time: {:.3f}%", percentage_processing);
 
-            Ref(Text) t = m_DebugStatsText["Percentage Processing"];
+            Ref(Text) t = m_StatsTextMap[STATS_INDEX::PROCESSING_PERCENTAGE];
             t->shader->Bind(); t->shader->SetUniform3f("u_TextColor", color.r, color.g, color.b);
             t->text = text;
 
@@ -346,7 +352,7 @@ namespace Vivium {
                 text = std::format("Max FPS: {:.3f}; Actual FPS: {}", fps, m_FPS);
             }
 
-            Ref(Text) t = m_DebugStatsText["FPS"];
+            Ref(Text) t = m_StatsTextMap[STATS_INDEX::FPS];
             t->shader->Bind(); t->shader->SetUniform3f("u_TextColor", color.r, color.g, color.b);
             t->text = text;
 
@@ -358,31 +364,7 @@ namespace Vivium {
 
             std::string text = std::format("Player position: [{:.3f}, {:.3f}]", player_position.x, player_position.y);
 
-            Ref(Text) t = m_DebugStatsText["Player pos"];
-            t->shader->Bind(); t->shader->SetUniform3f("u_TextColor", RGBColor::WHITE);
-            t->text = text;
-
-            Renderer::Submit(t.get());
-        }
-
-        {
-            Vector2<float> player_velocity = Math::Round(player_body.vel, 2);
-
-            std::string text = std::format("Player velocity: [{:.3f}, {:.3f}]", player_velocity.x, player_velocity.y);
-
-            Ref(Text) t = m_DebugStatsText["Player vel"];
-            t->shader->Bind(); t->shader->SetUniform3f("u_TextColor", RGBColor::WHITE);
-            t->text = text;
-
-            Renderer::Submit(t.get());
-        }
-
-        {
-            Vector2<float> player_acceleration = Math::Round(player_body.acc, 2);
-
-            std::string text = std::format("Player acceleration: [{:.3f}, {:.3f}]", player_acceleration.x, player_acceleration.y);
-
-            Ref(Text) t = m_DebugStatsText["Player acc"];
+            Ref(Text) t = m_StatsTextMap[STATS_INDEX::PLAYER_POS];
             t->shader->Bind(); t->shader->SetUniform3f("u_TextColor", RGBColor::WHITE);
             t->text = text;
 

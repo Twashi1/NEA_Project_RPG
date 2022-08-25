@@ -39,6 +39,7 @@
 
 /* Flags */
 #define VIVIUM_FLAG_DRAW_PHYSICS_CIRCLES 0x00000001
+#define VIVIUM_FLAG_ENABLE_FUNCTION_SIGNATURE_LOGGING 0x00000002
 
 #ifdef __VIVIUM_BUILD_DLL
 	#define VIVIUM_EXPOSE_CORE
@@ -58,7 +59,7 @@ namespace Vivium {
 		static uint32_t m_Flags;
 
 	public:
-		static void Set(uint32_t flag);
+		static void Set(uint32_t flag, bool val = true);
 		static void Toggle(uint32_t flag);
 		static bool Test(uint32_t flag);
 	};
