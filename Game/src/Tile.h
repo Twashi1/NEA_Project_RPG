@@ -66,6 +66,13 @@ namespace Game {
 	private:
 		// TODO: Load properties data from file instead
 		static std::array<Properties, (uint16_t)ID::MAX> m_Properties;
+
+	public:
+		friend std::ostream& operator<<(std::ostream& os, const Tile::ID& id) {
+			os << Game::Tile::GetName(id);
+
+			return os;
+		}
 	};
 }
 

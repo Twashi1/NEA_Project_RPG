@@ -49,11 +49,15 @@ namespace Game {
 		TileMap_t tilemap = GetTilemap(pos, id);
 
 		for (auto& [pos, tile] : tilemap) {
+			// TODO: this is a bad solution since it means if a structure is placed on a region boundary it is cancelled, so larger structures will very
+			//		often be cancelled, instead world should keep track of all structures, and when a region is generated, if it checks against the world's
+			//		structure list, and will act appropriately if it contains a structure (performance risks for large worlds with lots of structures generated?)
 			Tile* world_tile = world->GetLoadedTile(pos);
 
 			// Tile was not loaded in the world
 			if (world_tile == nullptr) return false;
 
+			// Check structure doesn't overlap the current tile
 			if (!m_CheckOverlapTile(tile, *world_tile))
 			{
 				// Exit function since one tile was invalid
@@ -65,7 +69,7 @@ namespace Game {
 			// No world tiles should be unloaded by this point
 			Tile* world_tile = world->GetLoadedTile(pos);
 
-			// We already know no tiles will overlap at this point so
+			// No tiles overlap so we can just copy over the tile data
 			world_tile->CopyRealTiles(tile);
 		}
 
@@ -141,7 +145,7 @@ namespace Game {
 	{
 		const TileMap_t& tilemap = GetTilemap(id);
 		
-		Vivium::Vector2<int> relative_offset = pos - structure_pos; // TODO: other way round?
+		Vivium::Vector2<int> relative_offset = pos - structure_pos;
 
 		for (const auto& [offset, tile] : tilemap) {
 			if (relative_offset == offset) {

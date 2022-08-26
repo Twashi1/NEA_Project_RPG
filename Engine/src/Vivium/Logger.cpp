@@ -26,7 +26,7 @@ namespace Vivium {
 		const std::regex cleaner("");
 		std::string function_cleaned = std::regex_replace(func_sig, cleaner, "");
 
-		if (Vivium::Flag::Test(VIVIUM_FLAG_ENABLE_FUNCTION_SIGNATURE_LOGGING)) {
+		if (Vivium::Flag::Test(VIVIUM_FLAG_FUNCTION_SIGNATURE_LOGGING)) {
 			std::cout << std::format(
 				"[{}] ({}) {}:{} {}",
 				Timer::GetTimeString(),

@@ -13,6 +13,31 @@ int sandbox(void)
 {
     Application::Init(WIDTH, HEIGHT, FPS, true);
 
+    Vivium::Noise::Voronoi interp_noise(5, 1.0f, 64);
+    std::size_t IMG_WIDTH = 1024;
+    std::size_t IMG_HEIGHT = 1024;
+    uint8_t* my_buffer = new uint8_t[IMG_WIDTH * IMG_HEIGHT];
+
+    for (std::size_t x = 0; x < IMG_WIDTH; x++) {
+        for (std::size_t y = 0; y < IMG_HEIGHT; y++) {
+            std::size_t idx = x + (y * IMG_WIDTH);
+
+            my_buffer[idx] = interp_noise.Get(x, y).y * 255;
+        }
+    }
+
+    Vivium::Texture tex(my_buffer, IMG_WIDTH, IMG_HEIGHT, Vivium::Texture::Format::GRAYSCALE);
+    Vivium::Shader tex_shader("static_texture_vertex", "texture_frag");
+    Vivium::Quad quad(0.0f, 0.0f, IMG_WIDTH, IMG_HEIGHT);
+
+    while (Application::IsRunning()) {
+        Application::BeginFrame();
+
+        Renderer::Submit(&quad, &tex_shader, &tex);
+
+        Application::EndFrame();
+    }
+
     Application::Terminate();
 
     return EXIT_SUCCESS;
@@ -20,7 +45,7 @@ int sandbox(void)
 
 int game(void)
 {
-    Vivium::Flag::Set(VIVIUM_FLAG_ENABLE_FUNCTION_SIGNATURE_LOGGING, false);
+    Vivium::Flag::Set(VIVIUM_FLAG_FUNCTION_SIGNATURE_LOGGING, false);
     // Construct engine instance
     Application::Init(WIDTH, HEIGHT, FPS, true);
 
@@ -35,6 +60,7 @@ int game(void)
     WorldMap::Init();
     FloorItem::Init();
     Inventory::Init();
+    Biome::Init();
 
     Application::SetBGColor(RGBColor::BLACK);
 
@@ -61,6 +87,7 @@ int game(void)
 
     LogInfo("Window closed");
 
+    Biome::Terminate();
     Inventory::Terminate();
     FloorItem::Terminate();
     WorldMap::Terminate();
@@ -73,5 +100,5 @@ int game(void)
 }
 
 int main(int argc, char** argv) {
-    game();
+    sandbox();
 }

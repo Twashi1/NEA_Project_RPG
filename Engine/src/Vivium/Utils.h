@@ -2,6 +2,7 @@
 
 #include "Core.h"
 #include "Logger.h"
+#include "Random.h"
 
 #include <stb_image_write.h>
 
@@ -35,6 +36,26 @@ namespace Vivium {
 		VIVIUM_API std::vector<std::string> SplitString(const ::std::string& s, const ::std::string& delim);
 
 		VIVIUM_API void SaveAsBitmap(unsigned char* data, int width, int height, int bpp, const char* path);
+
+		template <typename T>
+		std::size_t RandomWeightedChoice(const std::vector<T>& weights, T random_value)
+		{
+			T sum = std::accumulate(weights.begin(), weights.end(), 0);
+
+			random_value *= sum;
+
+			for (std::size_t i = 0; i < weights.size(); i++) {
+				if (random_value < weights[i]) {
+					return i;
+				}
+
+				random_value -= weights[i];
+			}
+
+			LogWarn("Weird stuff in RandomWeightedChoice");
+
+			return NULL;
+		}
 
 		// TODO: some sort of indexing method would be nice
 		class VIVIUM_API VoidArray {

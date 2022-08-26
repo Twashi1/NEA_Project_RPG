@@ -279,7 +279,8 @@ namespace Game {
 		Region* region = regions.at(index);
 
 		m_Serialiser->BeginRead(filename.c_str());
-		m_Serialiser->Read((char*)&region->tiles[0], Region::MEMORY_SIZE);
+		m_Serialiser->Read((char*)&region->tiles[0], Region::TILES_MEM_SIZE);
+		m_Serialiser->Read((char*)&region->biomes[0], Region::BIOMES_MEM_SIZE);
 
 		std::vector<FloorItem> region_floor_items;
 		m_Serialiser->Read(&region_floor_items);
@@ -336,7 +337,9 @@ namespace Game {
 		m_Serialiser->BeginWrite(region_path.c_str());
 
 		// Write tiles of region
-		m_Serialiser->Write((char*)&region->tiles[0], Region::MEMORY_SIZE);
+		m_Serialiser->Write((char*)&region->tiles[0], Region::TILES_MEM_SIZE);
+		// Write biome map for region
+		m_Serialiser->Write((char*)&region->biomes[0], Region::BIOMES_MEM_SIZE);
 
 		// Get the floor items for the region
 		std::vector<FloorItem>* region_floor_items = GetFloorItems(index);
@@ -365,41 +368,18 @@ namespace Game {
 			for (int x = 0; x < Region::LENGTH; x++) {
 				int world_x = x + index.x * Region::LENGTH;
 
-				float noise_value = m_NoiseTerrain.Get(world_x, world_y); // Returns noise value from 0 - 1
-
-				Tile tile;
-
-				Tile::ID tile_id = Tile::ID::GRASS;
-
-				// TODO better world generation (biomes/worley noise for ore clumps/better noise generators)
-
-				if (noise_value < 0.4) { tile_id = Tile::ID::GROUND; }
-				if (noise_value < 0.3) { tile_id = Tile::ID::SAND; }
-				if (noise_value < 0.2) { tile_id = Tile::ID::WATER; }
-
-				tile.bot = tile_id;
-
-				float tree_noise = m_NoiseTrees.Get(world_x + world_y * Region::LENGTH);
-
-				if (tree_noise < 0.03 && noise_value > 0.2) {
-					// TODO: shouldn't use true randomness here
-					int index = Vivium::Random::GetInt((uint16_t)Tile::ID::AMETHYST_NODE, (uint16_t)Tile::ID::TOPAZ_NODE);
-					tile.top = (Tile::ID)index;
+				// TODO: get biome from worley noise
+				{
+					Biome::ID& biome = region->IndexBiome(x, y);
+					biome = Biome::ID::FOREST;
 				}
 
-				if (tree_noise > 0.7 && noise_value > 0.4) {
-					if (tree_noise > 0.9) {
-						structures[Vivium::Vector2<int>(world_x, world_y)] = Structure::ID::TREE;
-					}
-					else if (tree_noise > 0.8) {
-						tile.top = Tile::ID::BUSH;
-					}
-					else {
-						tile.top = Tile::ID::BUSH_FRUIT;
-					}
-				}
+				Tile& tile = region->Index(x, y);
 
-				region->Index(x, y) = tile;
+				// Get ptr to biome
+				const Biome::ForestBiome* my_biome = (Biome::ForestBiome*)Biome::GetBiome(Biome::ID::FOREST);
+				// Use biome to generate tile
+				my_biome->GenerateAt(world_x, world_y, tile, this, structures);
 			}
 		}
 
@@ -485,101 +465,114 @@ namespace Game {
 		}
 	}
 
+	void World::m_UpdateMineable(const Tile::ID& id, float& tile_scale, int world_x, int world_y)
+	{
+		// If our current tile is mineable, and we are currently mining at ile
+		if (Tile::GetIsMineable(id) && mined_tile_id != Tile::ID::VOID)
+		{
+			// If we're currently mining a structure
+			if (Structure::IsStructure(mined_tile_id)) {
+				// Get the ID of the structure we're mining
+				Structure::ID structure_id = Structure::GetStructureID(mined_tile_id);
+
+				// Get the origin of the structure (the point around which the tilemap is based)
+				Vivium::Vector2<float> structure_origin = mined_tile_pos - Structure::GetTileOffset(mined_tile_id, structure_id);
+
+				// If the current position we're iterating is within the bounds of the structure we're mining
+				if (Structure::IsWithinStructureBounds(Vivium::Vector2<int>(world_x, world_y), structure_origin, structure_id)) {
+					// Edit the mining scale
+					tile_scale = m_GetMiningTileScale(tile_scale, id);
+				}
+			}
+			// We're not mining a structure, so we just have to check if our iterating pos is the same as our mining pos
+			else if (world_x == mined_tile_pos.x && world_y == mined_tile_pos.y) {
+				tile_scale = m_GetMiningTileScale(tile_scale, id);
+			}
+		}
+	}
+
 	void World::m_RenderTiles(const Vivium::Vector2<int>& pos)
 	{
-		Vivium::Vector2<int> frame = Vivium::Application::GetScreenDim() / (PIXEL_SCALE * 2.0f) + Vivium::Vector2<int>(1, 1);
+		// LogTrace("--- Begin render tiles ---");
 
-		unsigned short count = 0;
-		unsigned int max_count = (frame.x * 2 + 1) * (frame.y * 2 + 1) * 3;
+		Vivium::Vector2<int> frame = Vivium::Application::GetScreenDim() / (PIXEL_SCALE * 2.0f);
+		//LogTrace("* Frame size: {}", frame);
+
+		float reg_scale = Region::LENGTH;
+
+		// Add some extra tiles to make sure we don't get ugly black borders
+		constexpr int padding = 3;
+		int left	= pos.x - frame.x - padding;	int reg_left	= std::floor(left / reg_scale);
+		int right	= pos.x + frame.x + padding;	int reg_right	= std::floor(right / reg_scale);
+		int bottom	= pos.y - frame.y - padding;	int reg_bottom	= std::floor(bottom / reg_scale);
+		int top		= pos.y + frame.y + padding;	int reg_top		= std::floor(top / reg_scale);
+
+		// Stores the current amount of tiles we have rendered
+		std::size_t count = 0;
+		// NOTE: if everything on screen has a bot, mid, and top tile to render, its possible we may exceed max count,
+		//		might need something like "(right - left + 1) * (top - bottom + 1) * 3" instead
+		std::size_t max_count = (right - left) * (top - bottom) * 3;
 
 		float* vertex_data = new float[16 * max_count];
-		std::size_t vertex_data_index = 0;
+		std::size_t vertex_index = 0;
 
-		unsigned short* index_coords = new unsigned short[6 * max_count];
-		std::size_t index_coords_index = 0;
+		unsigned short* indices_data = new unsigned short[6 * max_count];
+		std::size_t indices_index = 0;
 
-		for (int y = pos.y - frame.y; y <= pos.y + frame.y; y++) {
-			for (int x = pos.x - frame.x; x <= pos.x + frame.x; x++) {
-				Tile& tile = GetTile(x, y);
+		for (int reg_y = reg_bottom; reg_y <= reg_top; reg_y++) {
+			for (int reg_x = reg_left; reg_x <= reg_right; reg_x++) {
+				// Load the region
+				Vivium::Vector2<int> region_index(reg_x, reg_y);
+				Region& region = m_LoadRegion(region_index);
 
-				// Calculate draw coords
-				float dx = x * World::PIXEL_SCALE;
-				float dy = y * World::PIXEL_SCALE;
+				// Calculate offset which transforms from region relative coordinates to world coordinates
+				Vivium::Vector2<int> region_offset = region_index * Region::LENGTH;
 
-				float halfscale = World::PIXEL_SCALE * 0.5f;
+				// Iterate tiles in region
+				for (int rel_y = 0; rel_y < Region::LENGTH; rel_y++) {
+					int world_y = rel_y + region_offset.y;
 
-				// Iterate over each tile id
-				for (const Tile::ID& id : { tile.bot, tile.mid, tile.top }) {
-					if (id == Tile::ID::VOID) { continue; }
+					// Check y position is within bounds of what we want to render
+					if (world_y >= bottom && world_y < top) {
+						for (int rel_x = 0; rel_x < Region::LENGTH; rel_x++) {
+							int world_x = rel_x + region_offset.x;
 
-					float tile_scale = halfscale * Tile::GetScale(id);
+							// Check x position is within bounds of what we want to render
+							if (world_x >= left && world_x < right) {
+								// Get tile from region, since we know both its x and y are within the camera's bounds
+								Tile& tile = region.Index(rel_x, rel_y);
 
-					/* TODO: UpdateMineable */
-					// If our current tile is mineable, and we are currently mining at ile
-					if (Tile::GetIsMineable(id) && mined_tile_id != Tile::ID::VOID)
-					{
-						// If we're currently mining a structure
-						if (Structure::IsStructure(mined_tile_id)) {
-							// Get the ID of the structure we're mining
-							Structure::ID structure_id = Structure::GetStructureID(mined_tile_id);
+								// Calculate draw coords
+								float dx = world_x * World::PIXEL_SCALE;
+								float dy = world_y * World::PIXEL_SCALE;
 
-							// Get the origin of the structure (the point around which the tilemap is based)
-							Vivium::Vector2<float> structure_origin = mined_tile_pos - Structure::GetTileOffset(mined_tile_id, structure_id);
+								float halfscale = World::PIXEL_SCALE * 0.5f;
 
-							// If the current position we're iterating is within the bounds of the structure we're mining
-							if (Structure::IsWithinStructureBounds(Vivium::Vector2<int>(x, y), structure_origin, structure_id)) {
-								// Edit the mining scale
-								tile_scale = m_GetMiningTileScale(tile_scale, id);
+								// Iterate over each tile id
+								for (const Tile::ID& id : { tile.bot, tile.mid, tile.top }) {
+									if (id == Tile::ID::VOID) { continue; }
+
+									float tile_scale = halfscale * Tile::GetScale(id);
+
+									// NOTE: If tile is being mined, the scale should rapidly fluctuate to indicate its being mined
+									// Update tile scale if tile is being mined or part of structure that is being mined
+									m_UpdateMineable(id, tile_scale, world_x, world_y);
+
+									/* TODO: UpdatePhysics */
+									// TODO: bad
+									if (Tile::GetIsPhysical(id)) {
+										Ref(Vivium::Quad) quad = MakeRef(Vivium::Quad, Vivium::Vector2<float>(dx, dy), Vivium::Vector2<float>(halfscale));
+										Ref(Vivium::Body) body = MakeRef(Vivium::Body, quad, true, 0.0f, 0.0f);
+
+										Vivium::Application::physics->Register(body, World::PHYSICS_TILE_LAYER);
+									}
+
+									// NOTE: increments counter for us
+									m_BatchRenderTile(id, dx, dy, tile_scale, vertex_data, indices_data, vertex_index, indices_index, count);
+								}
 							}
 						}
-						// We're not mining a structure, so we just have to check if our iterating pos is the same as our mining pos
-						else if (x == mined_tile_pos.x && y == mined_tile_pos.y) {
-							tile_scale = m_GetMiningTileScale(tile_scale, id);
-						}
 					}
-
-					/* TODO: UpdatePhysics */
-					if (Tile::GetIsPhysical(id)) {
-						Ref(Vivium::Quad) quad = MakeRef(Vivium::Quad, Vivium::Vector2<float>(dx, dy), Vivium::Vector2<float>(halfscale));
-						Ref(Vivium::Body) body = MakeRef(Vivium::Body, quad, true, 0.0f, 0.0f);
-
-						Vivium::Application::physics->Register(body, World::PHYSICS_TILE_LAYER);
-					}
-
-					/* TODO: UpdateVertexData */
-					std::array<float, 4>& faces = m_TextureCoords[(int)id];
-
-					// Bottom left vertex
-					vertex_data[vertex_data_index++] = dx - tile_scale;
-					vertex_data[vertex_data_index++] = dy - tile_scale;
-					vertex_data[vertex_data_index++] = faces[0];
-					vertex_data[vertex_data_index++] = faces[1];
-					// Bottom right vertex
-					vertex_data[vertex_data_index++] = dx + tile_scale;
-					vertex_data[vertex_data_index++] = dy - tile_scale;
-					vertex_data[vertex_data_index++] = faces[2];
-					vertex_data[vertex_data_index++] = faces[1];
-					// Top right vertex
-					vertex_data[vertex_data_index++] = dx + tile_scale;
-					vertex_data[vertex_data_index++] = dy + tile_scale;
-					vertex_data[vertex_data_index++] = faces[2];
-					vertex_data[vertex_data_index++] = faces[3];
-					// Top left vertex
-					vertex_data[vertex_data_index++] = dx - tile_scale;
-					vertex_data[vertex_data_index++] = dy + tile_scale;
-					vertex_data[vertex_data_index++] = faces[0];
-					vertex_data[vertex_data_index++] = faces[3];
-
-
-					int stride = count * 4;
-					index_coords[index_coords_index++] = 0 + stride;
-					index_coords[index_coords_index++] = 1 + stride;
-					index_coords[index_coords_index++] = 2 + stride;
-					index_coords[index_coords_index++] = 2 + stride;
-					index_coords[index_coords_index++] = 3 + stride;
-					index_coords[index_coords_index++] = 0 + stride;
-
-					count++;
 				}
 			}
 		}
@@ -589,13 +582,51 @@ namespace Game {
 			Vivium::GLSLDataType::VEC2  // tex coords
 		};
 
-		Vivium::VertexBuffer vb(vertex_data, vertex_data_index + 1, layout);
-		Vivium::IndexBuffer ib(index_coords, index_coords_index + 1);
+		Vivium::VertexBuffer vb(vertex_data, (count * 16), layout);
+		Vivium::IndexBuffer ib(indices_data, (count * 6));
 
 		Vivium::Renderer::Submit(&vb, &ib, texture_shader, m_TextureAtlas->GetAtlas().get());
 
 		delete[] vertex_data;
-		delete[] index_coords;
+		delete[] indices_data;
+	}
+
+	void World::m_BatchRenderTile(const Tile::ID& id, float x, float y, float scale, float* vertex_data, uint16_t* indices_data, std::size_t& vertex_index, std::size_t& indices_index, std::size_t& count)
+	{
+		/* TODO: UpdateVertexData */
+		std::array<float, 4>& faces = m_TextureCoords[(int)id];
+
+		// Bottom left vertex
+		vertex_data[vertex_index++] = x - scale;
+		vertex_data[vertex_index++] = y - scale;
+		vertex_data[vertex_index++] = faces[0];
+		vertex_data[vertex_index++] = faces[1];
+		// Bottom right vertex
+		vertex_data[vertex_index++] = x + scale;
+		vertex_data[vertex_index++] = y - scale;
+		vertex_data[vertex_index++] = faces[2];
+		vertex_data[vertex_index++] = faces[1];
+		// Top right vertex
+		vertex_data[vertex_index++] = x + scale;
+		vertex_data[vertex_index++] = y + scale;
+		vertex_data[vertex_index++] = faces[2];
+		vertex_data[vertex_index++] = faces[3];
+		// Top left vertex
+		vertex_data[vertex_index++] = x - scale;
+		vertex_data[vertex_index++] = y + scale;
+		vertex_data[vertex_index++] = faces[0];
+		vertex_data[vertex_index++] = faces[3];
+
+
+		int stride = count * 4;
+		indices_data[indices_index++] = 0 + stride;
+		indices_data[indices_index++] = 1 + stride;
+		indices_data[indices_index++] = 2 + stride;
+		indices_data[indices_index++] = 2 + stride;
+		indices_data[indices_index++] = 3 + stride;
+		indices_data[indices_index++] = 0 + stride;
+
+		count++;
 	}
 
 	void World::m_RenderFloorItems(const Vivium::Vector2<int>& pos)

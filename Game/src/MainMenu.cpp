@@ -410,7 +410,7 @@ namespace Game {
 
 				m_Worlds.emplace_back(current_offset, world_name, this);
 
-				LogTrace("Loaded world name: {}", world_name);
+				LogTrace("Found world name: {}", world_name);
 				
 				// TODO: magic number here
 				current_offset.y -= 130.0f;

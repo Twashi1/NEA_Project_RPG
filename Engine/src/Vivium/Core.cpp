@@ -1,9 +1,9 @@
 #include "Core.h"
 
 namespace Vivium {
-	uint32_t Flag::m_Flags = 0;
+	Flag::flag_t Flag::m_Flags = 0;
 
-	void Flag::Set(uint32_t flag, bool val)
+	void Flag::Set(flag_t flag, bool val)
 	{
 		if (val) {
 			m_Flags |= flag;
@@ -13,12 +13,12 @@ namespace Vivium {
 		}
 	}
 
-	void Flag::Toggle(uint32_t flag)
+	void Flag::Toggle(flag_t flag)
 	{
 		m_Flags ^= flag;
 	}
 
-	bool Flag::Test(uint32_t flag)
+	bool Flag::Test(flag_t flag)
 	{
 		return m_Flags & flag;
 	}

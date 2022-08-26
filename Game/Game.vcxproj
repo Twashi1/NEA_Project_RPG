@@ -19,6 +19,7 @@
     </ProjectConfiguration>
   </ItemGroup>
   <ItemGroup>
+    <ClCompile Include="src\Biome.cpp" />
     <ClCompile Include="src\Core.cpp" />
     <ClCompile Include="src\Inventory.cpp" />
     <ClCompile Include="src\Item.cpp" />
@@ -38,6 +39,7 @@
     </ProjectReference>
   </ItemGroup>
   <ItemGroup>
+    <ClInclude Include="src\Biome.h" />
     <ClInclude Include="src\Core.h" />
     <ClInclude Include="src\Inventory.h" />
     <ClInclude Include="src\Item.h" />
@@ -45,6 +47,7 @@
     <ClInclude Include="src\Recipe.h" />
     <ClInclude Include="src\Region.h" />
     <ClInclude Include="src\Structures.h" />
+    <ClInclude Include="src\TerrainGenerator.h" />
     <ClInclude Include="src\Tile.h" />
     <ClInclude Include="src\MainMenu.h" />
     <ClInclude Include="src\World.h" />

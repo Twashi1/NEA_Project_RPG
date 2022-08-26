@@ -48,9 +48,19 @@ namespace Vivium {
 
 		explicit operator glm::vec2() const { return glm::vec2(x, y); }
 
-		Vector2 floor() const requires FloatingPoint<T> { return Vector2(std::floor(x), std::floor(y)); }
-		Vector2 ceil() const requires FloatingPoint<T> { return Vector2(std::floor(x), std::floor(y)); }
+		Vector2 floor() const requires FloatingPoint<T> { return Vector2(std::trunc(x), std::trunc(y)); }
+		Vector2 ceil() const requires FloatingPoint<T> { return Vector2(std::ceil(x), std::ceil(y)); }
 		Vector2 normalise() const { return *this * InverseSquareRoot(x * x + y * y); }
+		Vector2 fract() const requires FloatingPoint<T>
+		{
+			float int_part;
+			float fx = std::modf(x, &int_part);
+			float fy = std::modf(y, &int_part);
+			
+			return Vector2<float>(fx, fy);
+		}
+
+		T length() const { return std::sqrt(x * x + y * y); }
 
 		T magnitude() const { return std::sqrt(x * x + y * y); }
 

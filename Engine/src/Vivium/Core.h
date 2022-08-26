@@ -20,6 +20,7 @@
 #include <numeric>
 #include <queue>
 #include <random>
+#include <ranges>
 #include <regex>
 #include <set>
 #include <string>
@@ -38,8 +39,9 @@
 #include <irrKlang.h>
 
 /* Flags */
-#define VIVIUM_FLAG_DRAW_PHYSICS_CIRCLES 0x00000001
-#define VIVIUM_FLAG_ENABLE_FUNCTION_SIGNATURE_LOGGING 0x00000002
+#define VIVIUM_FLAG_DRAW_PHYSICS_CIRCLES			0x0000000000000001ULL
+#define VIVIUM_FLAG_FUNCTION_SIGNATURE_LOGGING		0x0000000000000002ULL
+#define VIVIUM_FLAG_PRINT_SHADER_COMPILATION		0x0000000000000004ULL
 
 #ifdef __VIVIUM_BUILD_DLL
 	#define VIVIUM_EXPOSE_CORE
@@ -56,12 +58,13 @@
 namespace Vivium {
 	class VIVIUM_API Flag {
 	private:
-		static uint32_t m_Flags;
+		typedef unsigned long long flag_t; // Total of 64 flags
+		static flag_t m_Flags;
 
 	public:
-		static void Set(uint32_t flag, bool val = true);
-		static void Toggle(uint32_t flag);
-		static bool Test(uint32_t flag);
+		static void Set(flag_t flag, bool val = true);
+		static void Toggle(flag_t flag);
+		static bool Test(flag_t flag);
 	};
 
 	static entt::registry Registry;

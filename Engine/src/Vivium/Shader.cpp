@@ -48,7 +48,9 @@ namespace Vivium {
         const std::string PATH = "../Resources/shaders/";
         const std::string EXT = ".glsl";
 
-        LogTrace("Compiling shaders: {}, {}", vertex_name, frag_name);
+        if (Vivium::Flag::Test(VIVIUM_FLAG_PRINT_SHADER_COMPILATION)) {
+            LogTrace("Compiling shaders: {}, {}", vertex_name, frag_name);
+        }
 
         GLuint program = glCreateProgram();
 

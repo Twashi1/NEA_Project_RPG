@@ -35,6 +35,12 @@ namespace Game {
 
 		// Delete structure from id of one of the tiles in structure
 		static void Delete(const Vivium::Vector2<int>& pos, const Tile::ID& id, World* world);
+
+		friend std::ostream& operator<<(std::ostream& os, const Structure::ID& id) {
+			os << Game::Structure::GetName(id);
+
+			return os;
+		}
 	};
 }
 

@@ -3,8 +3,7 @@
 #include "Region.h"
 #include "Structures.h"
 #include "WorldMap.h"
-
-// TODO: world should serialise/deserialise around player
+#include "Biome.h"
 
 namespace Game {
 	class Player;
@@ -62,7 +61,10 @@ namespace Game {
 
 		void m_AddFloorItem(const Vivium::Vector2<int>& region_pos, const FloorItem& item);
 
+		void m_UpdateMineable(const Tile::ID& id, float& tile_scale, int world_x, int world_y);
+
 		void m_RenderTiles(const Vivium::Vector2<int>& pos);
+		void m_BatchRenderTile(const Tile::ID& id, float x, float y, float scale, float* vertex_data, uint16_t* indices_data, std::size_t& vertex_index, std::size_t& indices_index, std::size_t& count);
 		void m_RenderFloorItems(const Vivium::Vector2<int>& pos);
 
 		float m_GetMiningTileScale(float tile_scale, const Tile::ID& id);
@@ -112,5 +114,6 @@ namespace Game {
 
 		friend Inventory;
 		friend WorldMap;
+		friend Biome;
 	};
 }
