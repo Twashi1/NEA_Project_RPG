@@ -26,7 +26,6 @@ namespace Vivium {
             v &= mantissa_bitmask;
             v |= one_binary_value;
 
-            // Trick compiler into interpreting our "integer" as a float
             float f = (*(float*)&v) - 1.0f;
 
             return f;
@@ -54,12 +53,12 @@ namespace Vivium {
 
         Vector2<int>VIVIUM_API Hash2(unsigned int seed, Vector2<int> pos)
         {
-            return Vector2<int>(Hash(seed, pos.x), Hash(seed, pos.y));
+            return Vector2<int>(Hash(seed, pos.x ^ Hash(seed, pos.y)), Hash(seed, pos.y ^ Hash(seed, pos.x)));
         }
 
         Vector2<float>VIVIUM_API Hash2f(unsigned int seed, Vector2<int> pos)
         {
-            return Vector2<float>(Hashf(seed, pos.x), Hashf(seed, pos.y));
+            return Vector2<float>(Hashf(seed, pos.x ^ Hash(seed, pos.y)), Hashf(seed, pos.y ^ Hash(seed, pos.x)));
         }
 
         float Interpolate(float a, float b, float t)
@@ -80,12 +79,12 @@ namespace Vivium {
 
         float White::Get(int x)
         {
-            return Hashf(m_seed, x / wavelength) * amplitude;
+            return Hashf(m_Seed, x / wavelength) * amplitude;
         }
 
         float White::Get(int x, int y)
         {
-            return Hashf(m_seed, Vector2<int>(x, y) / wavelength) * amplitude;
+            return Hashf(m_Seed, Vector2<int>(x, y) / wavelength) * amplitude;
         }
 
         float* White::GetList(int x, unsigned int length)
@@ -93,7 +92,7 @@ namespace Vivium {
             float* values = new float[length];
 
             for (int i = 0; i < length; i++) {
-                values[i] = Get(m_seed, x);
+                values[i] = Get(m_Seed, x);
             }
 
             return values;
@@ -107,7 +106,7 @@ namespace Vivium {
                 float* row = new float[width];
 
                 for (int i = 0; i < width; x++) {
-                    row[i] = Get(m_seed, i + x);
+                    row[i] = Get(m_Seed, i + x);
                 }
 
                 values[j] = row;
@@ -118,12 +117,12 @@ namespace Vivium {
 
         uint8_t White::GetByte(int x)
         {
-            return (Hash(m_seed, x / wavelength) & 0xff) * amplitude;
+            return (Hash(m_Seed, x / wavelength) & 0xff) * amplitude;
         }
 
         uint8_t White::GetByte(int x, int y)
         {
-            return (Hash(m_seed, Vector2<int>(x, y) / wavelength) & 0xff) * amplitude;
+            return (Hash(m_Seed, Vector2<int>(x, y) / wavelength) & 0xff) * amplitude;
         }
 
         uint8_t* White::GetByteList(int x, unsigned int length)
@@ -131,7 +130,7 @@ namespace Vivium {
             uint8_t* values = new uint8_t[length];
 
             for (int i = 0; i < length; i++) {
-                values[i] = GetByte(m_seed, i + x);
+                values[i] = GetByte(m_Seed, i + x);
             }
 
             return values;
@@ -145,7 +144,7 @@ namespace Vivium {
                 uint8_t* row = new uint8_t[width];
 
                 for (int i = 0; i < width; x++) {
-                    row[i] = GetByte(m_seed, i + x);
+                    row[i] = GetByte(m_Seed, i + x);
                 }
 
                 values[j] = row;
@@ -155,18 +154,15 @@ namespace Vivium {
         }
 
         White::White(unsigned int seed, float amplitude, int wavelength)
-        {
-            this->m_seed = seed;
-            this->amplitude = amplitude;
-            this->wavelength = wavelength;
-        }
+            : __NoiseVirtual(seed, amplitude, wavelength)
+        {}
 
         White::~White() {}
 
         float Interpolated::GetLinear(int x)
         {
-            float current = Hashf(m_seed, x / wavelength);
-            float next = Hashf(m_seed, (x + 1) / wavelength);
+            float current = Hashf(m_Seed, x / wavelength);
+            float next = Hashf(m_Seed, (x + 1) / wavelength);
 
             // Set speed based on distance from previous random point to next random point
             float speed = float((x / wavelength) & wavelength) / float(wavelength);
@@ -176,8 +172,8 @@ namespace Vivium {
 
         float Interpolated::GetSmooth(int x)
         {
-            float current = Hashf(m_seed, x / wavelength);
-            float next = Hashf(m_seed, (x + 1) / wavelength);
+            float current = Hashf(m_Seed, x / wavelength);
+            float next = Hashf(m_Seed, (x + 1) / wavelength);
 
             // Set speed based on distance from previous random point to next random point
             float speed = float((x / wavelength) & wavelength) / float(wavelength);
@@ -196,29 +192,26 @@ namespace Vivium {
         }
 
         Interpolated::Interpolated()
-        {
-        }
+            : __NoiseVirtual()
+        {}
 
         Interpolated::Interpolated(unsigned int seed, float amplitude, int wavelength)
-        {
-            this->m_seed = seed;
-            this->amplitude = amplitude;
-            this->wavelength = wavelength;
-        }
+            : __NoiseVirtual(seed, amplitude, wavelength)
+        {}
 
         Interpolated::~Interpolated() {}
 
         void __NoiseVirtual::SetSeed(unsigned int nseed)
         {
-            m_seed = nseed;
+            m_Seed = nseed;
         }
 
         __NoiseVirtual::__NoiseVirtual()
-            : m_seed(0), amplitude(1), wavelength(1)
+            : m_Seed(0), amplitude(1), wavelength(1)
         {}
 
         __NoiseVirtual::__NoiseVirtual(unsigned int m_seed, float amplitude, int wavelength)
-            : m_seed(m_seed), amplitude(amplitude), wavelength(wavelength)
+            : m_Seed(m_seed), amplitude(amplitude), wavelength(wavelength)
         {}
 
         __NoiseVirtual::~__NoiseVirtual() {}
@@ -235,10 +228,10 @@ namespace Vivium {
             Vector2<float> l3 = p.floor() + Vector2<float>(1.0f, 1.0f);
 
             // Calculate gradients for each lattice point
-            float r0 = Hashf(m_seed, (Vector2<int>)l0);
-            float r1 = Hashf(m_seed, (Vector2<int>)l1);
-            float r2 = Hashf(m_seed, (Vector2<int>)l2);
-            float r3 = Hashf(m_seed, (Vector2<int>)l3);
+            float r0 = Hashf(m_Seed, (Vector2<int>)l0);
+            float r1 = Hashf(m_Seed, (Vector2<int>)l1);
+            float r2 = Hashf(m_Seed, (Vector2<int>)l2);
+            float r3 = Hashf(m_Seed, (Vector2<int>)l3);
 
             // Calculate interpolation speeds for x and y
             float tx = Quintic(p.x - l0.x);
@@ -277,7 +270,82 @@ namespace Vivium {
         }
 
         White::White()
+            : __NoiseVirtual()
+        {}
+
+        float Cellular::Get(int x, int y)
         {
+            // https://godotshaders.com/snippet/voronoi/
+            // https://www.ronja-tutorials.com/post/028-voronoi-noise/
+            // https://thebookofshaders.com/12/
+
+            Vector2<float> p = Vector2<float>(x, y) / (float)wavelength;
+            Vector2<float> floor_p = p.floor();
+
+            float min_sqr_dist = FLT_MAX;
+
+            for (float yoff = -1.0f; yoff <= 1.0f; yoff++) {
+                for (float xoff = -1.0f; xoff <= 1.0f; xoff++) {
+                    Vector2<float> offset(xoff, yoff);
+                    Vector2<float> lattice_point = floor_p + offset;
+                    Vector2<float> random_point = lattice_point + Hash2f(m_Seed, lattice_point);
+
+                    min_sqr_dist = std::min(min_sqr_dist, p.sqr_distance(random_point));
+                }
+            }
+
+            float min_dist = std::sqrt(min_sqr_dist);
+
+            return min_dist;
         }
+
+        Cellular::Cellular()
+            : __NoiseVirtual()
+        {}
+
+        Cellular::Cellular(unsigned int seed, float amplitude, int wavelength)
+            : __NoiseVirtual(seed, amplitude, wavelength)
+        {}
+
+        Cellular::~Cellular() {}
+
+        Vector2<float> Voronoi::Get(int x, int y)
+        {
+            // https://godotshaders.com/snippet/voronoi/
+            // https://www.ronja-tutorials.com/post/028-voronoi-noise/
+            // https://thebookofshaders.com/12/
+
+            Vector2<float> p = Vector2<float>(x, y) / (float)wavelength;
+            Vector2<float> floor_p = p.floor();
+
+            float min_sqr_dist = FLT_MAX;
+            Vector2<float> min_point = FLT_MAX;
+
+            for (float yoff = -1.0f; yoff <= 1.0f; yoff++) {
+                for (float xoff = -1.0f; xoff <= 1.0f; xoff++) {
+                    Vector2<float> offset(xoff, yoff);
+                    Vector2<float> lattice_point = floor_p + offset;
+                    Vector2<float> random_point = lattice_point + Hash2f(m_Seed, lattice_point);
+                    float sqr_distance = p.sqr_distance(random_point);
+
+                    if (sqr_distance < min_sqr_dist) {
+                        min_sqr_dist = sqr_distance;
+                        min_point = random_point - lattice_point;
+                    }
+                }
+            }
+
+            return min_point;
+        }
+
+        Voronoi::Voronoi()
+            : __NoiseVirtual()
+        {}
+
+        Voronoi::Voronoi(unsigned int seed, float amplitude, int wavelength)
+            : __NoiseVirtual(seed, amplitude, wavelength)
+        {}
+
+        Voronoi::~Voronoi() {}
     }
 }

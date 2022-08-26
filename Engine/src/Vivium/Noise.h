@@ -39,7 +39,7 @@ namespace Vivium {
 
         class VIVIUM_API __NoiseVirtual {
         protected:
-            unsigned int m_seed = 0;
+            unsigned int m_Seed = 0;
         public:
             float amplitude = 1.0f; // Multiplier for value of noise
             int wavelength = 1;  // Determines period at which noise repeats
@@ -53,6 +53,11 @@ namespace Vivium {
 
         class VIVIUM_API White : public __NoiseVirtual {
         public:
+            using __NoiseVirtual::m_Seed;
+            using __NoiseVirtual::amplitude;
+            using __NoiseVirtual::wavelength;
+            using __NoiseVirtual::SetSeed;
+
             // Get value noise for 1D coordinate as float
             float Get(int x);
             // Get value noise for 2D coordinate as float
@@ -78,6 +83,11 @@ namespace Vivium {
 
         class VIVIUM_API Interpolated : public __NoiseVirtual {
         public:
+            using __NoiseVirtual::m_Seed;
+            using __NoiseVirtual::amplitude;
+            using __NoiseVirtual::wavelength;
+            using __NoiseVirtual::SetSeed;
+
             // Get linearly interpolated noise for 1D coordinate as float
             float GetLinear(int x);
             // Get smoothly interpolated noise for 1D coordinate as float
@@ -96,6 +106,34 @@ namespace Vivium {
             Interpolated();
             Interpolated(unsigned int seed, float amplitude, int wavelength);
             ~Interpolated();
+        };
+
+        class VIVIUM_API Cellular : public __NoiseVirtual {
+        public:
+            using __NoiseVirtual::m_Seed;
+            using __NoiseVirtual::amplitude;
+            using __NoiseVirtual::wavelength;
+            using __NoiseVirtual::SetSeed;
+
+            float Get(int x, int y);
+
+            Cellular();
+            Cellular(unsigned int seed, float amplitude, int wavelength);
+            ~Cellular();
+        };
+
+        class VIVIUM_API Voronoi : public __NoiseVirtual {
+        public:
+            using __NoiseVirtual::m_Seed;
+            using __NoiseVirtual::amplitude;
+            using __NoiseVirtual::wavelength;
+            using __NoiseVirtual::SetSeed;
+
+            Vector2<float> Get(int x, int y);
+
+            Voronoi();
+            Voronoi(unsigned int seed, float amplitude, int wavelength);
+            ~Voronoi();
         };
     }
 }
