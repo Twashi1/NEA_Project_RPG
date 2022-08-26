@@ -118,12 +118,13 @@ namespace Game {
 		m_DaylightFramebuffer = new Vivium::Framebuffer(Vivium::Application::GetScreenDim());
 		m_DaylightShader = new Vivium::Shader("daylight_vertex", "daylight_frag");
 
+		Biome::Init(m_Seed);
+		TerrainGenerator::m_Init(m_Seed);
+
 		// Generate world
 		m_GenWorld(fullpath);
 
-		LogTrace("Loading regions around player");
 		m_LoadRegions(player);
-		LogTrace("Finished loading world");
 
 		m_WorldMap = new WorldMap({48, 48});
 
@@ -201,7 +202,7 @@ namespace Game {
 				}
 				// If it wasn't in our regions to load, erase it
 				else {
-					// TODO: multithreading
+					// TODO: try to multithread this? is it possible
 					m_SerialiseRegion(it->first, it->second);
 					delete it->second;
 					it = regions.erase(it);
@@ -209,11 +210,18 @@ namespace Game {
 			}
 		}
 
-		if (!regions_map_empty) {
+		std::vector<std::thread> loading_threads;
+
+		if (!regions_map_empty && regions_to_load.size() > 0) {
+			loading_threads.reserve(regions_to_load.size());
+
 			for (auto& index : regions_to_load) {
-				// TODO: multithreading here as well
-				m_LoadRegion(index);
+				loading_threads.emplace_back([&]() { m_LoadRegion(index); });
 			}
+		}
+
+		for (std::thread& thread : loading_threads) {
+			thread.join();
 		}
 	}
 
@@ -273,6 +281,8 @@ namespace Game {
 
 	void World::m_DeserialiseRegion(const std::string& filename, const Vivium::Vector2<int>& index)
 	{
+		std::lock_guard<std::mutex> guard(regions_mutex);
+
 		// Construct empty region object
 		regions.emplace(index, new Region());
 
@@ -336,6 +346,8 @@ namespace Game {
 
 		m_Serialiser->BeginWrite(region_path.c_str());
 
+		std::lock_guard<std::mutex> guard(regions_mutex);
+
 		// Write tiles of region
 		m_Serialiser->Write((char*)&region->tiles[0], Region::TILES_MEM_SIZE);
 		// Write biome map for region
@@ -357,9 +369,14 @@ namespace Game {
 
 	void World::m_GenerateRegion(const Vivium::Vector2<int>& index)
 	{
-		regions.emplace(index, new Region());
+		Region* region;
+		{
+			std::lock_guard<std::mutex> guard(regions_mutex);
 
-		Region* region = regions.at(index);
+			regions.emplace(index, new Region());
+
+			region = regions.at(index);
+		}
 
 		std::unordered_map<Vivium::Vector2<int>, Structure::ID> structures; // Maps bottom left corner of structure to a structure
 
@@ -368,18 +385,11 @@ namespace Game {
 			for (int x = 0; x < Region::LENGTH; x++) {
 				int world_x = x + index.x * Region::LENGTH;
 
-				// TODO: get biome from worley noise
-				{
-					Biome::ID& biome = region->IndexBiome(x, y);
-					biome = Biome::ID::FOREST;
-				}
-
+				
 				Tile& tile = region->Index(x, y);
+				Biome::ID& biome = region->IndexBiome(x, y);
 
-				// Get ptr to biome
-				const Biome::ForestBiome* my_biome = (Biome::ForestBiome*)Biome::GetBiome(Biome::ID::FOREST);
-				// Use biome to generate tile
-				my_biome->GenerateAt(world_x, world_y, tile, this, structures);
+				biome = TerrainGenerator::GenerateAt(world_x, world_y, tile, this, structures);
 			}
 		}
 
@@ -387,6 +397,8 @@ namespace Game {
 		// TODO: If a structure is placed at a region border, it may load adjacent regions if it overlaps into them, that region may then also have a structure at a chunk border,
 		//		causing it to load the next region, resulting in many extra regions being loaded
 		// Iterate and construct structures
+		std::lock_guard<std::mutex> guard(regions_mutex);
+
 		for (auto& [pos, struct_id] : structures) {
 			Structure::Place(pos, struct_id, this);
 		}
@@ -786,8 +798,6 @@ namespace Game {
 		m_LoadRegions(m_Player);
 
 		m_UpdateMining(m_Player, elapsed);
-
-		// std::thread world_map_thread(&WorldMap::GenerateFullMap, std::ref(*m_WorldMap), (m_Player->quad->GetCenter()), std::ref(*this));
 
 		m_WorldMap->GenerateFullMap(m_Player->quad->GetCenter(), *this);
 

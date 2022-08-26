@@ -4,6 +4,8 @@
 #include "Tile.h"
 #include "Structures.h"
 
+// TODO: seed
+
 namespace Game {
 	class World;
 
@@ -14,14 +16,18 @@ namespace Game {
 			PLAIN,
 			FOREST,
 			DESERT,
+			RIVER,
 			MAX
 		};
 
 		class IBiome {
 		protected:
 			static Vivium::Noise::Interpolated m_HeightNoise;
+			unsigned int m_Seed;
 
 		public:
+			IBiome(unsigned int sed);
+
 			virtual void GenerateAt(int x, int y, Tile& tile, World* world, std::unordered_map<Vivium::Vector2<int>, Structure::ID>& structures) const = 0;
 		};
 
@@ -41,7 +47,38 @@ namespace Game {
 			static const std::unordered_map<float, Tile::ID> m_OreWeights;
 			
 		public:
-			ForestBiome();
+			ForestBiome(unsigned int seed);
+			
+			void GenerateAt(int x, int y, Tile& tile, World* world, std::unordered_map<Vivium::Vector2<int>, Structure::ID>& structures) const override;
+		};
+
+		class DesertBiome : IBiome {
+		private:
+			using IBiome::m_HeightNoise;
+
+			static Vivium::Noise::White m_CactusNoise;
+			static Vivium::Noise::White m_VegitationNoise;
+			static Vivium::Noise::White m_OreNoise;
+
+			static const std::map<float, Tile::ID> m_HeightToTileMap;
+
+			static const std::unordered_map<float, Structure::ID> m_CactusWeights;
+			static const std::unordered_map<float, Tile::ID> m_VegitationWeights;
+			static const std::unordered_map<float, Tile::ID> m_OreWeights;
+
+		public:
+			DesertBiome(unsigned int seed);
+
+			void GenerateAt(int x, int y, Tile& tile, World* world, std::unordered_map<Vivium::Vector2<int>, Structure::ID>& structures) const override;
+		};
+
+		class RiverBiome : IBiome {
+			using IBiome::m_HeightNoise;
+
+			static const std::map<float, Tile::ID> m_HeightToTileMap;
+
+		public:
+			RiverBiome(unsigned int seed);
 			
 			void GenerateAt(int x, int y, Tile& tile, World* world, std::unordered_map<Vivium::Vector2<int>, Structure::ID>& structures) const override;
 		};
@@ -74,10 +111,10 @@ namespace Game {
 			return T();
 		}
 
-		static const std::array<IBiome*, (uint8_t)ID::MAX> m_Biomes;
+		static std::array<IBiome*, (uint8_t)ID::MAX> m_Biomes;
 
 	public:
-		static void Init();
+		static void Init(unsigned int seed);
 		static void Terminate();
 
 		static const IBiome* GetBiome(const ID& id);
@@ -87,6 +124,9 @@ namespace Game {
 
 		template<> struct BiomeType<ID::PLAIN>	{ using type = ForestBiome; };
 		template<> struct BiomeType<ID::FOREST> { using type = ForestBiome; };
-		template<> struct BiomeType<ID::DESERT> { using type = ForestBiome; };
+		template<> struct BiomeType<ID::DESERT> { using type = DesertBiome; };
+		template<> struct BiomeType<ID::RIVER>	{ using type = RiverBiome;	};
 	};
 }
+
+#define BIOME_CAST_TO(id, ptr) ((Biome::BiomeType<id>::type*)ptr)

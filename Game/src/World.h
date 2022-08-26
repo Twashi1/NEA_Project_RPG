@@ -4,6 +4,7 @@
 #include "Structures.h"
 #include "WorldMap.h"
 #include "Biome.h"
+#include "TerrainGenerator.h"
 
 namespace Game {
 	class Player;
@@ -84,6 +85,8 @@ namespace Game {
 		static Vivium::Shader* texture_shader;
 
 		RegionMap_t regions; // Maps a region index to a Region object
+		std::mutex regions_mutex;
+
 		FloorItemMap_t floor_items; // Maps a region index to a list of floor items, so only items within adjacent regions are drawn
 
 		static void Init();

@@ -2,22 +2,35 @@
 
 namespace Vivium {
     namespace Noise {
+        // Chris Wellons 3 round function
         int Hash(unsigned int seed, int x) {
-            // Forgot where I ripped this hashing algorithm from
-            x ^= seed;
-            x = ((x >> 16) ^ x) * 0x45d9f3b;
-            x = ((x >> 16) ^ x) * 0x45d9f3b;
-            x = (x >> 16) ^ x;
-            return x;
+            long u = (long)x + INT_MAX;
+            unsigned int v = u;
+
+            v ^= seed;
+            v ^= v >> 17;
+            v *= 0xed5ad4bbU;
+            v ^= v >> 11;
+            v *= 0xac4c1b51U;
+            v ^= v >> 15;
+            v *= 0x31848babU;
+            v ^= v >> 14;
+
+            u = v;
+            u -= INT_MAX;
+
+            return u;
+        }
+
+        // NOTE: cantor pairing
+        int HashCombine(int hashed0, int hashed1) {
+            return ((hashed0 + hashed1) * (hashed0 + hashed1 + 1) / 2) + hashed1;
         }
 
         float Hashf(unsigned int seed, int x)
         {
             // Hash an integer
-            unsigned int v = x ^ seed;
-            v = ((v >> 16) ^ v) * 0x45d9f3b;
-            v = ((v >> 16) ^ v) * 0x45d9f3b;
-            v = (v >> 16) ^ v;
+            unsigned int v = Hash(seed, x);
 
             // Do some bit magic to put the integer's bits into the mantissa of a float (forgot where I ripped this from as well)
             const unsigned int mantissa_bitmask = 0x007FFFFFu;
@@ -33,32 +46,38 @@ namespace Vivium {
 
         int Hash(unsigned int seed, Vector2<int> pos)
         {
-            return Hash(seed, pos.x ^ Hash(seed, pos.y));
+            return HashCombine(pos.x, pos.y);
         }
 
         int Hash(unsigned int seed, int x, int y)
         {
-            return Hash(seed, x ^ Hash(seed, y));
+            return HashCombine(x, y);
         }
 
         float Hashf(unsigned int seed, Vector2<int> pos)
         {
-            return Hashf(seed, pos.x ^ Hash(seed, pos.y));
+            return Hashf(seed, Hash(seed, pos));
         }
 
         float Hashf(unsigned int seed, int x, int y)
         {
-            return Hashf(seed, x ^ Hash(seed, y));
+            return Hashf(seed, Hash(seed, x, y));
         }
 
-        Vector2<int>VIVIUM_API Hash2(unsigned int seed, Vector2<int> pos)
+        Vector2<int> Hash2(unsigned int seed, Vector2<int> pos)
         {
-            return Vector2<int>(Hash(seed, pos.x ^ Hash(seed, pos.y)), Hash(seed, pos.y ^ Hash(seed, pos.x)));
+            return Vector2<int>(
+                Hash(seed, HashCombine(pos.x, pos.y)),
+                Hash(seed, HashCombine(pos.y, pos.x))
+            );
         }
 
-        Vector2<float>VIVIUM_API Hash2f(unsigned int seed, Vector2<int> pos)
+        Vector2<float> Hash2f(unsigned int seed, Vector2<int> pos)
         {
-            return Vector2<float>(Hashf(seed, pos.x ^ Hash(seed, pos.y)), Hashf(seed, pos.y ^ Hash(seed, pos.x)));
+            return Vector2<float>(
+                Hashf(seed, HashCombine(pos.x, Hash(pos.y, pos.y))),
+                Hashf(seed, HashCombine(pos.y, Hash(pos.x, pos.x)))
+            );
         }
 
         float Interpolate(float a, float b, float t)
@@ -207,7 +226,7 @@ namespace Vivium {
         }
 
         __NoiseVirtual::__NoiseVirtual()
-            : m_Seed(0), amplitude(1), wavelength(1)
+            : m_Seed(0), amplitude(1.0f), wavelength(1)
         {}
 
         __NoiseVirtual::__NoiseVirtual(unsigned int m_seed, float amplitude, int wavelength)
@@ -296,7 +315,7 @@ namespace Vivium {
 
             float min_dist = std::sqrt(min_sqr_dist);
 
-            return min_dist;
+            return std::min(min_dist, 1.0f);
         }
 
         Cellular::Cellular()

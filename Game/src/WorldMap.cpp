@@ -43,52 +43,6 @@ namespace Game {
 		delete[] m_PixelData, m_TextureSize;
 	}
 
-	/*
-	--- WORLDMAP OLD ---
-		Vivium::Vector2<int> player_tile_pos = player_pos / World::PIXEL_SCALE;
-
-		std::size_t count = 0;
-
-		int left = player_tile_pos.x - m_MapSize.x / 2;
-		int right = player_tile_pos.x + m_MapSize.x / 2;
-		int bottom = player_tile_pos.y - m_MapSize.y / 2;
-		int top = player_tile_pos.y + m_MapSize.y / 2;
-
-		Vivium::Vector2<int> tl(left, top);
-		Vivium::Vector2<int> bl(left, bottom);
-		Vivium::Vector2<int> tr(right, top);
-		Vivium::Vector2<int> br(right, bottom);
-
-		// Assuming all tiles are already loaded since we're getting them around the player pos
-		for (int y = bottom; y < top; y++) {
-			for (int x = left; x < right; x++) {
-				Tile* tile = world.GetLoadedTile(x, y);
-
-				Vivium::RGBColor color = Vivium::RGBColor::BLACK;
-
-				bool isBorderTile = (x == left) || (x == right - 1)
-					|| (y == bottom) || (y == top - 1);
-
-				if (tile != nullptr && !isBorderTile) {
-					Tile::ID highest_tile = tile->GetHighestRealTile();
-
-					color = m_TileColors.at((uint16_t)highest_tile);
-				}
-
-				uint8_t red   = static_cast<uint8_t>(color.r * 255.0f);
-				uint8_t green = static_cast<uint8_t>(color.g * 255.0f);
-				uint8_t blue  = static_cast<uint8_t>(color.b * 255.0f);
-
-				std::size_t index = count * 3;
-				m_PixelData[index] = red;
-				m_PixelData[index + 1] = green;
-				m_PixelData[index + 2] = blue;
-
-				++count;
-			}
-		}
-	*/
-
 	void WorldMap::m_LoadPixelDataFromRegion(const Vivium::Vector2<int>& region_index, World& world, int left, int right, int bottom, int top)
 	{
 		Region& region = world.m_LoadRegion(region_index);
@@ -120,9 +74,9 @@ namespace Game {
 							color = m_TileColors.at((uint16_t)highest_tile);
 						}
 
-						uint8_t red =	static_cast<uint8_t>(color.r * 255.0f);
-						uint8_t green = static_cast<uint8_t>(color.g * 255.0f);
-						uint8_t blue =	static_cast<uint8_t>(color.b * 255.0f);
+						uint8_t red		= static_cast<uint8_t>(color.r * 255.0f);
+						uint8_t green	= static_cast<uint8_t>(color.g * 255.0f);
+						uint8_t blue	= static_cast<uint8_t>(color.b * 255.0f);
 
 						int x_index = world_x - left;
 						int y_index = world_y - bottom;
@@ -148,10 +102,10 @@ namespace Game {
 		int top = player_tile_pos.y + m_MapSize.y / 2;
 
 		float reg_scale = static_cast<float>(Region::LENGTH);
-		int reg_left = std::floor(left / reg_scale);
-		int reg_right = std::floor(right / reg_scale);
-		int reg_bottom = std::floor(bottom / reg_scale);
-		int reg_top = std::floor(top / reg_scale);
+		int reg_left =		std::floor(left / reg_scale);
+		int reg_right =		std::floor(right / reg_scale);
+		int reg_bottom =	std::floor(bottom / reg_scale);
+		int reg_top =		std::floor(top / reg_scale);
 
 		// NOTE: Assuming we're max gonna have 4 regions within render distance of player
 		// Load 4 regions for player
@@ -159,8 +113,6 @@ namespace Game {
 		Vivium::Vector2<int> tr(reg_right, reg_top);
 		Vivium::Vector2<int> bl(reg_left, reg_bottom);
 		Vivium::Vector2<int> br(reg_right, reg_bottom);
-
-		//LogTrace("Testing regions: {}, {}, {}, {}", tl, tr, bl, br);
 
 		m_LoadPixelDataFromRegion(tl, world, left, right, bottom, top);
 		m_LoadPixelDataFromRegion(tr, world, left, right, bottom, top);

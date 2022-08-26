@@ -51,9 +51,10 @@
     - ~~Fix performance issues~~
     - ~~Fix ugly black border for unloaded chunks~~
 - [x] World loads around player
-    - [ ] Multithreading to stop lagspike when loading new regions
-- [ ] Terrain generation
-    - [ ] Fix messy world generation code
+    - [x] Multithreading to stop lagspike when loading new regions (mostly done, serialising regions should also be multithreaded)
+- [x] Terrain generation
+    - [ ] Better height map, weights for tiles, etc.
+    - [x] Fix messy world generation code (in process)
     - [x] Better structure generation
     - [x] More versatile texture coords for tile atlas
 - [x] Save files
@@ -74,6 +75,9 @@
 
 ## Gameplay
 - [ ] Crafting
+    - [x] Recipes system
+        - [ ] Speed up by precomputing some values in Inventory (item counts)
+    - [ ] Crafting UI
 - [ ] Complex movement
 - [ ] Inventory
     - [x] Hotbar
@@ -95,7 +99,7 @@
 
 # Other
 - ECS API
-- Tiny little map in the corner is taking up majority of performance
+- ~~Tiny little map in the corner is taking up majority of performance~~
 - Better link to Resources folder/re-do file paths and file extension statics
 - Input box typing bar size is using magic numbers
 - Default statics are ugly
@@ -105,5 +109,6 @@
 
 # Bugs
 - ~~Going fullscreen crashes game~~
-- Cursor no longer switches when hovering text input box
+- Can't move items between hotbar slots unless inventory is opened
+- ~~Cursor no longer switches when hovering text input box~~
 - Renderer::BeginScene and EndScene interfere with transparency (Application clear color is mixed in?)

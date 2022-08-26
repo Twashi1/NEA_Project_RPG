@@ -15,6 +15,9 @@ namespace Vivium {
         // Hash integer into float
         float VIVIUM_API Hashf(unsigned int seed, int x);
 
+        // NOTE: ripped from boost
+        int VIVIUM_API HashCombine(int hashed0, int hashed1);
+
         // Hash 2 integers to integer
         int VIVIUM_API Hash(unsigned int seed, Vector2<int> pos);
         // Hash 2 integers to integer
