@@ -20,7 +20,6 @@
   </ItemGroup>
   <ItemGroup>
     <ClCompile Include="src\Biome.cpp" />
-    <ClCompile Include="src\Core.cpp" />
     <ClCompile Include="src\Inventory.cpp" />
     <ClCompile Include="src\Item.cpp" />
     <ClCompile Include="src\main.cpp" />

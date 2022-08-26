@@ -26,7 +26,7 @@
 - [ ] Panels
     - [ ] Add other GUI objects to Anchor overload
     - [ ] Add resizing
-    - [ ] Fix bugs with Text and TextInput panels
+    - [x] Fix bugs with Text and TextInput panels
 - [ ] GUI objects should not be responsible for the rendering methods, only giving the correct position for the object
 
 ## General
