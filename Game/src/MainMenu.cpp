@@ -215,19 +215,19 @@ namespace Game {
 
 	void __CreateWorldScene::m_NameInputCallback(Vivium::TextInput* input_box)
 	{
-		m_Name = input_box->GetText()->text;
+		//m_Name = input_box->GetText()->text;
 	}
 
 	void __CreateWorldScene::m_SeedInputCallback(Vivium::TextInput* input_box)
 	{
 		// TODO: validation
-		m_Seed = std::stoi(input_box->GetText()->text);
+		//m_Seed = std::stoi(input_box->GetText()->text);
 	}
 
 	void __CreateWorldScene::m_ConfirmCallback(Vivium::Button* button, void* user_params)
 	{
-		m_Name = m_NameInputBox->GetText()->text;
-		m_Seed = std::stoi(m_SeedInputBox->GetText()->text);
+		//m_Name = m_NameInputBox->GetText()->text;
+		//m_Seed = std::stoi(m_SeedInputBox->GetText()->text);
 
 		// Get MainMenu instance from params
 		MainMenu* main_menu = (MainMenu*)(*(uintptr_t*)user_params);

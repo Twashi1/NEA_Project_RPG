@@ -154,13 +154,13 @@ namespace Vivium {
 		// If we're currently typing
 		if (isTyping) {
 			m_UpdateText();
-			m_Text->text = typed_text;
+			// m_Text->text = typed_text;
 			m_Text->shader->Bind(); m_Text->shader->SetUniform3f("u_TextColor", m_TypedColor.r, m_TypedColor.g, m_TypedColor.b);
 		}
 		else {
 			// Not typing and no text typed currently
 			if (typed_text == "") {
-				m_Text->text = empty_text;
+				// m_Text->text = empty_text;
 				m_Text->shader->Bind(); m_Text->shader->SetUniform3f("u_TextColor", m_EmptyColor.r, m_EmptyColor.g, m_EmptyColor.b);
 			}
 		}

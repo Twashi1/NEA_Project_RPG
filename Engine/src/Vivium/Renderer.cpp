@@ -254,60 +254,7 @@ namespace Vivium {
 
 	void Renderer::Submit(const Text* text)
 	{
-		uint8_t slot = Renderer::GetTextureSlot(); // Get slot we're drawing texture to
-
-		// Bind shader and set texture slot
-		text->shader->Bind();
-		text->shader->SetUniform1i("u_Texture", slot);
-		text->shader->SetUniformMat4fv("u_ProjMat", camera->GetProjMat());
-		text->shader->SetUniform1f("u_Time", Timer::GetTime());
-
-		// Bind texture to that slot
-		glActiveTexture(GL_TEXTURE0 + slot);
-		glBindVertexArray(text->font->vertex_array_id);
-
-		// Copy position to rendering_pos (so we can increment it to write subsequent characters)
-		Vector2<float> rendering_pos = *text->pos;
-
-		// Iterate through characters in text
-		for (char c : text->text) {
-			const Font::Character& ch = text->font->character_map.at(c);
-
-			float x = rendering_pos.x + ch.bearing.x * text->scale;
-			float y = rendering_pos.y - (ch.size.y - ch.bearing.y) * text->scale;
-			float w = ch.size.x * text->scale;
-			float h = ch.size.y * text->scale;
-
-			// Update vertex buffer for each character
-			float vertices[6][4] = {
-				{ x,     y + h,   0.0f, 0.0f },
-				{ x,     y,       0.0f, 1.0f },
-				{ x + w, y,       1.0f, 1.0f },
-
-				{ x,     y + h,   0.0f, 0.0f },
-				{ x + w, y,       1.0f, 1.0f },
-				{ x + w, y + h,   1.0f, 0.0f }
-			};
-
-			// Render glyph texture over quad
-			glBindTexture(GL_TEXTURE_2D, ch.texture_id);
-			// Update content of vertex buffer memory
-			glBindBuffer(GL_ARRAY_BUFFER, text->font->vertex_buffer_id);
-			glBufferSubData(GL_ARRAY_BUFFER, 0, sizeof(vertices), vertices);
-
-			// Unbind buffer
-			glBindBuffer(GL_ARRAY_BUFFER, 0);
-			// Render quad
-			glDrawArrays(GL_TRIANGLES, 0, 6);
-			// Now advance cursors for next glyph (note that advance is number of 1/64 pixels)
-			rendering_pos.x += (ch.advance >> 6) * text->scale; // Bitshift by 6 to get value in pixels (2^6 = 64 (divide amount of 1/64th pixels by 64 to get amount of pixels))
-		}
-		// Unbind vertex array and texture
-		glBindVertexArray(0);
-		glBindTexture(GL_TEXTURE_2D, 0);
-
-		// Make texture slot available again
-		Renderer::FreeTextureSlot(slot);
+		text->Render();
 	}
 
 	void Renderer::Submit(Button* btn)

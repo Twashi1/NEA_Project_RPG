@@ -301,6 +301,7 @@ namespace Vivium {
 
     void Application::UpdateStats(const Body& player_body)
     {
+        /*
         {
             double avg_tpf = (m_ProcessingTime / m_FramesProcessed);
             double avg_tpf_ms = Math::Round(avg_tpf * 1000.0, 3);
@@ -370,6 +371,7 @@ namespace Vivium {
 
             Renderer::Submit(t.get());
         }
+        */
     }
 
     void Application::StartSound(const std::string& file)

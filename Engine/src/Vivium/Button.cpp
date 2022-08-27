@@ -128,7 +128,7 @@ namespace Vivium {
 		isPressed = false;
 
 		// Update text
-		text->text = isPressed ? pressed_text : idle_text;
+		// text->text = isPressed ? pressed_text : idle_text;
 
 		// If the cursor is within the bounds of the button, run callback function
 		if (quad->Contains(cursor_pos)) {
@@ -148,7 +148,7 @@ namespace Vivium {
 			isPressed = true;
 
 			// Update text
-			text->text = isPressed ? pressed_text : idle_text;
+			// text->text = isPressed ? pressed_text : idle_text;
 
 			// Update position
 			m_UpdatePos();
