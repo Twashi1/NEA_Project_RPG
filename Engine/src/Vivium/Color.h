@@ -22,6 +22,14 @@ namespace Vivium {
 		void Write(Serialiser& s) const override;
 		void Read(Serialiser& s) override;
 
+		friend bool operator==(const RGBColor& a, const RGBColor& b) {
+			return a.r == b.r && a.g == b.g && a.b == b.b;
+		}
+
+		friend bool operator!=(const RGBColor& a, const RGBColor& b) {
+			return a.r != b.r || a.g != b.g || a.b != b.b;
+		}
+
 		static RGBColor RED;
 		static RGBColor GREEN;
 		static RGBColor BLUE;

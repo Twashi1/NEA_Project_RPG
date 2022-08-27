@@ -3,20 +3,29 @@
 namespace Game {
 	// TODO: load object data from file (text)
 	std::array<Tile::Properties, (uint16_t)Tile::ID::MAX> Tile::m_Properties = {
-		Tile::Properties("void",				false,	false,	false, 0.0f, {0,  0}, 1.0f, {}),
-		Tile::Properties("ground",				false,	false,	false, 0.0f, {1,  0}, 1.0f, {}),
-		Tile::Properties("grass",				false,	false,	false, 0.0f, {2,  0}, 1.0f, {}),
-		Tile::Properties("tree_0",				true,	true,	false, 2.0f, {3,  1}, 1.0f, Item::DropTable({{1.0f, {Item::DropData(Item::ID::LOG, 2)}}})),
-		Tile::Properties("tree_1",				false,	true,	false, 2.0f, {3,  0}, 1.0f, Item::DropTable({{1.0f, {Item::DropData(Item::ID::LOG, 2)}}})),
-		Tile::Properties("sand",				false,	false,	false, 0.0f, {4,  0}, 1.0f, {}),
-		Tile::Properties("water",				false,	false,	false, 0.0f, {5,  0}, 1.0f, {}),
-		Tile::Properties("bush",				false,	true,	false, 1.0f, {6,  0}, 0.8f, {}), // TODO drop table
-		Tile::Properties("bush_fruit",			false,	true,	false, 0.5f, {7,  0}, 0.8f, {}), // TODO drop table
-		Tile::Properties("amethyst_node",		true,	true,	false, 1.0f, {8,  0}, 0.8f, Item::DropTable({{1.0f, {Item::DropData(Item::ID::AMETHYST_CRYSTAL, 10, 15)}}})),
-		Tile::Properties("emerald_node",		true,	true,	false, 1.0f, {9,  0}, 0.8f, Item::DropTable({{1.0f, {Item::DropData(Item::ID::EMERALD_CRYSTAL, 100, 300)}}})),
-		Tile::Properties("ruby_node",			true,	true,	false, 1.0f, {10, 0}, 0.8f, Item::DropTable({{1.0f, {Item::DropData(Item::ID::RUBY_CRYSTAL, 1, 3)}}})),
-		Tile::Properties("sapphire_node",		true,	true,	false, 1.0f, {11, 0}, 0.8f, Item::DropTable({{1.0f, {Item::DropData(Item::ID::SAPPHIRE_CRYSTAL, 1, 3)}}})),
-		Tile::Properties("topaz_node",			true,	true,	false, 1.0f, {12, 0}, 0.8f, Item::DropTable({{1.0f, {Item::DropData(Item::ID::TOPAZ_CRYSTAL, 1, 3)}}}))
+		//				 NAME                 isPhysical   isMineable  isPlaceable  mining_time  atlas_index   scale   drop data
+		Tile::Properties("void",				false,		false,		false,		0.0f,		 {0,  0},		1.0f, {}),
+		Tile::Properties("ground",				false,		false,		false,		0.0f,		 {1,  0},		1.0f, {}),
+		Tile::Properties("grass",				false,		false,		false,		0.0f,		 {2,  0},		1.0f, {}),
+		Tile::Properties("tree_0",				true,		true,		false,		2.0f,		 {3,  1},		1.0f, Item::DropTable({{1.0f, {Item::DropData(Item::ID::LOG, 2)}}})),
+		Tile::Properties("tree_1",				false,		true,		false,		2.0f,		 {3,  0},		1.0f, Item::DropTable({{1.0f, {Item::DropData(Item::ID::LOG, 2)}}})),
+		Tile::Properties("sand",				false,		false,		false,		0.0f,		 {4,  0},		1.0f, {}),
+		Tile::Properties("water",				false,		false,		false,		0.0f,		 {5,  0},		1.0f, {}),
+		Tile::Properties("bush",				false,		true,		false,		1.0f,		 {6,  0},		0.8f, {}),
+		Tile::Properties("bush_fruit",			false,		true,		false,		0.5f,		 {7,  0},		0.8f, Item::DropTable({{1.0f, {Item::DropData(Item::ID::BERRIES, 5, 10)}}})),
+		Tile::Properties("amethyst_node",		true,		true,		false,		1.0f,		 {8,  0},		0.8f, Item::DropTable({{1.0f, {Item::DropData(Item::ID::AMETHYST_CRYSTAL, 10, 15)}}})),
+		Tile::Properties("emerald_node",		true,		true,		false,		1.0f,		 {9,  0},		0.8f, Item::DropTable({{1.0f, {Item::DropData(Item::ID::EMERALD_CRYSTAL, 100, 300)}}})),
+		Tile::Properties("ruby_node",			true,		true,		false,		1.0f,		 {10, 0},		0.8f, Item::DropTable({{1.0f, {Item::DropData(Item::ID::RUBY_CRYSTAL, 1, 3)}}})),
+		Tile::Properties("sapphire_node",		true,		true,		false,		1.0f,		 {11, 0},		0.8f, Item::DropTable({{1.0f, {Item::DropData(Item::ID::SAPPHIRE_CRYSTAL, 1, 3)}}})),
+		Tile::Properties("topaz_node",			true,		true,		false,		1.0f,		 {12, 0},		0.8f, Item::DropTable({{1.0f, {Item::DropData(Item::ID::TOPAZ_CRYSTAL, 1, 3)}}})),
+		Tile::Properties("cactus_small",		true,		true,		false,		1.0f,		 {13, 0},		1.0f, {}),
+		Tile::Properties("cactus_tall_0",		true,		true,		false,		1.0f,		 {14, 1},		1.0f, {}),
+		Tile::Properties("cactus_tall_1",		true,		true,		false,		1.0f,		 {14, 0},		1.0f, {}),
+		Tile::Properties("cactus_fruit",		false,		true,		false,		0.5f,		 {15, 0},		0.5f, {}),
+		Tile::Properties("mossy_debris",		false,		true,		false,		0.5f,		 {16, 0},		0.5f, {}),
+		Tile::Properties("rocky_debris",		false,		true,		false,		0.5f,		 {16, 1},		0.5f, {}),
+		Tile::Properties("pink_flower",			false,		true,		false,		0.5f,		 {17, 0},		0.5f, {}),
+		Tile::Properties("blue_flower",			false,		true,		false,		0.5f,		 {17, 1},		0.5f, {})
 	};
 
 	Tile::Properties Tile::GetProperties(const Tile::ID& id)
@@ -70,6 +79,16 @@ namespace Game {
 	{
 		// TODO: implementation
 		return false;
+	}
+
+	Tile::ID& Tile::Index(int x)
+	{
+		switch (x) {
+		case 0: return bot;
+		case 1: return mid;
+		case 2: return top;
+		default: LogWarn("Invalid index"); return bot;
+		}
 	}
 
 	Tile::ID Tile::GetHighestRealTile() const

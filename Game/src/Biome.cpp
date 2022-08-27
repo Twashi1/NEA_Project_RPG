@@ -33,10 +33,12 @@ namespace Game {
 	Vivium::Noise::White Biome::ForestBiome::m_TreeNoise;
 	Vivium::Noise::White Biome::ForestBiome::m_VegitationNoise; // TODO: Switch to worley noise
 	Vivium::Noise::White Biome::ForestBiome::m_OreNoise;
+	Vivium::Noise::White Biome::ForestBiome::m_DebrisNoise;
 
 	Vivium::Noise::White Biome::DesertBiome::m_CactusNoise;
 	Vivium::Noise::White Biome::DesertBiome::m_VegitationNoise; // TODO: Switch to worley noise
 	Vivium::Noise::White Biome::DesertBiome::m_OreNoise;
+	Vivium::Noise::White Biome::DesertBiome::m_DebrisNoise;
 
 	// TODO: if they have the same key they will replace each other!
 	const std::unordered_map<float, Structure::ID> Biome::ForestBiome::m_TreeWeights = {
@@ -47,7 +49,7 @@ namespace Game {
 	const std::unordered_map<float, Tile::ID> Biome::ForestBiome::m_VegitationWeights = {
 		{100.0f,	Tile::ID::VOID},
 		{5.0f,		Tile::ID::BUSH},
-		{1.0f,		Tile::ID::BUSH_FRUIT}
+		{3.0f,		Tile::ID::BUSH_FRUIT}
 	};
 
 	const std::unordered_map<float, Tile::ID> Biome::ForestBiome::m_OreWeights = {
@@ -59,24 +61,36 @@ namespace Game {
 		{1.05f,		Tile::ID::TOPAZ_NODE},
 	};
 
+	const std::unordered_map<float, Tile::ID> Biome::ForestBiome::m_DebrisWeights = {
+		{100.0f,	Tile::ID::VOID},
+		{5.0f,		Tile::ID::MOSSY_DEBRIS},
+		{3.0f,		Tile::ID::ROCKY_DEBRIS}
+	};
+
 	// TODO: if they have the same key they will replace each other!
 	const std::unordered_map<float, Structure::ID> Biome::DesertBiome::m_CactusWeights = {
 		{100.0f,	Structure::ID::VOID},
-		{10.0f,		Structure::ID::TREE}
+		{10.0f,		Structure::ID::CACTUS_TALL}
 	};
 
 	const std::unordered_map<float, Tile::ID> Biome::DesertBiome::m_VegitationWeights = {
-		{100.0f,	Tile::ID::VOID},
-		{1.0f,		Tile::ID::BUSH} // TODO: Change to desert plant
+		{10.0f,		Tile::ID::VOID},
+		{1.0f,		Tile::ID::CACTUS_FRUIT},
+		{2.0f,		Tile::ID::CACTUS_SMALL}
 	};
 
 	const std::unordered_map<float, Tile::ID> Biome::DesertBiome::m_OreWeights = {
 		{100.0f,	Tile::ID::VOID},
-		{5.01f,		Tile::ID::AMETHYST_NODE},
-		{5.02f,		Tile::ID::EMERALD_NODE},
-		{5.03f,		Tile::ID::RUBY_NODE},
-		{5.04f,		Tile::ID::SAPPHIRE_NODE},
-		{5.05f,		Tile::ID::TOPAZ_NODE},
+		{3.01f,		Tile::ID::AMETHYST_NODE},
+		{3.02f,		Tile::ID::EMERALD_NODE},
+		{3.03f,		Tile::ID::RUBY_NODE},
+		{3.04f,		Tile::ID::SAPPHIRE_NODE},
+		{3.05f,		Tile::ID::TOPAZ_NODE},
+	};
+
+	const std::unordered_map<float, Tile::ID> Biome::DesertBiome::m_DebrisWeights = {
+		{100.0f,	Tile::ID::VOID},
+		{5.0f,		Tile::ID::ROCKY_DEBRIS}
 	};
 
 
@@ -106,11 +120,24 @@ namespace Game {
 		}
 
 		if (m_VegitationNoise.Get(x, y) > 0.5f && tile.bot == Tile::ID::GRASS) {
-			tile.top = m_GetRandomWeightedChoice(m_VegitationWeights, Vivium::Noise::Hashf(m_Seed, x, y));
+			Tile::ID selected_tile = m_GetRandomWeightedChoice(m_VegitationWeights, Vivium::Noise::Hashf(m_Seed, x, y));
+
+			if (selected_tile != Tile::ID::VOID) tile.top = selected_tile;
 		}
 
 		if (m_OreNoise.Get(x, y) > 0.5f && tile.bot != Tile::ID::WATER) {
-			tile.top = m_GetRandomWeightedChoice(m_OreWeights, Vivium::Noise::Hashf(m_Seed, x, y));
+			Tile::ID selected_tile = m_GetRandomWeightedChoice(m_OreWeights, Vivium::Noise::Hashf(m_Seed, x, y));
+
+			if (selected_tile != Tile::ID::VOID) tile.top = selected_tile;
+		}
+
+		if (m_DebrisNoise.Get(x, y) > 0.5f && tile.bot != Tile::ID::WATER) {
+			Tile::ID selected_tile = m_GetRandomWeightedChoice(m_DebrisWeights, Vivium::Noise::Hashf(m_Seed, x, y));
+
+			if (!(selected_tile == Tile::ID::MOSSY_DEBRIS && tile.bot != Tile::ID::GRASS))
+			{
+				if (selected_tile != Tile::ID::VOID) tile.top = selected_tile;
+			}
 		}
 	}
 
@@ -169,7 +196,7 @@ namespace Game {
 
 		// NOTE: When worley noise is implemented, this will make sense (i think)
 		// TODO: in future add some tag to a tile to determine if it can have vegitation above it
-		if (m_CactusNoise.Get(x, y) > 0.5f && tile.bot == Tile::ID::GRASS) {
+		if (m_CactusNoise.Get(x, y) > 0.5f && tile.bot == Tile::ID::SAND) {
 			Structure::ID chosen_structure = m_GetRandomWeightedChoice(m_CactusWeights, Vivium::Noise::Hashf(m_Seed, x, y));
 
 			if (chosen_structure != Structure::ID::VOID) {
@@ -177,12 +204,22 @@ namespace Game {
 			}
 		}
 
-		if (m_VegitationNoise.Get(x, y) > 0.5f && tile.bot == Tile::ID::GRASS) {
-			tile.top = m_GetRandomWeightedChoice(m_VegitationWeights, Vivium::Noise::Hashf(m_Seed, x, y));
+		if (m_VegitationNoise.Get(x, y) > 0.5f && tile.bot == Tile::ID::SAND) {
+			Tile::ID selected_tile = m_GetRandomWeightedChoice(m_VegitationWeights, Vivium::Noise::Hashf(m_Seed, x, y));
+			
+			if (selected_tile != Tile::ID::VOID) tile.top = selected_tile;
 		}
 
 		if (m_OreNoise.Get(x, y) > 0.5f && tile.bot != Tile::ID::WATER) {
-			tile.top = m_GetRandomWeightedChoice(m_OreWeights, Vivium::Noise::Hashf(m_Seed, x, y));
+			Tile::ID selected_tile = m_GetRandomWeightedChoice(m_OreWeights, Vivium::Noise::Hashf(m_Seed, x, y));
+
+			if (selected_tile != Tile::ID::VOID) tile.top = selected_tile;
+		}
+
+		if (m_DebrisNoise.Get(x, y) > 0.5f && tile.bot != Tile::ID::WATER) {
+			Tile::ID selected_tile = m_GetRandomWeightedChoice(m_DebrisWeights, Vivium::Noise::Hashf(m_Seed, x, y));
+
+			if (selected_tile != Tile::ID::VOID) tile.top = selected_tile;
 		}
 	}
 

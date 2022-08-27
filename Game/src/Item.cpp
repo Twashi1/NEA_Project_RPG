@@ -3,21 +3,22 @@
 
 namespace Game {
 	std::array<Item::Properties, (uint16_t)Item::ID::MAX> Item::m_Properties = {
-		Item::Properties("Void",				false,	Vivium::Vector2<int>(INT_MAX)),
+		Item::Properties("Void",				false,	INT_MAX),
 
-		Item::Properties("Amethyst Crystal",	true,	Vivium::Vector2<int>(1, 0)),
-		Item::Properties("Emerald Crystal",		true,	Vivium::Vector2<int>(1, 1)),
-		Item::Properties("Ruby Crystal",		true,	Vivium::Vector2<int>(1, 2)),
-		Item::Properties("Sapphire Crystal",	true,	Vivium::Vector2<int>(1, 3)),
-		Item::Properties("Topaz Crystal",		true,	Vivium::Vector2<int>(1, 4)),
+		Item::Properties("Amethyst Crystal",	true,	{1, 0}),
+		Item::Properties("Emerald Crystal",		true,	{1, 1}),
+		Item::Properties("Ruby Crystal",		true,	{1, 2}),
+		Item::Properties("Sapphire Crystal",	true,	{1, 3}),
+		Item::Properties("Topaz Crystal",		true,	{1, 4}),
 
-		Item::Properties("Amethyst Pickaxe",	false,	Vivium::Vector2<int>(2, 0)),
-		Item::Properties("Emerald Pickaxe",		false,	Vivium::Vector2<int>(2, 1)),
-		Item::Properties("Ruby Pickaxe",		false,	Vivium::Vector2<int>(2, 2)),
-		Item::Properties("Sapphire Pickaxe",	false,	Vivium::Vector2<int>(2, 3)),
-		Item::Properties("Topaz Pickaxe",		false,	Vivium::Vector2<int>(2, 4)),
+		Item::Properties("Amethyst Pickaxe",	false,	{2, 0}),
+		Item::Properties("Emerald Pickaxe",		false,	{2, 1}),
+		Item::Properties("Ruby Pickaxe",		false,	{2, 2}),
+		Item::Properties("Sapphire Pickaxe",	false,	{2, 3}),
+		Item::Properties("Topaz Pickaxe",		false,	{2, 4}),
 
-		Item::Properties("Log", 				true,	Vivium::Vector2<int>(0, 5))
+		Item::Properties("Log", 				true,	{0, 5}),
+		Item::Properties("Berries",				true,	{1, 5})
 	};
 
 	Item::DropTable::DropTable()

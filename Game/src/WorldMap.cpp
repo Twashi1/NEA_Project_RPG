@@ -16,7 +16,15 @@ namespace Game {
 		Vivium::RGBColor("#1f9800"), // EMERALD_NODE
 		Vivium::RGBColor("#ff411f"), // RUBY_NODE
 		Vivium::RGBColor("#4cc0ff"), // SAPPHIRE_NODE
-		Vivium::RGBColor("#fcff4c")  // TOPAZ_NODE
+		Vivium::RGBColor("#fcff4c"), // TOPAZ_NODE,
+		Vivium::RGBColor("#1e8a48"), // CACTUS_SMALL
+		Vivium::RGBColor("#1e8a48"), // CACTUS_TALL0
+		Vivium::RGBColor("#1e8a48"), // CACTUS_TALL1
+		Vivium::RGBColor("#ff0400"), // CACTUS_SMALL
+		Vivium::RGBColor::BLACK,	 // MOSSY_DEBRIS
+		Vivium::RGBColor::BLACK,	 // ROCKY_DEBRIS
+		Vivium::RGBColor::BLACK,	 // PINK_FLOWER
+		Vivium::RGBColor::BLACK		 // BLUE_FLOWER
 	};
 
 	Vivium::Shader* WorldMap::m_MapShader = nullptr;
@@ -69,9 +77,17 @@ namespace Game {
 						Vivium::RGBColor color = Vivium::RGBColor::BLACK;
 
 						if (!isBorderTile) {
-							Tile::ID highest_tile = tile.GetHighestRealTile();
+							for (int i = 2; i >= 0; i--) {
+								Tile::ID& tile_id = tile.Index(i);
 
-							color = m_TileColors.at((uint16_t)highest_tile);
+								if (tile_id != Tile::ID::VOID) {
+									color = m_TileColors.at((uint16_t)tile_id);
+
+									if (color != Vivium::RGBColor::BLACK) {
+										break;
+									}
+								}
+							}
 						}
 
 						uint8_t red		= static_cast<uint8_t>(color.r * 255.0f);

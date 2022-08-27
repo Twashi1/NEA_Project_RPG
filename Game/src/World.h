@@ -76,7 +76,7 @@ namespace Game {
 		static std::string FILE_EXTENSION;
 		static std::string GENERAL_FILE;
 
-		static constexpr float PIXEL_SCALE = 64.0;
+		static constexpr float PIXEL_SCALE = 64.0f;
 		static constexpr int PHYSICS_TILE_LAYER = 0xff;
 
 		typedef std::unordered_map<Vivium::Vector2<int>, Region*> RegionMap_t;

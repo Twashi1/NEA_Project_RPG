@@ -13,6 +13,11 @@ namespace Game {
 		TileMap_t{
 			{{0, 0}, Tile(Tile::ID::VOID, Tile::ID::VOID, Tile::ID::TREE_0)},
 			{{0, 1}, Tile(Tile::ID::VOID, Tile::ID::VOID, Tile::ID::TREE_1)}
+		},
+		// Tall cactus
+		TileMap_t{
+			{{0, 0}, Tile(Tile::ID::VOID, Tile::ID::VOID, Tile::ID::CACTUS_TALL0)},
+			{{0, 1}, Tile(Tile::ID::VOID, Tile::ID::VOID, Tile::ID::CACTUS_TALL1)}
 		}
 	};
 
@@ -94,16 +99,21 @@ namespace Game {
 		switch (id) {
 		case ID::VOID: return "Void";
 		case ID::TREE: return "Tree";
+		case ID::CACTUS_TALL: return "Cactus tall";
 		default: return "Invalid structure";
 		}
 	}
 
 	Structure::ID Structure::GetStructureID(const Tile::ID& id)
 	{
+		// TODO: tiles should store the structure id they're a part of
 		switch (id) {
 		case Tile::ID::TREE_0:
 		case Tile::ID::TREE_1:
 			return Structure::ID::TREE;
+		case Tile::ID::CACTUS_TALL0:
+		case Tile::ID::CACTUS_TALL1:
+			return Structure::ID::CACTUS_TALL;
 		default:
 			LogWarn("No structure that contains tile: {}", id); break;
 		}
@@ -113,9 +123,12 @@ namespace Game {
 
 	bool Structure::IsStructure(const Tile::ID& id)
 	{
+		// TODO: tile should store if they're part of a structure
 		switch (id) {
 		case Tile::ID::TREE_0:
 		case Tile::ID::TREE_1:
+		case Tile::ID::CACTUS_TALL0:
+		case Tile::ID::CACTUS_TALL1:
 			return true;
 		}
 

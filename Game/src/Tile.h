@@ -21,6 +21,14 @@ namespace Game {
 			RUBY_NODE,
 			SAPPHIRE_NODE,
 			TOPAZ_NODE,
+			CACTUS_SMALL,
+			CACTUS_TALL0,
+			CACTUS_TALL1,
+			CACTUS_FRUIT,
+			MOSSY_DEBRIS,
+			ROCKY_DEBRIS,
+			PINK_FLOWER,
+			BLUE_FLOWER,
 			MAX
 		};
 
@@ -49,6 +57,7 @@ namespace Game {
 		static float GetScale(const Tile::ID& id);
 		static Item::DropTable GetDropData(const Tile::ID& id);
 
+		// TODO: I think only bot/top is needed
 		Tile::ID bot;
 		Tile::ID mid;
 		Tile::ID top;
@@ -56,6 +65,8 @@ namespace Game {
 		// Copies only non-void tiles
 		void CopyRealTiles(const Tile& other);
 		bool CompareRealTiles(const Tile& other);
+
+		Tile::ID& Index(int x);
 
 		Tile::ID GetHighestRealTile() const;
 

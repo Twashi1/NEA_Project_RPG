@@ -38,6 +38,7 @@ namespace Game {
 			static Vivium::Noise::White m_TreeNoise;
 			static Vivium::Noise::White m_VegitationNoise; // TODO: Switch to worley noise
 			static Vivium::Noise::White m_OreNoise;		// TODO: Switch to worley noise
+			static Vivium::Noise::White m_DebrisNoise;
 
 			static const std::map<float, Tile::ID> m_HeightToTileMap;
 
@@ -45,6 +46,7 @@ namespace Game {
 			// TODO: Tile or Tile::ID?
 			static const std::unordered_map<float, Tile::ID> m_VegitationWeights;
 			static const std::unordered_map<float, Tile::ID> m_OreWeights;
+			static const std::unordered_map<float, Tile::ID> m_DebrisWeights;
 			
 		public:
 			ForestBiome(unsigned int seed);
@@ -59,12 +61,14 @@ namespace Game {
 			static Vivium::Noise::White m_CactusNoise;
 			static Vivium::Noise::White m_VegitationNoise;
 			static Vivium::Noise::White m_OreNoise;
+			static Vivium::Noise::White m_DebrisNoise;
 
 			static const std::map<float, Tile::ID> m_HeightToTileMap;
 
 			static const std::unordered_map<float, Structure::ID> m_CactusWeights;
 			static const std::unordered_map<float, Tile::ID> m_VegitationWeights;
 			static const std::unordered_map<float, Tile::ID> m_OreWeights;
+			static const std::unordered_map<float, Tile::ID> m_DebrisWeights;
 
 		public:
 			DesertBiome(unsigned int seed);

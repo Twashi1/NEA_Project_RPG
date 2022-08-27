@@ -9,7 +9,8 @@ namespace Game {
 	public:
 		enum class ID : uint16_t {
 			VOID,
-			TREE
+			TREE,
+			CACTUS_TALL
 		};
 
 		typedef std::unordered_map<Vivium::Vector2<int>, Tile> TileMap_t;

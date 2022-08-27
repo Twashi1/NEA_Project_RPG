@@ -19,8 +19,9 @@ namespace Game {
 			RUBY_PICKAXE,
 			SAPPHIRE_PICKAXE,
 			TOPAZ_PICKAXE,
-			/* End of ores */
+			/* Misc */
 			LOG,
+			BERRIES,
 			MAX
 		};
 
