@@ -123,28 +123,28 @@ namespace Game {
 
 	void Inventory::m_RenderItems()
 	{
+		static const Vivium::BufferLayout item_layout = {
+			Vivium::GLSLDataType::VEC2, // position
+			Vivium::GLSLDataType::VEC2  // tex coords
+		};
+
+		static const Vivium::BufferLayout text_layout = {
+			Vivium::GLSLDataType::VEC4 // position xy, tex coords zw
+		};
+
 		// Get properties of the inventory type we have
 		Properties inven_properties = GetProperties(m_InventoryID);
 
-		unsigned int max_count = inven_properties.inventory_size + 1; // Adding one for cursor
+		// Adding one for cursor, and multiplying by 3 since can draw 3 copies of each item, or 3 digits per text
+		std::size_t max_count = (inven_properties.inventory_size + 1) * 3;
 
-		// Allocate memory for vertex data and indices
-		float* item_vertex_data = new float[16 * max_count * 3]; std::size_t item_vertex_index = 0;
-		uint16_t* item_indices = new uint16_t[6 * max_count * 3]; std::size_t item_indices_index = 0;
-
-		float* text_vertex_data = new float[16 * max_count * 3]; std::size_t text_vertex_index = 0;
-		uint16_t* text_indices = new uint16_t[6 * max_count * 3]; std::size_t text_indices_index = 0;
-
-		// Counters for amount of items/strings we're rendering
-		uint16_t item_draw_count = 0;
-		uint16_t text_draw_count = 0;
+		Vivium::Batch item_batch(max_count, &item_layout);
+		Vivium::Batch text_batch(max_count, &text_layout);
 
 		// TODO: make InventoryData_t iterable
 		for (slot_base_t slot = m_InventoryData.start_index(); slot < m_InventoryData.end_index(); slot++) {
 			Item& item = m_InventoryData.at(slot);
 
-			// TODO: draw multiple copies of texture for multiple items
-			// TODO: draw text to represent count
 			// Get coord offset to render item at
 			Vivium::Vector2<float> offset = inven_properties.slot_coords.at((Slot)slot);
 
@@ -160,15 +160,11 @@ namespace Game {
 
 			// Draw the item
 			m_RenderItem(
+				&item_batch,
 				item,
 				Vivium::Vector2<float>(dx, dy),
-				tile_scale,
-				item_vertex_data, item_vertex_index,
-				item_indices, item_indices_index
+				tile_scale * 2.0f
 			);
-
-			// Increase draw count
-			item_draw_count += std::min(item.count, (uint16_t)3);
 
 			// Only draw item count for non-stackable items
 			if (Item::GetIsStackable(item.id)) {
@@ -190,9 +186,8 @@ namespace Game {
 					float w = ch.size.x * m_TextObject->scale;
 					float h = ch.size.y * m_TextObject->scale;
 
-					m_RenderItemCount(c, { x, y }, { w, h }, text_vertex_data, text_vertex_index, text_indices, text_indices_index);
+					m_RenderItemCount(&text_batch, c, { x, y }, { w, h });
 
-					text_draw_count++;
 					rendering_pos.x += (ch.advance >> 6) * m_TextObject->scale * m_InventorySpriteScale / 8.0f;
 				}
 			}
@@ -207,18 +202,7 @@ namespace Game {
 
 				float tile_scale = World::PIXEL_SCALE * 0.5f * m_InventorySpriteScale * 0.25f * s_ItemScale;
 
-				// TODO: pass item draw count to function
-				// Draw the item
-				m_RenderItem(
-					cursor_item,
-					draw_coords,
-					tile_scale,
-					item_vertex_data, item_vertex_index,
-					item_indices, item_indices_index
-				);
-
-				// Increase draw count
-				item_draw_count += std::min(cursor_item.count, (uint16_t)3);
+				m_RenderItem(&item_batch, cursor_item, draw_coords, tile_scale * 2.0f);
 				
 				if (Item::GetIsStackable(cursor_item.id)) {
 					// Get rendering pos
@@ -238,90 +222,43 @@ namespace Game {
 						float w = ch.size.x * m_TextObject->scale;
 						float h = ch.size.y * m_TextObject->scale;
 
-						m_RenderItemCount(c, { x, y }, { w, h }, text_vertex_data, text_vertex_index, text_indices, text_indices_index);
+						m_RenderItemCount(&text_batch, c, { x, y }, { w, h });
 
-						text_draw_count++;
-						rendering_pos.x += (ch.advance >> 6) * m_TextObject->scale * m_InventorySpriteScale / 8.0f * 0.45f;
+						rendering_pos.x += (ch.advance >> 6) * m_TextObject->scale * m_InventorySpriteScale / 8.0f;
 					}
 				}
 			}
  		}
 
-		static const Vivium::BufferLayout layout = {
-			Vivium::GLSLDataType::VEC2, // position
-			Vivium::GLSLDataType::VEC2  // tex coords
-		};
+		Vivium::Batch::BatchData item_batch_data = item_batch.End();
+		Vivium::Batch::BatchData text_batch_data = text_batch.End();
 
-		static const Vivium::BufferLayout text_layout = {
-			Vivium::GLSLDataType::VEC4 // position xy, tex coords zw
-		};
-
-		if (item_draw_count > 0) {
-			Vivium::VertexBuffer vb(item_vertex_data, item_vertex_index + 1, layout);
-			Vivium::IndexBuffer ib(item_indices, item_indices_index + 1);
-
-			Vivium::Renderer::Submit(&vb, &ib, m_ItemShader, World::m_ItemsAtlas->GetAtlas().get());
+		if (item_batch_data.count > 0) {
+			Vivium::Renderer::Submit(item_batch_data.vertex_buffer.get(), item_batch_data.index_buffer.get(), m_ItemShader, World::m_ItemsAtlas->GetAtlas().get());
 		}
 
-		if (text_draw_count > 0) {
-			Vivium::VertexBuffer vb(text_vertex_data, text_vertex_index + 1, text_layout);
-			Vivium::IndexBuffer ib(text_indices, text_indices_index + 1);
-
-			Vivium::Renderer::Submit(&vb, &ib, m_TextShader, m_TextFontTexture.get());
+		if (text_batch_data.count > 0) {
+			Vivium::Renderer::Submit(text_batch_data.vertex_buffer.get(), text_batch_data.index_buffer.get(), m_TextShader, m_TextFontTexture.get());
 		}
-
-		delete[] item_vertex_data;
-		delete[] item_indices;
-
-		delete[] text_vertex_data;
-		delete[] text_indices;
 	}
 
-	void Inventory::m_RenderItem(const Item& item, const Vivium::Vector2<float>& pos, const Vivium::Vector2<float>& halfsize, float* vertex_data, std::size_t& vertex_data_index, uint16_t* vertex_indices, std::size_t& vertex_indices_index)
+	void Inventory::m_RenderItem(Vivium::Batch* batch, const Item& item, const Vivium::Vector2<float>& pos, const float& size)
 	{
+		std::array<float, 4>& faces = World::m_ItemsTextureCoords[(uint16_t)item.id];
+
 		// Draw a maximum of 3 copies of the item
 		for (int i = std::min(item.count, (uint16_t)3) - 1; i >= 0; i--) {
 			Vivium::Vector2<float> item_offset = s_ItemCountOffsets[i];
-
-			std::array<float, 4>& faces = World::m_ItemsTextureCoords[(uint16_t)item.id];
 
 			// Calculate draw coords
 			float dx = pos.x + item_offset.x;
 			float dy = pos.y + item_offset.y;
 
-			// Bottom left
-			vertex_data[vertex_data_index++] = dx - halfsize.x;
-			vertex_data[vertex_data_index++] = dy - halfsize.y;
-			vertex_data[vertex_data_index++] = faces[0];
-			vertex_data[vertex_data_index++] = faces[1];
-			// Bottom right
-			vertex_data[vertex_data_index++] = dx + halfsize.x;
-			vertex_data[vertex_data_index++] = dy - halfsize.y;
-			vertex_data[vertex_data_index++] = faces[2];
-			vertex_data[vertex_data_index++] = faces[1];
-			// Top right
-			vertex_data[vertex_data_index++] = dx + halfsize.x;
-			vertex_data[vertex_data_index++] = dy + halfsize.y;
-			vertex_data[vertex_data_index++] = faces[2];
-			vertex_data[vertex_data_index++] = faces[3];
-			// Top left
-			vertex_data[vertex_data_index++] = dx - halfsize.x;
-			vertex_data[vertex_data_index++] = dy + halfsize.y;
-			vertex_data[vertex_data_index++] = faces[0];
-			vertex_data[vertex_data_index++] = faces[3];
-
-			int stride = vertex_indices_index / 6 * 4;
-
-			vertex_indices[vertex_indices_index++] = 0 + stride;
-			vertex_indices[vertex_indices_index++] = 1 + stride;
-			vertex_indices[vertex_indices_index++] = 2 + stride;
-			vertex_indices[vertex_indices_index++] = 2 + stride;
-			vertex_indices[vertex_indices_index++] = 3 + stride;
-			vertex_indices[vertex_indices_index++] = 0 + stride;
+			batch->Submit({ dx, dy }, size, faces[0], faces[2], faces[1], faces[3]);
 		}
 	}
 
-	void Inventory::m_RenderItemCount(char c, const Vivium::Vector2<float>& pos, const Vivium::Vector2<float>& size, float* vertex_data, std::size_t& vertex_data_index, uint16_t* vertex_indices, std::size_t& vertex_indices_index)
+	void Inventory::m_RenderItemCount(Vivium::Batch* batch, char c, const Vivium::Vector2<float>& pos, const Vivium::Vector2<float>& size)
 	{
 		// TODO: cleanup
 		Vivium::Font::Character ch = Vivium::Text::GetDefaultFont()->character_map.at(c);
@@ -337,35 +274,7 @@ namespace Game {
 		float right = left + ((float)ch.size.x / (float)m_TextFontAtlas->GetAtlas()->GetWidth());
 		float bottom = top + ((float)ch.size.y / (float)m_TextFontAtlas->GetAtlas()->GetHeight());
 
-		// Bottom left
-		vertex_data[vertex_data_index++] = pos.x;
-		vertex_data[vertex_data_index++] = pos.y;
-		vertex_data[vertex_data_index++] = left;
-		vertex_data[vertex_data_index++] = bottom;
-		// Bottom right
-		vertex_data[vertex_data_index++] = pos.x + size.x;
-		vertex_data[vertex_data_index++] = pos.y;
-		vertex_data[vertex_data_index++] = right;
-		vertex_data[vertex_data_index++] = bottom;
-		// Top right
-		vertex_data[vertex_data_index++] = pos.x + size.x;
-		vertex_data[vertex_data_index++] = pos.y + size.y;
-		vertex_data[vertex_data_index++] = right;
-		vertex_data[vertex_data_index++] = top;
-		// Top left
-		vertex_data[vertex_data_index++] = pos.x;
-		vertex_data[vertex_data_index++] = pos.y + size.y;
-		vertex_data[vertex_data_index++] = left;
-		vertex_data[vertex_data_index++] = top;
-
-		int stride = vertex_indices_index / 6 * 4;
-
-		vertex_indices[vertex_indices_index++] = 0 + stride;
-		vertex_indices[vertex_indices_index++] = 1 + stride;
-		vertex_indices[vertex_indices_index++] = 2 + stride;
-		vertex_indices[vertex_indices_index++] = 2 + stride;
-		vertex_indices[vertex_indices_index++] = 3 + stride;
-		vertex_indices[vertex_indices_index++] = 0 + stride;
+		batch->Submit(pos.x, pos.x + size.x, pos.y, pos.y + size.y, left, right, bottom, top);
 	}
 
 	void Inventory::m_UpdateItem(float x, float y, float width, float height, const Slot& item_slot) // TODO: take item ref instead?
@@ -469,7 +378,7 @@ namespace Game {
 		m_TextShader->SetUniform3f("u_TextColor", Vivium::RGBColor::WHITE);
 
 		m_ItemShader = new Vivium::Shader("static_texture_vertex", "texture_frag");
-		m_TextObject = new Vivium::Text("", {0, 0}, 0.35f); // TODO: pretty ugly, later use font or something
+		m_TextObject = new Vivium::Text("", {0, 0}, Vivium::Text::Alignment::LEFT, 0.35f); // TODO: pretty ugly, later use font or something
 
 		m_TextFontTexture = MakeRef(Vivium::Texture, Vivium::Text::GetDefaultFont().get());
 		m_TextFontAtlas = new Vivium::TextureAtlas(m_TextFontTexture, { 64, 64 });

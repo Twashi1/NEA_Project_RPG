@@ -68,8 +68,9 @@ namespace Vivium {
 
 	void TextInput::m_Construct()
 	{
-		Vector2<float> pos = Vector2<float>(quad->GetX() - (quad->GetWidth() / 2.0f) + m_Offset, quad->GetY());
-		m_Text = MakeRef(Text, empty_text, pos, m_TextShader, m_DefaultScale);
+		Vector2<float> pos = quad->GetCenter();
+		pos.x -= (quad->GetWidth() / 2.0f) - m_Offset;
+		m_Text = MakeRef(Text, empty_text, pos, m_TextShader, Text::Alignment::LEFT, m_DefaultScale);
 	}
 
 	void TextInput::m_UpdateText()
@@ -154,13 +155,15 @@ namespace Vivium {
 		// If we're currently typing
 		if (isTyping) {
 			m_UpdateText();
-			// m_Text->text = typed_text;
+			m_Text->SetText(typed_text);
+			m_Text->FixToWidth(quad->GetWidth());
 			m_Text->shader->Bind(); m_Text->shader->SetUniform3f("u_TextColor", m_TypedColor.r, m_TypedColor.g, m_TypedColor.b);
 		}
 		else {
 			// Not typing and no text typed currently
 			if (typed_text == "") {
-				// m_Text->text = empty_text;
+				m_Text->SetText(empty_text);
+				m_Text->FixToWidth(quad->GetWidth());
 				m_Text->shader->Bind(); m_Text->shader->SetUniform3f("u_TextColor", m_EmptyColor.r, m_EmptyColor.g, m_EmptyColor.b);
 			}
 		}

@@ -244,10 +244,10 @@ namespace Vivium {
 
         // Create all text renderables for stats
         if (isStatsEnabled) {
-            m_StatsTextMap.insert({ STATS_INDEX::AVERAGE_TPF,            MakeRef(Text, "", Vector2<float>(5, -15), 0.25)  });
-            m_StatsTextMap.insert({ STATS_INDEX::PROCESSING_PERCENTAGE,  MakeRef(Text, "", Vector2<float>(5, -30), 0.25)  });
-            m_StatsTextMap.insert({ STATS_INDEX::FPS,                    MakeRef(Text, "", Vector2<float>(5, -45), 0.25)  });
-            m_StatsTextMap.insert({ STATS_INDEX::PLAYER_POS,             MakeRef(Text, "", Vector2<float>(5, -100), 0.25) });
+            m_StatsTextMap.insert({ STATS_INDEX::AVERAGE_TPF,            MakeRef(Text, "", Vector2<float>(5, -15), Text::Alignment::LEFT, 0.25)  });
+            m_StatsTextMap.insert({ STATS_INDEX::PROCESSING_PERCENTAGE,  MakeRef(Text, "", Vector2<float>(5, -30), Text::Alignment::LEFT, 0.25)  });
+            m_StatsTextMap.insert({ STATS_INDEX::FPS,                    MakeRef(Text, "", Vector2<float>(5, -45), Text::Alignment::LEFT, 0.25)  });
+            m_StatsTextMap.insert({ STATS_INDEX::PLAYER_POS,             MakeRef(Text, "", Vector2<float>(5, -100), Text::Alignment::LEFT, 0.25) });
 
             // Anchor the text objects
             for (auto& [index, text] : m_StatsTextMap) {
@@ -301,7 +301,6 @@ namespace Vivium {
 
     void Application::UpdateStats(const Body& player_body)
     {
-        /*
         {
             double avg_tpf = (m_ProcessingTime / m_FramesProcessed);
             double avg_tpf_ms = Math::Round(avg_tpf * 1000.0, 3);
@@ -314,7 +313,7 @@ namespace Vivium {
 
             Ref(Text) t = m_StatsTextMap[STATS_INDEX::AVERAGE_TPF];
             t->shader->Bind(); t->shader->SetUniform3f("u_TextColor", color.r, color.g, color.b);
-            t->text = text;
+            t->SetText(text);
 
             Renderer::Submit(t.get());
         }
@@ -330,7 +329,7 @@ namespace Vivium {
 
             Ref(Text) t = m_StatsTextMap[STATS_INDEX::PROCESSING_PERCENTAGE];
             t->shader->Bind(); t->shader->SetUniform3f("u_TextColor", color.r, color.g, color.b);
-            t->text = text;
+            t->SetText(text);
 
             Renderer::Submit(t.get());
         }
@@ -355,7 +354,7 @@ namespace Vivium {
 
             Ref(Text) t = m_StatsTextMap[STATS_INDEX::FPS];
             t->shader->Bind(); t->shader->SetUniform3f("u_TextColor", color.r, color.g, color.b);
-            t->text = text;
+            t->SetText(text);
 
             Renderer::Submit(t.get());
         }
@@ -367,11 +366,10 @@ namespace Vivium {
 
             Ref(Text) t = m_StatsTextMap[STATS_INDEX::PLAYER_POS];
             t->shader->Bind(); t->shader->SetUniform3f("u_TextColor", RGBColor::WHITE);
-            t->text = text;
+            t->SetText(text);
 
             Renderer::Submit(t.get());
         }
-        */
     }
 
     void Application::StartSound(const std::string& file)

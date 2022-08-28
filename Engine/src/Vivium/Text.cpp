@@ -52,6 +52,7 @@ namespace Vivium {
     void Text::FixToWidth(float max_width)
     {
         std::vector<std::string> new_strings;
+        new_strings.emplace_back("");
 
         int current_new_string_index = 0;
 
@@ -69,16 +70,19 @@ namespace Vivium {
 
                 current_width += char_width;
 
-                if (current_width > max_width) {
+                if (current_width >= max_width) {
                     new_strings.emplace_back(1, current_char);
                     ++current_new_string_index;
-                    current_width = 0.0f;
+                    current_width = char_width;
                 }
                 else {
                     new_strings[current_new_string_index] += current_char;
                 }
             }
         }
+
+        strings.clear();
+        strings = new_strings;
     }
 
     float Text::GetWidth() const
@@ -97,7 +101,44 @@ namespace Vivium {
         return strings.size() * font->max_height * scale;
     }
 
+    std::string Text::GetText() const
+    {
+        std::string end_str;
+        for (const std::string& str : strings) {
+            end_str += str;
+        }
+
+        return end_str;
+    }
+
+    void Text::SetText(const std::string& str)
+    {
+        strings.clear();
+        strings = Utils::SplitString(str, "\n");
+    }
+
     void Text::Render() const
+    {
+        std::size_t total_char_count = 0;
+
+        for (const std::string& str : strings) {
+            total_char_count += str.size();
+        }
+
+        static const BufferLayout layout{
+            GLSLDataType::VEC4
+        };
+
+        Batch batch(total_char_count, &layout);
+
+        Submit(&batch);
+
+        Batch::BatchData data = batch.End();
+
+        Renderer::Submit(data.vertex_buffer.get(), data.index_buffer.get(), shader.get(), m_FontTexture.get());
+    }
+
+    void Text::Submit(Batch* batch) const
     {
         float height = GetHeight();
         float width = GetWidth();
@@ -105,27 +146,16 @@ namespace Vivium {
         Vector2<float> rendering_pos = *pos;
         rendering_pos.y += (height - (font->max_height * scale)) * 0.5f;
 
-        std::size_t total_char_count = 0;
-
         for (const std::string& str : strings) {
-            total_char_count += str.size();
-        }
-
-        float* vertices = new float[16 * total_char_count];     std::size_t vertices_idx = 0;
-        uint16_t* indices = new uint16_t[6 * total_char_count]; std::size_t indices_idx = 0;
-        std::size_t batch_count = 0;
-
-        for (const std::string& str : strings) {
-            if (alignment == Alignment::MIDDLE) {
+            if (alignment == Alignment::CENTER) {
                 float line_width = m_GetWidth(str);
 
                 rendering_pos.x = pos->x - line_width * 0.5f;
             }
             else {
-                rendering_pos.x = pos->x - width * 0.5f;
+                rendering_pos.x = pos->x; // - width * 0.5f
             }
 
-            // TODO: better batch rendering needed!
             for (char c : str) {
                 Font::Character& font_char = font->character_map.at(c);
 
@@ -141,52 +171,13 @@ namespace Vivium {
                 float right = left + ((float)font_char.size.x / (float)m_FontTextureAtlas->GetAtlas()->GetWidth());
                 float bottom = top + ((float)font_char.size.y / (float)m_FontTextureAtlas->GetAtlas()->GetHeight());
 
-                // Bottom left
-                vertices[vertices_idx++] = x;
-                vertices[vertices_idx++] = y;
-                vertices[vertices_idx++] = left;
-                vertices[vertices_idx++] = bottom;
-                // Bottom right
-                vertices[vertices_idx++] = x + w;
-                vertices[vertices_idx++] = y;
-                vertices[vertices_idx++] = right;
-                vertices[vertices_idx++] = bottom;
-                // Top right
-                vertices[vertices_idx++] = x + w;
-                vertices[vertices_idx++] = y + h;
-                vertices[vertices_idx++] = right;
-                vertices[vertices_idx++] = top;
-                // Top left
-                vertices[vertices_idx++] = x;
-                vertices[vertices_idx++] = y + h;
-                vertices[vertices_idx++] = left;
-                vertices[vertices_idx++] = top;
-
-                int stride = batch_count * 4; // Multiplying by 4 since there's four vertices per character
-
-                indices[indices_idx++] = 0 + stride;
-                indices[indices_idx++] = 1 + stride;
-                indices[indices_idx++] = 2 + stride;
-                indices[indices_idx++] = 2 + stride;
-                indices[indices_idx++] = 3 + stride;
-                indices[indices_idx++] = 0 + stride;
-
-                ++batch_count;
+                batch->Submit(x, x + w, y, y + h, left, right, bottom, top);
 
                 rendering_pos.x += float(font_char.advance >> 6) * scale;
             }
 
             rendering_pos.y -= font->max_height * scale;
         }
-
-        static const BufferLayout layout{
-            GLSLDataType::VEC4
-        };
-
-        VertexBuffer vb(vertices, batch_count * 16, layout);
-        IndexBuffer ib(indices, batch_count  * 6);
-
-        Renderer::Submit(&vb, &ib, shader.get(), m_FontTexture.get());
     }
 
     Text::Text()
@@ -202,26 +193,26 @@ namespace Vivium {
         
     }
 
-    Text::Text(const std::string& text, const Vector2<float>& pos, float scale)
-        : pos(MakeRef(Vector2<float>, pos)), font(m_DefaultFont), shader(m_DefaultShader), scale(scale)
+    Text::Text(const std::string& text, const Vector2<float>& pos, const Alignment& alignment, float scale)
+        : pos(MakeRef(Vector2<float>, pos)), font(m_DefaultFont), shader(m_DefaultShader), scale(scale), alignment(alignment)
     {
         m_Construct(text);
     }
 
-    Text::Text(const std::string& text, const Vector2<float>& pos, Ref(Font) font, float scale)
-        : pos(MakeRef(Vector2<float>, pos)), font(font), shader(m_DefaultShader), scale(scale)
+    Text::Text(const std::string& text, const Vector2<float>& pos, Ref(Font) font, const Alignment& alignment, float scale)
+        : pos(MakeRef(Vector2<float>, pos)), font(font), shader(m_DefaultShader), scale(scale), alignment(alignment)
     {
         m_Construct(text);
     }
 
-    Text::Text(const std::string& text, const Vector2<float>& pos, Ref(Shader) shader, float scale)
-        : pos(MakeRef(Vector2<float>, pos)), font(m_DefaultFont), shader(shader), scale(scale)
+    Text::Text(const std::string& text, const Vector2<float>& pos, Ref(Shader) shader, const Alignment& alignment, float scale)
+        : pos(MakeRef(Vector2<float>, pos)), font(m_DefaultFont), shader(shader), scale(scale), alignment(alignment)
     {
         m_Construct(text);
     }
 
-    Text::Text(const std::string& text, const Vector2<float>& pos, Ref(Font) font, Ref(Shader) shader, float scale)
-        : pos(MakeRef(Vector2<float>, pos)), font(font), shader(shader), scale(scale)
+    Text::Text(const std::string& text, const Vector2<float>& pos, Ref(Font) font, Ref(Shader) shader, const Alignment& alignment, float scale)
+        : pos(MakeRef(Vector2<float>, pos)), font(font), shader(shader), scale(scale), alignment(alignment)
     {
         m_Construct(text);
     }

@@ -4,9 +4,10 @@
 #include "Font.h"
 #include "Shader.h"
 #include "Application.h"
+#include "Batch.h"
 
 namespace Vivium {
-	class VIVIUM_API Text {
+	class VIVIUM_API Text : IBatchable {
 	private:
 		static Ref(Shader) m_DefaultShader;
 		static Ref(Font) m_DefaultFont;
@@ -22,9 +23,10 @@ namespace Vivium {
 
 	public:
 		enum class Alignment : uint8_t {
-			NONE,
+			NONE, // TODO: add some validation
 			LEFT,
-			MIDDLE // Not adding right alignment because not gonna use it
+			CENTER,
+			RIGHT // TODO: implement
 		};
 
 		Alignment alignment;
@@ -45,14 +47,18 @@ namespace Vivium {
 		float GetWidth() const;
 		float GetHeight() const;
 
+		std::string GetText() const;
+		void SetText(const std::string& str);
+
 		void Render() const;
+		void Submit(Batch* batch) const override;
 
 		Text();
 		Text(const Text& other);
-		Text(const std::string& text, const Vector2<float>& pos, float scale = 1.0f);
-		Text(const std::string& text, const Vector2<float>& pos, Ref(Font) font, float scale = 1.0f);
-		Text(const std::string& text, const Vector2<float>& pos, Ref(Shader) shader, float scale = 1.0f);
-		Text(const std::string& text, const Vector2<float>& pos, Ref(Font) font, Ref(Shader) shader, float scale = 1.0f);
+		Text(const std::string& text, const Vector2<float>& pos, const Alignment& alignment = Alignment::LEFT, float scale = 1.0f);
+		Text(const std::string& text, const Vector2<float>& pos, Ref(Font) font, const Alignment& alignment = Alignment::LEFT, float scale = 1.0f);
+		Text(const std::string& text, const Vector2<float>& pos, Ref(Shader) shader, const Alignment& alignment = Alignment::LEFT, float scale = 1.0f);
+		Text(const std::string& text, const Vector2<float>& pos, Ref(Font) font, Ref(Shader) shader, const Alignment& alignment = Alignment::LEFT, float scale = 1.0f);
 
 		~Text();
 

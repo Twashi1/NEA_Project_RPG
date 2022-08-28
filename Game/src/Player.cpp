@@ -161,7 +161,7 @@ namespace Game {
         : m_MainInventory(Inventory::ID::SMALL_WITH_HOTBAR), m_HotbarInventory(Inventory::ID::HOTBAR)
     {
         // Setup player quad and body
-        quad = MakeRef(Vivium::Quad, 0.0f, 0.0f, 100.0f, 100.0f);
+        quad = MakeRef(Vivium::Quad, 0.0f, 0.0f, 50.0f, 50.0f);
         body = MakeRef(Vivium::Body, quad, true, 0.0f, 10.0f);
 
         // Setup shader and uniforms

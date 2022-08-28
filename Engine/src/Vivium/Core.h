@@ -1,5 +1,7 @@
 #pragma once
 
+#define _SILENCE_CXX23_ALIGNED_STORAGE_DEPRECATION_WARNING
+
 #include <algorithm>
 #include <array>
 #include <bitset>

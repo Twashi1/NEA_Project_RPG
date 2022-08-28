@@ -20,8 +20,6 @@ namespace Vivium {
 
 		// Constructs the objects
 		void m_Construct();
-		// Gets width/height of text so that it can be centered on the button
-		Vector2<float> m_GetTextDim(const ::std::string& text);
 
 		// Updates button's text position - Need to call this if you edit "quad"
 		void m_UpdatePos();

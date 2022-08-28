@@ -3,10 +3,19 @@
 - [x] Initialisation functions for various classes should be private, and instead should make Application their friend
 
 ## Renderer
+- [ ] "IRenderable", implements Render
+- [ ] "IBatchRenderable" implements AddToBatch
+- [ ] "TextureLikeType", union of Texture, TextureAtlas, Framebuffer, implements texture-like api, its union types should be able to implicitly last to and from the type
 - [x] Framebuffers
     - [x] More helper functions for rendering from frame buffers
     - [x] Use framebuffers for drawing at specific z levels
-- [ ] Batch rendering API (kinda done)
+- [ ] Batch rendering API
+    - [ ] StartBatch  (IN: vertex layout, IN: max vertex count)
+    - [ ] SubmitBatch (IN: float array, IN: size of float array, IN: indices array, IN: size of indices array)
+    - [ ] SubmitBatch (IN: pos, IN: size)
+    - [ ] SubmitBatch (IN: renderable)
+    - [ ] SubmitBatch (IN: pos, IN: size, IN: tex coords array (size: 8))
+    - [ ] EndBatch    (OUT: vertex buffer, index buffer)
 - [ ] Compute shader API
 - [ ] Scene API
     - [ ] Load scene/Unload scene
@@ -19,15 +28,18 @@
 
 ## GUI
 - [x] Buttons
+- [x] Text
+    - [x] Batch render characters for text
+    - [x] Align text to left or center
 - [x] Sliders
     - [ ] Add feature to make slider snap to intervals
 - [x] Input boxes
     - [ ] Typing bar still using magic numbers
-- [ ] Panels
-    - [ ] Add other GUI objects to Anchor overload
+- [x] Panels
+    - [x] Add other GUI objects to Anchor overload
     - [ ] Add resizing
     - [x] Fix bugs with Text and TextInput panels
-- [ ] GUI objects should not be responsible for the rendering methods, only giving the correct position for the object
+- [ ] GUI objects should not be responsible for the rendering methods, only giving the correct position data for the object
 
 ## General
 - [ ] Pathfinding
@@ -54,7 +66,7 @@
     - [x] Multithreading to stop lagspike when loading new regions (mostly done, serialising regions should also be multithreaded)
 - [x] Terrain generation
     - [ ] Better height map, weights for tiles, etc.
-    - [x] Fix messy world generation code (in process)
+    - [x] Fix messy world generation code
     - [x] Better structure generation
     - [x] More versatile texture coords for tile atlas
 - [x] Save files
@@ -89,8 +101,8 @@
 - [ ] Enemy sprites/animation
 
 ## GUI
-- [ ] Title screen
-    - [ ] Navigate to options, create new world, load world
+- [x] Title screen
+    - [x] Navigate to options, create new world, load world
 - [ ] Control config
 - [ ] Options menu
 

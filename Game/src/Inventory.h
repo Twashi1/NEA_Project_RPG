@@ -123,22 +123,16 @@ namespace Game {
 		
 		void m_RenderItems();
 		void m_RenderItem(
+			Vivium::Batch* batch,
 			const Item& item,
 			const Vivium::Vector2<float>& pos,
-			const Vivium::Vector2<float>& halfsize,
-			float* vertex_data,
-			std::size_t& vertex_data_index,
-			uint16_t* vertex_indices,
-			std::size_t& vertex_indices_index
+			const float& size
 		);
 		void m_RenderItemCount(
+			Vivium::Batch* batch,
 			char c,
 			const Vivium::Vector2<float>& pos,
-			const Vivium::Vector2<float>& size,
-			float* vertex_data,
-			std::size_t& vertex_data_index,
-			uint16_t* vertex_indices,
-			std::size_t& vertex_indices_index
+			const Vivium::Vector2<float>& size
 		);
 
 		void m_UpdateItem(float x, float y, float width, float height, const Slot& item_slot);

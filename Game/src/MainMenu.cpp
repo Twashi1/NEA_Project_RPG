@@ -215,19 +215,21 @@ namespace Game {
 
 	void __CreateWorldScene::m_NameInputCallback(Vivium::TextInput* input_box)
 	{
-		//m_Name = input_box->GetText()->text;
+		m_Name = input_box->GetText()->GetText();
 	}
 
 	void __CreateWorldScene::m_SeedInputCallback(Vivium::TextInput* input_box)
 	{
 		// TODO: validation
-		//m_Seed = std::stoi(input_box->GetText()->text);
+		m_Seed = std::stoi(input_box->GetText()->GetText());
 	}
 
 	void __CreateWorldScene::m_ConfirmCallback(Vivium::Button* button, void* user_params)
 	{
-		//m_Name = m_NameInputBox->GetText()->text;
-		//m_Seed = std::stoi(m_SeedInputBox->GetText()->text);
+		m_Name = m_NameInputBox->GetText()->GetText();
+		std::string seed_text = m_SeedInputBox->GetText()->GetText();
+
+		m_Seed = std::hash<std::string>()(seed_text);
 
 		// Get MainMenu instance from params
 		MainMenu* main_menu = (MainMenu*)(*(uintptr_t*)user_params);
@@ -316,6 +318,8 @@ namespace Game {
 			m_Player = new Player(world_name);
 			m_World = new World(world_seed, world_name, m_Player);
 		}
+
+		Vivium::Application::SetCursor(Vivium::Application::CURSOR_TYPE::POINTER);
 	}
 
 	__GameScene::~__GameScene()

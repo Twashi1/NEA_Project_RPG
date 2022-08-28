@@ -505,10 +505,7 @@ namespace Game {
 
 	void World::m_RenderTiles(const Vivium::Vector2<int>& pos)
 	{
-		// LogTrace("--- Begin render tiles ---");
-
 		Vivium::Vector2<int> frame = Vivium::Application::GetScreenDim() / (PIXEL_SCALE * 2.0f);
-		//LogTrace("* Frame size: {}", frame);
 
 		float reg_scale = Region::LENGTH;
 
@@ -520,16 +517,17 @@ namespace Game {
 		int top		= pos.y + frame.y + padding;	int reg_top		= std::floor(top / reg_scale);
 
 		// Stores the current amount of tiles we have rendered
-		std::size_t count = 0;
+		// std::size_t count = 0;
 		// NOTE: if everything on screen has a bot, mid, and top tile to render, its possible we may exceed max count,
 		//		might need something like "(right - left + 1) * (top - bottom + 1) * 3" instead
 		std::size_t max_count = (right - left) * (top - bottom) * 3;
 
-		float* vertex_data = new float[16 * max_count];
-		std::size_t vertex_index = 0;
+		static const Vivium::BufferLayout layout = {
+			Vivium::GLSLDataType::VEC2, // position
+			Vivium::GLSLDataType::VEC2  // tex coords
+		};
 
-		unsigned short* indices_data = new unsigned short[6 * max_count];
-		std::size_t indices_index = 0;
+		Vivium::Batch batch(max_count, &layout);
 
 		for (int reg_y = reg_bottom; reg_y <= reg_top; reg_y++) {
 			for (int reg_x = reg_left; reg_x <= reg_right; reg_x++) {
@@ -579,8 +577,9 @@ namespace Game {
 										Vivium::Application::physics->Register(body, World::PHYSICS_TILE_LAYER);
 									}
 
-									// NOTE: increments counter for us
-									m_BatchRenderTile(id, dx, dy, tile_scale, vertex_data, indices_data, vertex_index, indices_index, count);
+									std::array<float, 4>& faces = m_TextureCoords[(int)id];
+
+									batch.Submit({ dx, dy }, tile_scale * 2.0f, faces[0], faces[2], faces[1], faces[3]);
 								}
 							}
 						}
@@ -589,56 +588,9 @@ namespace Game {
 			}
 		}
 
-		static const Vivium::BufferLayout layout = {
-			Vivium::GLSLDataType::VEC2, // position
-			Vivium::GLSLDataType::VEC2  // tex coords
-		};
+		Vivium::Batch::BatchData data = batch.End();
 
-		Vivium::VertexBuffer vb(vertex_data, (count * 16), layout);
-		Vivium::IndexBuffer ib(indices_data, (count * 6));
-
-		Vivium::Renderer::Submit(&vb, &ib, texture_shader, m_TextureAtlas->GetAtlas().get());
-
-		delete[] vertex_data;
-		delete[] indices_data;
-	}
-
-	void World::m_BatchRenderTile(const Tile::ID& id, float x, float y, float scale, float* vertex_data, uint16_t* indices_data, std::size_t& vertex_index, std::size_t& indices_index, std::size_t& count)
-	{
-		/* TODO: UpdateVertexData */
-		std::array<float, 4>& faces = m_TextureCoords[(int)id];
-
-		// Bottom left vertex
-		vertex_data[vertex_index++] = x - scale;
-		vertex_data[vertex_index++] = y - scale;
-		vertex_data[vertex_index++] = faces[0];
-		vertex_data[vertex_index++] = faces[1];
-		// Bottom right vertex
-		vertex_data[vertex_index++] = x + scale;
-		vertex_data[vertex_index++] = y - scale;
-		vertex_data[vertex_index++] = faces[2];
-		vertex_data[vertex_index++] = faces[1];
-		// Top right vertex
-		vertex_data[vertex_index++] = x + scale;
-		vertex_data[vertex_index++] = y + scale;
-		vertex_data[vertex_index++] = faces[2];
-		vertex_data[vertex_index++] = faces[3];
-		// Top left vertex
-		vertex_data[vertex_index++] = x - scale;
-		vertex_data[vertex_index++] = y + scale;
-		vertex_data[vertex_index++] = faces[0];
-		vertex_data[vertex_index++] = faces[3];
-
-
-		int stride = count * 4;
-		indices_data[indices_index++] = 0 + stride;
-		indices_data[indices_index++] = 1 + stride;
-		indices_data[indices_index++] = 2 + stride;
-		indices_data[indices_index++] = 2 + stride;
-		indices_data[indices_index++] = 3 + stride;
-		indices_data[indices_index++] = 0 + stride;
-
-		count++;
+		Vivium::Renderer::Submit(data.vertex_buffer.get(), data.index_buffer.get(), texture_shader, m_TextureAtlas->GetAtlas().get());
 	}
 
 	void World::m_RenderFloorItems(const Vivium::Vector2<int>& pos)
@@ -647,6 +599,7 @@ namespace Game {
 		// Pos is in tile coordinates, convert to region coordinates
 		Vivium::Vector2<int> center_region = GetRegionIndex(pos);
 
+		// TODO: store total floor item count
 		std::vector<float> vertex_data;
 		std::vector<unsigned short> indexCoords;
 

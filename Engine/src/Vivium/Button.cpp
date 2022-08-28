@@ -8,19 +8,8 @@ namespace Vivium {
 	void Button::m_Construct()
 	{
 		// Construct text object
-		Vector2<float> pos = quad->GetCenter() - (m_GetTextDim(idle_text) * 0.5f);
-		text = MakeRef(Text, idle_text, pos, Button::m_DefaultScale);
-	}
-
-	Vector2<float> Button::m_GetTextDim(const std::string& text)
-	{
-		// TODO: only works on monospace fonts
-		Font::Character& ch = Button::m_DefaultFont->character_map.at('a');
-		float char_x = ch.advance >> 6; // Convert advance to pixels
-
-		Vector2<float> dim = Vector2<float>(char_x * (float)text.length(), ch.size.y);
-
-		return dim * Button::m_DefaultScale;
+		Vector2<float> pos = quad->GetCenter();
+		text = MakeRef(Text, idle_text, pos, Text::Alignment::CENTER, Button::m_DefaultScale);
 	}
 
 	void Button::m_Init()
@@ -128,7 +117,7 @@ namespace Vivium {
 		isPressed = false;
 
 		// Update text
-		// text->text = isPressed ? pressed_text : idle_text;
+		text->SetText(isPressed ? pressed_text : idle_text);
 
 		// If the cursor is within the bounds of the button, run callback function
 		if (quad->Contains(cursor_pos)) {
@@ -148,7 +137,7 @@ namespace Vivium {
 			isPressed = true;
 
 			// Update text
-			// text->text = isPressed ? pressed_text : idle_text;
+			text->SetText(isPressed ? pressed_text : idle_text);
 
 			// Update position
 			m_UpdatePos();
@@ -172,8 +161,6 @@ namespace Vivium {
 
 	void Button::m_UpdatePos()
 	{
-		// Subtracting half the size of the text being displayed
-		// from the center of the background so that the text is centered
-		*text->pos = quad->GetCenter() - (m_GetTextDim(isPressed ? pressed_text : idle_text) * 0.5f);
+		*text->pos = quad->GetCenter();
 	}
 }

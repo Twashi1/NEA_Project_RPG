@@ -106,6 +106,7 @@
     <ClCompile Include="src\Vivium\Scene.cpp">
       <Filter>Source</Filter>
     </ClCompile>
+    <ClCompile Include="src\Vivium\Batch.cpp" />
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="src\Vivium.h" />
@@ -212,6 +213,9 @@
       <Filter>Headers</Filter>
     </ClInclude>
     <ClInclude Include="src\Vivium\Scene.h">
+      <Filter>Headers</Filter>
+    </ClInclude>
+    <ClInclude Include="src\Vivium\Batch.h">
       <Filter>Headers</Filter>
     </ClInclude>
   </ItemGroup>

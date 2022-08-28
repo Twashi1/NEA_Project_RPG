@@ -13,8 +13,7 @@ int sandbox(void)
 {
     Application::Init(WIDTH, HEIGHT, FPS, true);
 
-    Text my_text = Text("0\n1\n2\n3\n4\n5", {200.0f, 200.0f}, 0.25f);
-    my_text.alignment = Text::Alignment::MIDDLE;
+    Text my_text("abcdefgh\nhijk\nlmnop", Vivium::Vector2<float>{200.0f, 200.0f}, Text::Alignment::CENTER, 0.25f);
 
     Application::SetBGColor(RGBColor::BLUE);
 
@@ -89,5 +88,5 @@ int game(void)
 }
 
 int main(int argc, char** argv) {
-    sandbox();
+    game();
 }

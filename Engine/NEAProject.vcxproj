@@ -21,6 +21,7 @@
   <ItemGroup>
     <ClCompile Include="src\Vivium\Animation.cpp" />
     <ClCompile Include="src\Vivium\Application.cpp" />
+    <ClCompile Include="src\Vivium\Batch.cpp" />
     <ClCompile Include="src\Vivium\Body.cpp" />
     <ClCompile Include="src\Vivium\Button.cpp" />
     <ClCompile Include="src\Vivium\Camera.cpp" />
@@ -59,6 +60,7 @@
     <ClInclude Include="src\Vivium.h" />
     <ClInclude Include="src\Vivium\Animation.h" />
     <ClInclude Include="src\Vivium\Application.h" />
+    <ClInclude Include="src\Vivium\Batch.h" />
     <ClInclude Include="src\Vivium\Body.h" />
     <ClInclude Include="src\Vivium\Button.h" />
     <ClInclude Include="src\Vivium\Camera.h" />
