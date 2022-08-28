@@ -106,7 +106,9 @@
     <ClCompile Include="src\Vivium\Scene.cpp">
       <Filter>Source</Filter>
     </ClCompile>
-    <ClCompile Include="src\Vivium\Batch.cpp" />
+    <ClCompile Include="src\Vivium\Batch.cpp">
+      <Filter>Source</Filter>
+    </ClCompile>
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="src\Vivium.h" />

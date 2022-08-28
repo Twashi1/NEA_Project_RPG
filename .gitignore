@@ -1,7 +1,5 @@
 .vs/
-bin/
 bin-int/
-Resources/saves/testworld/
 
 .user
 countlines.bat
