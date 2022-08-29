@@ -59,7 +59,9 @@ namespace Vivium {
 		// Draw specific scene
 		static void DrawScene(int id);
 
-		static void Submit(const VertexBuffer* vb, Shader* shader, unsigned int count);
+		// Uses glDrawArrays to draw vertex buffer to screen, count is the number of vertices
+		static void Submit(const VertexBuffer* vb, Shader* shader, const std::size_t& count);
+		static void Submit(const VertexBuffer* vb, Shader* shader, const Texture* texture, const std::size_t& count);
 		static void Submit(const VertexBuffer* vb, const IndexBuffer* ib, Shader* shader);
 		static void Submit(const VertexBuffer* vb, const IndexBuffer* ib, Shader* shader, const Texture* texture, uint8_t slot = 0);
 		static void Submit(const VertexBuffer* vb, const IndexBuffer* ib, Shader* shader, const Framebuffer* fb, uint8_t slot = 0);

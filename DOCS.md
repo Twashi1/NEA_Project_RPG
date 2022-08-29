@@ -10,6 +10,8 @@
 		- [ Texture atlas ](#TextureAtlasRendering)
 - [ GUI guide ](#GUIGuide)
 - [ Physics guide ](#PhysicsGuide)
+    - [ Bodies ](#BodiesPhysics)
+    - [ Layers system ](#LayersPhysics)
 - [ Serialising guide ](#SerialisingGuide)
     - [ Setup ](#SerialisingSetup)
 		- [ Basic types (POD) ](#PODSerialising)
@@ -96,6 +98,7 @@ A list of the default GLSL shaders
 
 <a name="OOBasedRendering"></a>
 ### OO based rendering
+
 <a name="ShadedQuadRendering"></a>
 #### Basic shaded quad
 Create a quad for location/dimensions of what you're rendering
@@ -151,8 +154,28 @@ You can also use a texture atlas for rendering a texture
 
 <a name="GUIGuide"></a>
 ## GUI guide
+
 <a name="PhysicsGuide"></a>
 ## Physics guide
+
+<a name="BodiesPhysics"></a>
+### Bodies
+
+The `Body` class is used to give a `Quad` physical properties, and allows it to collide with other objects (WIP). You should create them as shared ptrs  
+The user is expected to update bodies themselves if the bodies are moving
+
+<a name="LayersPhysics"></a>
+### Layers
+
+Layers store bodies and determine what bodies can collide with what other bodies
+
+A layer can be created by specifying its ID, and the IDs of the other layers it will collide with, this also returns a ptr to the Layer so bodies can be added/removed by the user
+```c++
+Layer* my_layer = Physics::CreateLayer(999, {1, 2, 3});
+Layer* other_layer = Physics::CreateLayer(1, {1});
+```
+*Objects in `my_layer` will collide with objects in `other_layer`, and objects in `other_layer` will collide with other objects within `other_layer`, as well as objects within `my_layer`*
+
 <a name="SerialisingGuide"></a>
 ## Serialising guide
 

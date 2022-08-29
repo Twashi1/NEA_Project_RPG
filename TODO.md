@@ -3,6 +3,8 @@
 - [x] Initialisation functions for various classes should be private, and instead should make Application their friend
 
 ## Renderer
+- [ ] Look into vertex arrays
+- [ ] Rendering API for only vertices, no indices
 - [ ] `IRenderable`, implements Render
 - [x] `IBatchable` implements `Submit(Batch*)`
 - [ ] "TextureLikeType", union of Texture, TextureAtlas, Framebuffer, implements texture-like api, its union types should be able to implicitly last to and from the type
@@ -10,6 +12,7 @@
     - [x] More helper functions for rendering from frame buffers
     - [x] Use framebuffers for drawing at specific z levels
 - [x] Batch rendering API
+    - [ ] API for batching raw vertices without indices
 - [ ] Compute shader API
 - [ ] Scene API
     - [ ] Load scene/Unload scene
@@ -54,22 +57,25 @@
 
 # Game
 ## World
+- Remove bot/mid/top for tiles, just foreground/background
 - [x] Small world map in corner
     - ~~Fix performance issues~~
     - ~~Fix ugly black border for unloaded chunks~~
 - [x] World loads around player
     - [x] Multithreading to stop lagspike when loading new regions (mostly done, serialising regions should also be multithreaded)
 - [x] Terrain generation
+    - Fix tall cacti not spawning
     - [ ] Better height map, weights for tiles, etc.
-    - [x] Fix messy world generation code
-    - [x] Better structure generation
+    - [ ] Fix messy world generation code
+    - [x] Structure generation system
+        - [ ] Regions should store the structures inside them/enable structure generation on region borders
     - [x] More versatile texture coords for tile atlas
 - [x] Save files
     - [x] Implement saving to/loading from file
 - [ ] Animating tiles / Drawing animated tiles
 - [x] Batch render tiles
 - [x] Physics for tiles
-    - Better system for adding physics objects
+    - ~~Better system for adding physics objects~~
 - [x] Drawing selection hover
 - [x] Items/Floor drops
      - [x] Items with counts of 2 will display 2 copies of the item texture, and counts of 3 or above will display 3 copies of the item texture

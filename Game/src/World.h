@@ -12,11 +12,6 @@ namespace Game {
 
 	class World {
 	private:
-		// Some constants for noise
-		static constexpr float m_Amplitude = 1.0f;
-		static constexpr int m_Wavelength = 4;
-		static constexpr int m_Octaves = 1;
-
 		Vivium::Noise::Interpolated m_NoiseTerrain;
 		Vivium::Noise::White m_NoiseTrees;
 		Vivium::Serialiser* m_Serialiser; // TODO unique ptr
@@ -25,6 +20,7 @@ namespace Game {
 		Vivium::Shader* m_DaylightShader;
 		Vivium::Framebuffer* m_DaylightFramebuffer;
 
+		static constexpr int MAP_SIZE = 48;
 		WorldMap* m_WorldMap;
 
 		std::string m_WorldName;

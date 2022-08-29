@@ -88,7 +88,7 @@ namespace Game {
 
 		m_LoadRegions(player);
 
-		m_WorldMap = new WorldMap(48);
+		m_WorldMap = new WorldMap(MAP_SIZE);
 
 		m_WorldMap->GenerateFullMap({ 0, 0 }, *this);
 

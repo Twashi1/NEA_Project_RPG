@@ -153,11 +153,22 @@ namespace Vivium {
 		glDrawElements(GL_TRIANGLES, ib->GetCount(), ib->GetType(), nullptr);
 	}
 
-	void Renderer::Submit(const VertexBuffer* vb, Shader* shader, unsigned int count)
+	void Renderer::Submit(const VertexBuffer* vb, Shader* shader, const std::size_t& count)
 	{
 		vb->Bind(); shader->Bind();
 
 		glDrawArrays(GL_TRIANGLES, 0, count);
+	}
+
+	void Renderer::Submit(const VertexBuffer* vb, Shader* shader, const Texture* texture, const std::size_t& count)
+	{
+		uint8_t slot = GetTextureSlot();
+		vb->Bind(); shader->Bind(); texture->Bind(slot);
+		shader->SetUniform1i("u_Texture", slot);
+
+		glDrawArrays(GL_TRIANGLES, 0, count);
+
+		FreeTextureSlot(slot);
 	}
 
 	void Renderer::Submit(const VertexBuffer* vb, const IndexBuffer* ib, Shader* shader)

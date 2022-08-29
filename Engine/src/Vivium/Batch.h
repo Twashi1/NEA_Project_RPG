@@ -4,6 +4,8 @@
 #include "IndexBuffer.h"
 #include "Vector2.h"
 
+// TODO: system for sending raw vertices without indices?
+
 namespace Vivium {
 	class Batch;
 
