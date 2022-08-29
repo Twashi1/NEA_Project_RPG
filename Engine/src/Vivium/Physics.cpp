@@ -52,32 +52,74 @@ namespace Vivium {
 		}
 
 		// Iterate over every body and update it
-		for (auto& [layer_index, layer] : m_Layers) {
-			for (int i = 0; i < layer.size(); i++) {
-				layer[i]->Update(elapsed);
-			}
+		for (auto& [body, indices] : m_UniqueBodies) {
+			body->Update(elapsed);
 		}
 	}
 
-	void Physics::Register(Ref(Body) body, const std::vector<int>& layer_indices)
+	void Physics::Register(Ref(Body) body, const std::set<int>& layer_indices)
 	{
+		m_AddToUniqueBodies(body, layer_indices);
+
 		for (const int& layer : layer_indices) {
-			Register(body, layer);
+			m_Register(body, layer);
+		}
+	}
+
+	void Physics::m_Register(Ref(Body) body, int layer_index)
+	{
+		auto it = m_Layers.find(layer_index);
+
+		if (it != m_Layers.end()) {
+			it->second.push_back(body);
+		}
+		else {
+			m_Layers.insert({ layer_index, Layer_t{body} });
+		}
+	}
+
+	void Physics::m_AddToUniqueBodies(Ref(Body) body, const std::set<int>& layer_indices)
+	{
+		bool isUnique = true;
+
+		for (auto& [unique_body, indices] : m_UniqueBodies) {
+			// Check they point to the same object
+			if (body.get() == unique_body.get())
+			{
+				isUnique = false;
+				indices.insert(layer_indices.begin(), layer_indices.end());
+			}
+		}
+
+		if (isUnique) {
+			m_UniqueBodies.insert({ body, layer_indices });
+		}
+	}
+
+	void Physics::m_AddToUniqueBodies(Ref(Body) body, int layer_index)
+	{
+		bool isUnique = true;
+
+		for (auto& [unique_body, indices] : m_UniqueBodies) {
+			// Check they point to the same object
+			if (body.get() == unique_body.get())
+			{
+				isUnique = false;
+				indices.insert(layer_index);
+			}
+		}
+
+		if (isUnique) {
+			std::set<int> new_indices;
+			new_indices.insert(layer_index);
+			m_UniqueBodies.insert({ body, new_indices });
 		}
 	}
 
 	void Physics::Register(Ref(Body) body, int layer_index)
 	{
-		// TODO: use find
-		// If layers already contains index
-		if (m_Layers.contains(layer_index)) {
-			// Add to existing index
-			m_Layers[layer_index].push_back(body);
-		}
-		else {
-			// Add new layer
-			m_Layers[layer_index] = Layer_t{ body };
-		}
+		m_AddToUniqueBodies(body, layer_index);
+		m_Register(body, layer_index);
 	}
 
 	void Physics::Unregister(Ref(Body) body, int layer_index)
@@ -88,6 +130,13 @@ namespace Vivium {
 		auto it = std::find(layer.begin(), layer.end(), body);
 		// We exist in layer, delete ourselves
 		if (it != layer.end()) layer.erase(it);
+
+		std::set<int>& body_layers = m_UniqueBodies.at(body);
+		body_layers.erase(layer_index);
+
+		if (body_layers.empty()) {
+			m_UniqueBodies.erase(body);
+		}
 	}
 
 	void Physics::Unregister(Ref(Body) body)
@@ -99,6 +148,9 @@ namespace Vivium {
 			// If we exist in that layer, delete ourselves
 			if (it != layer.end()); layer.erase(it);
 		}
+
+		// Remove body from unique bodies
+		m_UniqueBodies.erase(body);
 	}
 
 	void Physics::ClearLayer(int layer_index)
@@ -106,6 +158,16 @@ namespace Vivium {
 		auto it = m_Layers.find(layer_index);
 
 		if (it != m_Layers.end()) {
+			for (Ref(Body)& body : it->second) {
+				// If body only exists in one layer (our current layer)
+				std::set<int>& body_layers = m_UniqueBodies.at(body);
+				body_layers.erase(layer_index);
+
+				if (body_layers.empty()) {
+					m_UniqueBodies.erase(body);
+				}
+			}
+
 			it->second.clear();
 		}
 		else {
