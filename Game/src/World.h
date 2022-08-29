@@ -36,6 +36,12 @@ namespace Game {
 		float mined_tile_time; // Time we've been mining tile for
 
 		Player* m_Player;
+		Vivium::Physics::Layer* m_PlayerLayer = nullptr;
+		static constexpr uint32_t PLAYER_PHYSICS_LAYER = 0;
+		Vivium::Physics::Layer* m_TileLayer = nullptr;
+		static constexpr uint32_t TILE_PHYSICS_LAYER = 1;
+
+		std::vector<Ref(Vivium::Body)> m_TileBodies;
 
 		std::string m_ToRegionName(const Vivium::Vector2<int>& index) const;
 
@@ -68,7 +74,6 @@ namespace Game {
 		static std::string GENERAL_FILE;
 
 		static constexpr float PIXEL_SCALE = 64.0f;
-		static constexpr int PHYSICS_TILE_LAYER = 0xff;
 
 		typedef std::unordered_map<Vivium::Vector2<int>, Region*> RegionMap_t;
 		typedef std::unordered_map<Vivium::Vector2<int>, std::vector<FloorItem>> FloorItemMap_t;

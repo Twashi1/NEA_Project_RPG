@@ -92,6 +92,13 @@ namespace Game {
 
 		m_WorldMap->GenerateFullMap({ 0, 0 }, *this);
 
+		m_PlayerLayer = Vivium::Physics::CreateLayer(World::PLAYER_PHYSICS_LAYER, { World::TILE_PHYSICS_LAYER });
+		// NOTE: don't need to declare that it will collide with player layer, actually would slightly decrease performance
+		// NOTE: also not declaring it will collide with itself since tiles shouldn't move, but this may change in future
+		m_TileLayer = Vivium::Physics::CreateLayer(World::TILE_PHYSICS_LAYER, {});
+
+		m_PlayerLayer->bodies.push_back(m_Player->body);
+
 		m_UpdateTimer.Start();
 	}
 
@@ -465,6 +472,11 @@ namespace Game {
 
 	void World::m_RenderTiles(const Vivium::Vector2<int>& pos)
 	{
+		// TODO: move
+		// Clear everything in bodies layer, since physics update has already happened, and body locations will change next frame
+		m_TileBodies.clear();
+		m_TileLayer->bodies.clear(); // NOTE: not necessary, but will speed up performance slightly
+
 		Vivium::Vector2<int> frame = Vivium::Application::GetScreenDim() / (PIXEL_SCALE * 2.0f);
 
 		float reg_scale = Region::LENGTH;
@@ -534,7 +546,8 @@ namespace Game {
 										Ref(Vivium::Quad) quad = MakeRef(Vivium::Quad, Vivium::Vector2<float>(dx, dy), Vivium::Vector2<float>(halfscale));
 										Ref(Vivium::Body) body = MakeRef(Vivium::Body, quad, true, 0.0f, 0.0f);
 
-										Vivium::Application::physics->Register(body, World::PHYSICS_TILE_LAYER);
+										m_TileBodies.push_back(body);
+										m_TileLayer->bodies.push_back(body);
 									}
 
 									const Vivium::Vector2<int>& index = Tile::GetAltasIndex(id);
@@ -560,7 +573,7 @@ namespace Game {
 		// Pos is in tile coordinates, convert to region coordinates
 		Vivium::Vector2<int> center_region = GetRegionIndex(pos);
 
-		// TODO: store total floor item count
+		// TODO: find workaround for using vectors and stuff
 		std::vector<float> vertex_data;
 		std::vector<unsigned short> indexCoords;
 
@@ -715,9 +728,6 @@ namespace Game {
 		m_UpdateMining(m_Player, elapsed);
 
 		m_WorldMap->GenerateFullMap(m_Player->quad->GetCenter(), *this);
-
-		Vivium::Application::physics->ClearLayer(World::PHYSICS_TILE_LAYER);
-		Vivium::Application::physics->Register(m_Player->body, World::PHYSICS_TILE_LAYER);
 	}
 
 	std::string World::GetName() const

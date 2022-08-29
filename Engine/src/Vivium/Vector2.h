@@ -41,8 +41,10 @@ namespace Vivium {
 		Vector2 operator%(const T& other) const requires Integral<T> { return Vector2(x % other, y % other); }
 		void operator%=(const T& other) requires Integral<T> { x %= other; y %= other; }
 
-		bool operator<(const Vector2& other) { return x == other.x ? y < other.y : x < other.x; }
-		bool operator>(const Vector2& other) { return x == other.x ? y > other.y : x > other.x; }
+		friend bool operator<(const Vector2<T>& a, const Vector2<T>& b) { return a.x == b.x ? a.y < b.y : a.x < b.x; }
+		friend bool operator>(const Vector2<T>& a, const Vector2<T>& b) { return a.x == b.x ? a.y > b.y : a.x > b.x; }
+		friend bool operator<=(const Vector2<T>& a, const Vector2<T>& b) { return a.x == b.x ? a.y <= b.y : a.x <= b.x; }
+		friend bool operator>=(const Vector2<T>& a, const Vector2<T>& b) { return a.x == b.x ? a.y >= b.y : a.x >= b.x; }
 		friend bool operator==(const Vector2<T>& a, const Vector2<T>& b) { return a.x == b.x && a.y == b.y; }
 		friend bool operator!=(const Vector2<T>& a, const Vector2<T>& b) { return a.x != b.x || a.y != b.y; }
 

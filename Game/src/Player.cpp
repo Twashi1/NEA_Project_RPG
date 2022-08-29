@@ -97,6 +97,8 @@ namespace Game {
 
     void Player::Update(World& world)
     {
+        body->Update();
+
         // TODO: VERY TEMPORARY
         Vivium::Input::State o = Vivium::Input::GetKeyState(GLFW_KEY_0);
 

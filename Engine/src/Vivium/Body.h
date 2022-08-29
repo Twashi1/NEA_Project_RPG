@@ -8,6 +8,9 @@
 
 namespace Vivium {
 	struct VIVIUM_API Body {
+	private:
+		Timer m_Timer;
+
 	public:
 		Ref(Quad) quad;		// Pointer to quad which describes location and dimensions of Body
 		bool isImmovable;	// If an object is immovable, collisions will not change velocity/acceleration of this body (infinite mass)
@@ -26,7 +29,7 @@ namespace Vivium {
 		Body(const Body& other);
 
 		// Updates position and velocity, takes time since last update as parameter
-		void Update(float dt);
+		void Update();
 		// Returns a quad which represents the location the object will be at, "dt" seconds into the future (provided no outside influences)
 		Quad Peek(float dt);
 		Rect PeekRect(float dt);

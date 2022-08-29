@@ -56,6 +56,7 @@
 #ifdef VIVIUM_EXPOSE_CORE
 	#define Ref(T) std::shared_ptr<T>
 	#define MakeRef(T, ...) std::make_shared<T>(__VA_ARGS__)
+	#define WeakRef(T) std::weak_ptr<T>
 #endif
 
 namespace Vivium {

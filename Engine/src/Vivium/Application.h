@@ -69,8 +69,6 @@ namespace Vivium {
 
         static std::string resources_path; // Path to resources file
 
-        static Ref(Physics) physics;
-
         static Ref(Panel) window_panel;  // For attaching things to the window
 
         // Set clear screen/background color

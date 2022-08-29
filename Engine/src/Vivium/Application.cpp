@@ -31,8 +31,6 @@ namespace Vivium {
 
     std::string Application::resources_path = "../Resources/";
 
-    Ref(Physics) Application::physics = nullptr;
-
     Ref(Panel) Application::window_panel = nullptr;
 
     void Application::m_WindowResizeCallback(GLFWwindow* window, int nwidth, int nheight)
@@ -70,7 +68,7 @@ namespace Vivium {
 
         // Update physics
         Renderer::m_BeginScene(Renderer::PHYSICS_DEBUG_SCENE);
-        physics->Update();
+        Physics::Update();
         Renderer::EndScene();
 
         // Poll and process events
@@ -198,8 +196,8 @@ namespace Vivium {
         // Initialise statics for Quad
         Quad::m_Init();
 
-        // Construct physics object
-        physics = std::make_shared<Physics>();
+        Physics::m_Init();
+
         // Set renderer's camera
         Renderer::m_Init();
 

@@ -8,7 +8,9 @@ namespace Vivium {
 		restitution(restitution),
 		mass(mass), imass(1.0f / mass),
 		angular_acc(0.0f), angular_vel(0.0f)
-	{}
+	{
+		m_Timer.Start();
+	}
 
 	Body::Body(Ref(Quad) quad, bool isImmovable, float restitution, float mass)
 		: quad(quad),
@@ -17,7 +19,9 @@ namespace Vivium {
 		restitution(restitution),
 		mass(mass), imass(1.0f / mass),
 		angular_acc(0.0f), angular_vel(0.0f)
-	{}
+	{
+		m_Timer.Start();
+	}
 
 	Body::Body(const Body& other)
 		: quad(other.quad),
@@ -26,17 +30,21 @@ namespace Vivium {
 		restitution(other.restitution),
 		mass(other.mass), imass(other.imass),
 		angular_acc(other.angular_acc), angular_vel(other.angular_vel)
-	{}
-
-	void Body::Update(float dt)
 	{
+		m_Timer.Start();
+	}
+
+	void Body::Update()
+	{
+		float elapsed = m_Timer.GetElapsed();
+
 		// Update velocity and position
-		vel += acc * dt;
-		quad->SetCenter(quad->GetCenter() + (vel * dt));
+		vel += acc * elapsed;
+		quad->SetCenter(quad->GetCenter() + (vel * elapsed));
 
 		// Update angular velocity and angle
-		angular_vel += angular_acc * dt;
-		quad->SetAngle(quad->GetAngle() + (angular_vel * dt));
+		angular_vel += angular_acc * elapsed;
+		quad->SetAngle(quad->GetAngle() + (angular_vel * elapsed));
 	}
 
 	Quad Body::Peek(float dt)
