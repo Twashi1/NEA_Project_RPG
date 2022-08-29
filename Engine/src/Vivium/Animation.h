@@ -9,7 +9,6 @@
 
 // TODO: python scripting for animations? or python script to generate timings for animations?
 // TODO: better names
-// TODO: test after changes
 
 namespace Vivium {
 	class VIVIUM_API Animation {

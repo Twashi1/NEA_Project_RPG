@@ -234,7 +234,7 @@ namespace Game {
 		Vivium::Batch::BatchData text_batch_data = text_batch.End();
 
 		if (item_batch_data.count > 0) {
-			Vivium::Renderer::Submit(item_batch_data.vertex_buffer.get(), item_batch_data.index_buffer.get(), m_ItemShader, World::m_ItemsAtlas->GetAtlas().get());
+			Vivium::Renderer::Submit(item_batch_data.vertex_buffer.get(), item_batch_data.index_buffer.get(), m_ItemShader, TextureManager::game_atlas->GetAtlas().get());
 		}
 
 		if (text_batch_data.count > 0) {
@@ -244,7 +244,7 @@ namespace Game {
 
 	void Inventory::m_RenderItem(Vivium::Batch* batch, const Item& item, const Vivium::Vector2<float>& pos, const float& size)
 	{
-		std::array<float, 4>& faces = World::m_ItemsTextureCoords[(uint16_t)item.id];
+		std::array<float, 8> coords = TextureManager::game_atlas->GetCoordsArray(Item::GetAltasIndex(item.id));
 
 		// Draw a maximum of 3 copies of the item
 		for (int i = std::min(item.count, (uint16_t)3) - 1; i >= 0; i--) {
@@ -254,7 +254,7 @@ namespace Game {
 			float dx = pos.x + item_offset.x;
 			float dy = pos.y + item_offset.y;
 
-			batch->Submit({ dx, dy }, size, faces[0], faces[2], faces[1], faces[3]);
+			batch->Submit({ dx, dy }, size, &coords[0]);
 		}
 	}
 

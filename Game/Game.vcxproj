@@ -28,6 +28,7 @@
     <ClCompile Include="src\Region.cpp" />
     <ClCompile Include="src\Structures.cpp" />
     <ClCompile Include="src\TerrainGenerator.cpp" />
+    <ClCompile Include="src\TextureManager.cpp" />
     <ClCompile Include="src\Tile.cpp" />
     <ClCompile Include="src\MainMenu.cpp" />
     <ClCompile Include="src\World.cpp" />
@@ -48,6 +49,7 @@
     <ClInclude Include="src\Region.h" />
     <ClInclude Include="src\Structures.h" />
     <ClInclude Include="src\TerrainGenerator.h" />
+    <ClInclude Include="src\TextureManager.h" />
     <ClInclude Include="src\Tile.h" />
     <ClInclude Include="src\MainMenu.h" />
     <ClInclude Include="src\World.h" />

@@ -5,7 +5,7 @@ namespace Game {
     {
         if (selected_tile.bot != Tile::ID::VOID) {
             m_SelectedTileQuad->SetCenter(selected_tile_pos * World::PIXEL_SCALE);
-            Vivium::Renderer::Submit(m_SelectedTileQuad, m_SelectedTileShader, m_GameIcons->GetAtlas().get());
+            Vivium::Renderer::Submit(m_SelectedTileQuad, m_SelectedTileShader, TextureManager::game_atlas->GetAtlas().get());
         }
     }
 
@@ -168,12 +168,10 @@ namespace Game {
         shader = new Vivium::Shader("world_vertex", "color_frag");
         shader->SetUniform3f("u_Color", 1.0, 1.0, 0.0);
 
-        m_GameIcons = new Vivium::TextureAtlas("game_icons.png", { 32, 32 });
-
         m_SelectedTileQuad = new Vivium::Quad(0.0f, 0.0f, World::PIXEL_SCALE, World::PIXEL_SCALE);
         m_SelectedTileShader = new Vivium::Shader("texture_vertex", "texture_frag");
 
-        m_GameIcons->Set(m_SelectedTileQuad, 0); // Set texture from index in texture atlas
+        TextureManager::game_atlas->Set(m_SelectedTileQuad, {2, 1}); // Set texture from index in texture atlas
 
         m_Time = Vivium::Timer::GetTime();
     }
@@ -183,6 +181,5 @@ namespace Game {
         delete shader;
         delete m_SelectedTileQuad;
         delete m_SelectedTileShader;
-        delete m_GameIcons;
     }
 }

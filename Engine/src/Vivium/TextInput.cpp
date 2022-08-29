@@ -42,6 +42,15 @@ namespace Vivium {
 
 	void TextInput::SetUserParams(void* userParams) { m_UserParams = userParams; }
 
+	void TextInput::SetCharLimit(const std::size_t& char_limit)
+	{
+		m_CharLimit = char_limit;
+
+		if (typed_text.size() > char_limit) {
+			typed_text = typed_text.substr(0, char_limit);
+		}
+	}
+
 	void TextInput::CheckClicked(const Vector2<float>& cursor_pos, const Input::State& lmb_state)
 	{
 		bool withinQuad = quad->Contains(cursor_pos);
@@ -75,6 +84,8 @@ namespace Vivium {
 
 	void TextInput::m_UpdateText()
 	{
+		// TODO: cleanup
+
 		// TODO: ctrl + a, select, etc.
 		// TODO: arrow keys
 
@@ -82,6 +93,7 @@ namespace Vivium {
 		std::vector<Input::KeypressLog> last_keypresses = Input::GetLastKeypresses();
 		std::vector<unsigned int> last_chars = Input::GetLastChars();
 
+		// Index into last chars
 		int chars_index = 0;
 
 		// Iterate it
@@ -90,18 +102,30 @@ namespace Vivium {
 
 			// Indicates a printable character
 			if (key_name != NULL) {
+				// Check not above char limit
+				if (m_CharLimit == typed_text.size()) { continue; }
+
 				// Get char
 				char c = last_chars.at(chars_index);
 				// Add to string
-				typed_text += c;
+				// If typing index out of range
+				if (m_TypingIndex >= typed_text.size()) {
+					typed_text += c;
+				}
+				else {
+					typed_text.insert(m_TypingIndex, std::string(1, c));
+				}
+	
 				// Increment char index
-				chars_index++;
+				++chars_index;
 				// Increment typing index
-				m_TypingIndex++;
+				++m_TypingIndex;
 			}
 			else {
-				switch ((char)keypress.key) {
-				case ' ': typed_text += ' '; m_TypingIndex++; break;
+				switch (keypress.key) {
+				case GLFW_KEY_SPACE: typed_text += ' '; m_TypingIndex++; break;
+				case GLFW_KEY_LEFT: m_TypingIndex--; break; // TODO: holding functions for left/right
+				case GLFW_KEY_RIGHT: m_TypingIndex = std::min((unsigned int)m_TypingIndex + 1, typed_text.size()); break;
 				}
 			}
 

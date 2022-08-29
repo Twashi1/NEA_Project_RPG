@@ -66,7 +66,7 @@ namespace Vivium {
 		float GetHeight() const;
 		float GetAngle() const;
 
-		const Rect& GetRect() const;
+		Rect GetRect() const;
 
 		void SetCenter(const Vector2<float>& ncenter);
 		void SetCenter(float nx, float ny);

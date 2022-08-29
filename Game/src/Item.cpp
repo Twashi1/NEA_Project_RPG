@@ -5,20 +5,20 @@ namespace Game {
 	std::array<Item::Properties, (uint16_t)Item::ID::MAX> Item::m_Properties = {
 		Item::Properties("Void",				false,	INT_MAX),
 
-		Item::Properties("Amethyst Crystal",	true,	{1, 0}),
-		Item::Properties("Emerald Crystal",		true,	{1, 1}),
-		Item::Properties("Ruby Crystal",		true,	{1, 2}),
-		Item::Properties("Sapphire Crystal",	true,	{1, 3}),
-		Item::Properties("Topaz Crystal",		true,	{1, 4}),
+		Item::Properties("Amethyst Crystal",	true,	{8,  1}),
+		Item::Properties("Emerald Crystal",		true,	{9,  1}),
+		Item::Properties("Ruby Crystal",		true,	{10, 1}),
+		Item::Properties("Sapphire Crystal",	true,	{11, 1}),
+		Item::Properties("Topaz Crystal",		true,	{12, 1}),
 
-		Item::Properties("Amethyst Pickaxe",	false,	{2, 0}),
-		Item::Properties("Emerald Pickaxe",		false,	{2, 1}),
-		Item::Properties("Ruby Pickaxe",		false,	{2, 2}),
-		Item::Properties("Sapphire Pickaxe",	false,	{2, 3}),
-		Item::Properties("Topaz Pickaxe",		false,	{2, 4}),
+		Item::Properties("Amethyst Pickaxe",	false,	{8,  2}),
+		Item::Properties("Emerald Pickaxe",		false,	{9,  2}),
+		Item::Properties("Ruby Pickaxe",		false,	{10, 2}),
+		Item::Properties("Sapphire Pickaxe",	false,	{11, 2}),
+		Item::Properties("Topaz Pickaxe",		false,	{12, 2}),
 
-		Item::Properties("Log", 				true,	{0, 5}),
-		Item::Properties("Berries",				true,	{1, 5})
+		Item::Properties("Log", 				true,	{3, 2}),
+		Item::Properties("Berries",				true,	{7, 1})
 	};
 
 	Item::DropTable::DropTable()

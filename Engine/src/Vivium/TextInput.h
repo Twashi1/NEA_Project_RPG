@@ -37,6 +37,8 @@ namespace Vivium {
 		bool isTyping = false;
 		int m_TypingIndex = 0; // Current index of where we're typing in the string
 
+		std::size_t m_CharLimit = 20;
+
 		RGBColor m_EmptyColor;
 		RGBColor m_TypedColor;
 
@@ -72,6 +74,8 @@ namespace Vivium {
 		Ref(Text) GetText();
 
 		void SetUserParams(void* userParams);
+
+		void SetCharLimit(const std::size_t& char_limit);
 
 		TextInput(const Quad& quad, CallbackFunc_t callback = nullptr, void* userParams = nullptr, int offset = 0);
 		TextInput(const Quad& quad, CallbackFunc_t callback, Ref(Shader) bg_shader, void* userParams = nullptr, int offset = 0);

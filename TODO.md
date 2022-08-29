@@ -3,19 +3,13 @@
 - [x] Initialisation functions for various classes should be private, and instead should make Application their friend
 
 ## Renderer
-- [ ] "IRenderable", implements Render
-- [ ] "IBatchRenderable" implements AddToBatch
+- [ ] `IRenderable`, implements Render
+- [x] `IBatchable` implements `Submit(Batch*)`
 - [ ] "TextureLikeType", union of Texture, TextureAtlas, Framebuffer, implements texture-like api, its union types should be able to implicitly last to and from the type
 - [x] Framebuffers
     - [x] More helper functions for rendering from frame buffers
     - [x] Use framebuffers for drawing at specific z levels
-- [ ] Batch rendering API
-    - [ ] StartBatch  (IN: vertex layout, IN: max vertex count)
-    - [ ] SubmitBatch (IN: float array, IN: size of float array, IN: indices array, IN: size of indices array)
-    - [ ] SubmitBatch (IN: pos, IN: size)
-    - [ ] SubmitBatch (IN: renderable)
-    - [ ] SubmitBatch (IN: pos, IN: size, IN: tex coords array (size: 8))
-    - [ ] EndBatch    (OUT: vertex buffer, index buffer)
+- [x] Batch rendering API
 - [ ] Compute shader API
 - [ ] Scene API
     - [ ] Load scene/Unload scene
@@ -45,6 +39,7 @@
 - [ ] Pathfinding
 - [ ] Ambient particles/Particle system
 - [ ] Sound API
+    - [x] Sound library
 - [ ] Physics system
     - [x] Implement broad phase
     - [ ] Impulse resolution
@@ -73,6 +68,8 @@
     - [x] Implement saving to/loading from file
 - [ ] Animating tiles / Drawing animated tiles
 - [x] Batch render tiles
+- [x] Physics for tiles
+    - Better system for adding physics objects
 - [x] Drawing selection hover
 - [x] Items/Floor drops
      - [x] Items with counts of 2 will display 2 copies of the item texture, and counts of 3 or above will display 3 copies of the item texture
@@ -91,6 +88,7 @@
         - [ ] Speed up by precomputing some values in Inventory (item counts)
     - [ ] Crafting UI
 - [ ] Complex movement
+     - [ ] Double tap to dash
 - [ ] Inventory
     - [x] Hotbar
     - [ ] Some sort of "pending item changes"

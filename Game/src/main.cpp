@@ -45,6 +45,7 @@ int game(void)
     Shader static_color("static_vertex", "color_frag"); static_color.SetUniform3f("u_Color", 0.0, 0.0, 1.0);
     Shader static_texture("static_texture_vertex", "texture_frag");
 
+    TextureManager::Init();
     World::Init();
     WorldMap::Init();
     FloorItem::Init();

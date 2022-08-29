@@ -10,39 +10,6 @@ namespace Game {
 	std::string World::GENERAL_FILE = "general";
 	Vivium::Shader* World::texture_shader = nullptr;
 
-	Vivium::TextureAtlas* World::m_TextureAtlas = nullptr;
-	std::vector<std::array<float, 4>> World::m_TextureCoords = {};
-
-	Vivium::TextureAtlas* World::m_ItemsAtlas = nullptr; // TODO unique ptr
-	std::vector<std::array<float, 4>> World::m_ItemsTextureCoords = {};
-
-	void World::m_PrecalcTextureCoords()
-	{
-		m_TextureCoords.resize((int)Tile::ID::MAX);
-
-		for (int i = 0; i < (int)Tile::ID::MAX; i++) {
-			// TODO: won't work with more complicated sprites
-			// TODO: implement get faces into m_TextureAtlas?
-			const Vivium::Vector2<int>& atlas_index = Tile::GetAltasIndex(Tile::ID(i));
-			std::array<float, 8> vector_coords = m_TextureAtlas->GetCoordsArray(atlas_index);
-
-			// left bottom right top
-			m_TextureCoords[i] = { vector_coords[0], vector_coords[1], vector_coords[2], vector_coords[5] };
-		}
-
-		m_ItemsTextureCoords.resize((int)Item::ID::MAX);
-
-		for (int i = 0; i < (int)Item::ID::MAX; i++) {
-			// TODO: won't work with more complicated sprites
-			// TODO: implement get faces into m_TextureAtlas?
-			const Vivium::Vector2<int>& atlas_index = Item::GetAltasIndex(Item::ID(i));
-			std::array<float, 8> vector_coords = m_ItemsAtlas->GetCoordsArray(atlas_index);
-
-			// left bottom right top
-			m_ItemsTextureCoords[i] = { vector_coords[0], vector_coords[1], vector_coords[2], vector_coords[5] };
-		}
-	}
-
 	Vivium::Vector2<int> World::GetWorldPos(const Vivium::Vector2<float>& pos) const
 	{
 		// Convert to tile-scale, add 0.5, 0.5 to move to center of screen, floor to get clostest tile
@@ -107,11 +74,6 @@ namespace Game {
 
 		// Create folder for our world
 		std::filesystem::create_directory(fullpath);
-
-		m_TextureAtlas = new Vivium::TextureAtlas("tile_atlas.png", { 32, 32 }); // TODO: hardcoded sprite size
-		m_ItemsAtlas = new Vivium::TextureAtlas("items_atlas.png", { 32, 32 }); // TODO: hardcoded sprite size
-
-		m_PrecalcTextureCoords();
 
 		m_Serialiser = new Vivium::Serialiser(Vivium::Stream::Flags::BINARY | Vivium::Stream::Flags::TRUNC);
 
@@ -269,8 +231,6 @@ namespace Game {
 			delete region;
 		}
 
-		delete m_TextureAtlas;
-		delete m_ItemsAtlas;
 		delete m_Serialiser;
 
 		delete m_DaylightFramebuffer;
@@ -577,9 +537,10 @@ namespace Game {
 										Vivium::Application::physics->Register(body, World::PHYSICS_TILE_LAYER);
 									}
 
-									std::array<float, 4>& faces = m_TextureCoords[(int)id];
+									const Vivium::Vector2<int>& index = Tile::GetAltasIndex(id);
+									std::array<float, 8> tex_coords = TextureManager::game_atlas->GetCoordsArray(index);
 
-									batch.Submit({ dx, dy }, tile_scale * 2.0f, faces[0], faces[2], faces[1], faces[3]);
+									batch.Submit({ dx, dy }, tile_scale * 2.0f, &tex_coords[0]);
 								}
 							}
 						}
@@ -590,7 +551,7 @@ namespace Game {
 
 		Vivium::Batch::BatchData data = batch.End();
 
-		Vivium::Renderer::Submit(data.vertex_buffer.get(), data.index_buffer.get(), texture_shader, m_TextureAtlas->GetAtlas().get());
+		Vivium::Renderer::Submit(data.vertex_buffer.get(), data.index_buffer.get(), texture_shader, TextureManager::game_atlas->GetAtlas().get());
 	}
 
 	void World::m_RenderFloorItems(const Vivium::Vector2<int>& pos)
@@ -627,7 +588,8 @@ namespace Game {
 
 					const Ref(Vivium::Quad) item_quad = item.GetQuad();
 
-					std::array<float, 4>& faces = m_ItemsTextureCoords[(int)item_data.id];
+					const Vivium::Vector2<int>& index = Item::GetAltasIndex(item_data.id);
+					std::array<float, 8> tex_coords = TextureManager::game_atlas->GetCoordsArray(index);
 
 					float angle = item_quad->GetAngle();
 					float cos_angle = std::cos(angle);
@@ -648,10 +610,10 @@ namespace Game {
 						// TODO: wasting 3 * sizeof(float) bytes for each render, item_count_f only needed once
 						std::array<float, 16> this_vertex_data =
 						{
-							vertices[0].x + item_offset.x, vertices[0].y + item_offset.y, faces[0], faces[1],
-							vertices[1].x + item_offset.x, vertices[1].y + item_offset.y, faces[2], faces[1],
-							vertices[2].x + item_offset.x, vertices[2].y + item_offset.y, faces[2], faces[3],
-							vertices[3].x + item_offset.x, vertices[3].y + item_offset.y, faces[0], faces[3]
+							vertices[0].x + item_offset.x, vertices[0].y + item_offset.y, tex_coords[0], tex_coords[1],
+							vertices[1].x + item_offset.x, vertices[1].y + item_offset.y, tex_coords[2], tex_coords[3],
+							vertices[2].x + item_offset.x, vertices[2].y + item_offset.y, tex_coords[4], tex_coords[5],
+							vertices[3].x + item_offset.x, vertices[3].y + item_offset.y, tex_coords[6], tex_coords[7]
 						};
 
 						int stride = count * 4;
@@ -685,7 +647,7 @@ namespace Game {
 			Vivium::VertexBuffer vb(vertex_data, layout);
 			Vivium::IndexBuffer ib(indexCoords);
 
-			Vivium::Renderer::Submit(&vb, &ib, FloorItem::floor_shader, m_ItemsAtlas->GetAtlas().get());
+			Vivium::Renderer::Submit(&vb, &ib, FloorItem::floor_shader, TextureManager::game_atlas->GetAtlas().get());
 		}
 	}
 

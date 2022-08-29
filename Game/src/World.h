@@ -17,12 +17,6 @@ namespace Game {
 		static constexpr int m_Wavelength = 4;
 		static constexpr int m_Octaves = 1;
 
-		static Vivium::TextureAtlas* m_TextureAtlas; // TODO unique ptr
-		static std::vector<std::array<float, 4>> m_TextureCoords;
-		
-		static Vivium::TextureAtlas* m_ItemsAtlas; // TODO unique ptr
-		static std::vector<std::array<float, 4>> m_ItemsTextureCoords;
-
 		Vivium::Noise::Interpolated m_NoiseTerrain;
 		Vivium::Noise::White m_NoiseTrees;
 		Vivium::Serialiser* m_Serialiser; // TODO unique ptr
@@ -44,8 +38,6 @@ namespace Game {
 		Player* m_Player;
 
 		std::string m_ToRegionName(const Vivium::Vector2<int>& index) const;
-
-		void m_PrecalcTextureCoords();
 
 		void m_SaveWorld();
 		void m_LoadWorld(const std::string& fullpath);

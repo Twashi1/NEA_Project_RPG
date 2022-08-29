@@ -260,7 +260,7 @@ namespace Vivium {
 		return angle;
 	}
 
-	const Rect& Quad::GetRect() const
+	Rect Quad::GetRect() const
 	{
 		return Rect(x, y, width, height, angle);
 	}

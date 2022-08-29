@@ -20,7 +20,6 @@ namespace Game {
 
         Vivium::Quad* m_SelectedTileQuad;
         Vivium::Shader* m_SelectedTileShader;
-        Vivium::TextureAtlas* m_GameIcons;
 
         Inventory m_MainInventory;
         Inventory m_HotbarInventory;

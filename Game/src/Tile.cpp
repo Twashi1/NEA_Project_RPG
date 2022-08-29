@@ -22,10 +22,10 @@ namespace Game {
 		Tile::Properties("cactus_tall_0",		true,		true,		false,		1.0f,		 {14, 1},		1.0f, {}),
 		Tile::Properties("cactus_tall_1",		true,		true,		false,		1.0f,		 {14, 0},		1.0f, {}),
 		Tile::Properties("cactus_fruit",		false,		true,		false,		0.5f,		 {15, 0},		0.5f, {}),
-		Tile::Properties("mossy_debris",		false,		true,		false,		0.5f,		 {16, 0},		0.5f, {}),
-		Tile::Properties("rocky_debris",		false,		true,		false,		0.5f,		 {16, 1},		0.5f, {}),
-		Tile::Properties("pink_flower",			false,		true,		false,		0.5f,		 {17, 0},		0.5f, {}),
-		Tile::Properties("blue_flower",			false,		true,		false,		0.5f,		 {17, 1},		0.5f, {})
+		Tile::Properties("mossy_debris",		false,		true,		false,		0.5f,		 {0,  1},		0.5f, {}),
+		Tile::Properties("rocky_debris",		false,		true,		false,		0.5f,		 {0,  2},		0.5f, {}),
+		Tile::Properties("pink_flower",			false,		true,		false,		0.5f,		 {1,  1},		0.5f, {}),
+		Tile::Properties("blue_flower",			false,		true,		false,		0.5f,		 {1,  2},		0.5f, {})
 	};
 
 	Tile::Properties Tile::GetProperties(const Tile::ID& id)
