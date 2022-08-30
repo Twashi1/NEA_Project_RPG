@@ -83,9 +83,7 @@ namespace Game {
 		Biome::Init(m_Seed);
 		TerrainGenerator::m_Init(m_Seed);
 
-		// Generate world
-		m_GenWorld(fullpath);
-
+		// Load world
 		m_LoadRegions(player);
 
 		m_WorldMap = new WorldMap(MAP_SIZE);
@@ -267,33 +265,6 @@ namespace Game {
 		}
 
 		m_Serialiser->EndRead();
-	}
-
-	void World::m_LoadWorld(const std::string& fullpath)
-	{
-		// TODO: old code
-		m_Serialiser->BeginRead((fullpath + GENERAL_FILE + FILE_EXTENSION).c_str());
-
-		// Get version number
-
-		// Deserialise<VersionNumber>(m_serialiser, &serialised_version);
-		// If version number is different
-
-		// Get seed
-		// Deserialise<unsigned int>(m_serialiser, &m_Seed);
-
-		// Get player position
-		// Vector2<int> player_pos = Deserialise<Vector2<int>>(m_serialiser);
-
-		// End read
-		m_Serialiser->EndRead();
-
-		// Load region around player pos
-		// m_LoadRegions(player_pos, 1);
-
-		// Construct noise generator
-		m_NoiseTerrain = Vivium::Noise::Interpolated(m_Seed, m_Amplitude, m_Wavelength);
-		m_NoiseTrees = Vivium::Noise::White(m_Seed, m_Amplitude, 1);
 	}
 
 	void World::m_SaveWorld()
@@ -569,18 +540,25 @@ namespace Game {
 
 	void World::m_RenderFloorItems(const Vivium::Vector2<int>& pos)
 	{
-		// TODO: instead of always reading the 9 surrounding regions, do some calculations to figure out which regions need to be rendered
-		// Pos is in tile coordinates, convert to region coordinates
-		Vivium::Vector2<int> center_region = GetRegionIndex(pos);
+		static const Vivium::BufferLayout layout = {
+			Vivium::GLSLDataType::VEC2, // position
+			Vivium::GLSLDataType::VEC2  // tex coords
+		};
 
 		// TODO: find workaround for using vectors and stuff
 		std::vector<float> vertex_data;
 		std::vector<unsigned short> indexCoords;
 
-		unsigned int count = 0; // Amount of items being rendered
+		std::size_t count = 0; // Amount of items being rendered
 
-		for (int y = center_region.y - 1; y <= center_region.y + 1; y++) {
-			for (int x = center_region.x - 1; x <= center_region.x + 1; x++) {
+		// Calculate bounds of tiles we need to render
+		Vivium::Vector2<int> frame = Vivium::Application::GetScreenDim() / World::PIXEL_SCALE + Vivium::Vector2<int>(1, 1);
+		Vivium::Vector2<int> bottom_left = GetRegionIndex(pos - frame);
+		Vivium::Vector2<int> top_right = GetRegionIndex(pos + frame);
+
+		// Iterate and add to regions to load
+		for (int y = bottom_left.y; y <= top_right.y; y++) {
+			for (int x = bottom_left.x; x <= top_right.x; x++) {
 				// Get list of floor items for a given region
 				std::vector<FloorItem>* items = GetFloorItems(Vivium::Vector2<int>(x, y));
 
@@ -609,12 +587,16 @@ namespace Game {
 					float sin_angle = std::sin(angle);
 
 					static const Vivium::Vector2<float> item_offsets[3] = {
-						Vivium::Vector2<float>( 0.0f,  0.0f) * World::PIXEL_SCALE * 0.5f,
-						Vivium::Vector2<float>( 0.3f,  0.3f) * World::PIXEL_SCALE * 0.5f,
+						Vivium::Vector2<float>(0.0f,  0.0f) * World::PIXEL_SCALE * 0.5f,
+						Vivium::Vector2<float>(0.3f,  0.3f) * World::PIXEL_SCALE * 0.5f,
 						Vivium::Vector2<float>(-0.3f,  0.3f) * World::PIXEL_SCALE * 0.5f
 					};
 
-					for (int i = 0; i < std::min(item_data.count, (uint16_t)3); i++) {
+					int max_index = std::min(item_data.count, (uint16_t)3);
+
+					if (!Item::GetDisplayMultiple(item_data.id)) max_index = 1;
+
+					for (int i = 0; i < max_index; i++) {
 						Vivium::Vector2<float> item_offset = Vivium::Math::Rotate(item_offsets[i], cos_angle, sin_angle);
 
 						// Bottom left, Bottom right, Top right, Top left
@@ -651,11 +633,6 @@ namespace Game {
 			}
 		}
 
-		static const Vivium::BufferLayout layout = {
-			Vivium::GLSLDataType::VEC2, // position
-			Vivium::GLSLDataType::VEC2  // tex coords
-		};
-
 		if (vertex_data.size() > 0) {
 			Vivium::VertexBuffer vb(vertex_data, layout);
 			Vivium::IndexBuffer ib(indexCoords);
@@ -666,10 +643,7 @@ namespace Game {
 
 	float World::m_GetMiningTileScale(float tile_scale, const Tile::ID& id)
 	{
-		// TODO: cleanuop
-		// Its the currently mined tile
-		// TODO: move to function
-		// TODO: generalise for any mineable tile
+		// TODO: cleanup
 		// Get time spent mining as percentage (0 -> 1)
 		float time_ratio = mined_tile_time / Tile::GetMiningTime(id);
 		// Multiply by amount of cycles of growth/shrinking
@@ -686,13 +660,6 @@ namespace Game {
 		tile_scale += time_ratio;
 
 		return tile_scale;
-	}
-
-	void World::m_GenWorld(const std::string& fullpath)
-	{
-		// TODO
-		m_NoiseTerrain = Vivium::Noise::Interpolated(m_Seed, m_Amplitude, m_Wavelength);
-		m_NoiseTrees = Vivium::Noise::White(m_Seed, 1.0f, 1);
 	}
 
 	void World::Render(const Vivium::Vector2<int>& pos)

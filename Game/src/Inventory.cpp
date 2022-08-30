@@ -6,7 +6,6 @@ namespace Game {
 			// SMALL VVV
 			Inventory::Slot::INV_0, 27, {0, 0}, {3, 1}, {4.0f * 32.0f, 2.0f * 32.0f},
 			{
-				// TODO: fix coords
 				{Slot::INV_0,  {18.3f + 9.8f * 0, 15.4f + 8.0f * 0}},
 				{Slot::INV_1,  {18.3f + 9.8f * 1, 15.4f + 8.0f * 0}},
 				{Slot::INV_2,  {18.3f + 9.8f * 2, 15.4f + 8.0f * 0}},
@@ -245,16 +244,24 @@ namespace Game {
 	void Inventory::m_RenderItem(Vivium::Batch* batch, const Item& item, const Vivium::Vector2<float>& pos, const float& size)
 	{
 		std::array<float, 8> coords = TextureManager::game_atlas->GetCoordsArray(Item::GetAltasIndex(item.id));
+		
+		int start_index = std::min(item.count, (uint16_t)3) - 1;
 
-		// Draw a maximum of 3 copies of the item
-		for (int i = std::min(item.count, (uint16_t)3) - 1; i >= 0; i--) {
-			Vivium::Vector2<float> item_offset = s_ItemCountOffsets[i];
+		// If we're not meant to display multiple
+		if (!Item::GetDisplayMultiple(item.id)) {
+			batch->Submit(pos, size, &coords[0]);
+		}
+		else {
+			// Draw a maximum of 3 copies of the item
+			for (int i = start_index; i >= 0; i--) {
+				Vivium::Vector2<float> item_offset = s_ItemCountOffsets[i];
 
-			// Calculate draw coords
-			float dx = pos.x + item_offset.x;
-			float dy = pos.y + item_offset.y;
+				// Calculate draw coords
+				float dx = pos.x + item_offset.x;
+				float dy = pos.y + item_offset.y;
 
-			batch->Submit({ dx, dy }, size, &coords[0]);
+				batch->Submit({ dx, dy }, size, &coords[0]);
+			}
 		}
 	}
 

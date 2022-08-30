@@ -42,8 +42,6 @@ namespace Game {
 		std::string m_ToRegionName(const Vivium::Vector2<int>& index) const;
 
 		void m_SaveWorld();
-		void m_LoadWorld(const std::string& fullpath);
-		void m_GenWorld(const std::string& fullpath);
 
 		void m_LoadRegions(Player* player);
 		Region& m_LoadRegion(const Vivium::Vector2<int>& index);

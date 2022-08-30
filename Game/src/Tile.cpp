@@ -112,7 +112,16 @@ namespace Game {
 		: bot(other.bot), mid(other.mid), top(other.top)
 	{}
 
-	Tile::Properties::Properties(std::string name, bool isPhysical, bool isMineable, bool isPlaceable, float mining_time, Vivium::Vector2<int> atlas_index, float scale, Item::DropTable drop_data)
+	Tile::Properties::Properties(
+		std::string name,
+		bool isPhysical,
+		bool isMineable,
+		bool isPlaceable,
+		float mining_time,
+		Vivium::Vector2<int> atlas_index,
+		float scale,
+		Item::DropTable drop_data
+	)
 		: name(name), isPhysical(isPhysical), isMineable(isMineable), isPlaceable(isPlaceable), mining_time(mining_time), atlas_index(atlas_index), scale(scale), drop_data(drop_data) {}
 
 	void Tile::Properties::Write(Vivium::Serialiser& s) const

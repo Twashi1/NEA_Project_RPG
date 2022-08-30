@@ -3,22 +3,20 @@
 
 namespace Game {
 	std::array<Item::Properties, (uint16_t)Item::ID::MAX> Item::m_Properties = {
-		Item::Properties("Void",				false,	INT_MAX),
+		Item::Properties("Void",				false,  false,	INT_MAX),
 
-		Item::Properties("Amethyst Crystal",	true,	{8,  1}),
-		Item::Properties("Emerald Crystal",		true,	{9,  1}),
-		Item::Properties("Ruby Crystal",		true,	{10, 1}),
-		Item::Properties("Sapphire Crystal",	true,	{11, 1}),
-		Item::Properties("Topaz Crystal",		true,	{12, 1}),
-
-		Item::Properties("Amethyst Pickaxe",	false,	{8,  2}),
-		Item::Properties("Emerald Pickaxe",		false,	{9,  2}),
-		Item::Properties("Ruby Pickaxe",		false,	{10, 2}),
-		Item::Properties("Sapphire Pickaxe",	false,	{11, 2}),
-		Item::Properties("Topaz Pickaxe",		false,	{12, 2}),
-
-		Item::Properties("Log", 				true,	{3, 2}),
-		Item::Properties("Berries",				true,	{7, 1})
+		Item::Properties("Amethyst Crystal",	true,	true,	{8,  1}),
+		Item::Properties("Emerald Crystal",		true,	true,	{9,  1}),
+		Item::Properties("Ruby Crystal",		true,	true,	{10, 1}),
+		Item::Properties("Sapphire Crystal",	true,	true,	{11, 1}),
+		Item::Properties("Topaz Crystal",		true,	true,	{12, 1}),
+		Item::Properties("Amethyst Pickaxe",	false,	false,	{8,  2}),
+		Item::Properties("Emerald Pickaxe",		false,	false,	{9,  2}),
+		Item::Properties("Ruby Pickaxe",		false,	false,	{10, 2}),
+		Item::Properties("Sapphire Pickaxe",	false,	false,	{11, 2}),
+		Item::Properties("Topaz Pickaxe",		false,	false,	{12, 2}),
+		Item::Properties("Log", 				true,	true,	{3, 2}),
+		Item::Properties("Berries",				true,	false,	{7, 1})
 	};
 
 	Item::DropTable::DropTable()
@@ -79,8 +77,8 @@ namespace Game {
 		// TODO
 	}
 
-	Item::Properties::Properties(std::string name, bool isStackable, Vivium::Vector2<int> atlas_index)
-		: name(name), isStackable(isStackable), atlas_index(atlas_index)
+	Item::Properties::Properties(std::string name, bool isStackable, bool displayMultiple, Vivium::Vector2<int> atlas_index)
+		: name(name), isStackable(isStackable), displayMultiple(displayMultiple), atlas_index(atlas_index)
 	{}
 
 	void Item::Properties::Write(Vivium::Serialiser& s) const
@@ -110,6 +108,11 @@ namespace Game {
 	bool Item::GetIsStackable(const Item::ID& id)
 	{
 		return m_Properties[(uint16_t)id].isStackable;
+	}
+
+	bool Item::GetDisplayMultiple(const Item::ID& id)
+	{
+		return m_Properties[(uint16_t)id].displayMultiple;
 	}
 
 	Vivium::Vector2<int> Item::GetAltasIndex(const Item::ID& id)
