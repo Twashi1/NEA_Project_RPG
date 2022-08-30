@@ -3,7 +3,6 @@
 #include "Utils.h"
 #include "Quad.h"
 #include "Body.h"
-#include "Collision.h"
 #include "Core.h"
 
 namespace Vivium {

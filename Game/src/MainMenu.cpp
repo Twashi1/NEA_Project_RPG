@@ -229,7 +229,12 @@ namespace Game {
 		m_Name = m_NameInputBox->GetText()->GetText();
 		std::string seed_text = m_SeedInputBox->GetText()->GetText();
 
-		m_Seed = std::hash<std::string>()(seed_text);
+		if (seed_text.empty()) {
+			m_Seed = Vivium::Random::GetInt(0, INT_MAX);
+		}
+		else {
+			m_Seed = std::hash<std::string>()(seed_text);
+		}
 
 		// Get MainMenu instance from params
 		MainMenu* main_menu = (MainMenu*)(*(uintptr_t*)user_params);

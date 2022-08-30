@@ -82,7 +82,9 @@ namespace Game {
 
 	private:
 		// TODO: needs more cleanup
-		static constexpr float s_ItemScale = 0.4f;
+		// TODO: tile scale should reduce if theres more items
+		static constexpr float s_BGScale = 0.4f;
+		static constexpr float s_ItemScale = 0.3f;
 		static const Vivium::Vector2<float> s_ItemCountOffsets[3];
 		// Max offsets used for bounds of each item (used when picking up/re-organising items)
 		static const float s_MaxOffsetWidth;
@@ -108,31 +110,23 @@ namespace Game {
 
 		Data m_InventoryData; // Small inventory largest slot is INV_26, large inventory is INV_53
 		ID m_InventoryID;
-		Vivium::Quad* m_InventoryQuad;
+
 		static Vivium::Shader* m_InventoryShader;
 		static Vivium::Shader* m_TextShader;
 		static Vivium::Shader* m_ItemShader;
-		static Vivium::TextureAtlas* m_InventoryAtlas;
-		static Vivium::Text* m_TextObject; // TODO: remove this
-		static Ref(Vivium::Texture) m_TextFontTexture;
-		static Vivium::TextureAtlas* m_TextFontAtlas;
+		static Vivium::Text* m_TextObject;
 
 		static constexpr float m_InventorySpriteScale = 8.0f;
 
 		Slot m_GetNextOpenSlot();
 		
-		void m_RenderItems();
+		void m_RenderBackground(const Slot& start_slot, uint8_t length);
+		void m_RenderItems(const Slot& start_slot, uint8_t length);
 		void m_RenderItem(
 			Vivium::Batch* batch,
 			const Item& item,
 			const Vivium::Vector2<float>& pos,
 			const float& size
-		);
-		void m_RenderItemCount(
-			Vivium::Batch* batch,
-			char c,
-			const Vivium::Vector2<float>& pos,
-			const Vivium::Vector2<float>& size
 		);
 
 		void m_UpdateItem(float x, float y, float width, float height, const Slot& item_slot);
@@ -142,6 +136,8 @@ namespace Game {
 
 		static void Init();
 		static void Terminate();
+
+		Vivium::Vector2<float> inventory_pos;
 
 		bool AddItem(const Item& item);
 		std::vector<bool> AddItems(const std::vector<Item>& items);
@@ -153,11 +149,9 @@ namespace Game {
 		std::vector<Item> GetItems(const Slot& start_slot, uint8_t length);
 		void SetItems(const std::vector<Item>& items, const Slot& slot);
 
-		void SetPos(const Vivium::Vector2<float>& new_pos);
-		Vivium::Vector2<float> GetPos() const;
-
 		void Update(const Vivium::Vector2<float>& player_pos, World& world);
-		void Render();
+		void Render(const Slot& start_slot, uint8_t length);
+		void Render(); // Renders everything
 
 		Inventory();
 		Inventory(const ID& inventory_id);

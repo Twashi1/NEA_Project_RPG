@@ -22,7 +22,6 @@ namespace Game {
         Vivium::Shader* m_SelectedTileShader;
 
         Inventory m_MainInventory;
-        Inventory m_HotbarInventory;
 
         bool m_isMainInventoryOpened = false;
 

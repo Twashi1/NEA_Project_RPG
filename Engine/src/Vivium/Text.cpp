@@ -111,6 +111,9 @@ namespace Vivium {
         return end_str;
     }
 
+    const Ref(TextureAtlas) Text::GetAtlas() const { return m_FontTextureAtlas; }
+    const Ref(Texture) Text::GetTexture() const { return m_FontTexture; }
+
     void Text::SetText(const std::string& str)
     {
         strings.clear();

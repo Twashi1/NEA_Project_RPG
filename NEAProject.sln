@@ -30,12 +30,9 @@ Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "saves", "saves", "{E42AB3D6
 EndProject
 Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "sprites", "sprites", "{09A99787-00EB-4920-AA8F-67E5B1B52DFA}"
 	ProjectSection(SolutionItems) = preProject
-		Resources\sprites\atlas.png = Resources\sprites\atlas.png
 		Resources\sprites\engine_icons.png = Resources\sprites\engine_icons.png
-		Resources\sprites\example_atlas.png = Resources\sprites\example_atlas.png
+		Resources\sprites\game_atlas.png = Resources\sprites\game_atlas.png
 		Resources\sprites\inventory.png = Resources\sprites\inventory.png
-		Resources\sprites\items_atlas.png = Resources\sprites\items_atlas.png
-		Resources\sprites\tile_atlas.png = Resources\sprites\tile_atlas.png
 		Resources\sprites\title.png = Resources\sprites\title.png
 	EndProjectSection
 EndProject

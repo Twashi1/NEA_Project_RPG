@@ -6,94 +6,94 @@ namespace Game {
 			// SMALL VVV
 			Inventory::Slot::INV_0, 27, {0, 0}, {3, 1}, {4.0f * 32.0f, 2.0f * 32.0f},
 			{
-				{Slot::INV_0,  {18.3f + 9.8f * 0, 15.4f + 8.0f * 0}},
-				{Slot::INV_1,  {18.3f + 9.8f * 1, 15.4f + 8.0f * 0}},
-				{Slot::INV_2,  {18.3f + 9.8f * 2, 15.4f + 8.0f * 0}},
-				{Slot::INV_3,  {18.3f + 9.8f * 3, 15.4f + 8.0f * 0}},
-				{Slot::INV_4,  {18.3f + 9.8f * 4, 15.4f + 8.0f * 0}},
-				{Slot::INV_5,  {18.3f + 9.8f * 5, 15.4f + 8.0f * 0}},
-				{Slot::INV_6,  {18.3f + 9.8f * 6, 15.4f + 8.0f * 0}},
-				{Slot::INV_7,  {18.3f + 9.8f * 7, 15.4f + 8.0f * 0}},
-				{Slot::INV_8,  {18.3f + 9.8f * 8, 15.4f + 8.0f * 0}},
-				{Slot::INV_9,  {18.3f + 9.8f * 0, 15.4f + 8.0f * 1}},
-				{Slot::INV_10, {18.3f + 9.8f * 1, 15.4f + 8.0f * 1}},
-				{Slot::INV_11, {18.3f + 9.8f * 2, 15.4f + 8.0f * 1}},
-				{Slot::INV_12, {18.3f + 9.8f * 3, 15.4f + 8.0f * 1}},
-				{Slot::INV_13, {18.3f + 9.8f * 4, 15.4f + 8.0f * 1}},
-				{Slot::INV_14, {18.3f + 9.8f * 5, 15.4f + 8.0f * 1}},
-				{Slot::INV_15, {18.3f + 9.8f * 6, 15.4f + 8.0f * 1}},
-				{Slot::INV_16, {18.3f + 9.8f * 7, 15.4f + 8.0f * 1}},
-				{Slot::INV_17, {18.3f + 9.8f * 8, 15.4f + 8.0f * 1}},
-				{Slot::INV_18, {18.3f + 9.8f * 0, 15.4f + 8.0f * 2}},
-				{Slot::INV_19, {18.3f + 9.8f * 1, 15.4f + 8.0f * 2}},
-				{Slot::INV_20, {18.3f + 9.8f * 2, 15.4f + 8.0f * 2}},
-				{Slot::INV_21, {18.3f + 9.8f * 3, 15.4f + 8.0f * 2}},
-				{Slot::INV_22, {18.3f + 9.8f * 4, 15.4f + 8.0f * 2}},
-				{Slot::INV_23, {18.3f + 9.8f * 5, 15.4f + 8.0f * 2}},
-				{Slot::INV_24, {18.3f + 9.8f * 6, 15.4f + 8.0f * 2}},
-				{Slot::INV_25, {18.3f + 9.8f * 7, 15.4f + 8.0f * 2}},
-				{Slot::INV_26, {18.3f + 9.8f * 8, 15.4f + 8.0f * 2}}
+				{Slot::INV_0,  {0.0f, 0.0f}},
+				{Slot::INV_1,  {0.0f, 0.0f}},
+				{Slot::INV_2,  {0.0f, 0.0f}},
+				{Slot::INV_3,  {0.0f, 0.0f}},
+				{Slot::INV_4,  {0.0f, 0.0f}},
+				{Slot::INV_5,  {0.0f, 0.0f}},
+				{Slot::INV_6,  {0.0f, 0.0f}},
+				{Slot::INV_7,  {0.0f, 0.0f}},
+				{Slot::INV_8,  {0.0f, 0.0f}},
+				{Slot::INV_9,  {0.0f, 0.0f}},
+				{Slot::INV_10, {0.0f, 0.0f}},
+				{Slot::INV_11, {0.0f, 0.0f}},
+				{Slot::INV_12, {0.0f, 0.0f}},
+				{Slot::INV_13, {0.0f, 0.0f}},
+				{Slot::INV_14, {0.0f, 0.0f}},
+				{Slot::INV_15, {0.0f, 0.0f}},
+				{Slot::INV_16, {0.0f, 0.0f}},
+				{Slot::INV_17, {0.0f, 0.0f}},
+				{Slot::INV_18, {0.0f, 0.0f}},
+				{Slot::INV_19, {0.0f, 0.0f}},
+				{Slot::INV_20, {0.0f, 0.0f}},
+				{Slot::INV_21, {0.0f, 0.0f}},
+				{Slot::INV_22, {0.0f, 0.0f}},
+				{Slot::INV_23, {0.0f, 0.0f}},
+				{Slot::INV_24, {0.0f, 0.0f}},
+				{Slot::INV_25, {0.0f, 0.0f}},
+				{Slot::INV_26, {0.0f, 0.0f}}
 			}
 		), // SMALL ^^^ LARGE VVV
 		Inventory::Properties(
 			Inventory::Slot::INV_0, 54, {0, 2}, {3, 4}, {4.0f * 32.0f, 3.0f * 32.0f},
 			{
-				{Slot::INV_0, {20.0f, 20.0f}}
+				{Slot::INV_0, {0.0f, 0.0f}}
 			}
 		), // LARGE ^^^ HOTBAR VVV
 		Inventory::Properties(
 			Inventory::Slot::INV_0, 9, {4, 3}, {7, 3}, {4.0f * 32.0f, 1 * 32.0f},
 			{
-				{Slot::INV_0, {20.5f + 11.0f * 0, 16.5f + 0.0f * 0}},
-				{Slot::INV_1, {20.5f + 11.0f * 1, 16.5f + 0.0f * 0}},
-				{Slot::INV_2, {20.5f + 11.0f * 2, 16.5f + 0.0f * 0}},
-				{Slot::INV_3, {20.5f + 11.0f * 3, 16.5f + 0.0f * 0}},
-				{Slot::INV_4, {20.5f + 11.0f * 4, 16.5f + 0.0f * 0}},
-				{Slot::INV_5, {20.5f + 11.0f * 5, 16.5f + 0.0f * 0}},
-				{Slot::INV_6, {20.5f + 11.0f * 6, 16.5f + 0.0f * 0}},
-				{Slot::INV_7, {20.5f + 11.0f * 7, 16.5f + 0.0f * 0}},
-				{Slot::INV_8, {20.5f + 11.0f * 8, 16.5f + 0.0f * 0}}
+				{Slot::INV_0, {7.0f * 0, 0.0f}},
+				{Slot::INV_1, {7.0f * 1, 0.0f}},
+				{Slot::INV_2, {7.0f * 2, 0.0f}},
+				{Slot::INV_3, {7.0f * 3, 0.0f}},
+				{Slot::INV_4, {7.0f * 4, 0.0f}},
+				{Slot::INV_5, {7.0f * 5, 0.0f}},
+				{Slot::INV_6, {7.0f * 6, 0.0f}},
+				{Slot::INV_7, {7.0f * 7, 0.0f}},
+				{Slot::INV_8, {7.0f * 8, 0.0f}}
 			}
 		),  // HOTBAR ^^^ SMALL_WITH_HOTBAR VVV
 		Inventory::Properties(
 			Inventory::Slot::INV_0, 36, {4, 0}, {7, 1}, {4 * 32.0f, 2 * 32.0f},
 			{
-				{Slot::INV_0,  {21.5f + 11.0f * 0, 18.5f + 11.0f * 3}},
-				{Slot::INV_1,  {21.5f + 11.0f * 1, 18.5f + 11.0f * 3}},
-				{Slot::INV_2,  {21.5f + 11.0f * 2, 18.5f + 11.0f * 3}},
-				{Slot::INV_3,  {21.5f + 11.0f * 3, 18.5f + 11.0f * 3}},
-				{Slot::INV_4,  {21.5f + 11.0f * 4, 18.5f + 11.0f * 3}},
-				{Slot::INV_5,  {21.5f + 11.0f * 5, 18.5f + 11.0f * 3}},
-				{Slot::INV_6,  {21.5f + 11.0f * 6, 18.5f + 11.0f * 3}},
-				{Slot::INV_7,  {21.5f + 11.0f * 7, 18.5f + 11.0f * 3}},
-				{Slot::INV_8,  {21.5f + 11.0f * 8, 18.5f + 11.0f * 3}},
-				{Slot::INV_9,  {21.5f + 11.0f * 0, 14.0f + 11.0f * 1}},
-				{Slot::INV_10, {21.5f + 11.0f * 1, 14.0f + 11.0f * 1}},
-				{Slot::INV_11, {21.5f + 11.0f * 2, 14.0f + 11.0f * 1}},
-				{Slot::INV_12, {21.5f + 11.0f * 3, 14.0f + 11.0f * 1}},
-				{Slot::INV_13, {21.5f + 11.0f * 4, 14.0f + 11.0f * 1}},
-				{Slot::INV_14, {21.5f + 11.0f * 5, 14.0f + 11.0f * 1}},
-				{Slot::INV_15, {21.5f + 11.0f * 6, 14.0f + 11.0f * 1}},
-				{Slot::INV_16, {21.5f + 11.0f * 7, 14.0f + 11.0f * 1}},
-				{Slot::INV_17, {21.5f + 11.0f * 8, 14.0f + 11.0f * 1}},
-				{Slot::INV_18, {21.5f + 11.0f * 0, 14.0f + 11.0f * 2}},
-				{Slot::INV_19, {21.5f + 11.0f * 1, 14.0f + 11.0f * 2}},
-				{Slot::INV_20, {21.5f + 11.0f * 2, 14.0f + 11.0f * 2}},
-				{Slot::INV_21, {21.5f + 11.0f * 3, 14.0f + 11.0f * 2}},
-				{Slot::INV_22, {21.5f + 11.0f * 4, 14.0f + 11.0f * 2}},
-				{Slot::INV_23, {21.5f + 11.0f * 5, 14.0f + 11.0f * 2}},
-				{Slot::INV_24, {21.5f + 11.0f * 6, 14.0f + 11.0f * 2}},
-				{Slot::INV_25, {21.5f + 11.0f * 7, 14.0f + 11.0f * 2}},
-				{Slot::INV_26, {21.5f + 11.0f * 8, 14.0f + 11.0f * 2}},
-				{Slot::INV_27, {21.5f + 11.0f * 0, 14.0f + 11.0f * 0}},
-				{Slot::INV_28, {21.5f + 11.0f * 1, 14.0f + 11.0f * 0}},
-				{Slot::INV_29, {21.5f + 11.0f * 2, 14.0f + 11.0f * 0}},
-				{Slot::INV_30, {21.5f + 11.0f * 3, 14.0f + 11.0f * 0}},
-				{Slot::INV_31, {21.5f + 11.0f * 4, 14.0f + 11.0f * 0}},
-				{Slot::INV_32, {21.5f + 11.0f * 5, 14.0f + 11.0f * 0}},
-				{Slot::INV_33, {21.5f + 11.0f * 6, 14.0f + 11.0f * 0}},
-				{Slot::INV_34, {21.5f + 11.0f * 7, 14.0f + 11.0f * 0}},
-				{Slot::INV_35, {21.5f + 11.0f * 8, 14.0f + 11.0f * 0}},
+				{Slot::INV_0,  {7.0f * 0, 7.0f * 0}},
+				{Slot::INV_1,  {7.0f * 1, 7.0f * 0}},
+				{Slot::INV_2,  {7.0f * 2, 7.0f * 0}},
+				{Slot::INV_3,  {7.0f * 3, 7.0f * 0}},
+				{Slot::INV_4,  {7.0f * 4, 7.0f * 0}},
+				{Slot::INV_5,  {7.0f * 5, 7.0f * 0}},
+				{Slot::INV_6,  {7.0f * 6, 7.0f * 0}},
+				{Slot::INV_7,  {7.0f * 7, 7.0f * 0}},
+				{Slot::INV_8,  {7.0f * 8, 7.0f * 0}},
+				{Slot::INV_9,  {7.0f * 0, 7.0f * 1}},
+				{Slot::INV_10, {7.0f * 1, 7.0f * 1}},
+				{Slot::INV_11, {7.0f * 2, 7.0f * 1}},
+				{Slot::INV_12, {7.0f * 3, 7.0f * 1}},
+				{Slot::INV_13, {7.0f * 4, 7.0f * 1}},
+				{Slot::INV_14, {7.0f * 5, 7.0f * 1}},
+				{Slot::INV_15, {7.0f * 6, 7.0f * 1}},
+				{Slot::INV_16, {7.0f * 7, 7.0f * 1}},
+				{Slot::INV_17, {7.0f * 8, 7.0f * 1}},
+				{Slot::INV_18, {7.0f * 0, 7.0f * 2}},
+				{Slot::INV_19, {7.0f * 1, 7.0f * 2}},
+				{Slot::INV_20, {7.0f * 2, 7.0f * 2}},
+				{Slot::INV_21, {7.0f * 3, 7.0f * 2}},
+				{Slot::INV_22, {7.0f * 4, 7.0f * 2}},
+				{Slot::INV_23, {7.0f * 5, 7.0f * 2}},
+				{Slot::INV_24, {7.0f * 6, 7.0f * 2}},
+				{Slot::INV_25, {7.0f * 7, 7.0f * 2}},
+				{Slot::INV_26, {7.0f * 8, 7.0f * 2}},
+				{Slot::INV_27, {7.0f * 0, 7.0f * 3}},
+				{Slot::INV_28, {7.0f * 1, 7.0f * 3}},
+				{Slot::INV_29, {7.0f * 2, 7.0f * 3}},
+				{Slot::INV_30, {7.0f * 3, 7.0f * 3}},
+				{Slot::INV_31, {7.0f * 4, 7.0f * 3}},
+				{Slot::INV_32, {7.0f * 5, 7.0f * 3}},
+				{Slot::INV_33, {7.0f * 6, 7.0f * 3}},
+				{Slot::INV_34, {7.0f * 7, 7.0f * 3}},
+				{Slot::INV_35, {7.0f * 8, 7.0f * 3}},
 			 }
 		) // SMALL_WITH_HOTBAR ^^^
 	};
@@ -120,7 +120,42 @@ namespace Game {
 		return Slot::INVALID;
 	}
 
-	void Inventory::m_RenderItems()
+	void Inventory::m_RenderBackground(const Slot& start_slot, uint8_t length)
+	{
+		static const Vivium::BufferLayout layout = {
+			Vivium::GLSLDataType::VEC2, // position
+			Vivium::GLSLDataType::VEC2  // tex coords
+		};
+
+		// Get properties of the inventory type we have
+		Properties inven_properties = GetProperties(m_InventoryID);
+
+		std::size_t max_count = inven_properties.inventory_size;
+
+		Vivium::Batch batch(max_count, &layout);
+
+		// TODO: should be computed at compile time
+		// NOTE: (2, 2) is index of the inventory background
+		std::array<float, 8> coords = TextureManager::game_atlas->GetCoordsArray({ 2, 2 });
+
+		for (slot_base_t slot = (slot_base_t)start_slot; slot < (slot_base_t)start_slot + length; slot++) {
+			// Get coord offset to render background at
+			Vivium::Vector2<float> offset = inven_properties.slot_coords.at((Slot)slot);
+
+			float dx = inventory_pos.x + offset.x * m_InventorySpriteScale;
+			float dy = inventory_pos.y + (float)Vivium::Application::height - (offset.y * m_InventorySpriteScale);
+
+			float tile_scale = World::PIXEL_SCALE * 0.5f * m_InventorySpriteScale * 0.25f * s_BGScale;
+
+			batch.Submit({ dx, dy }, tile_scale * 2.0f, &coords[0]);
+		}
+
+		auto result = batch.End();
+
+		Vivium::Renderer::Submit(result.vertex_buffer.get(), result.index_buffer.get(), m_InventoryShader, TextureManager::game_atlas->GetAtlas().get());
+	}
+
+	void Inventory::m_RenderItems(const Slot& start_slot, uint8_t length)
 	{
 		static const Vivium::BufferLayout item_layout = {
 			Vivium::GLSLDataType::VEC2, // position
@@ -140,15 +175,14 @@ namespace Game {
 		Vivium::Batch item_batch(max_count, &item_layout);
 		Vivium::Batch text_batch(max_count, &text_layout);
 
-		// TODO: make InventoryData_t iterable
-		for (slot_base_t slot = m_InventoryData.start_index(); slot < m_InventoryData.end_index(); slot++) {
+		for (slot_base_t slot = (slot_base_t)start_slot; slot < (slot_base_t)start_slot + length; slot++) {
 			Item& item = m_InventoryData.at(slot);
 
 			// Get coord offset to render item at
 			Vivium::Vector2<float> offset = inven_properties.slot_coords.at((Slot)slot);
 
-			float dx = m_InventoryQuad->Left() + (offset.x * m_InventorySpriteScale);
-			float dy = m_InventoryQuad->Top() - (offset.y * m_InventorySpriteScale); // TODO: - sign here is weird
+			float dx = inventory_pos.x + offset.x * m_InventorySpriteScale;
+			float dy = inventory_pos.y + (float)Vivium::Application::height - (offset.y * m_InventorySpriteScale);
 
 			float tile_scale = World::PIXEL_SCALE * 0.5f * m_InventorySpriteScale * 0.25f * s_ItemScale;
 
@@ -176,19 +210,10 @@ namespace Game {
 				// Little offset so it draws to the bottom right of the item
 				rendering_pos += Vivium::Vector2<float>(3.5f - (item_count_string.length() * 1.5f), -3.0f) * m_InventorySpriteScale;
 
-				// Iterate through characters in text
-				for (char c : item_count_string) {
-					Vivium::Font::Character ch = Vivium::Text::GetDefaultFont()->character_map.at(c);
-
-					float x = rendering_pos.x + ch.bearing.x * m_TextObject->scale;
-					float y = rendering_pos.y - (ch.size.y - ch.bearing.y) * m_TextObject->scale;
-					float w = ch.size.x * m_TextObject->scale;
-					float h = ch.size.y * m_TextObject->scale;
-
-					m_RenderItemCount(&text_batch, c, { x, y }, { w, h });
-
-					rendering_pos.x += (ch.advance >> 6) * m_TextObject->scale * m_InventorySpriteScale / 8.0f;
-				}
+				// Submit text to our batch
+				m_TextObject->SetText(item_count_string);
+				m_TextObject->SetPos(rendering_pos);
+				text_batch.Submit(m_TextObject);
 			}
 		}
 
@@ -202,7 +227,7 @@ namespace Game {
 				float tile_scale = World::PIXEL_SCALE * 0.5f * m_InventorySpriteScale * 0.25f * s_ItemScale;
 
 				m_RenderItem(&item_batch, cursor_item, draw_coords, tile_scale * 2.0f);
-				
+
 				if (Item::GetIsStackable(cursor_item.id)) {
 					// Get rendering pos
 					Vivium::Vector2<float> rendering_pos(draw_coords);
@@ -211,23 +236,13 @@ namespace Game {
 					// Get item count as text
 					std::string item_count_string = std::to_string(cursor_item.count);
 
-					// Iterate through characters in text
-					for (char c : item_count_string) {
-						// TODO: precalc
-						Vivium::Font::Character ch = Vivium::Text::GetDefaultFont()->character_map.at(c);
-
-						float x = rendering_pos.x + ch.bearing.x * m_TextObject->scale;
-						float y = rendering_pos.y - (ch.size.y - ch.bearing.y) * m_TextObject->scale;
-						float w = ch.size.x * m_TextObject->scale;
-						float h = ch.size.y * m_TextObject->scale;
-
-						m_RenderItemCount(&text_batch, c, { x, y }, { w, h });
-
-						rendering_pos.x += (ch.advance >> 6) * m_TextObject->scale * m_InventorySpriteScale / 8.0f;
-					}
+					// Submit text to our batch
+					m_TextObject->SetText(item_count_string);
+					m_TextObject->SetPos(rendering_pos);
+					text_batch.Submit(m_TextObject);
 				}
 			}
- 		}
+		}
 
 		Vivium::Batch::BatchData item_batch_data = item_batch.End();
 		Vivium::Batch::BatchData text_batch_data = text_batch.End();
@@ -237,7 +252,7 @@ namespace Game {
 		}
 
 		if (text_batch_data.count > 0) {
-			Vivium::Renderer::Submit(text_batch_data.vertex_buffer.get(), text_batch_data.index_buffer.get(), m_TextShader, m_TextFontTexture.get());
+			Vivium::Renderer::Submit(text_batch_data.vertex_buffer.get(), text_batch_data.index_buffer.get(), m_TextShader, m_TextObject->GetTexture().get());
 		}
 	}
 
@@ -263,25 +278,6 @@ namespace Game {
 				batch->Submit({ dx, dy }, size, &coords[0]);
 			}
 		}
-	}
-
-	void Inventory::m_RenderItemCount(Vivium::Batch* batch, char c, const Vivium::Vector2<float>& pos, const Vivium::Vector2<float>& size)
-	{
-		// TODO: cleanup
-		Vivium::Font::Character ch = Vivium::Text::GetDefaultFont()->character_map.at(c);
-		// TODO: precalc this
-		// Bottom left
-		// Bottom right
-		// Top right
-		// Top left
-		std::array<float, 8> tex_coords = m_TextFontAtlas->GetCoordsArray(c);
-
-		float left = tex_coords[0];
-		float top = tex_coords[1];
-		float right = left + ((float)ch.size.x / (float)m_TextFontAtlas->GetAtlas()->GetWidth());
-		float bottom = top + ((float)ch.size.y / (float)m_TextFontAtlas->GetAtlas()->GetHeight());
-
-		batch->Submit(pos.x, pos.x + size.x, pos.y, pos.y + size.y, left, right, bottom, top);
 	}
 
 	void Inventory::m_UpdateItem(float x, float y, float width, float height, const Slot& item_slot) // TODO: take item ref instead?
@@ -370,14 +366,10 @@ namespace Game {
 	Vivium::Shader* Inventory::m_InventoryShader = nullptr;
 	Vivium::Shader* Inventory::m_TextShader = nullptr;
 	Vivium::Shader* Inventory::m_ItemShader = nullptr;
-	Vivium::TextureAtlas* Inventory::m_InventoryAtlas = nullptr;
 	Vivium::Text* Inventory::m_TextObject = nullptr;
-	Ref(Vivium::Texture) Inventory::m_TextFontTexture = nullptr;
-	Vivium::TextureAtlas* Inventory::m_TextFontAtlas = nullptr;
 
 	void Inventory::Init()
 	{
-		m_InventoryAtlas = new Vivium::TextureAtlas("inventory.png", { 32, 32 });
 		m_InventoryShader = new Vivium::Shader("static_texture_vertex", "texture_frag");
 		
 		m_TextShader = new Vivium::Shader("text_vertex", "text_frag");
@@ -385,19 +377,15 @@ namespace Game {
 		m_TextShader->SetUniform3f("u_TextColor", Vivium::RGBColor::WHITE);
 
 		m_ItemShader = new Vivium::Shader("static_texture_vertex", "texture_frag");
-		m_TextObject = new Vivium::Text("", {0, 0}, Vivium::Text::Alignment::LEFT, 0.35f); // TODO: pretty ugly, later use font or something
-
-		m_TextFontTexture = MakeRef(Vivium::Texture, Vivium::Text::GetDefaultFont().get());
-		m_TextFontAtlas = new Vivium::TextureAtlas(m_TextFontTexture, { 64, 64 });
+		m_TextObject = new Vivium::Text("", {0, 0}, Vivium::Text::Alignment::LEFT, 0.30f); // TODO: pretty ugly, later use font or something
 	}
 
 	void Inventory::Terminate()
 	{
-		delete m_InventoryAtlas;
 		delete m_InventoryShader;
+		delete m_TextObject;
 		delete m_TextShader;
 		delete m_ItemShader;
-		delete m_TextFontAtlas;
 	}
 
 	bool Inventory::AddItem(const Item& item)
@@ -437,19 +425,9 @@ namespace Game {
 		return false;
 	}
 
-	void Inventory::SetPos(const Vivium::Vector2<float>& new_pos)
-	{
-		m_InventoryQuad->SetCenter(new_pos);
-	}
-
 	const Item& Inventory::GetItem(const Slot& slot)
 	{
 		return m_InventoryData.at((uint8_t)slot);
-	}
-
-	Vivium::Vector2<float> Inventory::GetPos() const
-	{
-		return m_InventoryQuad->GetCenter();
 	}
 
 	void Inventory::Update(const Vivium::Vector2<float>& player_pos, World& world)
@@ -532,13 +510,20 @@ namespace Game {
 
 	void Inventory::Render()
 	{
-		Vivium::Renderer::Submit(m_InventoryQuad, m_InventoryShader, m_InventoryAtlas->GetAtlas().get());
+		Inventory::Properties props = GetProperties(m_InventoryID);
 
-		m_RenderItems();
+		m_RenderBackground(props.start_slot, props.inventory_size);
+		m_RenderItems(props.start_slot, props.inventory_size);
+	}
+
+	void Inventory::Render(const Slot& start_slot, uint8_t length)
+	{
+		m_RenderBackground(start_slot, length);
+		m_RenderItems(start_slot, length);
 	}
 
 	Inventory::Inventory()
-		: m_InventoryData({}), m_InventoryID(ID::MAX), m_InventoryQuad(nullptr)
+		: m_InventoryData({}), m_InventoryID(ID::MAX)
 	{}
 
 	void Inventory::SetItems(const std::vector<Item>& items, const Slot& slot)
@@ -552,15 +537,9 @@ namespace Game {
 		: m_InventoryID(inventory_id), m_InventoryData(inventory_id)
 	{
 		Properties properties = Inventory::GetProperties(inventory_id);
-		m_InventoryQuad = new Vivium::Quad(Vivium::Vector2<float>(0.0f), properties.sprite_size * m_InventorySpriteScale);
-
-		m_InventoryAtlas->Set(m_InventoryQuad, properties.top_left_index, properties.bottom_right_index);
 	}
 
-	Inventory::~Inventory()
-	{
-		delete m_InventoryQuad;
-	}
+	Inventory::~Inventory() {}
 
 	Inventory::Data& Inventory::GetData()
 	{
@@ -593,12 +572,6 @@ namespace Game {
 		s.Read((id_base_t*)&m_InventoryID);
 		// Read all items
 		s.Read(&m_InventoryData);
-
-		// Init quad and the atlas coords for quad
-		Properties properties = Inventory::GetProperties(m_InventoryID);
-		m_InventoryQuad = new Vivium::Quad(Vivium::Vector2<float>(0.0f), properties.sprite_size * m_InventorySpriteScale);
-
-		m_InventoryAtlas->Set(m_InventoryQuad, properties.top_left_index, properties.bottom_right_index);
 	}
 
 	Inventory::Properties::Properties(

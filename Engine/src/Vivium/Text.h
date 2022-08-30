@@ -50,6 +50,9 @@ namespace Vivium {
 		std::string GetText() const;
 		void SetText(const std::string& str);
 
+		const Ref(TextureAtlas) GetAtlas() const;
+		const Ref(Texture) GetTexture() const;
+
 		void Render() const;
 		void Submit(Batch* batch) const override;
 
