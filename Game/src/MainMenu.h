@@ -74,7 +74,6 @@ namespace Game {
 
 		// For the load world scene, it should display all the worlds you have available as small rectangles with the world name, maybe file size, date of creation, etc.
 		struct VisualWorldSelectable {
-			Ref(Vivium::Panel)	panel;
 			Ref(Vivium::Button) select_button;
 			std::string			world_name;
 
@@ -88,7 +87,8 @@ namespace Game {
 		MainMenu* m_Manager = nullptr;
 
 		std::vector<VisualWorldSelectable> m_Worlds;
-
+		
+		Ref(Vivium::Panel) m_WorldsPanel; // Panel for the possible worlds to select
 		Ref(Vivium::Button) m_BackButton; // Takes back to start screen
 
 	public:

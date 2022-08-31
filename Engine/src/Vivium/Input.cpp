@@ -2,6 +2,8 @@
 
 namespace Vivium {
 	int Input::m_CurrentMods = (int)Input::Mod::NONE;
+	float Input::m_LastYScroll = 0.0f;
+	float Input::m_ScrollSensitivity = 10.0f;
 
 	std::unordered_map<int, Input::Listener> Input::key_listeners{};
 	std::unordered_map<int, Input::Listener> Input::mouse_listeners{};
@@ -35,6 +37,11 @@ namespace Vivium {
 		}
 	}
 
+	void Input::m_ScrollCallback(GLFWwindow* window, double xoff, double yoff)
+	{
+		m_LastYScroll = yoff;
+	}
+
 	void Input::m_UpdateListener(Listener& listener, int current_action, float dt)
 	{
 		if (listener.state == State::HOLD) listener.time_held += dt;
@@ -52,6 +59,11 @@ namespace Vivium {
 		listener.last_action = current_action;
 	}
 
+	void Input::m_ResetScroll()
+	{
+		m_LastYScroll = 0.0f;
+	}
+
 	void Input::m_Init()
 	{
 		for (int i = GLFW_KEY_SPACE; i < GLFW_KEY_LAST; i++) {
@@ -64,6 +76,7 @@ namespace Vivium {
 
 		glfwSetCharCallback(Application::window, m_CharCallback);
 		glfwSetKeyCallback(Application::window, m_KeyCallback);
+		glfwSetScrollCallback(Application::window, m_ScrollCallback);
 	}
 
 	void Input::AddKeyListener(int key)
@@ -96,6 +109,14 @@ namespace Vivium {
 	bool Input::CheckMod(const Input::Mod& mod)
 	{
 		return m_CurrentMods & mod;
+	}
+
+	float Input::GetScrollSensitivity() { return m_ScrollSensitivity; }
+	void Input::SetScrollSensitivity(float sens) { m_ScrollSensitivity = sens; }
+
+	float Input::GetYScroll()
+	{
+		return m_LastYScroll * m_ScrollSensitivity;
 	}
 
 	bool Input::CheckMod(const int& mods)

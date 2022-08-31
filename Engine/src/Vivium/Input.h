@@ -55,6 +55,7 @@ namespace Vivium {
 		// Callback function for key presses as characters
 		static void m_CharCallback(GLFWwindow* window, unsigned int codepoint);
 		static void m_KeyCallback(GLFWwindow* window, int key, int scancode, int action, int mods);
+		static void m_ScrollCallback(GLFWwindow* window, double xoff, double yoff);
 
 		static std::unordered_map<int, Listener> key_listeners;   // Maps a GLFW key code to its respective Listener object
 		static std::unordered_map<int, Listener> mouse_listeners; // Maps a GLFW btn code to its respective Listener object
@@ -62,11 +63,15 @@ namespace Vivium {
 		// Updates a listener's state based on the GLFW action code and time since last update (GLFW_RELEASE/GLFW_PRESSED)
 		static void m_UpdateListener(Listener& listener, int current_action, float dt);
 		
+		static void m_ResetScroll();
+
 		static void m_Init();
 
 		static Timer m_Timer;
 
 		static int m_CurrentMods;
+		static float m_LastYScroll;
+		static float m_ScrollSensitivity;
 
 	public:
 		static void AddKeyListener(int key);
@@ -78,6 +83,10 @@ namespace Vivium {
 		static int GetMods();
 		static bool CheckMod(const Input::Mod& mod);
 		static bool CheckMod(const int& mods);
+
+		static float GetScrollSensitivity();
+		static void SetScrollSensitivity(float sens);
+		static float GetYScroll();
 
 		static bool IsKeyDown(int key);
 		static bool IsKeyDown(const Input::State& state);

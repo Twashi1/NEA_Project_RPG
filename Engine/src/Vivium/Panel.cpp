@@ -6,13 +6,14 @@ namespace Vivium {
 		switch (m_Type) {
 		case Type::QUAD:
 			// If we're the only one using this ref
-			quad->SetCenter(pos); break;
+			quad.lock()->SetCenter(pos); break;
 		case Type::POINT:
 		{
-			point->x = pos.x; point->y = pos.y;
+			auto locked = point.lock();
+			locked->x = pos.x; locked->y = pos.y;
 		} break;
 		case Type::PANEL:
-			panel->SetPos(pos); break;
+			panel.lock()->SetPos(pos); break;
 		}
 
 		last_pos = pos;
@@ -24,11 +25,14 @@ namespace Vivium {
 
 		switch (m_Type) {
 		case Type::QUAD:
-			pos = quad->GetCenter(); break;
+			pos = quad.lock()->GetCenter(); break;
 		case Type::POINT:
-			pos = Vector2<float>(point->x, point->y); break;
+		{
+			auto locked = point.lock();
+			pos = Vector2<float>(locked->x, locked->y);
+		}  break;
 		case Type::PANEL:
-			pos = panel->GetQuad().GetCenter(); break;
+			pos = panel.lock()->GetQuad()->GetCenter(); break;
 		}
 
 		return pos;
@@ -66,11 +70,11 @@ namespace Vivium {
 		: x_anchor(x), y_anchor(y), panel(panel), m_Type(Type::PANEL), offset(offset)
 	{
 		if (offset.x == FLT_MAX) {
-			this->offset.x = panel->GetQuad().GetX();
+			this->offset.x = panel->GetQuad()->GetX();
 		}
 
 		if (offset.y == FLT_MAX) {
-			this->offset.y = panel->GetQuad().GetY();
+			this->offset.y = panel->GetQuad()->GetY();
 		}
 
 		last_pos = this->offset;
@@ -105,17 +109,32 @@ namespace Vivium {
 
 	void Panel::Update()
 	{
-		// TODO
+		float scroll = Input::GetYScroll();
+		if (scroll == 0.0f) return;
+		Vector2<float> cursor = Input::GetCursorPos();
+
+		Vector2<float> current_pos = m_Quad->GetCenter();
+		float half_height = m_Quad->GetHeight() * 0.5f;
+
+		float new_y = current_pos.y - scroll;
+
+		if (m_ScrollYMax == INT_MAX || m_ScrollYMin == INT_MIN) {
+			return;
+		}
+
+		if (new_y <= m_ScrollYMin && new_y >= m_ScrollYMax) {
+			SetPos({ current_pos.x, new_y });
+		}
 	}
 
-	const Quad& Panel::GetQuad() const { return *m_Quad; }
+	const Ref(Quad) Panel::GetQuad() const { return m_Quad; }
 
 	bool Panel::m_VerifyObject(Data& panel_object)
 	{
 		switch (panel_object.m_Type) {
-		case Data::Type::PANEL: return panel_object.panel.use_count() > 1;
-		case Data::Type::QUAD: return panel_object.quad.use_count() > 1;
-		case Data::Type::POINT: return panel_object.point.use_count() > 1;
+		case Data::Type::PANEL: return !panel_object.panel.expired();
+		case Data::Type::QUAD: return !panel_object.quad.expired();
+		case Data::Type::POINT: return !panel_object.point.expired();
 		default:
 			LogWarn("Invalid data type"); return false;
 		}
@@ -155,16 +174,12 @@ namespace Vivium {
 		}
 	}
 
-	Panel::Panel(Ref(Quad) quad)
-		: m_Quad(quad), old_pos(quad->GetCenter()), old_dim(quad->GetDim())
+	Panel::Panel(Ref(Quad) quad, int scroll_max, int scroll_min)
+		: m_Quad(quad), m_OldPos(quad->GetCenter()), m_OldDim(quad->GetDim()), m_ScrollYMax(scroll_max), m_ScrollYMin(scroll_min)
 	{}
 
-	Panel::Panel(const Quad& quad)
-		: m_Quad(MakeRef(Quad, quad)), old_pos(quad.GetCenter()), old_dim(quad.GetDim())
-	{}
-
-	Panel::Panel(Quad* quad)
-		: m_Quad(Ref(Quad)(quad)), old_pos(quad->GetCenter()), old_dim(quad->GetDim())
+	Panel::Panel(const Quad& quad, int scroll_max, int scroll_min)
+		: m_Quad(MakeRef(Quad, quad)), m_OldPos(quad.GetCenter()), m_OldDim(quad.GetDim()), m_ScrollYMax(scroll_max), m_ScrollYMin(scroll_min)
 	{}
 
 	Panel::~Panel()
@@ -174,15 +189,22 @@ namespace Vivium {
 		}
 	}
 
+	void Panel::SetScrollLimits(float y_max, float y_min)
+	{
+		float halfheight = m_Quad->GetHeight() * 0.5f;
+		m_ScrollYMax = halfheight + y_max;
+		m_ScrollYMin = halfheight + y_min;
+	}
+
 	void Panel::SetPos(const Vector2<float>& new_pos)
 	{
 		m_Quad->SetCenter(new_pos);
 
 		for (Data* panel_object : m_PanelObjects) {
-			m_Update(*panel_object, Rect(new_pos, old_dim));
+			m_Update(*panel_object, Rect(new_pos, m_OldDim));
 		}
 
-		old_pos = new_pos;
+		m_OldPos = new_pos;
 	}
 
 	void Panel::SetDim(const Vector2<float>& new_dim)
@@ -190,10 +212,10 @@ namespace Vivium {
 		m_Quad->SetDim(new_dim);
 
 		for (Data* panel_object : m_PanelObjects) {
-			m_Update(*panel_object, Rect(old_pos, new_dim));
+			m_Update(*panel_object, Rect(m_OldPos, new_dim));
 		}
 
-		old_dim = new_dim;
+		m_OldDim = new_dim;
 	}
 
 	void Panel::SetRect(const Rect& new_rect)
@@ -204,8 +226,8 @@ namespace Vivium {
 			m_Update(*panel_object, new_rect);
 		}
 
-		old_dim = new_rect.dim;
-		old_pos = new_rect.center;
+		m_OldDim = new_rect.dim;
+		m_OldPos = new_rect.center;
 	}
 
 	void Panel::Anchor(ANCHOR x, ANCHOR y, Ref(Quad) quad)

@@ -8,8 +8,6 @@
 #include "Text.h"
 #include "Sprite.h"
 
-// TODO: add some defaults, and find some workaround for when references are deleted
-
 namespace Vivium {
 	class VIVIUM_API Panel {
 	public:
@@ -32,9 +30,9 @@ namespace Vivium {
 
 		public:
 			union {
-				Ref(Panel) panel;
-				Ref(Quad) quad;
-				Ref(Vector2<float>) point;
+				WeakRef(Panel) panel;
+				WeakRef(Quad) quad;
+				WeakRef(Vector2<float>) point;
 			};
 
 			Vector2<float> last_pos;
@@ -61,23 +59,27 @@ namespace Vivium {
 		// All quads/points we're editing
 		std::vector<Data*> m_PanelObjects;
 
-		Vector2<float> old_dim;
-		Vector2<float> old_pos;
+		Vector2<float> m_OldDim;
+		Vector2<float> m_OldPos;
 		Ref(Quad) m_Quad;
+
+		int m_ScrollYMax;
+		int m_ScrollYMin;
 
 		bool m_VerifyObject(Data& panel_object);
 		void m_Update(Data& panel_object, const Rect& new_rect);
 
 	public:
 		// Set panel coordinates/size
-		Panel(Ref(Quad) quad);
-		Panel(const Quad& quad);
-		Panel(Quad* quad);
+		Panel(const Quad& panel_quad, int scroll_max = INT_MAX, int scroll_min = INT_MIN);
+		Panel(Ref(Quad) panel_quad, int scroll_max = INT_MAX, int scroll_min = INT_MIN);
 		~Panel();
 
 		void SetPos(const Vector2<float>& new_pos);
 		void SetDim(const Vector2<float>& new_dim);
 		void SetRect(const Rect& new_rect);
+
+		void SetScrollLimits(float y_max, float y_min);
 
 		void Anchor(ANCHOR x, ANCHOR y, Ref(Quad) quad);
 		void Anchor(ANCHOR x, ANCHOR y, Ref(Vector2<float>) point);
@@ -93,6 +95,6 @@ namespace Vivium {
 		void Update();
 
 		// Get quad for debug rendering
-		const Quad& GetQuad() const;
+		const Ref(Quad) GetQuad() const;
 	};
 }

@@ -358,21 +358,18 @@ namespace Game {
 	__LoadWorldScene::VisualWorldSelectable::VisualWorldSelectable(const Vivium::Vector2<float> pos, const std::string& world_name, __LoadWorldScene* world_scene)
 		: world_name(world_name)
 	{
-		panel = MakeRef(Vivium::Panel,
-			Vivium::Quad(pos, { 300.0f, 100.0f })
-		);
-
 		params = new __CallbackData(world_name, world_scene);
 
 		select_button = MakeRef(Vivium::Button,
-			Vivium::Quad(0.0f, { 200.0f, 100.0f }),
+			Vivium::Quad(pos, { 200.0f, 100.0f }),
 			&__LoadWorldScene::s_SelectedWorldCallback,
 			world_name,
 			(void*)params
 		);
 
-		Vivium::Application::window_panel->Anchor(Vivium::Panel::ANCHOR::CENTER, Vivium::Panel::ANCHOR::TOP, panel);
-		panel->Anchor(Vivium::Panel::ANCHOR::CENTER, Vivium::Panel::ANCHOR::CENTER, select_button);
+		world_scene->m_WorldsPanel->Anchor(Vivium::Panel::ANCHOR::CENTER, Vivium::Panel::ANCHOR::TOP, select_button);
+
+		LogTrace("Button position is now {}", select_button->GetPos());
 	}
 	
 	__LoadWorldScene::VisualWorldSelectable::~VisualWorldSelectable()
@@ -408,10 +405,15 @@ namespace Game {
 			menu
 		);
 
+		m_WorldsPanel = MakeRef(Vivium::Panel,
+			Vivium::Quad(Vivium::Application::width / 2, Vivium::Application::height / 2, Vivium::Application::width, Vivium::Application::height));
+
 		Vivium::Application::window_panel->Anchor(Vivium::Panel::ANCHOR::RIGHT, Vivium::Panel::ANCHOR::BOTTOM, m_BackButton);
 
 		std::string path = Vivium::Application::resources_path + "saves/";
 		Vivium::Vector2<float> current_offset = {0.0f, -100.0f};
+
+		float lowest_offset = INT_MIN;
 
 		for (auto& it : std::filesystem::directory_iterator(path)) {
 			if (it.is_directory()) {
@@ -423,8 +425,13 @@ namespace Game {
 				
 				// TODO: magic number here
 				current_offset.y -= 130.0f;
+
+				lowest_offset = current_offset.y;
 			}
 		}
+
+		// TODO: scrolling needs work
+		m_WorldsPanel->SetScrollLimits(0.0f, -Vivium::Application::height - current_offset.y);
 	}
 
 	__LoadWorldScene::~__LoadWorldScene()
@@ -446,9 +453,10 @@ namespace Game {
 	void __LoadWorldScene::Update()
 	{
 		m_BackButton->Update();
+		m_WorldsPanel->SetDim({ (float)Vivium::Application::width, (float)Vivium::Application::height });
+		m_WorldsPanel->Update();
 
 		for (VisualWorldSelectable& selectable : m_Worlds) {
-			selectable.panel->Update();
 			selectable.select_button->Update();
 		}
 	}

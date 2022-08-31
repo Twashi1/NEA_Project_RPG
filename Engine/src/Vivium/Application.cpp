@@ -86,6 +86,7 @@ namespace Vivium {
         glfwSwapBuffers(window);
 
         TextInput::m_ResetTypingStatus();
+        Input::m_ResetScroll();
 
         double elapsed = m_Timer.GetElapsed();
 
