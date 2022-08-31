@@ -358,6 +358,73 @@ namespace Game {
 		}
 	}
 
+	void Inventory::m_UpdateFloorItems(const Vivium::Vector2<float>& player_pos, World* world)
+	{
+		Vivium::Vector2<float> player_scale_pos = player_pos / World::PIXEL_SCALE;
+		Vivium::Vector2<int> region_pos = world->GetRegionIndex(Vivium::Vector2<int>((player_scale_pos).floor()));
+
+		int count = 0;
+
+		for (int region_y = region_pos.y - 1; region_y <= region_pos.y + 1; region_y++) {
+			for (int region_x = region_pos.x - 1; region_x <= region_pos.x + 1; region_x++) {
+				std::vector<FloorItem>* floor_items = world->GetFloorItems(Vivium::Vector2<int>(region_x, region_y));
+
+				// If no floor items, just go next
+				if (floor_items == nullptr) { continue; }
+
+				auto it = floor_items->begin();
+				while (it != floor_items->end()) {
+
+					Vivium::Vector2<float> item_pos = it->m_Quad->GetCenter();
+
+					float sqr_distance = item_pos.sqr_distance(player_pos);
+
+					// Within pickup range
+					if (sqr_distance <= FloorItem::PICKUP_RANGE * FloorItem::PICKUP_RANGE) {
+						// Add item to inventory
+						if (AddItem(it->GetItemData())) {
+							// Item was added to inventory, so erase the floor item
+							it = floor_items->erase(it);
+						}
+						else {
+							// Just increment iterator
+							++it;
+						}
+					}
+					else {
+						// Within pull/magnet range
+						if (sqr_distance <= FloorItem::MAGNET_RANGE * FloorItem::MAGNET_RANGE) {
+							// Get direction vector from floor item to player
+							Vivium::Vector2<float> direction = (player_pos - item_pos).normalise();
+							// Set acceleration towards us
+							it->acceleration = direction * FloorItem::MAGNET_SPEED;
+							it->m_InitialMotionEnded = false;
+							it->m_RemainingMovingTime = -1.0f;
+
+							it->Update();
+						}
+						// TODO: acceleration/velocity with floor items is weird, maybe some automatic friction system
+						// Not within pull/magnet range, so remove any acceleration/velocity
+						else {
+							if (it->m_RemainingMovingTime <= -1.0f) {
+								// Reset all movement
+								it->acceleration = 0.0f;
+								it->velocity = 0.0f;
+
+								it->m_InitialMotionEnded = true;
+								it->m_RemainingMovingTime = 0.0f;
+							}
+
+							it->Update();
+						}
+
+						++it;
+					}
+				}
+			}
+		}
+	}
+
 	Inventory::Properties Inventory::GetProperties(const Inventory::ID& id)
 	{
 		return m_Properties[(id_base_t)id];
@@ -430,71 +497,16 @@ namespace Game {
 		return m_InventoryData.at((uint8_t)slot);
 	}
 
-	void Inventory::Update(const Vivium::Vector2<float>& player_pos, World& world)
+	void Inventory::Update(const Slot& start_slot, uint8_t length, const Vivium::Vector2<float>& player_pos, World* world)
 	{
-		Vivium::Vector2<float> player_scale_pos = player_pos / World::PIXEL_SCALE;
-		Vivium::Vector2<int> region_pos = world.GetRegionIndex(Vivium::Vector2<int>((player_scale_pos).floor()));
+		m_UpdateFloorItems(player_pos, world);
+	}
 
-		int count = 0;
+	void Inventory::Update(const Vivium::Vector2<float>& player_pos, World* world)
+	{
+		Properties props = GetProperties(m_InventoryID);
 
-		for (int region_y = region_pos.y - 1; region_y <= region_pos.y + 1; region_y++) {
-			for (int region_x = region_pos.x - 1; region_x <= region_pos.x + 1; region_x++) {
-				std::vector<FloorItem>* floor_items = world.GetFloorItems(Vivium::Vector2<int>(region_x, region_y));
-
-				// If no floor items, just go next
-				if (floor_items == nullptr) { continue; }
-
-				auto it = floor_items->begin();
-				while (it != floor_items->end()) {
-
-					Vivium::Vector2<float> item_pos = it->m_Quad->GetCenter();
-
-					float sqr_distance = item_pos.sqr_distance(player_pos);
-
-					// Within pickup range
-					if (sqr_distance <= FloorItem::PICKUP_RANGE * FloorItem::PICKUP_RANGE) {
-						// Add item to inventory
-						if (AddItem(it->GetItemData())) {
-							// Item was added to inventory, so erase the floor item
-							it = floor_items->erase(it);
-						}
-						else {
-							// Just increment iterator
-							++it;
-						}
-					}
-					else {
-						// Within pull/magnet range
-						if (sqr_distance <= FloorItem::MAGNET_RANGE * FloorItem::MAGNET_RANGE) {
-							// Get direction vector from floor item to player
-							Vivium::Vector2<float> direction = (player_pos - item_pos).normalise();
-							// Set acceleration towards us
-							it->acceleration = direction * FloorItem::MAGNET_SPEED;
-							it->m_InitialMotionEnded = false;
-							it->m_RemainingMovingTime = -1.0f;
-
-							it->Update();
-						}
-						// TODO: acceleration/velocity with floor items is weird, maybe some automatic friction system
-						// Not within pull/magnet range, so remove any acceleration/velocity
-						else {
-							if (it->m_RemainingMovingTime <= -1.0f) {
-								// Reset all movement
-								it->acceleration = 0.0f;
-								it->velocity = 0.0f;
-
-								it->m_InitialMotionEnded = true;
-								it->m_RemainingMovingTime = 0.0f;
-							}
-
-							it->Update();
-						}
-
-						++it;
-					}
-				}
-			}
-		}
+		m_UpdateFloorItems(player_pos, world);
 	}
 
 	std::vector<Item> Inventory::GetItems(const Slot& start_slot, slot_base_t length)
@@ -508,18 +520,18 @@ namespace Game {
 		return items;
 	}
 
-	void Inventory::Render()
-	{
-		Inventory::Properties props = GetProperties(m_InventoryID);
-
-		m_RenderBackground(props.start_slot, props.inventory_size);
-		m_RenderItems(props.start_slot, props.inventory_size);
-	}
-
 	void Inventory::Render(const Slot& start_slot, uint8_t length)
 	{
 		m_RenderBackground(start_slot, length);
 		m_RenderItems(start_slot, length);
+	}
+
+	void Inventory::Render()
+	{
+		Properties props = GetProperties(m_InventoryID);
+
+		m_RenderBackground(props.start_slot, props.inventory_size);
+		m_RenderItems(props.start_slot, props.inventory_size);
 	}
 
 	Inventory::Inventory()

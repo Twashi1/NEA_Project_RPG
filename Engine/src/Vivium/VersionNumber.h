@@ -4,6 +4,8 @@
 #include "Serialiser.h"
 #include "Utils.h"
 
+// TODO: this class is basically useless
+
 namespace Vivium {
     // Stores version number in format major.minor.patch
     struct VIVIUM_API VersionNumber {

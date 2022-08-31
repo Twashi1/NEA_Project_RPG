@@ -130,6 +130,7 @@ namespace Game {
 		);
 
 		void m_UpdateItem(float x, float y, float width, float height, const Slot& item_slot);
+		void m_UpdateFloorItems(const Vivium::Vector2<float>& player_pos, World* world);
 
 	public:
 		static Properties GetProperties(const Inventory::ID& id);
@@ -149,9 +150,10 @@ namespace Game {
 		std::vector<Item> GetItems(const Slot& start_slot, uint8_t length);
 		void SetItems(const std::vector<Item>& items, const Slot& slot);
 
-		void Update(const Vivium::Vector2<float>& player_pos, World& world);
+		void Update(const Slot& start_slot, uint8_t length, const Vivium::Vector2<float>& player_pos, World* world);
+		void Update(const Vivium::Vector2<float>& player_pos, World* world);
 		void Render(const Slot& start_slot, uint8_t length);
-		void Render(); // Renders everything
+		void Render();
 
 		Inventory();
 		Inventory(const ID& inventory_id);

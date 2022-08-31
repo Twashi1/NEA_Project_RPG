@@ -147,18 +147,22 @@ namespace Vivium {
 
 	void VertexBuffer::Set(unsigned int element_index, const void* data, const std::size_t& size)
 	{
+		// Changing the data of only a specific element is pretty difficult, so lots of code here to get the correct indices and etc.
 		glBindBuffer(GL_ARRAY_BUFFER, m_ID);
 		const std::vector<BufferElement>& elements = m_Layout.GetElements();
-
-		// TODO: all of this is so illegal and bad and unreadable
+		
+		// Offset in bytes from the start of a vertex to the data for this element
 		int offset = elements[element_index].offset;
+		// Size in bytes of the element
 		int element_size = elements[element_index].type.size;
+		// Bytes per vertex
 		int stride = m_Layout.GetStride();
 		int total_vertices = size / element_size;
 
 		for (int i = 0; i < total_vertices; i++) {
 			glBufferSubData(GL_ARRAY_BUFFER, offset, element_size, (char*)data + (i * element_size));
 
+			// Offset is from start of the data to the position of the element in the first vertex, so we add stride to move to the next vertex
 			offset += stride;
 		}
 	}

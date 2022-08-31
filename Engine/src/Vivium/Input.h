@@ -79,6 +79,11 @@ namespace Vivium {
 		static bool CheckMod(const Input::Mod& mod);
 		static bool CheckMod(const int& mods);
 
+		static bool IsKeyDown(int key);
+		static bool IsKeyDown(const Input::State& state);
+		static bool IsKeyUp(int key);
+		static bool IsKeyUp(const Input::State& state);
+
 		static Input::State GetKeyState(int key);
 		static Input::State GetMouseState(int button);
 		// Get position of cursor in screen coordinates (0, 0) -> (width, height)

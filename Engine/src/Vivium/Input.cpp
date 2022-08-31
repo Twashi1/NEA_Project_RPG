@@ -103,6 +103,11 @@ namespace Vivium {
 		return m_CurrentMods & mods;
 	}
 
+	bool Input::IsKeyDown(int key) { auto state = GetKeyState(key); return state == State::PRESS || state == State::HOLD; }
+	bool Input::IsKeyDown(const Input::State& state) { return state == State::PRESS || state == State::HOLD; }
+	bool Input::IsKeyUp(int key) { auto state = GetKeyState(key); return state == State::RELEASE || state == State::NONE; }
+	bool Input::IsKeyUp(const Input::State& state) { return state == State::RELEASE || state == State::NONE; }
+
 	Input::State Input::GetKeyState(int key)
 	{
 		// Get iterator to key state

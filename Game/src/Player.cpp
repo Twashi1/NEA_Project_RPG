@@ -34,31 +34,23 @@ namespace Game {
         Vivium::Input::State a = Vivium::Input::GetKeyState(GLFW_KEY_A);
         Vivium::Input::State d = Vivium::Input::GetKeyState(GLFW_KEY_D);
 
+        body->acc = 0.0f;
+
         // If W key pressed
-        if (w == Vivium::Input::State::PRESS || w == Vivium::Input::State::HOLD) {
-            body->acc.y = MAXACCEL;
+        if (Vivium::Input::IsKeyDown(w)) {
+            body->acc.y += MAXACCEL;
         }
         // If S key pressed
-        else if (s == Vivium::Input::State::PRESS || s == Vivium::Input::State::HOLD) {
-            body->acc.y = -MAXACCEL;
+        if (Vivium::Input::IsKeyDown(s)) {
+            body->acc.y -= MAXACCEL;
         }
         // If D key pressed
-        if (d == Vivium::Input::State::PRESS || d == Vivium::Input::State::HOLD) {
-            body->acc.x = MAXACCEL;
+        if (Vivium::Input::IsKeyDown(d)) {
+            body->acc.x += MAXACCEL;
         }
         // If A key pressed
-        else if (a == Vivium::Input::State::PRESS || a == Vivium::Input::State::HOLD) {
-            body->acc.x = -MAXACCEL;
-        }
-        // If W and S key aren't pressed, or both are pressed
-        if ((w == Vivium::Input::State::NONE && s == Vivium::Input::State::NONE)
-            || w == Vivium::Input::State::HOLD && s == Vivium::Input::State::HOLD) {
-            body->acc.y = 0.0f;
-        }
-        // If D and A key aren't pressed, or both are pressed
-        if ((d == Vivium::Input::State::NONE && a == Vivium::Input::State::NONE)
-            || d == Vivium::Input::State::HOLD && a == Vivium::Input::State::HOLD) {
-            body->acc.x = 0.0f;
+        if (Vivium::Input::IsKeyDown(a)) {
+            body->acc.x -= MAXACCEL;
         }
 
         body->acc -= body->vel * FRICTION;
@@ -68,7 +60,7 @@ namespace Game {
     void Player::m_UpdateInventory(World& world)
     {
         // Update main inventory
-        m_MainInventory.Update(quad->GetCenter(), world);
+        m_MainInventory.Update(quad->GetCenter(), &world);
 
         Vivium::Input::State e = Vivium::Input::GetKeyState(GLFW_KEY_E);
 
