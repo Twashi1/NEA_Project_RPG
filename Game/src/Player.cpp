@@ -84,14 +84,6 @@ namespace Game {
     {
         body->Update();
 
-        // TODO: VERY TEMPORARY
-        Vivium::Input::State o = Vivium::Input::GetKeyState(GLFW_KEY_0);
-
-        if (o == Vivium::Input::State::PRESS) {
-            std::vector<Item> items = Recipe::CraftMaxFromInventory(Recipe::ID::AMETHYST_PICKAXE, &m_MainInventory, 1);
-            m_MainInventory.AddItems(items);
-        }
-
         m_UpdateInventory(world);
         m_UpdateMovement();
         m_UpdateSelectedTile(world);
