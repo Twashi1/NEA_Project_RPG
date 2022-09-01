@@ -1,4 +1,7 @@
 # Vivium
+## General
+- [ ] Update and Render methods could have a virtual behind them, also splitting them is inconvenient for a lot of classes 
+
 ## Application
 - [x] Initialisation functions for various classes should be private, and instead should make Application their friend
 
@@ -91,8 +94,8 @@
 ## Gameplay
 - [ ] Crafting
     - [x] Recipes system
-        - [ ] Speed up by precomputing some values in Inventory (item counts)
-    - [ ] Crafting UI
+        - [x] Speed up by precomputing some values in Inventory (item counts)
+    - [x] Crafting UI
 - [ ] Complex movement
      - [ ] Double tap to dash
 - [ ] Inventory

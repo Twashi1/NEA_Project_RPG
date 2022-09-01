@@ -603,6 +603,8 @@ namespace Game {
 
 	std::vector<bool> Inventory::AddItems(const std::vector<Item>& items)
 	{
+		if (items.empty()) return {};
+
 		std::size_t items_size = items.size();
 		std::vector<bool> return_values(items_size);
 

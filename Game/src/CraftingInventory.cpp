@@ -21,6 +21,7 @@ namespace Game {
 				continue;
 			}
 			else {
+				// TODO: get draw pos function?
 				Vivium::Vector2<float> draw_pos = { inventory_pos.x, inventory_pos.y + y_offset };
 
 				Vivium::Math::AABB slot_aabb = Vivium::Math::AABB(draw_pos.x, draw_pos.y, s_SlotSize, s_SlotSize);
@@ -30,17 +31,16 @@ namespace Game {
 					// If this is the slot we clicked on
 					if (slot_aabb.Contains(cursor_pos)) {
 						// We clicked on the slot we already selected, indicating we want to craft the item
-						// TODO: move item into cursor
 						if (delta == 0) {
 							Recipe::ID recipe_id = m_Craftables.at(index);
 							// TODO: for now only crafting 1
+							// TODO: shift click to craft max?
 							std::vector<Item> results = Recipe::CraftMaxFromInventory(recipe_id, player_inv, 1);
 
-							if (!results.empty()) {
-								player_inv->AddItems(results);
-							}
+							player_inv->AddItems(results);
 						}
 						else {
+							// TODO: Switching slots should have small animation?
 							m_SelectedItemSlot = index;
 						}
 					}
