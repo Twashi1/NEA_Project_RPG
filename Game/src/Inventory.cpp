@@ -1,10 +1,11 @@
 #include "Inventory.h"
+#include "Recipe.h"
 
 namespace Game {
 	const std::array<Inventory::Properties, (Inventory::id_base_t)Inventory::ID::MAX> Inventory::m_Properties{
 		Inventory::Properties(
-			// SMALL VVV
-			Inventory::Slot::INV_0, 27, {0, 0}, {3, 1}, {4.0f * 32.0f, 2.0f * 32.0f},
+			// SMALL vvv
+			Inventory::Slot::INV_0, 27,
 			{
 				{Slot::INV_0,  {0.0f, 0.0f}},
 				{Slot::INV_1,  {0.0f, 0.0f}},
@@ -34,29 +35,15 @@ namespace Game {
 				{Slot::INV_25, {0.0f, 0.0f}},
 				{Slot::INV_26, {0.0f, 0.0f}}
 			}
-		), // SMALL ^^^ LARGE VVV
+		), // SMALL ^^^ LARGE vvv
 		Inventory::Properties(
-			Inventory::Slot::INV_0, 54, {0, 2}, {3, 4}, {4.0f * 32.0f, 3.0f * 32.0f},
+			Inventory::Slot::INV_0, 54,
 			{
 				{Slot::INV_0, {0.0f, 0.0f}}
 			}
-		), // LARGE ^^^ HOTBAR VVV
+		), // LARGE ^^^ SMALL_WITH_HOTBAR vvv
 		Inventory::Properties(
-			Inventory::Slot::INV_0, 9, {4, 3}, {7, 3}, {4.0f * 32.0f, 1 * 32.0f},
-			{
-				{Slot::INV_0, {7.0f * 0, 0.0f}},
-				{Slot::INV_1, {7.0f * 1, 0.0f}},
-				{Slot::INV_2, {7.0f * 2, 0.0f}},
-				{Slot::INV_3, {7.0f * 3, 0.0f}},
-				{Slot::INV_4, {7.0f * 4, 0.0f}},
-				{Slot::INV_5, {7.0f * 5, 0.0f}},
-				{Slot::INV_6, {7.0f * 6, 0.0f}},
-				{Slot::INV_7, {7.0f * 7, 0.0f}},
-				{Slot::INV_8, {7.0f * 8, 0.0f}}
-			}
-		),  // HOTBAR ^^^ SMALL_WITH_HOTBAR VVV
-		Inventory::Properties(
-			Inventory::Slot::INV_0, 36, {4, 0}, {7, 1}, {4 * 32.0f, 2 * 32.0f},
+			Inventory::Slot::INV_0, 36,
 			{
 				{Slot::INV_0,  {7.0f * 0, 7.0f * 0}},
 				{Slot::INV_1,  {7.0f * 1, 7.0f * 0}},
@@ -95,7 +82,21 @@ namespace Game {
 				{Slot::INV_34, {7.0f * 7, 7.0f * 3}},
 				{Slot::INV_35, {7.0f * 8, 7.0f * 3}},
 			 }
-		) // SMALL_WITH_HOTBAR ^^^
+		), // SMALL_WITH_HOTBAR ^^^ CRAFTING vvv
+		Inventory::Properties(
+			Inventory::Slot::CRAFT_0, 9,
+			{
+				{Slot::CRAFT_0,  {7.0f, 7.0f * 0}},
+				{Slot::CRAFT_1,  {7.0f, 7.0f * 1}},
+				{Slot::CRAFT_2,  {7.0f, 7.0f * 2}},
+				{Slot::CRAFT_3,  {7.0f, 7.0f * 3}},
+				{Slot::CRAFT_4,  {7.0f, 7.0f * 4}},
+				{Slot::CRAFT_5,  {7.0f, 7.0f * 5}},
+				{Slot::CRAFT_6,  {7.0f, 7.0f * 6}},
+				{Slot::CRAFT_7,  {7.0f, 7.0f * 7}},
+				{Slot::CRAFT_8,  {7.0f, 7.0f * 8}}
+			}
+		)
 	};
 
 	const Vivium::Vector2<float> Inventory::s_ItemCountOffsets[3] = {
@@ -208,6 +209,7 @@ namespace Game {
 				// Get rendering pos
 				Vivium::Vector2<float> rendering_pos(dx, dy);
 				// Little offset so it draws to the bottom right of the item
+				// TODO: change size of text based on digits
 				rendering_pos += Vivium::Vector2<float>(3.5f - (item_count_string.length() * 1.5f), -3.0f) * m_InventorySpriteScale;
 
 				// Submit text to our batch
@@ -469,6 +471,8 @@ namespace Game {
 						// Stack the items together
 						inventory_item.count += item.count;
 
+						m_ChangeItemCount(item.id, item.count);
+
 						// Successful in adding the item
 						return true;
 					}
@@ -484,6 +488,8 @@ namespace Game {
 			// Set the open slot to our item
 			m_InventoryData[(slot_base_t)open_slot] = item;
 
+			m_ChangeItemCount(item.id, item.count);
+
 			// Return that item was added to inventory
 			return true;
 		}
@@ -497,6 +503,7 @@ namespace Game {
 		return m_InventoryData.at((uint8_t)slot);
 	}
 
+	// TODO: same thing?
 	void Inventory::Update(const Slot& start_slot, uint8_t length, const Vivium::Vector2<float>& player_pos, World* world)
 	{
 		m_UpdateFloorItems(player_pos, world);
@@ -504,8 +511,6 @@ namespace Game {
 
 	void Inventory::Update(const Vivium::Vector2<float>& player_pos, World* world)
 	{
-		Properties props = GetProperties(m_InventoryID);
-
 		m_UpdateFloorItems(player_pos, world);
 	}
 
@@ -538,18 +543,56 @@ namespace Game {
 		: m_InventoryData({}), m_InventoryID(ID::MAX)
 	{}
 
+	void Inventory::m_UpdateItemCounts()
+	{
+		m_ItemCounts.clear();
+
+		// TODO: should be const ref but i think i haven't implemented that iterator yet
+		for (Item& item : m_InventoryData) {
+			m_ItemCounts.insert({ item.id, item.count });
+		}
+	}
+
+	void Inventory::m_ChangeItemCount(const Item::ID& id, int change)
+	{
+		auto it = m_ItemCounts.find(id);
+
+		if (it == m_ItemCounts.end()) {
+			if (change < 0) { LogWarn("Attempted to subtract item count when item didn't exist"); }
+			else {
+				m_ItemCounts.insert({ id, change });
+			}
+		}
+		else {
+			it->second += change;
+
+			// Clamp to 0 (although big error must've happened if we go negative)
+			if (it->second < 0) {
+				it->second = 0;
+			}
+		}
+	}
+
 	void Inventory::SetItems(const std::vector<Item>& items, const Slot& slot)
 	{
 		for (uint8_t i = 0; i < items.size(); i++) {
 			m_InventoryData.at((uint8_t)slot + i) = items.at(i);
 		}
+
+		m_UpdateItemCounts();
+	}
+
+	int Inventory::GetItemCount(const Item::ID& id) const
+	{
+		auto it = m_ItemCounts.find(id);
+
+		if (it == m_ItemCounts.end()) { return 0; }
+		else { return it->second; }
 	}
 
 	Inventory::Inventory(const ID& inventory_id)
 		: m_InventoryID(inventory_id), m_InventoryData(inventory_id)
-	{
-		Properties properties = Inventory::GetProperties(inventory_id);
-	}
+	{}
 
 	Inventory::~Inventory() {}
 
@@ -572,29 +615,34 @@ namespace Game {
 
 	void Inventory::Write(Vivium::Serialiser& s) const
 	{
+		// TODO: serialiser could check if type is an enum class?
+		typedef std::unordered_map<std::underlying_type<Item::ID>::type, int> counts_streamable_t;
+
 		// Write inventory type
 		s.Write((id_base_t)m_InventoryID);
 		// Write all items
 		s.Write(m_InventoryData);
+		// Write item counts
+		s.Write(*(counts_streamable_t*)&m_ItemCounts);
 	}
 
 	void Inventory::Read(Vivium::Serialiser& s)
 	{
+		typedef std::unordered_map<std::underlying_type<Item::ID>::type, int> counts_streamable_t;
+
 		// Read in inventory type
 		s.Read((id_base_t*)&m_InventoryID);
 		// Read all items
 		s.Read(&m_InventoryData);
+		// Read item counts
+		s.Read((counts_streamable_t*)&m_ItemCounts);
 	}
 
 	Inventory::Properties::Properties(
 		const Slot& start_slot, const slot_base_t& inventory_size,
-		const Vivium::Vector2<int>& top_left_index, const Vivium::Vector2<int>& bottom_right_index,
-		const Vivium::Vector2<float>& sprite_size,
 		const std::unordered_map<Slot, Vivium::Vector2<float>>& slot_coords
 	)
-		: start_slot(start_slot), inventory_size(inventory_size),
-		top_left_index(top_left_index), bottom_right_index(bottom_right_index),
-		sprite_size(sprite_size), slot_coords(slot_coords)
+		: start_slot(start_slot), inventory_size(inventory_size), slot_coords(slot_coords)
 	{}
 
 	Inventory::Data::Data()

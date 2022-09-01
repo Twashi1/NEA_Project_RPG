@@ -49,6 +49,7 @@ Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "_frag", "_frag", "{E8A12835
 	ProjectSection(SolutionItems) = preProject
 		Resources\shaders\circle_frag.glsl = Resources\shaders\circle_frag.glsl
 		Resources\shaders\color_frag.glsl = Resources\shaders\color_frag.glsl
+		Resources\shaders\crafting_slot_frag.glsl = Resources\shaders\crafting_slot_frag.glsl
 		Resources\shaders\daylight_frag.glsl = Resources\shaders\daylight_frag.glsl
 		Resources\shaders\floor_item_frag.glsl = Resources\shaders\floor_item_frag.glsl
 		Resources\shaders\grayscale_frag.glsl = Resources\shaders\grayscale_frag.glsl
@@ -63,6 +64,7 @@ Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "_frag", "_frag", "{E8A12835
 EndProject
 Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "_vertex", "_vertex", "{7BBE11D5-A004-4A3D-AAFD-8FD8CD485B32}"
 	ProjectSection(SolutionItems) = preProject
+		Resources\shaders\crafting_slot_vertex.glsl = Resources\shaders\crafting_slot_vertex.glsl
 		Resources\shaders\daylight_vertex.glsl = Resources\shaders\daylight_vertex.glsl
 		Resources\shaders\floor_item_vertex.glsl = Resources\shaders\floor_item_vertex.glsl
 		Resources\shaders\number_vertex.glsl = Resources\shaders\number_vertex.glsl

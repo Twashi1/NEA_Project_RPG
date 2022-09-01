@@ -3,6 +3,8 @@
 #include "World.h"
 
 namespace Game {
+	class Recipe;
+
 	class Inventory : Vivium::IStreamable {
 	public:
 		enum class Slot : uint8_t {
@@ -13,14 +15,15 @@ namespace Game {
 			INV_30, INV_31, INV_32, INV_33, INV_34, INV_35, INV_36, INV_37, INV_38, INV_39,
 			INV_40, INV_41, INV_42, INV_43, INV_44, INV_45, INV_46, INV_47, INV_48, INV_49,
 			INV_50, INV_51, INV_52, INV_53,
+			CRAFT_0, CRAFT_1, CRAFT_2, CRAFT_3, CRAFT_4, CRAFT_5, CRAFT_6, CRAFT_7, CRAFT_8,
 			CURSOR_0, MAX
 		};
 
 		enum class ID : uint8_t {
 			SMALL,
 			LARGE,  // TODO: implement
-			HOTBAR, // TODO: implement
 			SMALL_WITH_HOTBAR,
+			CRAFTING,
 			MAX
 		};
 
@@ -80,7 +83,7 @@ namespace Game {
 			void Read(Vivium::Serialiser& s) override;
 		};
 
-	private:
+	protected:
 		// TODO: needs more cleanup
 		// TODO: tile scale should reduce if theres more items
 		static constexpr float s_BGScale = 0.4f;
@@ -93,15 +96,10 @@ namespace Game {
 		struct Properties {
 			Slot start_slot;
 			uint8_t inventory_size;
-			Vivium::Vector2<int> top_left_index;
-			Vivium::Vector2<int> bottom_right_index;
-			Vivium::Vector2<float> sprite_size;
 			std::unordered_map<Slot, Vivium::Vector2<float>> slot_coords;
 
 			Properties(
 				const Slot& start_slot, const uint8_t& inventory_size,
-				const Vivium::Vector2<int>& top_left_index, const Vivium::Vector2<int>& bottom_right_index,
-				const Vivium::Vector2<float>& sprite_size,
 				const std::unordered_map<Slot, Vivium::Vector2<float>>& slot_coords
 			);
 		};
@@ -110,6 +108,8 @@ namespace Game {
 
 		Data m_InventoryData; // Small inventory largest slot is INV_26, large inventory is INV_53
 		ID m_InventoryID;
+		typedef std::unordered_map<Item::ID, int> ItemCountMap_t;
+		ItemCountMap_t m_ItemCounts;
 
 		static Vivium::Shader* m_InventoryShader;
 		static Vivium::Shader* m_TextShader;
@@ -132,6 +132,9 @@ namespace Game {
 		void m_UpdateItem(float x, float y, float width, float height, const Slot& item_slot);
 		void m_UpdateFloorItems(const Vivium::Vector2<float>& player_pos, World* world);
 
+		void m_UpdateItemCounts();
+		void m_ChangeItemCount(const Item::ID& id, int change);
+
 	public:
 		static Properties GetProperties(const Inventory::ID& id);
 
@@ -144,8 +147,8 @@ namespace Game {
 		std::vector<bool> AddItems(const std::vector<Item>& items);
 		const Item& GetItem(const Slot& slot);
 		Data& GetData();
-		// DropItem
-		// DeleteItem
+
+		int GetItemCount(const Item::ID& id) const;
 
 		std::vector<Item> GetItems(const Slot& start_slot, uint8_t length);
 		void SetItems(const std::vector<Item>& items, const Slot& slot);
@@ -161,6 +164,8 @@ namespace Game {
 
 		void Write(Vivium::Serialiser& s) const override;
 		void Read(Vivium::Serialiser& s) override;
+
+		friend Recipe;
 	};
 }
 

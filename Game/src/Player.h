@@ -3,6 +3,7 @@
 #include "World.h"
 #include "Inventory.h"
 #include "Recipe.h"
+#include "CraftingInventory.h"
 
 namespace Game {
     class Player : Vivium::IStreamable {
@@ -22,6 +23,7 @@ namespace Game {
         Vivium::Shader* m_SelectedTileShader;
 
         Inventory m_MainInventory;
+        CraftingInventory m_CraftingInventory;
 
         bool m_isMainInventoryOpened = false;
 

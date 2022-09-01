@@ -165,6 +165,68 @@ namespace Vivium {
 		++m_Count;
 	}
 
+	void Batch::Submit(const Vector2<float>& pos, const Vector2<float>& size, float tex_left, float tex_right, float tex_bottom, float tex_top, float* vertex_data, unsigned int vertex_data_count)
+	{
+		float halfwidth = size.x * 0.5f;
+		float halfheight = size.y * 0.5f;
+
+		float left = pos.x - halfwidth;
+		float right = pos.x + halfwidth;
+		float bottom = pos.y - halfheight;
+		float top = pos.y + halfheight;
+
+		// Bottom left
+		m_Vertices[m_VerticesIndex++] = left;
+		m_Vertices[m_VerticesIndex++] = bottom;
+		m_Vertices[m_VerticesIndex++] = tex_left;
+		m_Vertices[m_VerticesIndex++] = tex_bottom;
+
+		for (unsigned int i = 0; i < vertex_data_count; i++) {
+			m_Vertices[m_VerticesIndex++] = vertex_data[i];
+		}
+
+		// Bottom right
+		m_Vertices[m_VerticesIndex++] = right;
+		m_Vertices[m_VerticesIndex++] = bottom;
+		m_Vertices[m_VerticesIndex++] = tex_right;
+		m_Vertices[m_VerticesIndex++] = tex_bottom;
+
+		for (unsigned int i = 0; i < vertex_data_count; i++) {
+			m_Vertices[m_VerticesIndex++] = vertex_data[i];
+		}
+
+		// Top right
+		m_Vertices[m_VerticesIndex++] = right;
+		m_Vertices[m_VerticesIndex++] = top;
+		m_Vertices[m_VerticesIndex++] = tex_right;
+		m_Vertices[m_VerticesIndex++] = tex_top;
+
+		for (unsigned int i = 0; i < vertex_data_count; i++) {
+			m_Vertices[m_VerticesIndex++] = vertex_data[i];
+		}
+
+		// Top left
+		m_Vertices[m_VerticesIndex++] = left;
+		m_Vertices[m_VerticesIndex++] = top;
+		m_Vertices[m_VerticesIndex++] = tex_left;
+		m_Vertices[m_VerticesIndex++] = tex_top;
+
+		for (unsigned int i = 0; i < vertex_data_count; i++) {
+			m_Vertices[m_VerticesIndex++] = vertex_data[i];
+		}
+
+		std::size_t indices_offset = m_Count * 4; // 4 vertices per shape
+		m_Indices[m_IndicesIndex++] = 0 + indices_offset;
+		m_Indices[m_IndicesIndex++] = 1 + indices_offset;
+		m_Indices[m_IndicesIndex++] = 2 + indices_offset;
+		m_Indices[m_IndicesIndex++] = 2 + indices_offset;
+		m_Indices[m_IndicesIndex++] = 3 + indices_offset;
+		m_Indices[m_IndicesIndex++] = 0 + indices_offset;
+
+		// Increment shape count
+		++m_Count;
+	}
+
 	Batch::BatchData Batch::End() const
 	{
 		BatchData data;

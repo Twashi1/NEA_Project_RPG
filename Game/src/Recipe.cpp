@@ -14,7 +14,24 @@ namespace Game {
 	{
 	}
 
-	std::vector<Item> Recipe::CraftMaxFromInventory(Inventory& inventory, uint16_t count)
+	uint16_t Recipe::GetMaxCraftable(const Recipe::ID& id, Inventory* inventory)
+	{
+		uint16_t max_craftable = 0xffffU;
+
+		Recipe recipe = GetRecipe(id);
+
+		for (auto ingredient : recipe.ingredients) {
+			int count = inventory->GetItemCount(ingredient.id);
+			// Max craftable if ingredient is limiting factor
+			int ingredient_max = count / ingredient.count;
+
+			if (ingredient_max < max_craftable) max_craftable = ingredient_max;
+		}
+
+		return max_craftable;
+	}
+
+	std::vector<Item> Recipe::CraftMaxFromInventory(const Recipe::ID& id, Inventory* inventory, uint16_t count)
 	{
 		// TODO: Major cleanup needed
 		struct _IngredientData {
@@ -29,42 +46,13 @@ namespace Game {
 			{}
 		};
 
-		Inventory::Data& data = inventory.GetData();
+		Inventory::Data& data = inventory->GetData();
 
 		std::unordered_map<Item::ID, _IngredientData> ingredient_map;
 
-		// Fill ingredient map
-		for (Item& ingredient : ingredients) {
-			ingredient_map.insert({ ingredient.id, _IngredientData(ingredient.count, 0, 0) });
-		}
+		Recipe recipe = GetRecipe(id);
 
-		int max_craftable = INT_MAX;
-
-		// Iterate items in inventory
-		for (Item& item : data) {
-			if (item.id == Item::ID::VOID) { continue; }
-
-			// https://stackoverflow.com/questions/42933943/how-to-use-lambda-for-stdfind-if
-			auto it = std::find_if(ingredients.begin(), ingredients.end(),
-				[&item](const Item& ingredient) { return ingredient.id == item.id; });
-
-			// We found that item in our ingredients list
-			if (it != ingredients.end()) {
-				auto map_it = ingredient_map.find(it->id);
-
-				// If it already exists in our ingredient map
-				if (map_it != ingredient_map.end()) {
-					// Change total count and amount craftable
-					map_it->second.total_count += item.count;
-					map_it->second.amount_craftable = map_it->second.total_count / map_it->second.count_needed;
-				}
-			}
-		}
-
-		// Calculate max craftable
-		for (auto& [id, data] : ingredient_map) {
-			max_craftable = max_craftable > data.amount_craftable ? data.amount_craftable : max_craftable;
-		}
+		int max_craftable = GetMaxCraftable(id, inventory);
 
 		if (max_craftable == 0) {
 			return {};
@@ -79,15 +67,15 @@ namespace Game {
 			for (Item& item : data) {
 				if (item.id == Item::ID::VOID) { continue; }
 
-				auto it = std::find_if(ingredients.begin(), ingredients.end(),
+				auto it = std::find_if(recipe.ingredients.begin(), recipe.ingredients.end(),
 					[&item](const Item& ingredient) { return ingredient.id == item.id; });
 
 				// Item is an ingredient
-				if (it != ingredients.end()) {
-					int amount_to_delete = std::min(ingredient_map[item.id].total_count, (int)item.count);
+				if (it != recipe.ingredients.end()) {
+					int amount_to_delete = std::min(inventory->GetItemCount(item.id), (int)item.count);
 					
 					item.count -= amount_to_delete;
-					ingredient_map[item.id].total_count -= amount_to_delete;
+					inventory->m_ChangeItemCount(item.id, -amount_to_delete);
 
 					// If no item is left, set id to void
 					if (item.count <= 0) {
@@ -97,12 +85,15 @@ namespace Game {
 			}
 
 			// Create results vector
-			std::size_t results_size = results.size();
+			std::size_t results_size = recipe.results.size();
 			std::vector<Item> crafted_items(results_size);
 
 			for (std::size_t i = 0; i < results_size; i++) {
-				crafted_items[i] = Item(results[i].id, results[i].count * to_craft);
+				crafted_items[i] = Item(recipe.results[i].id, recipe.results[i].count * to_craft);
 			}
+
+			// NOTE: probably not needed
+			inventory->m_UpdateItemCounts();
 
 			return crafted_items;
 		}
@@ -111,6 +102,19 @@ namespace Game {
 
 		// ...
 		return {};
+	}
+
+	std::vector<Recipe::ID> Recipe::GetCraftableRecipes(Inventory* inventory)
+	{
+		std::vector<Recipe::ID> craftable_recipes;
+
+		for (uint16_t i = 0; i < (uint16_t)Recipe::ID::MAX; i++) {
+			int count = GetMaxCraftable((Recipe::ID)i, inventory);
+
+			if (count > 0) craftable_recipes.push_back((Recipe::ID)i);
+		}
+
+		return craftable_recipes;
 	}
 
 	Recipe Recipe::GetRecipe(const ID& id)

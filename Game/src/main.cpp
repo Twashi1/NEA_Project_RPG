@@ -34,7 +34,7 @@ int sandbox(void)
 
 int game(void)
 {
-    Vivium::Flag::Set(VIVIUM_FLAG_FUNCTION_SIGNATURE_LOGGING, false);
+    Vivium::Flag::Set(VIVIUM_FLAG_FUNCTION_SIGNATURE_LOGGING, 1);
     // Construct engine instance
     Application::Init(WIDTH, HEIGHT, FPS, true);
 
@@ -50,6 +50,7 @@ int game(void)
     WorldMap::Init();
     FloorItem::Init();
     Inventory::Init();
+    CraftingInventory::Init();
 
     Application::SetBGColor(RGBColor::BLACK);
 
@@ -76,6 +77,7 @@ int game(void)
 
     LogInfo("Window closed");
 
+    CraftingInventory::Terminate();
     Biome::Terminate();
     Inventory::Terminate();
     FloorItem::Terminate();

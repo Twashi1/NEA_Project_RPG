@@ -17,6 +17,7 @@ namespace Game {
 
         if (m_isMainInventoryOpened) {
             m_MainInventory.Render();
+            m_CraftingInventory.Render();
         }
         else {
             m_MainInventory.Render(Inventory::Slot::INV_0, 9);
@@ -68,6 +69,8 @@ namespace Game {
         if (e == Vivium::Input::State::PRESS) {
             m_isMainInventoryOpened = !m_isMainInventoryOpened;
         }
+
+        m_CraftingInventory.Update(&m_MainInventory);
     }
 
     void Player::m_UpdateSelectedTile(World& world)
@@ -85,9 +88,7 @@ namespace Game {
         Vivium::Input::State o = Vivium::Input::GetKeyState(GLFW_KEY_0);
 
         if (o == Vivium::Input::State::PRESS) {
-            auto recipe = Recipe::GetRecipe(Recipe::ID::AMETHYST_PICKAXE);
-
-            std::vector<Item> items = recipe.CraftMaxFromInventory(m_MainInventory, 1);
+            std::vector<Item> items = Recipe::CraftMaxFromInventory(Recipe::ID::AMETHYST_PICKAXE, &m_MainInventory, 1);
             m_MainInventory.AddItems(items);
         }
 
@@ -142,7 +143,7 @@ namespace Game {
     }
 
     Player::Player()
-        : m_MainInventory(Inventory::ID::SMALL_WITH_HOTBAR)
+        : m_MainInventory(Inventory::ID::SMALL_WITH_HOTBAR), m_CraftingInventory()
     {
         // Setup player quad and body
         quad = MakeRef(Vivium::Quad, 0.0f, 0.0f, 50.0f, 50.0f);
@@ -156,6 +157,8 @@ namespace Game {
         m_SelectedTileShader = new Vivium::Shader("texture_vertex", "texture_frag");
 
         TextureManager::game_atlas->Set(m_SelectedTileQuad, {2, 1}); // Set texture from index in texture atlas
+
+        m_CraftingInventory.inventory_pos = { 50.0f, 200.0f }; // TODO: fix to panel
 
         m_Time = Vivium::Timer::GetTime();
     }
