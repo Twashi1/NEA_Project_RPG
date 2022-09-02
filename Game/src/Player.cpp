@@ -13,7 +13,7 @@ namespace Game {
     {
         Vivium::Vector2<float> screen_dim = Vivium::Application::GetScreenDim();
 
-        m_MainInventory.inventory_pos = { 50.0f, -50.0f };
+        *m_MainInventory.inventory_pos = { 50.0f, -50.0f };
 
         if (m_isMainInventoryOpened) {
             m_MainInventory.Render();
@@ -150,7 +150,7 @@ namespace Game {
 
         TextureManager::game_atlas->Set(m_SelectedTileQuad, {2, 1}); // Set texture from index in texture atlas
 
-        m_CraftingInventory.inventory_pos = { 50.0f, 200.0f }; // TODO: fix to panel
+        *m_CraftingInventory.inventory_pos = { 50.0f, 200.0f }; // TODO: fix to panel
 
         m_Time = Vivium::Timer::GetTime();
     }

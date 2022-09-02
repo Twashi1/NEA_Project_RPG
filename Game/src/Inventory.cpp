@@ -143,8 +143,8 @@ namespace Game {
 			// Get coord offset to render background at
 			Vivium::Vector2<float> offset = inven_properties.slot_coords.at((Slot)slot);
 
-			float dx = inventory_pos.x + offset.x * m_InventorySpriteScale;
-			float dy = inventory_pos.y + (float)Vivium::Application::height - (offset.y * m_InventorySpriteScale);
+			float dx = inventory_pos->x + offset.x * m_InventorySpriteScale;
+			float dy = inventory_pos->y + (float)Vivium::Application::height - (offset.y * m_InventorySpriteScale);
 
 			float tile_scale = World::PIXEL_SCALE * 0.5f * m_InventorySpriteScale * 0.25f * s_BGScale;
 
@@ -182,8 +182,8 @@ namespace Game {
 			// Get coord offset to render item at
 			Vivium::Vector2<float> offset = inven_properties.slot_coords.at((Slot)slot);
 
-			float dx = inventory_pos.x + offset.x * m_InventorySpriteScale;
-			float dy = inventory_pos.y + (float)Vivium::Application::height - (offset.y * m_InventorySpriteScale);
+			float dx = inventory_pos->x + offset.x * m_InventorySpriteScale;
+			float dy = inventory_pos->y + (float)Vivium::Application::height - (offset.y * m_InventorySpriteScale);
 
 			float tile_scale = World::PIXEL_SCALE * 0.5f * m_InventorySpriteScale * 0.25f * s_ItemScale;
 
@@ -384,13 +384,14 @@ namespace Game {
 					// Within pickup range
 					if (sqr_distance <= FloorItem::PICKUP_RANGE * FloorItem::PICKUP_RANGE) {
 						// Add item to inventory
-						if (AddItem(it->GetItemData())) {
+						int remainder = AddItem(it->GetItemData());
+						if (remainder == 0) {
 							// Item was added to inventory, so erase the floor item
 							it = floor_items->erase(it);
 						}
 						else {
 							// Just increment iterator
-							++it;
+							it->m_ItemData.count = remainder;
 						}
 					}
 					else {
@@ -446,7 +447,7 @@ namespace Game {
 		m_TextShader->SetUniform3f("u_TextColor", Vivium::RGBColor::WHITE);
 
 		m_ItemShader = new Vivium::Shader("static_texture_vertex", "texture_frag");
-		m_TextObject = new Vivium::Text("", {0, 0}, Vivium::Text::Alignment::LEFT, 0.30f); // TODO: pretty ugly, later use font or something
+		m_TextObject = new Vivium::Text("", {0, 0}, Vivium::Text::Alignment::LEFT, 0.30f);
 	}
 
 	void Inventory::Terminate()
@@ -457,9 +458,22 @@ namespace Game {
 		delete m_ItemShader;
 	}
 
-	bool Inventory::AddItem(const Item& item)
+	bool Inventory::IsFull() const
+	{
+		for (slot_base_t i = m_InventoryData.start_index(); i < m_InventoryData.end_index(); i++) {
+			if (m_InventoryData.at((uint16_t)i).id == Item::ID::VOID) {
+				return false;
+			}
+		}
+
+		// If we reached the end of the loop, no open slots
+		return true;
+	}
+
+	int Inventory::AddItem(const Item& item)
 	{
 		bool itemIsStackable = Item::GetIsStackable(item.id);
+		int count_to_add = item.count;
 
 		// If our item is stackable, search the inventory first to look if we already have a place to stack the item
 		if (itemIsStackable) {
@@ -467,14 +481,19 @@ namespace Game {
 				// If our items have the same id
 				if (item.id == inventory_item.id) {
 					// If the sum of our counts is less than the stack limit
-					if (item.count + inventory_item.count <= Item::STACK_LIMIT) {
+					if (count_to_add + inventory_item.count <= Item::STACK_LIMIT) {
 						// Stack the items together
-						inventory_item.count += item.count;
+						inventory_item.count += count_to_add;
 
-						m_ChangeItemCount(item.id, item.count);
+						m_ChangeItemCount(item.id, count_to_add);
 
 						// Successful in adding the item
-						return true;
+						return 0;
+					}
+					else {
+						int available_space = Item::STACK_LIMIT - inventory_item.count;
+						count_to_add -= available_space;
+						inventory_item.count = Item::STACK_LIMIT;
 					}
 				}
 			}
@@ -491,11 +510,11 @@ namespace Game {
 			m_ChangeItemCount(item.id, item.count);
 
 			// Return that item was added to inventory
-			return true;
+			return 0;
 		}
 
-		// If we reached the end of the loop, we haven't found anywhere to stack the item, so return that we weren't successful
-		return false;
+		// If we reached the end of the loop, we haven't found anywhere to stack the item completely, so return the remaining count of the item
+		return count_to_add;
 	}
 
 	const Item& Inventory::GetItem(const Slot& slot)
@@ -540,7 +559,7 @@ namespace Game {
 	}
 
 	Inventory::Inventory()
-		: m_InventoryData({}), m_InventoryID(ID::MAX)
+		: m_InventoryData({}), m_InventoryID(ID::MAX), inventory_pos(MakeRef(Vivium::Vector2<float>, 0.0f, 0.0f))
 	{}
 
 	void Inventory::m_UpdateItemCounts()
@@ -591,7 +610,7 @@ namespace Game {
 	}
 
 	Inventory::Inventory(const ID& inventory_id)
-		: m_InventoryID(inventory_id), m_InventoryData(inventory_id)
+		: m_InventoryID(inventory_id), m_InventoryData(inventory_id), inventory_pos(MakeRef(Vivium::Vector2<float>, 0.0f, 0.0f))
 	{}
 
 	Inventory::~Inventory() {}
@@ -601,12 +620,12 @@ namespace Game {
 		return m_InventoryData;
 	}
 
-	std::vector<bool> Inventory::AddItems(const std::vector<Item>& items)
+	std::vector<int> Inventory::AddItems(const std::vector<Item>& items)
 	{
 		if (items.empty()) return {};
 
 		std::size_t items_size = items.size();
-		std::vector<bool> return_values(items_size);
+		std::vector<int> return_values(items_size);
 
 		for (std::size_t i = 0; i < items_size; i++) {
 			return_values[i] = AddItem(items[i]);

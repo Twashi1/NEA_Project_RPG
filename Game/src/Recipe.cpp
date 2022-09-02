@@ -33,36 +33,19 @@ namespace Game {
 
 	std::vector<Item> Recipe::CraftMaxFromInventory(const Recipe::ID& id, Inventory* inventory, uint16_t count)
 	{
-		// TODO: Major cleanup needed
-		struct _IngredientData {
-			int count_needed = 0;
-			int total_count = 0;
-			int amount_craftable = 0;
-
-			_IngredientData() = default;
-
-			_IngredientData(int count_needed, int total_count, int amount_craftable)
-				: count_needed(count_needed), total_count(total_count), amount_craftable(amount_craftable)
-			{}
-		};
+		if (inventory->IsFull()) { return {}; }
 
 		Inventory::Data& data = inventory->GetData();
 
-		std::unordered_map<Item::ID, _IngredientData> ingredient_map;
-
 		Recipe recipe = GetRecipe(id);
 
-		int max_craftable = GetMaxCraftable(id, inventory);
+		int max_craftable = Recipe::GetMaxCraftable(id, inventory);
 
 		if (max_craftable == 0) {
 			return {};
 		}
 		else {
 			int to_craft = std::min(max_craftable, (int)count);
-
-			for (auto& [id, data] : ingredient_map) {
-				data.total_count = data.count_needed * to_craft;
-			}
 
 			for (Item& item : data) {
 				if (item.id == Item::ID::VOID) { continue; }
@@ -73,6 +56,7 @@ namespace Game {
 				// Item is an ingredient
 				if (it != recipe.ingredients.end()) {
 					int amount_to_delete = std::min(inventory->GetItemCount(item.id), (int)item.count);
+					amount_to_delete = std::min(amount_to_delete, to_craft * it->count);
 					
 					item.count -= amount_to_delete;
 					inventory->m_ChangeItemCount(item.id, -amount_to_delete);

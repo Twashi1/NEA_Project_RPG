@@ -67,14 +67,18 @@ namespace Game {
 			Data(const Data& other);
 			Data(Data&& other) noexcept;
 
-			inline slot_base_t size() { return m_Size; }
-			inline slot_base_t start_index() { return m_StartIndex; }
-			inline slot_base_t end_index() { return m_StartIndex + m_Size; }
+			inline slot_base_t size() const { return m_Size; }
+			inline slot_base_t start_index() const { return m_StartIndex; }
+			inline slot_base_t end_index() const { return m_StartIndex + m_Size; }
 
 			inline Item& operator[](const slot_base_t& index) { return m_Data[index]; }
 			inline Item& operator[](const Slot& index) { return m_Data[(slot_base_t)index]; }
 			inline Item& at(const slot_base_t& index) { return m_Data.at(index); }
 			inline Item& at(const Slot& index) { return m_Data.at((slot_base_t)index); }
+			inline const Item& operator[](const slot_base_t& index) const { return m_Data[index]; }
+			inline const Item& operator[](const Slot& index) const { return m_Data[(slot_base_t)index]; }
+			inline const Item& at(const slot_base_t& index) const { return m_Data.at(index); }
+			inline const Item& at(const Slot& index) const { return m_Data.at((slot_base_t)index); }
 
 			Iterator begin();
 			Iterator end();
@@ -141,10 +145,12 @@ namespace Game {
 		static void Init();
 		static void Terminate();
 
-		Vivium::Vector2<float> inventory_pos;
+		Ref(Vivium::Vector2<float>) inventory_pos;
 
-		bool AddItem(const Item& item);
-		std::vector<bool> AddItems(const std::vector<Item>& items);
+		bool IsFull() const;
+
+		int AddItem(const Item& item);
+		std::vector<int> AddItems(const std::vector<Item>& items);
 		const Item& GetItem(const Slot& slot);
 		Data& GetData();
 

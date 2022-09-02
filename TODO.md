@@ -59,6 +59,10 @@
     - [x] Add serialise helper function for map and unordered_map
 
 # Game
+## General
+- [ ] Switch to 16x16
+- [ ] Tileset https://www.gamedev.net/tutorials/_/technical/game-programming/tilemap-based-game-techniques-handling-terrai-r934/
+
 ## World
 - Remove bot/mid/top for tiles, just foreground/background
 - [x] Small world map in corner
@@ -83,9 +87,6 @@
 - [x] Items/Floor drops
      - [x] Items with counts of 2 will display 2 copies of the item texture, and counts of 3 or above will display 3 copies of the item texture
      - [x] Items should move slightly immediately after being broken
-- [ ] Tiles should cleanly connect to each other
-    - [ ] Draw possible transitions
-    - [ ] Create logic to select appropriate transition
 - [x] Tile breaking
     - [x] Implement selecting a tile to break and holding lmb to start timer
     - [ ] Only decor/top tiles can be broken
@@ -127,6 +128,7 @@
 - INL file for Vector2
 
 # Bugs
+- Rare bug where a Vector2 which is an index for a loaded region is unallocated and checked for equivelance
 - ~~Going fullscreen crashes game~~
 - Can't move items between hotbar slots unless inventory is opened
 - ~~Cursor no longer switches when hovering text input box~~
