@@ -6,7 +6,7 @@
 #include "CraftingInventory.h"
 
 namespace Game {
-    class Player : Vivium::IStreamable {
+    class Player : Vivium::Streamable {
     private:
         Vivium::Timer m_Timer; // Stores last time object was updated
         double m_Time = 0.0;

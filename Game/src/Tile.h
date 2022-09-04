@@ -3,7 +3,6 @@
 #include "Item.h"
 
 namespace Game {
-	// TODO move tile texture atlas to be stored in tile class
 	class Tile {
 	public:
 		static constexpr float SPRITE_SIZE = 16.0f;
@@ -34,7 +33,7 @@ namespace Game {
 			MAX
 		};
 
-		struct Properties : Vivium::IStreamable {
+		struct Properties : Vivium::Streamable {
 			std::string name;						// Tile::ID as string
 			bool isPhysical;						// If tile is something the player can collide with
 			bool isMineable;						// If player can mine the item

@@ -6,7 +6,7 @@
 #include "Serialiser.h"
 
 namespace Vivium {
-	struct VIVIUM_API Rect : public IStreamable {
+	struct VIVIUM_API Rect : public Streamable {
 	protected:
 		static const Vector2<float> m_VertexOffsets[4]; // For calculating vertices
 

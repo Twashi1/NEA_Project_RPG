@@ -1,54 +1,16 @@
 #pragma once
 
 #include "Core.h"
-#include "Logger.h"
-#include "Vector2.h"
-#include "Utils.h"
+#include "Stream.h"
+#include "Streamable.h"
 
 /*
 TODO: add functionality for pointers?
 TODO: text serialisation
-TODO: containers
 TODO: cleanup
-TODO: split IStreamable, Serialiser, Stream into seperate files
-TODO: map/unordered map
 */
 
 namespace Vivium {
-	class IStreamable;
-	// TODO still ugly
-	template <typename T> inline constexpr bool __BaseStreamableTypes = std::is_arithmetic_v<T> || std::is_same_v<T, std::string> || std::is_same_v<T, bool>;
-	template <typename T> concept IsBaseStreamable = __BaseStreamableTypes<T>;
-	template <typename T> concept IsStreamable = std::is_base_of_v<IStreamable, T>
-	|| __BaseStreamableTypes<T>
-		|| std::is_same_v<T, Vector2<int8_t>>
-		|| std::is_same_v<T, Vector2<uint8_t>>
-		|| std::is_same_v<T, Vector2<int16_t>>
-		|| std::is_same_v<T, Vector2<uint16_t>>
-		|| std::is_same_v<T, Vector2<int32_t>>
-		|| std::is_same_v<T, Vector2<uint32_t>>
-		|| std::is_same_v<T, Vector2<long>>
-		|| std::is_same_v<T, Vector2<float>>
-		|| std::is_same_v<T, Vector2<double>>;
-
-	class Serialiser;
-
-	class VIVIUM_API Stream {
-	public:
-		enum Flags : int {
-			TEXT = NULL,
-			BINARY = std::ios::binary,
-			TRUNC = std::ios::trunc,
-			APPEND = std::ios::app
-		};
-
-		std::ofstream* out = nullptr;
-		std::ifstream* in = nullptr;
-
-		Stream();
-		~Stream();
-	};
-
 	class VIVIUM_API Serialiser {
 	private:
 		/* WriteBinary */
@@ -205,8 +167,8 @@ namespace Vivium {
 			if constexpr (!IsStreamable<T>) {
 				LogError("Object type {} is not Streamable", typeid(T).name());
 			}
-			// If the object inherits IStreamable, call IStreamable's write
-			else if constexpr (std::is_base_of_v<IStreamable, T>) {
+			// If the object inherits Streamable, call Streamable's write
+			else if constexpr (std::is_base_of_v<Streamable, T>) {
 				object.Write(*this);
 			}
 			// Its a trivial type
@@ -220,8 +182,8 @@ namespace Vivium {
 			if constexpr (!IsStreamable<T>) {
 				LogError("Object type {} is not Streamable", typeid(T).name());
 			}
-			// If the object inherits IStreamable, call IStreamable's write
-			else if constexpr (std::is_base_of_v<IStreamable, T>) {
+			// If the object inherits Streamable, call Streamable's write
+			else if constexpr (std::is_base_of_v<Streamable, T>) {
 				std::size_t size = object.size();
 				Write<std::size_t>(size);
 
@@ -240,8 +202,8 @@ namespace Vivium {
 			if constexpr (!IsStreamable<T>) {
 				LogError("Object type {} is not Streamable", typeid(T).name());
 			}
-			// If the object inherits IStreamable, call IStreamable's write
-			else if constexpr (std::is_base_of_v<IStreamable, T>) {
+			// If the object inherits Streamable, call Streamable's write
+			else if constexpr (std::is_base_of_v<Streamable, T>) {
 				for (std::size_t i = 0; i < Size; i++) {
 					Write<T>(object[i]);
 				}
@@ -293,8 +255,8 @@ namespace Vivium {
 			if constexpr (!IsStreamable<T>) {
 				LogError("Object type {} is not Streamable", typeid(T).name());
 			}
-			// If the object inherits IStreamable, call IStreamable's write
-			else if constexpr (std::is_base_of_v<IStreamable, T>) {
+			// If the object inherits Streamable, call Streamable's write
+			else if constexpr (std::is_base_of_v<Streamable, T>) {
 				for (std::size_t i = 0; i < length; i++) {
 					Write<T>(object_array[i]);
 				}
@@ -312,8 +274,8 @@ namespace Vivium {
 			if constexpr (!IsStreamable<T>) {
 				LogError("Object type {} is not Streamable", typeid(T).name());
 			}
-			// If the object inherits IStreamable, call IStreamable's read
-			else if constexpr (std::is_base_of_v<IStreamable, T>) {
+			// If the object inherits Streamable, call Streamable's read
+			else if constexpr (std::is_base_of_v<Streamable, T>) {
 				memory->Read(*this);
 			}
 			// Its a trivial type
@@ -328,8 +290,8 @@ namespace Vivium {
 			if constexpr (!IsStreamable<T>) {
 				LogError("Object type {} is not Streamable", typeid(T).name());
 			}
-			// If the object inherits IStreamable, call IStreamable's read
-			else if constexpr (std::is_base_of_v<IStreamable, T>) {
+			// If the object inherits Streamable, call Streamable's read
+			else if constexpr (std::is_base_of_v<Streamable, T>) {
 				std::size_t size;
 				Read<std::size_t>(&size);
 
@@ -351,8 +313,8 @@ namespace Vivium {
 			if constexpr (!IsStreamable<T>) {
 				LogError("Object type {} is not Streamable", typeid(T).name());
 			}
-			// If the object inherits IStreamable, call IStreamable's read
-			else if constexpr (std::is_base_of_v<IStreamable, T>) {
+			// If the object inherits Streamable, call Streamable's read
+			else if constexpr (std::is_base_of_v<Streamable, T>) {
 				for (std::size_t i = 0; i < Size; i++) {
 					Read<T>(&memory->at(i));
 				}
@@ -423,8 +385,8 @@ namespace Vivium {
 			if constexpr (!IsStreamable<T>) {
 				LogError("Object type {} is not Streamable", typeid(T).name());
 			}
-			// If the object inherits IStreamable, call IStreamable's read
-			else if constexpr (std::is_base_of_v<IStreamable, T>) {
+			// If the object inherits Streamable, call Streamable's read
+			else if constexpr (std::is_base_of_v<Streamable, T>) {
 				for (std::size_t i = 0; i < length; i++) {
 					Read<T>(&(*memory)[i]);
 				}
@@ -441,8 +403,8 @@ namespace Vivium {
 			if constexpr (!IsStreamable<T>) {
 				LogError("Object type {} is not Streamable", typeid(T).name());
 			}
-			// If the object inherits IStreamable, call IStreamable's read
-			else if constexpr (std::is_base_of_v<IStreamable, T>) {
+			// If the object inherits Streamable, call Streamable's read
+			else if constexpr (std::is_base_of_v<Streamable, T>) {
 				for (std::size_t i = 0; i < length; i++) {
 					Read<T>(&memory[i]);
 				}
@@ -452,14 +414,5 @@ namespace Vivium {
 				m_ReadBinary(m_Stream, memory, length);
 			}
 		}
-	};
-
-	class VIVIUM_API IStreamable {
-	public:
-		virtual void Write(Serialiser& s) const = 0;
-		virtual void Read(Serialiser& s) = 0;
-
-		IStreamable() = default;
-		virtual ~IStreamable() = default;
 	};
 }

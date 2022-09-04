@@ -12,7 +12,7 @@ namespace Vivium {
 	class Application;
 	class TextureAtlas;
 
-	struct VIVIUM_API Quad : protected Rect, public IStreamable {
+	struct VIVIUM_API Quad : protected Rect, public Streamable {
 	private:
 		std::vector<float> m_TexCoords; // TODO: probably not working
 

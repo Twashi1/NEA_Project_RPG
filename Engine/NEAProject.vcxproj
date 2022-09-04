@@ -45,6 +45,7 @@
     <ClCompile Include="src\Vivium\Shader.cpp" />
     <ClCompile Include="src\Vivium\Slider.cpp" />
     <ClCompile Include="src\Vivium\Sprite.cpp" />
+    <ClCompile Include="src\Vivium\Stream.cpp" />
     <ClCompile Include="src\Vivium\Text.cpp" />
     <ClCompile Include="src\Vivium\TextInput.cpp" />
     <ClCompile Include="src\Vivium\Texture.cpp" />
@@ -83,6 +84,8 @@
     <ClInclude Include="src\Vivium\Shader.h" />
     <ClInclude Include="src\Vivium\Slider.h" />
     <ClInclude Include="src\Vivium\Sprite.h" />
+    <ClInclude Include="src\Vivium\Stream.h" />
+    <ClInclude Include="src\Vivium\Streamable.h" />
     <ClInclude Include="src\Vivium\Text.h" />
     <ClInclude Include="src\Vivium\TextInput.h" />
     <ClInclude Include="src\Vivium\Texture.h" />

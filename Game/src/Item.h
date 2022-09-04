@@ -3,7 +3,7 @@
 #include "TextureManager.h"
 
 namespace Game {
-	class Item : Vivium::IStreamable {
+	class Item : Vivium::Streamable {
 	public:
 		enum class ID : uint16_t {
 			VOID,
@@ -26,7 +26,7 @@ namespace Game {
 		};
 
 		// Global properties per item
-		struct Properties : Vivium::IStreamable {
+		struct Properties : Vivium::Streamable {
 		public:
 			std::string name;
 			bool isStackable;
@@ -39,7 +39,7 @@ namespace Game {
 			void Read(Vivium::Serialiser& s) override;
 		};
 
-		struct DropData : Vivium::IStreamable {
+		struct DropData : Vivium::Streamable {
 		public:
 			Item::ID id;
 			uint16_t min_count;
@@ -53,7 +53,7 @@ namespace Game {
 		};
 
 		// Stored per tile, maps weights to list of potential drops
-		struct DropTable : Vivium::IStreamable {
+		struct DropTable : Vivium::Streamable {
 		private:
 			unsigned int m_Sum = 0;
 
@@ -92,25 +92,12 @@ namespace Game {
 		void Read(Vivium::Serialiser& s) override;
 
 		friend std::ostream& operator<<(std::ostream& os, const Item::ID& id) {
-			std::string id_string;
-
-			switch (id) {
-			case Game::Item::ID::VOID:				id_string = "Void";				break;
-			case Game::Item::ID::AMETHYST_CRYSTAL:	id_string = "Amethyst crystal"; break;
-			case Game::Item::ID::EMERALD_CRYSTAL:	id_string = "Emerald crystal";	break;
-			case Game::Item::ID::RUBY_CRYSTAL:		id_string = "Ruby crystal";		break;
-			case Game::Item::ID::SAPPHIRE_CRYSTAL:	id_string = "Sapphire crystal"; break;
-			case Game::Item::ID::TOPAZ_CRYSTAL:		id_string = "Topaz crystal";	break;
-			case Game::Item::ID::LOG:				id_string = "Log";				break;
-			default:								id_string = "InvalidID";		break;
-			}
-
-			os << id_string;
+			os << Item::GetName(id);
 			return os;
 		}
 
 		friend std::ostream& operator<<(std::ostream& os, const Item& item) {
-			os << "{" << item.id << ", " << item.count << "}";
+			os << "{" << Item::GetName(item.id) << ", " << item.count << "}";
 			return os;
 		}
 
@@ -120,7 +107,7 @@ namespace Game {
 
 	class Inventory;
 
-	class FloorItem : Vivium::IStreamable {
+	class FloorItem : Vivium::Streamable {
 	private:
 		Item m_ItemData;
 		Ref(Vivium::Quad) m_Quad;
@@ -169,21 +156,8 @@ namespace std {
 	template <>
 	struct formatter<Game::Item::ID> : formatter<string> {
 		auto format(Game::Item::ID id, format_context& ctx) {
-			std::string id_string;
-
-			switch (id) {
-			case Game::Item::ID::VOID:				id_string = "Void";				break;
-			case Game::Item::ID::AMETHYST_CRYSTAL:	id_string = "Amethyst crystal"; break;
-			case Game::Item::ID::EMERALD_CRYSTAL:	id_string = "Emerald crystal";	break;
-			case Game::Item::ID::RUBY_CRYSTAL:		id_string = "Ruby crystal";		break;
-			case Game::Item::ID::SAPPHIRE_CRYSTAL:	id_string = "Sapphire crystal"; break;
-			case Game::Item::ID::TOPAZ_CRYSTAL:		id_string = "Topaz crystal";	break;
-			case Game::Item::ID::LOG:				id_string = "Log";				break;
-			default:								id_string = "InvalidID";		break;
-			}
-
 			return formatter<string>::format(
-				id_string, ctx);
+				Game::Item::GetName(id), ctx);
 		}
 	};
 

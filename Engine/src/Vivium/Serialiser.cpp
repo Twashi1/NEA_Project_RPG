@@ -1,16 +1,6 @@
 #include "Serialiser.h"
 
 namespace Vivium {
-	Stream::Stream() {}
-
-	Stream::~Stream() {
-		if (in != nullptr) { in->close(); }
-		if (out != nullptr) { out->close(); }
-
-		delete in;
-		delete out;
-	}
-
 	Serialiser::Serialiser(int flags)
 		: m_Flags(flags)
 	{

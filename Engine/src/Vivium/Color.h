@@ -5,7 +5,7 @@
 #include "Serialiser.h"
 
 namespace Vivium {
-	struct VIVIUM_API RGBColor : public IStreamable {
+	struct VIVIUM_API RGBColor : public Streamable {
 	private:
 		char m_DigitToHex(const uint8_t& digit) const;
 

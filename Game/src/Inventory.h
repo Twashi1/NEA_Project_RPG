@@ -5,7 +5,7 @@
 namespace Game {
 	class Recipe;
 
-	class Inventory : Vivium::IStreamable {
+	class Inventory : Vivium::Streamable {
 	public:
 		enum class Slot : uint8_t {
 			INVALID,
@@ -30,7 +30,7 @@ namespace Game {
 		using slot_base_t = std::underlying_type<Slot>::type;
 		using id_base_t = std::underlying_type<ID>::type;
 
-		class Data : Vivium::IStreamable {
+		class Data : Vivium::Streamable {
 		private:
 			std::array<Item, (slot_base_t)Slot::MAX> m_Data;
 			slot_base_t m_StartIndex;
