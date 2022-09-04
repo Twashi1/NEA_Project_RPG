@@ -18,7 +18,6 @@ namespace Vivium {
 
     unsigned int Application::m_FramesProcessed = 0;
     double Application::m_ProcessingTime = 0.0;
-    bool Application::isStatsEnabled = true;
 
     VersionNumber Application::m_VersionNumber = "v0.0.0";
     Ref(TextureAtlas) Application::engine_icons = nullptr;
@@ -131,12 +130,11 @@ namespace Vivium {
         glClearColor(color.r, color.g, color.b, 1.0f);
     }
 
-    void Application::Init(int nwidth, int nheight, int nfps, bool nisStatsEnabled, const char* nresources_path)
+    void Application::Init(int nwidth, int nheight, int nfps, const char* nresources_path)
     {
         Application::width = nwidth;
         Application::height = nheight;
         Application::m_FPS = nfps; Application::m_TimePerFrame = 1.0 / (double)m_FPS;
-        Application::isStatsEnabled = nisStatsEnabled;
 
         sound_engine = irrklang::createIrrKlangDevice();
 
@@ -242,16 +240,14 @@ namespace Vivium {
         glBlendFunc(GL_SRC_ALPHA, GL_ONE_MINUS_SRC_ALPHA);
 
         // Create all text renderables for stats
-        if (isStatsEnabled) {
-            m_StatsTextMap.insert({ STATS_INDEX::AVERAGE_TPF,            MakeRef(Text, "", Vector2<float>(5, -15), Text::Alignment::LEFT, 0.25)  });
-            m_StatsTextMap.insert({ STATS_INDEX::PROCESSING_PERCENTAGE,  MakeRef(Text, "", Vector2<float>(5, -30), Text::Alignment::LEFT, 0.25)  });
-            m_StatsTextMap.insert({ STATS_INDEX::FPS,                    MakeRef(Text, "", Vector2<float>(5, -45), Text::Alignment::LEFT, 0.25)  });
-            m_StatsTextMap.insert({ STATS_INDEX::PLAYER_POS,             MakeRef(Text, "", Vector2<float>(5, -100), Text::Alignment::LEFT, 0.25) });
+        m_StatsTextMap.insert({ STATS_INDEX::AVERAGE_TPF,            MakeRef(Text, "", Vector2<float>(5, -15), Text::Alignment::LEFT, 0.25)  });
+        m_StatsTextMap.insert({ STATS_INDEX::PROCESSING_PERCENTAGE,  MakeRef(Text, "", Vector2<float>(5, -30), Text::Alignment::LEFT, 0.25)  });
+        m_StatsTextMap.insert({ STATS_INDEX::FPS,                    MakeRef(Text, "", Vector2<float>(5, -45), Text::Alignment::LEFT, 0.25)  });
+        m_StatsTextMap.insert({ STATS_INDEX::PLAYER_POS,             MakeRef(Text, "", Vector2<float>(5, -100), Text::Alignment::LEFT, 0.25) });
 
-            // Anchor the text objects
-            for (auto& [index, text] : m_StatsTextMap) {
-                window_panel->Anchor(Panel::ANCHOR::LEFT, Panel::ANCHOR::TOP, text);
-            }
+        // Anchor the text objects
+        for (auto& [index, text] : m_StatsTextMap) {
+            window_panel->Anchor(Panel::ANCHOR::LEFT, Panel::ANCHOR::TOP, text);
         }
 
         // Initialise cursor objects

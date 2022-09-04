@@ -91,9 +91,19 @@ namespace Vivium {
         return m_Rotation;
     }
 
+    void Camera::SetProjMat(const glm::mat4& proj)
+    {
+        m_ProjMat = proj;
+    }
+
     const glm::mat4& Camera::GetProjMat() const
     {
         return m_ProjMat;
+    }
+
+    void Camera::SetViewMat(const glm::mat4& view)
+    {
+        m_ViewMat = view;
     }
 
     const glm::mat4& Camera::GetViewMat() const

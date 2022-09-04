@@ -11,7 +11,7 @@ using namespace Game;
 
 int sandbox(void)
 {
-    Application::Init(WIDTH, HEIGHT, FPS, true);
+    Application::Init(WIDTH, HEIGHT, FPS);
 
     Text my_text("abcdefgh\nhijk\nlmnop", Vivium::Vector2<float>{200.0f, 200.0f}, Text::Alignment::CENTER, 0.25f);
 
@@ -36,7 +36,7 @@ int game(void)
 {
     Vivium::Flag::Set(VIVIUM_FLAG_FUNCTION_SIGNATURE_LOGGING, 1);
     // Construct engine instance
-    Application::Init(WIDTH, HEIGHT, FPS, true);
+    Application::Init(WIDTH, HEIGHT, FPS);
 
     Shader texture_shader("texture_vertex", "texture_frag");
     Shader colour_shader("world_vertex", "color_frag"); colour_shader.SetUniform3f("u_Color", RGBColor::BLUE);
@@ -53,8 +53,6 @@ int game(void)
     CraftingInventory::Init();
 
     Application::SetBGColor(RGBColor::BLACK);
-
-    // Flag::Set(VIVIUM_FLAG_DRAW_PHYSICS_CIRCLES);
 
     MainMenu main_menu{};
 

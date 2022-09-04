@@ -13,10 +13,10 @@ namespace Game {
 		std::array<Tile, SIZE> tiles; // 1D array of tile ids
 		std::array<Biome::ID, SIZE> biomes; // 1D array of the biome each tile is in
 
-		Region();
-		Region(const Region& other) = delete;
+		Region() = default;
+		Region(const Region& other) = delete; // NOTE: could be available now
 		Region(Region&& other) noexcept;
-		~Region();
+		~Region() = default;
 
 		Tile& Index(int x, int y);
 		Tile& Index(const Vivium::Vector2<int>& pos);

@@ -49,7 +49,8 @@ namespace Vivium {
 		void Submit(const Vector2<float>& pos, const Vector2<float>& size, float tex_left, float tex_right, float tex_bottom, float tex_top);
 		void Submit(float left, float right, float bottom, float top, float tex_left, float tex_right, float tex_bottom, float tex_top);
 		void Submit(const Vector2<float>& pos, const Vector2<float>& size, float tex_left, float tex_right, float tex_bottom, float tex_top, float* vertex_data, unsigned int vertex_data_count);
-	
+		void Submit(float* data, std::size_t count);
+
 		template <typename T> requires IsBatchable<T>
 		void Submit(const T* batchable_object)
 		{

@@ -1,19 +1,9 @@
 #include "Region.h"
 
 namespace Game {
-    Region::Region()
-    {
-        // Allocate memory for tiles array
-        // tiles = new Tile[Region::SIZE];
-    }
-
     Region::Region(Region&& other) noexcept
         : tiles(std::move(other.tiles)), biomes(std::move(other.biomes))
     {}
-
-    Region::~Region()
-    {
-    }
 
     Tile& Region::Index(int x, int y)
     {

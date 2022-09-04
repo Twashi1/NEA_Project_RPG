@@ -165,6 +165,23 @@ namespace Vivium {
 		++m_Count;
 	}
 
+	void Batch::Submit(float* data, std::size_t count)
+	{
+		std::memcpy(m_Vertices + m_VerticesIndex * sizeof(float), data, count * sizeof(float));
+
+		m_VerticesIndex += count;
+
+		std::size_t indices_offset = m_Count * 4; // 4 vertices per shape
+		m_Indices[m_IndicesIndex++] = 0 + indices_offset;
+		m_Indices[m_IndicesIndex++] = 1 + indices_offset;
+		m_Indices[m_IndicesIndex++] = 2 + indices_offset;
+		m_Indices[m_IndicesIndex++] = 2 + indices_offset;
+		m_Indices[m_IndicesIndex++] = 3 + indices_offset;
+		m_Indices[m_IndicesIndex++] = 0 + indices_offset;
+
+		++m_Count;
+	}
+
 	void Batch::Submit(const Vector2<float>& pos, const Vector2<float>& size, float tex_left, float tex_right, float tex_bottom, float tex_top, float* vertex_data, unsigned int vertex_data_count)
 	{
 		float halfwidth = size.x * 0.5f;

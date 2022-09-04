@@ -1,19 +1,20 @@
 #include "VertexBuffer.h"
 
 namespace Vivium {
-	const GLSLDataType GLSLDataType::FLOAT =	{ sizeof(float),			GL_FLOAT,		 1 };
-	const GLSLDataType GLSLDataType::VEC2 =		{ sizeof(float) * 2,		GL_FLOAT,		 2 };
-	const GLSLDataType GLSLDataType::VEC3 =		{ sizeof(float) * 3,		GL_FLOAT,		 3 };
-	const GLSLDataType GLSLDataType::VEC4 =		{ sizeof(float) * 4,		GL_FLOAT,		 4 };
-	const GLSLDataType GLSLDataType::INT =		{ sizeof(int),				GL_INT,			 1 };
-	const GLSLDataType GLSLDataType::IVEC2 =	{ sizeof(int) * 2,			GL_INT,			 2 };
-	const GLSLDataType GLSLDataType::IVEC3 =	{ sizeof(int) * 3,			GL_INT,			 3 };
-	const GLSLDataType GLSLDataType::IVEC4 =	{ sizeof(int) * 4,			GL_INT,			 4 };
-	const GLSLDataType GLSLDataType::UINT =		{ sizeof(unsigned int),		GL_UNSIGNED_INT, 1 };
-	const GLSLDataType GLSLDataType::UVEC2 =	{ sizeof(unsigned int) * 2, GL_UNSIGNED_INT, 2 };
-	const GLSLDataType GLSLDataType::UVEC3 =	{ sizeof(unsigned int) * 3, GL_UNSIGNED_INT, 3 };
-	const GLSLDataType GLSLDataType::UVEC4 =	{ sizeof(unsigned int) * 4, GL_UNSIGNED_INT, 4 };
-	const GLSLDataType GLSLDataType::BOOL =		{ sizeof(bool),				GL_BOOL,		 1 };
+	const GLSLDataType GLSLDataType::FLOAT =	{ sizeof(float),			GL_FLOAT,		 1  };
+	const GLSLDataType GLSLDataType::VEC2 =		{ sizeof(float) * 2,		GL_FLOAT,		 2  };
+	const GLSLDataType GLSLDataType::VEC3 =		{ sizeof(float) * 3,		GL_FLOAT,		 3  };
+	const GLSLDataType GLSLDataType::VEC4 =		{ sizeof(float) * 4,		GL_FLOAT,		 4  };
+	const GLSLDataType GLSLDataType::INT =		{ sizeof(int),				GL_INT,			 1  };
+	const GLSLDataType GLSLDataType::IVEC2 =	{ sizeof(int) * 2,			GL_INT,			 2  };
+	const GLSLDataType GLSLDataType::IVEC3 =	{ sizeof(int) * 3,			GL_INT,			 3  };
+	const GLSLDataType GLSLDataType::IVEC4 =	{ sizeof(int) * 4,			GL_INT,			 4  };
+	const GLSLDataType GLSLDataType::UINT =		{ sizeof(unsigned int),		GL_UNSIGNED_INT, 1  };
+	const GLSLDataType GLSLDataType::UVEC2 =	{ sizeof(unsigned int) * 2, GL_UNSIGNED_INT, 2  };
+	const GLSLDataType GLSLDataType::UVEC3 =	{ sizeof(unsigned int) * 3, GL_UNSIGNED_INT, 3  };
+	const GLSLDataType GLSLDataType::UVEC4 =	{ sizeof(unsigned int) * 4, GL_UNSIGNED_INT, 4  };
+	const GLSLDataType GLSLDataType::BOOL =		{ sizeof(bool),				GL_BOOL,		 1  };
+	const GLSLDataType GLSLDataType::MAT4x4 =	{ sizeof(float) * 4 * 4,	GL_FLOAT,		 16 };
 
 	GLSLDataType::GLSLDataType(unsigned int size, unsigned int type, unsigned int component_count)
 		: size(size), gl_type(type), component_count(component_count)

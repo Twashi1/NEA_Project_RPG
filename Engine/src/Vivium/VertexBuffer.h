@@ -41,6 +41,7 @@ namespace Vivium {
 		static const GLSLDataType UVEC3;
 		static const GLSLDataType UVEC4;
 		static const GLSLDataType BOOL;
+		static const GLSLDataType MAT4x4;
 	};
 
 	class VIVIUM_API BufferElement {

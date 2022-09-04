@@ -37,8 +37,9 @@ namespace Vivium {
 
         float GetRotation() const;
 
+        void SetProjMat(const glm::mat4& proj);
         const glm::mat4& GetProjMat() const;
-
+        void SetViewMat(const glm::mat4& view);
         const glm::mat4& GetViewMat() const;
 
         Camera();

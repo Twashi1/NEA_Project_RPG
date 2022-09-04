@@ -48,7 +48,7 @@ namespace Vivium {
 
         static std::unordered_map<STATS_INDEX, Ref(Text)> m_StatsTextMap;
 
-        static VersionNumber m_VersionNumber; // Application version number
+        static VersionNumber m_VersionNumber; // Application version number (basically unused)
 
         // Calculates average time per frame, and will display warning if engine is running behind
         static void m_CalculatePerformance(double dt);
@@ -56,9 +56,6 @@ namespace Vivium {
         static std::unordered_map<CURSOR_TYPE, GLFWcursor*> m_CursorMap;
 
     public:
-        // TODO use flags system instead
-        static bool isStatsEnabled; // Determines if stats should be calculated and displayed
-
         static Ref(TextureAtlas) engine_icons; // Texture for engine icons
 
         static GLFWwindow* window;  // Pointer to GLFW window
@@ -74,7 +71,7 @@ namespace Vivium {
         // Set clear screen/background color
         static void SetBGColor(const RGBColor& color);
 
-        static void Init(int nwidth, int nheight, int nfps, bool nisStatsEnabled = false, const char* resources_path = "../Resources");
+        static void Init(int nwidth, int nheight, int nfps, const char* resources_path = "../Resources");
         static void Terminate();
 
         static void StartSound(const std::string& file);
@@ -86,6 +83,7 @@ namespace Vivium {
 
         static void SetCursor(const CURSOR_TYPE& cursor);
 
+        // TODO: pretty specific, only for games with players
         static void UpdateStats(const Body& player_body);
 
         static void EnableWireframe();
