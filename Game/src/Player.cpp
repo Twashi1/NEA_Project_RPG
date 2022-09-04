@@ -3,7 +3,7 @@
 namespace Game {
     void Player::m_RenderSelectedTile()
     {
-        if (selected_tile.bot != Tile::ID::VOID) {
+        if (selected_tile.background != Tile::ID::VOID) {
             m_SelectedTileQuad->SetCenter(selected_tile_pos * World::PIXEL_SCALE);
             Vivium::Renderer::Submit(m_SelectedTileQuad, m_SelectedTileShader, TextureManager::game_atlas->GetAtlas().get());
         }
@@ -58,6 +58,21 @@ namespace Game {
         body->vel = body->vel + (body->acc * elapsed);
     }
 
+    void Player::m_UpdateSelectedSlot()
+    {
+        m_SelectedSlot = m_MainInventory.GetSelectedSlot();
+
+        for (int i = GLFW_KEY_1; i <= GLFW_KEY_9; i++) {
+            Vivium::Input::State state = Vivium::Input::GetKeyState(i);
+
+            if (state == Vivium::Input::State::RELEASE) {
+                m_SelectedSlot = (Inventory::Slot)((Inventory::slot_base_t)Inventory::Slot::INV_0 + i - GLFW_KEY_1);
+                m_MainInventory.SetSelectedSlot(m_SelectedSlot);
+                m_SelectedItem = m_MainInventory.GetItem(m_SelectedSlot);
+            }
+        }
+    }
+
     void Player::m_UpdateInventory(World& world)
     {
         // Update main inventory
@@ -84,6 +99,7 @@ namespace Game {
     {
         body->Update();
 
+        m_UpdateSelectedSlot();
         m_UpdateInventory(world);
         m_UpdateMovement();
         m_UpdateSelectedTile(world);

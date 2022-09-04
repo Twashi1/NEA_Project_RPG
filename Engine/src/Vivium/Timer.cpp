@@ -39,4 +39,6 @@ namespace Vivium {
 		// Return elapsed time
 		return elapsed;
 	}
+	
+	Timed::Timed(void* data, float lifespan) : m_Data(data), m_Lifespan(lifespan) { m_Timer.Start(); }
 }

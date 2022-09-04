@@ -16,6 +16,7 @@ namespace Game {
 
         // Update acceleration according to client inputs
         void m_UpdateMovement();
+        void m_UpdateSelectedSlot();
         void m_UpdateInventory(World& world);
         void m_UpdateSelectedTile(World& world);
 
@@ -24,6 +25,9 @@ namespace Game {
 
         Inventory m_MainInventory;
         CraftingInventory m_CraftingInventory;
+
+        Inventory::Slot m_SelectedSlot = Inventory::Slot::INVALID;
+        Item m_SelectedItem = Item(Item::ID::VOID, 0);
 
         bool m_isMainInventoryOpened = false;
 
@@ -52,5 +56,7 @@ namespace Game {
         Player(const std::string& world_name);
         Player();
         ~Player();
+
+        friend World;
     };
 }

@@ -5,11 +5,11 @@
 #include "Player.h"
 #include "WorldMap.h"
 
+// TODO: check if world already has name when creating new world
+
 namespace Game {
 	class MainMenu;
 
-	// TODO other scenes should store MainMenu* manager
-	// TODO scene id is basically unused
 	// TODO better sharing of data between scenes
 
 	class __StartScene : public Vivium::IScene {
@@ -34,7 +34,14 @@ namespace Game {
 		Ref(Vivium::TextInput) m_NameInputBox;
 		Ref(Vivium::TextInput) m_SeedInputBox;
 		Ref(Vivium::Button) m_ConfirmButton;
+		Ref(Vivium::Text) m_WorldAlreadyExistsText;
+		Ref(Vivium::Shader) m_WorldAlreadyExistsShader;
+		float m_WorldAlreadyExistsLifespan = 0.0f;
+		Vivium::Timer m_WorldAlreadyExistsTimer;
 
+		static constexpr float s_WorldAlreadyExistsMaxLifespan = 3.0f;
+		static constexpr float s_WorldAlreadyExistsFadeout = 0.5f; // Begin fading out 0.5 seconds before the end
+		
 		Ref(Vivium::Button) m_BackButton; // Takes back to start screen
 
 		void* params;

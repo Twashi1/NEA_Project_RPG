@@ -227,6 +227,22 @@ namespace Game {
 	void __CreateWorldScene::m_ConfirmCallback(Vivium::Button* button, void* user_params)
 	{
 		m_Name = m_NameInputBox->GetText()->GetText();
+
+		// Get names of worlds that already exist
+		std::string path = Vivium::Application::resources_path + "saves/";
+
+		for (auto& it : std::filesystem::directory_iterator(path)) {
+			if (it.is_directory()) {
+				std::string world_name = it.path().stem().string(); // stem gives us the last part only
+
+				if (m_Name == world_name) {
+					m_WorldAlreadyExistsLifespan = s_WorldAlreadyExistsMaxLifespan; // Display for 3 seconds
+					m_WorldAlreadyExistsTimer.Start();
+					return;
+				}
+			}
+		}
+
 		std::string seed_text = m_SeedInputBox->GetText()->GetText();
 
 		if (seed_text.empty()) {
@@ -255,6 +271,18 @@ namespace Game {
 			"Go Back",
 			menu
 		);
+
+		m_WorldAlreadyExistsText = MakeRef(Vivium::Text,
+			"World already exists",
+			Vivium::Vector2<float>(0.0f, -75.0f),
+			Vivium::Text::Alignment::CENTER,
+			0.25f
+		);
+
+		m_WorldAlreadyExistsShader = MakeRef(Vivium::Shader, "text_vertex", "text_frag");
+		m_WorldAlreadyExistsText->shader = m_WorldAlreadyExistsShader;
+
+		m_WorldAlreadyExistsTimer.Start();
 
 		std::size_t __size_unused = 0;
 
@@ -287,6 +315,7 @@ namespace Game {
 		Vivium::Application::window_panel->Anchor(Vivium::Panel::ANCHOR::CENTER, Vivium::Panel::ANCHOR::CENTER, m_NameInputBox);
 		Vivium::Application::window_panel->Anchor(Vivium::Panel::ANCHOR::CENTER, Vivium::Panel::ANCHOR::CENTER, m_SeedInputBox);
 		Vivium::Application::window_panel->Anchor(Vivium::Panel::ANCHOR::CENTER, Vivium::Panel::ANCHOR::CENTER, m_ConfirmButton);
+		Vivium::Application::window_panel->Anchor(Vivium::Panel::ANCHOR::CENTER, Vivium::Panel::ANCHOR::CENTER, m_WorldAlreadyExistsText);
 	}
 
 	__CreateWorldScene::~__CreateWorldScene()
@@ -300,6 +329,23 @@ namespace Game {
 		Vivium::Renderer::Submit(m_NameInputBox.get());
 		Vivium::Renderer::Submit(m_SeedInputBox.get());
 		Vivium::Renderer::Submit(m_ConfirmButton.get());
+
+		if (m_WorldAlreadyExistsLifespan > 0.0f) {
+			float ratio = m_WorldAlreadyExistsLifespan / s_WorldAlreadyExistsMaxLifespan;
+
+			m_WorldAlreadyExistsShader->Bind();
+			m_WorldAlreadyExistsShader->SetUniform3f("u_TextColor", Vivium::RGBColor::RED);
+
+			if (ratio < s_WorldAlreadyExistsFadeout) {
+				ratio /= s_WorldAlreadyExistsFadeout;
+
+				m_WorldAlreadyExistsShader->SetUniform1f("u_Alpha", ratio);
+			}
+
+			Vivium::Renderer::Submit(m_WorldAlreadyExistsText.get());
+
+			m_WorldAlreadyExistsLifespan -= m_WorldAlreadyExistsTimer.GetElapsed();
+		}
 	}
 
 	void __CreateWorldScene::Update()

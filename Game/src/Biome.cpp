@@ -107,11 +107,11 @@ namespace Game {
 	void Biome::ForestBiome::GenerateAt(int x, int y, Tile& tile, World* world, std::unordered_map<Vivium::Vector2<int>, Structure::ID>& structures) const
 	{
 		float noise = m_HeightNoise.Get(x, y);
-		tile.bot = m_GetTileFromHeightMap(m_HeightToTileMap, noise);
+		tile.background = m_GetTileFromHeightMap(m_HeightToTileMap, noise);
 
 		// NOTE: When worley noise is implemented, this will make sense (i think)
 		// TODO: in future add some tag to a tile to determine if it can have vegitation above it
-		if (m_TreeNoise.Get(x, y) > 0.5f && tile.bot == Tile::ID::GRASS) {
+		if (m_TreeNoise.Get(x, y) > 0.5f && tile.background == Tile::ID::GRASS) {
 			Structure::ID chosen_structure = m_GetRandomWeightedChoice(m_TreeWeights, Vivium::Noise::Hashf(m_Seed, x, y));
 
 			if (chosen_structure != Structure::ID::VOID) {
@@ -119,24 +119,24 @@ namespace Game {
 			}
 		}
 
-		if (m_VegitationNoise.Get(x, y) > 0.5f && tile.bot == Tile::ID::GRASS) {
+		if (m_VegitationNoise.Get(x, y) > 0.5f && tile.background == Tile::ID::GRASS) {
 			Tile::ID selected_tile = m_GetRandomWeightedChoice(m_VegitationWeights, Vivium::Noise::Hashf(m_Seed, x, y));
 
-			if (selected_tile != Tile::ID::VOID) tile.top = selected_tile;
+			if (selected_tile != Tile::ID::VOID) tile.foreground = selected_tile;
 		}
 
-		if (m_OreNoise.Get(x, y) > 0.5f && tile.bot != Tile::ID::WATER) {
+		if (m_OreNoise.Get(x, y) > 0.5f && tile.background != Tile::ID::WATER) {
 			Tile::ID selected_tile = m_GetRandomWeightedChoice(m_OreWeights, Vivium::Noise::Hashf(m_Seed, x, y));
 
-			if (selected_tile != Tile::ID::VOID) tile.top = selected_tile;
+			if (selected_tile != Tile::ID::VOID) tile.foreground = selected_tile;
 		}
 
-		if (m_DebrisNoise.Get(x, y) > 0.5f && tile.bot != Tile::ID::WATER) {
+		if (m_DebrisNoise.Get(x, y) > 0.5f && tile.background != Tile::ID::WATER) {
 			Tile::ID selected_tile = m_GetRandomWeightedChoice(m_DebrisWeights, Vivium::Noise::Hashf(m_Seed, x, y));
 
-			if (!(selected_tile == Tile::ID::MOSSY_DEBRIS && tile.bot != Tile::ID::GRASS))
+			if (!(selected_tile == Tile::ID::MOSSY_DEBRIS && tile.background != Tile::ID::GRASS))
 			{
-				if (selected_tile != Tile::ID::VOID) tile.top = selected_tile;
+				if (selected_tile != Tile::ID::VOID) tile.foreground = selected_tile;
 			}
 		}
 	}
@@ -192,11 +192,11 @@ namespace Game {
 
 	void Biome::DesertBiome::GenerateAt(int x, int y, Tile& tile, World* world, std::unordered_map<Vivium::Vector2<int>, Structure::ID>& structures) const
 	{
-		tile.bot = m_GetTileFromHeightMap(m_HeightToTileMap, m_HeightNoise.Get(x, y));
+		tile.background = m_GetTileFromHeightMap(m_HeightToTileMap, m_HeightNoise.Get(x, y));
 
 		// NOTE: When worley noise is implemented, this will make sense (i think)
 		// TODO: in future add some tag to a tile to determine if it can have vegitation above it
-		if (m_CactusNoise.Get(x, y) > 0.5f && tile.bot == Tile::ID::SAND) {
+		if (m_CactusNoise.Get(x, y) > 0.5f && tile.background == Tile::ID::SAND) {
 			Structure::ID chosen_structure = m_GetRandomWeightedChoice(m_CactusWeights, Vivium::Noise::Hashf(m_Seed, x, y));
 
 			if (chosen_structure != Structure::ID::VOID) {
@@ -204,22 +204,22 @@ namespace Game {
 			}
 		}
 
-		if (m_VegitationNoise.Get(x, y) > 0.5f && tile.bot == Tile::ID::SAND) {
+		if (m_VegitationNoise.Get(x, y) > 0.5f && tile.background == Tile::ID::SAND) {
 			Tile::ID selected_tile = m_GetRandomWeightedChoice(m_VegitationWeights, Vivium::Noise::Hashf(m_Seed, x, y));
 			
-			if (selected_tile != Tile::ID::VOID) tile.top = selected_tile;
+			if (selected_tile != Tile::ID::VOID) tile.foreground = selected_tile;
 		}
 
-		if (m_OreNoise.Get(x, y) > 0.5f && tile.bot != Tile::ID::WATER) {
+		if (m_OreNoise.Get(x, y) > 0.5f && tile.background != Tile::ID::WATER) {
 			Tile::ID selected_tile = m_GetRandomWeightedChoice(m_OreWeights, Vivium::Noise::Hashf(m_Seed, x, y));
 
-			if (selected_tile != Tile::ID::VOID) tile.top = selected_tile;
+			if (selected_tile != Tile::ID::VOID) tile.foreground = selected_tile;
 		}
 
-		if (m_DebrisNoise.Get(x, y) > 0.5f && tile.bot != Tile::ID::WATER) {
+		if (m_DebrisNoise.Get(x, y) > 0.5f && tile.background != Tile::ID::WATER) {
 			Tile::ID selected_tile = m_GetRandomWeightedChoice(m_DebrisWeights, Vivium::Noise::Hashf(m_Seed, x, y));
 
-			if (selected_tile != Tile::ID::VOID) tile.top = selected_tile;
+			if (selected_tile != Tile::ID::VOID) tile.foreground = selected_tile;
 		}
 	}
 
@@ -232,7 +232,7 @@ namespace Game {
 
 	void Biome::RiverBiome::GenerateAt(int x, int y, Tile& tile, World* world, std::unordered_map<Vivium::Vector2<int>, Structure::ID>& structures) const
 	{
-		tile.bot = m_GetTileFromHeightMap(m_HeightToTileMap, m_HeightNoise.Get(x, y));
+		tile.background = m_GetTileFromHeightMap(m_HeightToTileMap, m_HeightNoise.Get(x, y));
 	}
 
 	Biome::IBiome::IBiome(unsigned int seed)

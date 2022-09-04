@@ -4,8 +4,6 @@
 #include "Tile.h"
 #include "Structures.h"
 
-// TODO: seed
-
 namespace Game {
 	class World;
 

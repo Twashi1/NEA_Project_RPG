@@ -60,11 +60,11 @@
 
 # Game
 ## General
-- [ ] Switch to 16x16
+- ~~Switch to 16x16~~
 - [ ] Tileset https://www.gamedev.net/tutorials/_/technical/game-programming/tilemap-based-game-techniques-handling-terrai-r934/
 
 ## World
-- Remove bot/mid/top for tiles, just foreground/background
+- ~~Remove bot/mid/top for tiles, just foreground/background~~
 - [x] Small world map in corner
     - ~~Fix performance issues~~
     - ~~Fix ugly black border for unloaded chunks~~
@@ -89,7 +89,6 @@
      - [x] Items should move slightly immediately after being broken
 - [x] Tile breaking
     - [x] Implement selecting a tile to break and holding lmb to start timer
-    - [ ] Only decor/top tiles can be broken
     - [x] Tile will grow and shrink rapidly when being broken, until being removed and being converted into an item
 
 ## Gameplay
@@ -103,6 +102,8 @@
     - [x] Hotbar
     - [ ] Some sort of "pending item changes"
     - [ ] Keyboard shortcuts
+    - [x] Selected item slot
+    - [ ] Sync up better with crafting inventory?
 
 ## Enemies
 - [ ] Enemy AI
@@ -128,6 +129,7 @@
 - INL file for Vector2
 
 # Bugs
+- Tall cacti not spawning in desert biome
 - Rare bug where a Vector2 which is an index for a loaded region is unallocated and checked for equivelance
 - ~~Going fullscreen crashes game~~
 - Can't move items between hotbar slots unless inventory is opened

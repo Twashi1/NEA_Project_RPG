@@ -11,6 +11,8 @@ namespace Game {
 		static constexpr float s_SlotSize = 48.0f;
 		static constexpr float s_SelectedSlotSize = 54.0f;
 		static constexpr float s_ItemScale = 0.7f;
+
+		// TODO: implement
 		static constexpr float s_TransitionTime = 0.5f;
 
 		static constexpr int s_SlotsEitherSide = 5;

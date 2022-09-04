@@ -138,6 +138,7 @@ namespace Game {
 		// TODO: should be computed at compile time
 		// NOTE: (2, 2) is index of the inventory background
 		std::array<float, 8> coords = TextureManager::game_atlas->GetCoordsArray({ 2, 2 });
+		std::array<float, 8> selected_coords = TextureManager::game_atlas->GetCoordsArray({ 2, 3 });
 
 		for (slot_base_t slot = (slot_base_t)start_slot; slot < (slot_base_t)start_slot + length; slot++) {
 			// Get coord offset to render background at
@@ -148,7 +149,14 @@ namespace Game {
 
 			float tile_scale = World::PIXEL_SCALE * 0.5f * m_InventorySpriteScale * 0.25f * s_BGScale;
 
-			batch.Submit({ dx, dy }, tile_scale * 2.0f, &coords[0]);
+			float* coords_ptr = &coords[0];
+
+			if (slot == (slot_base_t)m_SelectedSlot) {
+				coords_ptr = &selected_coords[0];
+				tile_scale += 2.0f; // TODO: Magic number
+			}
+
+			batch.Submit({ dx, dy }, tile_scale * 2.0f, coords_ptr);
 		}
 
 		auto result = batch.End();
@@ -282,7 +290,7 @@ namespace Game {
 		}
 	}
 
-	void Inventory::m_UpdateItem(float x, float y, float width, float height, const Slot& item_slot) // TODO: take item ref instead?
+	void Inventory::m_UpdateItem(float x, float y, float width, float height, const Slot& item_slot)
 	{
 		Vivium::Math::AABB item_rect(x, y, width, height);
 		Vivium::Vector2<float> cursor_pos = Vivium::Input::GetCursorPos();
@@ -294,6 +302,8 @@ namespace Game {
 		// TODO: some sort of pending system for splitting items
 		// We have clicked on this item
 		if (item_rect.Contains(cursor_pos)) {
+			m_SelectedSlot = item_slot;
+
 			if (lmb_state == Vivium::Input::State::PRESS) {
 				// Get cursor item
 				Item& cursor_item = m_InventoryData.at((slot_base_t)Slot::CURSOR_0);
@@ -618,6 +628,16 @@ namespace Game {
 	Inventory::Data& Inventory::GetData()
 	{
 		return m_InventoryData;
+	}
+
+	Inventory::Slot Inventory::GetSelectedSlot() const
+	{
+		return m_SelectedSlot;
+	}
+
+	void Inventory::SetSelectedSlot(const Slot& slot)
+	{
+		m_SelectedSlot = slot;
 	}
 
 	std::vector<int> Inventory::AddItems(const std::vector<Item>& items)

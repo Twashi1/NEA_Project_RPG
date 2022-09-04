@@ -7,25 +7,24 @@ namespace Game {
 	{
 		// Void
 		TileMap_t{
-			{{0, 0}, Tile(Tile::ID::VOID, Tile::ID::VOID, Tile::ID::VOID)}
+			{{0, 0}, Tile(Tile::ID::VOID, Tile::ID::VOID)}
 		},
 		// Tree
 		TileMap_t{
-			{{0, 0}, Tile(Tile::ID::VOID, Tile::ID::VOID, Tile::ID::TREE_0)},
-			{{0, 1}, Tile(Tile::ID::VOID, Tile::ID::VOID, Tile::ID::TREE_1)}
+			{{0, 0}, Tile(Tile::ID::VOID, Tile::ID::TREE_0)},
+			{{0, 1}, Tile(Tile::ID::VOID, Tile::ID::TREE_1)}
 		},
 		// Tall cactus
 		TileMap_t{
-			{{0, 0}, Tile(Tile::ID::VOID, Tile::ID::VOID, Tile::ID::CACTUS_TALL0)},
-			{{0, 1}, Tile(Tile::ID::VOID, Tile::ID::VOID, Tile::ID::CACTUS_TALL1)}
+			{{0, 0}, Tile(Tile::ID::VOID, Tile::ID::CACTUS_TALL0)},
+			{{0, 1}, Tile(Tile::ID::VOID, Tile::ID::CACTUS_TALL1)}
 		}
 	};
 
 	bool Structure::m_CheckOverlapTile(const Tile& structure_tile, const Tile& world_tile)
 	{
-		return !((world_tile.bot != Tile::ID::VOID && structure_tile.bot != Tile::ID::VOID) ||
-			(world_tile.mid != Tile::ID::VOID && structure_tile.mid != Tile::ID::VOID) ||
-			(world_tile.top != Tile::ID::VOID && structure_tile.top != Tile::ID::VOID));
+		return !((world_tile.background != Tile::ID::VOID && structure_tile.background != Tile::ID::VOID) ||
+			(world_tile.foreground != Tile::ID::VOID && structure_tile.foreground != Tile::ID::VOID));
 	}
 
 	const Structure::TileMap_t& Structure::GetTilemap(const Structure::ID& id)
@@ -88,9 +87,8 @@ namespace Game {
 		for (auto& [pos, tile] : tilemap) {
 			Tile& world_tile = world->GetTile(pos);
 
-			if (tile.bot != Tile::ID::VOID) { world_tile.bot = Tile::ID::VOID; }
-			if (tile.mid != Tile::ID::VOID) { world_tile.mid = Tile::ID::VOID; }
-			if (tile.top != Tile::ID::VOID) { world_tile.top = Tile::ID::VOID; }
+			if (tile.background != Tile::ID::VOID) { world_tile.background = Tile::ID::VOID; }
+			if (tile.foreground != Tile::ID::VOID) { world_tile.foreground = Tile::ID::VOID; }
 		}
 	}
 
@@ -142,8 +140,8 @@ namespace Game {
 
 
 		for (auto& [offset, tile] : tilemap) {
-			// TODO: temp, only works for top tiles
-			if (tile.top == id && tile.top != Tile::ID::VOID) {
+			// TODO: temp, only works for foreground tiles
+			if (tile.foreground == id && tile.foreground != Tile::ID::VOID) {
 				return offset;
 			}
 		}

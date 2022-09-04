@@ -6,6 +6,8 @@ namespace Game {
 	// TODO move tile texture atlas to be stored in tile class
 	class Tile {
 	public:
+		static constexpr float SPRITE_SIZE = 16.0f;
+
 		enum class ID : uint16_t {
 			VOID,
 			GROUND,
@@ -58,9 +60,8 @@ namespace Game {
 		static Item::DropTable GetDropData(const Tile::ID& id);
 
 		// TODO: I think only bot/top is needed
-		Tile::ID bot;
-		Tile::ID mid;
-		Tile::ID top;
+		Tile::ID background;
+		Tile::ID foreground;
 
 		// Copies only non-void tiles
 		void CopyRealTiles(const Tile& other);
@@ -71,7 +72,7 @@ namespace Game {
 		Tile::ID GetHighestRealTile() const;
 
 		Tile();
-		Tile(const Tile::ID& bot, const Tile::ID& mid = Tile::ID::VOID, const Tile::ID& top = Tile::ID::VOID);
+		Tile(const Tile::ID& background, const Tile::ID& foreground = Tile::ID::VOID);
 		Tile(const Tile& other);
 
 	private:

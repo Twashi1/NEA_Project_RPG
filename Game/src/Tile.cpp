@@ -70,9 +70,8 @@ namespace Game {
 
 	void Tile::CopyRealTiles(const Tile& other)
 	{
-		bot = other.bot == Tile::ID::VOID ? bot : other.bot;
-		mid = other.mid == Tile::ID::VOID ? mid : other.mid;
-		top = other.top == Tile::ID::VOID ? top : other.top;
+		background = other.background == Tile::ID::VOID ? background : other.background;
+		foreground = other.foreground == Tile::ID::VOID ? foreground : other.foreground;
 	}
 
 	bool Tile::CompareRealTiles(const Tile& other)
@@ -84,32 +83,30 @@ namespace Game {
 	Tile::ID& Tile::Index(int x)
 	{
 		switch (x) {
-		case 0: return bot;
-		case 1: return mid;
-		case 2: return top;
-		default: LogWarn("Invalid index"); return bot;
+		case 0: return background;
+		case 1: return foreground;
+		default: LogWarn("Invalid index"); return background;
 		}
 	}
 
 	Tile::ID Tile::GetHighestRealTile() const
 	{
-		if (top != Tile::ID::VOID) return top;
-		if (mid != Tile::ID::VOID) return mid;
-		if (bot != Tile::ID::VOID) return bot;
+		if (foreground != Tile::ID::VOID) return foreground;
+		if (background != Tile::ID::VOID) return background;
 
 		return Tile::ID::VOID;
 	}
 
 	Tile::Tile()
-		: bot(Tile::ID::VOID), mid(Tile::ID::VOID), top(Tile::ID::VOID)
+		: background(Tile::ID::VOID), foreground(Tile::ID::VOID)
 	{}
 
-	Tile::Tile(const Tile::ID& bot, const Tile::ID& mid, const Tile::ID& top)
-		: bot(bot), mid(mid), top(top)
+	Tile::Tile(const Tile::ID& background, const Tile::ID& foreground)
+		: background(background), foreground(foreground)
 	{}
 
 	Tile::Tile(const Tile& other)
-		: bot(other.bot), mid(other.mid), top(other.top)
+		: background(other.background), foreground(other.foreground)
 	{}
 
 	Tile::Properties::Properties(

@@ -77,7 +77,7 @@ namespace Game {
 						Vivium::RGBColor color = Vivium::RGBColor::BLACK;
 
 						if (!isBorderTile) {
-							for (int i = 2; i >= 0; i--) {
+							for (int i = 1; i >= 0; i--) {
 								Tile::ID& tile_id = tile.Index(i);
 
 								if (tile_id != Tile::ID::VOID) {

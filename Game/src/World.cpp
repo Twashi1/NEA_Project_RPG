@@ -345,7 +345,7 @@ namespace Game {
 	void World::m_UpdateMining(Player* player, float elapsed)
 	{
 		// Check if player selected tile is mineable
-		if (Tile::GetIsMineable(player->selected_tile.top)) {
+		if (Tile::GetIsMineable(player->selected_tile.foreground)) {
 			Vivium::Vector2<int> player_mining_pos = player->selected_tile_pos;
 
 			if (Vivium::Input::GetMouseState(GLFW_MOUSE_BUTTON_1) == Vivium::Input::State::HOLD) {
@@ -353,7 +353,7 @@ namespace Game {
 				if (player_mining_pos != mined_tile_pos) {
 					mined_tile_time = 0.0f;
 					mined_tile_pos = player_mining_pos;
-					mined_tile_id = player->selected_tile.top; // TODO only works for top tiles
+					mined_tile_id = player->selected_tile.foreground; // TODO only works for foreground tiles
 				}
 				// Same tile
 				else {
@@ -366,12 +366,11 @@ namespace Game {
 				mined_tile_id = Tile::ID::VOID;
 			}
 
-			// TODO: allow different time for each object
-			if (mined_tile_time > Tile::GetMiningTime(player->selected_tile.top)) {
+			// Mining time should depend on tool as well
+			if (mined_tile_time > Tile::GetMiningTime(player->selected_tile.foreground)) {
 				Tile& tile = GetTile(mined_tile_pos);
-				// TODO: mined tile could be decor/top
 				// Create floor item
-				std::vector<Item> item_drops = Tile::GetDropData(tile.top).GetRandomDrop();
+				std::vector<Item> item_drops = Tile::GetDropData(tile.foreground).GetRandomDrop();
 
 				for (Item& item : item_drops) {
 					if (item.id != Item::ID::VOID) {
@@ -386,13 +385,13 @@ namespace Game {
 					}
 				}
 				
-				// TODO: top tile only
-				if (Structure::IsStructure(tile.top)) {
-					Structure::Delete(mined_tile_pos, tile.top, this);
+				// TODO: foreground tile only
+				if (Structure::IsStructure(tile.foreground)) {
+					Structure::Delete(mined_tile_pos, tile.foreground, this);
 				}
 				else {
-					// Delete top tile
-					tile.top = Tile::ID::VOID;
+					// Delete foreground tile
+					tile.foreground = Tile::ID::VOID;
 				}
 			}
 		}
@@ -461,9 +460,9 @@ namespace Game {
 
 		// Stores the current amount of tiles we have rendered
 		// std::size_t count = 0;
-		// NOTE: if everything on screen has a bot, mid, and top tile to render, its possible we may exceed max count,
-		//		might need something like "(right - left + 1) * (top - bottom + 1) * 3" instead
-		std::size_t max_count = (right - left) * (top - bottom) * 3;
+		// NOTE: if everything on screen has a background, and foreground tile to render, its possible we may exceed max count,
+		//		might need something like "(right - left + 1) * (top - bottom + 1) * 2" instead
+		std::size_t max_count = (right - left) * (top - bottom) * 2;
 
 		static const Vivium::BufferLayout layout = {
 			Vivium::GLSLDataType::VEC2, // position
@@ -502,7 +501,8 @@ namespace Game {
 								float halfscale = World::PIXEL_SCALE * 0.5f;
 
 								// Iterate over each tile id
-								for (const Tile::ID& id : { tile.bot, tile.mid, tile.top }) {
+								// TODO: subroutine for this
+								for (const Tile::ID& id : { tile.background, tile.foreground }) {
 									if (id == Tile::ID::VOID) { continue; }
 
 									float tile_scale = halfscale * Tile::GetScale(id);

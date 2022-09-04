@@ -114,6 +114,7 @@ namespace Game {
 		ID m_InventoryID;
 		typedef std::unordered_map<Item::ID, int> ItemCountMap_t;
 		ItemCountMap_t m_ItemCounts;
+		Slot m_SelectedSlot = Slot::INVALID;
 
 		static Vivium::Shader* m_InventoryShader;
 		static Vivium::Shader* m_TextShader;
@@ -153,6 +154,9 @@ namespace Game {
 		std::vector<int> AddItems(const std::vector<Item>& items);
 		const Item& GetItem(const Slot& slot);
 		Data& GetData();
+
+		Slot GetSelectedSlot() const;
+		void SetSelectedSlot(const Slot& slot);
 
 		int GetItemCount(const Item::ID& id) const;
 
