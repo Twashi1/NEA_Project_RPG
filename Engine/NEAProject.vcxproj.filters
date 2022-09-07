@@ -109,6 +109,9 @@
     <ClCompile Include="src\Vivium\Stream.cpp">
       <Filter>Source</Filter>
     </ClCompile>
+    <ClCompile Include="src\Vivium\ParticleSystem.cpp">
+      <Filter>Source</Filter>
+    </ClCompile>
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="src\Vivium.h" />
@@ -221,6 +224,9 @@
       <Filter>Headers</Filter>
     </ClInclude>
     <ClInclude Include="src\Vivium\Stream.h">
+      <Filter>Headers</Filter>
+    </ClInclude>
+    <ClInclude Include="src\Vivium\ParticleSystem.h">
       <Filter>Headers</Filter>
     </ClInclude>
   </ItemGroup>

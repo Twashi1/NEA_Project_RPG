@@ -1,9 +1,11 @@
+#include "ParticleSystem.h"
 #include "LeafParticles.h"
 
 namespace Game {
 	Vivium::Shader* LeafParticleSystem::m_ParticleShader = nullptr;
 
 	bool LeafParticleSystem::Particle::isAlive() const { return lifespan > time_alive; }
+	
 	void LeafParticleSystem::Particle::Update()
 	{
 		float elapsed = timer.GetElapsed();

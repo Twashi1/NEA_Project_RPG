@@ -35,6 +35,7 @@
     <ClCompile Include="src\Vivium\Math.cpp" />
     <ClCompile Include="src\Vivium\Noise.cpp" />
     <ClCompile Include="src\Vivium\Panel.cpp" />
+    <ClCompile Include="src\Vivium\ParticleSystem.cpp" />
     <ClCompile Include="src\Vivium\Physics.cpp" />
     <ClCompile Include="src\Vivium\Quad.cpp" />
     <ClCompile Include="src\Vivium\Random.cpp" />
@@ -74,6 +75,7 @@
     <ClInclude Include="src\Vivium\Math.h" />
     <ClInclude Include="src\Vivium\Noise.h" />
     <ClInclude Include="src\Vivium\Panel.h" />
+    <ClInclude Include="src\Vivium\ParticleSystem.h" />
     <ClInclude Include="src\Vivium\Physics.h" />
     <ClInclude Include="src\Vivium\Quad.h" />
     <ClInclude Include="src\Vivium\Random.h" />
