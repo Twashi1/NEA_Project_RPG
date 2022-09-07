@@ -197,7 +197,8 @@ namespace Vivium {
 		m_Vertices[m_VerticesIndex++] = bottom;
 		m_Vertices[m_VerticesIndex++] = tex_left;
 		m_Vertices[m_VerticesIndex++] = tex_bottom;
-
+		
+		// TODO: use memcpy in future
 		for (unsigned int i = 0; i < vertex_data_count; i++) {
 			m_Vertices[m_VerticesIndex++] = vertex_data[i];
 		}

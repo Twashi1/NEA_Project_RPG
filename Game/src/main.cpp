@@ -1,6 +1,7 @@
 #include "World.h"
 #include "Player.h"
 #include "MainMenu.h"
+#include "LeafParticles.h"
 
 const int WIDTH = 1080;
 const int HEIGHT = 720;
@@ -51,10 +52,17 @@ int game(void)
     FloorItem::Init();
     Inventory::Init();
     CraftingInventory::Init();
+    LeafParticleSystem::Init();
 
     Application::SetBGColor(RGBColor::BLACK);
 
     MainMenu main_menu{};
+
+    LeafParticleSystem system(500);
+
+    system.Emit(0.0f, 100.0f, {300.0f, 500.0f}, 50);
+
+    Timer secondTimer; secondTimer.Start();
 
     // Loop until window is closed by user
     while (Application::IsRunning())
@@ -69,12 +77,21 @@ int game(void)
 
         // Draw calls
         main_menu.Render();
+        system.Render();
+
+        float elapsed = secondTimer.GetElapsedNoReset();
+
+        if (elapsed > 1.0f) {
+            secondTimer.Start();
+            system.Emit(0.0f, 100.0f, { 300.0f, 500.0f }, 200);
+        }
 
         Application::EndFrame();
     }
 
     LogInfo("Window closed");
 
+    LeafParticleSystem::Terminate();
     CraftingInventory::Terminate();
     Biome::Terminate();
     Inventory::Terminate();

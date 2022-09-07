@@ -15,6 +15,11 @@ namespace Vivium {
 		static std::string GetTimeString();
 
 		Timer();
+		Timer(const Timer& other);
+		Timer(Timer&& other) noexcept;
+
+		Timer& operator=(const Timer& other);
+		Timer& operator=(Timer&& other) noexcept;
 
 		double GetElapsedNoReset();
 		// Gets time since last GetElapsed or Start call

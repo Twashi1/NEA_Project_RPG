@@ -62,6 +62,8 @@ namespace Vivium {
 			return Vector2<float>(fx, fy);
 		}
 
+		Vector2 abs() const requires Signed<T> { return Vector2(std::abs(x), std::abs(y)); }
+
 		T length() const { return std::sqrt(x * x + y * y); }
 
 		T magnitude() const { return std::sqrt(x * x + y * y); }

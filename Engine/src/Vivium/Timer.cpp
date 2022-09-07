@@ -23,6 +23,26 @@ namespace Vivium {
 		: m_Time(GetTime())
 	{}
 
+	Timer::Timer(const Timer& other)
+		: m_Time(other.m_Time) {}
+
+	Timer::Timer(Timer&& other) noexcept
+		: m_Time(std::move(other.m_Time)) {}
+
+	Timer& Timer::operator=(const Timer& other)
+	{
+		m_Time = other.m_Time;
+
+		return *this;
+	}
+
+	Timer& Timer::operator=(Timer&& other) noexcept
+	{
+		m_Time = std::move(other.m_Time);
+
+		return *this;
+	}
+
 	double Timer::GetElapsedNoReset()
 	{
 		return Timer::GetTime() - m_Time;
