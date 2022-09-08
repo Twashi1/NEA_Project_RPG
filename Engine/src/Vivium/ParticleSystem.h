@@ -18,7 +18,7 @@ namespace Vivium {
 		Timer timer;
 
 		virtual bool IsAlive();
-		virtual void Update();
+		virtual void Update(const Vector2<float>& accel);
 
 		Particle() = default;
 		Particle(const Particle& other);
@@ -40,6 +40,8 @@ namespace Vivium {
 		Particle* m_Particles;
 		std::size_t m_MaxSize;
 		std::size_t m_Index = 0;
+
+		void m_EmitParticle(float lifespan, const Vector2<float>& pos, const Vector2<float>& vel, const Vector2<float>& var, float angle, float angular_vel, float angular_var);
 
 	public:
 		static void Init();

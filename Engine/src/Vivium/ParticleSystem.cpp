@@ -49,11 +49,12 @@ namespace Vivium {
 		return lifespan > time_alive;
 	}
 
-	void Particle::Update()
+	void Particle::Update(const Vector2<float>& accel)
 	{
 		if (IsAlive()) {
 			float elapsed = timer.GetElapsed();
 
+			velocity += accel * elapsed;
 			position += velocity * elapsed;
 			angle += angular_velocity * elapsed;
 
@@ -63,6 +64,22 @@ namespace Vivium {
 
 	Vivium::Shader* ParticleSystem::m_WorldParticleShader = nullptr;
 	Vivium::Shader* ParticleSystem::m_StaticParticleShader = nullptr;
+
+	void ParticleSystem::m_EmitParticle(float lifespan, const Vector2<float>& pos, const Vector2<float>& vel, const Vector2<float>& var, float angle, float angular_vel, float angular_var)
+	{
+		Particle particle;
+
+		particle.position = pos;
+		particle.velocity = vel + Vector2<float>(Random::GetFloat(-var.x, var.x), Random::GetFloat(-var.y, var.y));
+
+		particle.angle = angle;
+		particle.angular_velocity = angular_vel + Random::GetFloat(-angular_var, angular_var);
+
+		particle.lifespan = lifespan;
+		// particle.timer.Start();
+
+		m_Particles[m_Index++] = std::move(particle);
+	}
 
 	void ParticleSystem::Init()
 	{
@@ -90,18 +107,7 @@ namespace Vivium {
 	{
 		for (std::size_t i = 0; i < count; i++) {
 			// TODO: emit particle subroutine is needed
-			Particle particle;
-
-			particle.position = pos;
-			particle.velocity = vel + Vector2<float>(Random::GetFloat(-var.x, var.x), Random::GetFloat(-var.y, var.y));
-
-			particle.angle = angle;
-			particle.angular_velocity = angular_vel + Random::GetFloat(-angular_var, angular_var);
-
-			particle.lifespan = lifespan;
-			// particle.timer.Start();
-
-			m_Particles[m_Index++] = std::move(particle);
+			m_EmitParticle(lifespan, pos, vel, var, angle, angular_vel, angular_var);
 
 			if (m_Index >= m_MaxSize) { m_Index -= m_MaxSize; }
 		}
@@ -109,5 +115,32 @@ namespace Vivium {
 
 	void ParticleSystem::Render()
 	{
+		// NOTE: layout will basically always be overwritten
+		static const BufferLayout layout = {
+			Vivium::GLSLDataType::VEC2,	  // Position
+			Vivium::GLSLDataType::FLOAT,  // Alpha
+			Vivium::GLSLDataType::FLOAT   // Rotation
+		};
+
+		Batch batch(m_Index, &layout);
+
+		for (std::size_t i = 0; i < m_Index; i++) {
+			Particle& particle = m_Particles[m_Index];
+
+			if (particle.IsAlive()) {
+				// TODO: Render particle subroutine that takes the batch
+				// TODO: rendering code from LeafParticles.h
+				particle.Update(m_Acceleration);
+
+				// TODO: ADD TO BATCH
+			}
+		}
+
+		auto result = batch.End();
+
+		if (result.count > 0) {
+			// TODO: Render batch subroutine
+			// TODO: RENDER COMMAND
+		}
 	}
 }

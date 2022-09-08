@@ -40,13 +40,6 @@ namespace Game {
 
 			++i;
 		}
-
-		LogTrace("Leaf texture coords is [\n{},\n {},\n {},\n {}\n]",
-			Vivium::Logger::PrettyPrint(m_LeafTextureCoords[0], 8),
-			Vivium::Logger::PrettyPrint(m_LeafTextureCoords[1], 8),
-			Vivium::Logger::PrettyPrint(m_LeafTextureCoords[2], 8),
-			Vivium::Logger::PrettyPrint(m_LeafTextureCoords[3], 8)
-		);
 	}
 
 	void LeafParticleSystem::Init()
