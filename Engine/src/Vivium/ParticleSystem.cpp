@@ -1,7 +1,12 @@
 #include "ParticleSystem.h"
 
 namespace Vivium {
-	// TODO
+	const BufferLayout ParticleSystem::m_Layout = {
+		Vivium::GLSLDataType::VEC2,	  // Position
+		Vivium::GLSLDataType::FLOAT,  // Alpha
+		Vivium::GLSLDataType::FLOAT   // Rotation
+	};
+
 	Particle::Particle(const Particle& other)
 		: position(other.position), velocity(other.velocity),
 		angle(other.angle), angular_velocity(other.angular_velocity),
@@ -44,7 +49,7 @@ namespace Vivium {
 		return *this;
 	}
 
-	bool Particle::IsAlive()
+	bool Particle::IsAlive() const
 	{
 		return lifespan > time_alive;
 	}
@@ -62,52 +67,38 @@ namespace Vivium {
 		}
 	}
 
-	Vivium::Shader* ParticleSystem::m_WorldParticleShader = nullptr;
-	Vivium::Shader* ParticleSystem::m_StaticParticleShader = nullptr;
-
 	void ParticleSystem::m_EmitParticle(float lifespan, const Vector2<float>& pos, const Vector2<float>& vel, const Vector2<float>& var, float angle, float angular_vel, float angular_var)
 	{
-		Particle particle;
+		Particle* particle = new Particle();
 
-		particle.position = pos;
-		particle.velocity = vel + Vector2<float>(Random::GetFloat(-var.x, var.x), Random::GetFloat(-var.y, var.y));
+		particle->position = pos;
+		particle->velocity = vel + Vector2<float>(Random::GetFloat(-var.x, var.x), Random::GetFloat(-var.y, var.y));
 
-		particle.angle = angle;
-		particle.angular_velocity = angular_vel + Random::GetFloat(-angular_var, angular_var);
+		particle->angle = angle;
+		particle->angular_velocity = angular_vel + Random::GetFloat(-angular_var, angular_var);
 
-		particle.lifespan = lifespan;
-		// particle.timer.Start();
+		particle->lifespan = lifespan;
 
-		m_Particles[m_Index++] = std::move(particle);
+		Particle* replacement = m_Particles[m_Index];
+
+		if (replacement != nullptr) {
+			delete replacement;
+		}
+
+		m_Particles[m_Index] = std::move(particle);
 	}
 
-	void ParticleSystem::Init()
+	void ParticleSystem::m_UpdateParticle(Particle* particle)
 	{
-		m_WorldParticleShader = new Shader("particle_vertex", "particle_frag");
-		m_StaticParticleShader = new Shader("particle_vertex", "particle_frag"); // TODO: write shader
-	}
-	void ParticleSystem::Terminate()
-	{
-		delete m_WorldParticleShader;
-		delete m_StaticParticleShader;
-	}
-
-	ParticleSystem::ParticleSystem(const std::size_t& max_size, const Vector2<float>& acceleration)
-		: m_MaxSize(max_size), m_Acceleration(acceleration)
-	{
-		m_Particles = new Particle[max_size];
-	}
-
-	ParticleSystem::~ParticleSystem()
-	{
-		delete[] m_Particles;
+		particle->Update(m_Acceleration);
 	}
 
 	void ParticleSystem::Emit(std::size_t count, float lifespan, const Vector2<float>& pos, const Vector2<float>& vel, const Vector2<float>& var, float angle, float angular_vel, float angular_var)
 	{
 		for (std::size_t i = 0; i < count; i++) {
-			// TODO: emit particle subroutine is needed
+			// TODO: m_EmitParticle returns some Particle*, and we handle adding to data with m_AddParticle(...), which also deals with the cyclical bounds of the data
 			m_EmitParticle(lifespan, pos, vel, var, angle, angular_vel, angular_var);
+			++m_Index;
 
 			if (m_Index >= m_MaxSize) { m_Index -= m_MaxSize; }
 		}
@@ -115,32 +106,47 @@ namespace Vivium {
 
 	void ParticleSystem::Render()
 	{
-		// NOTE: layout will basically always be overwritten
-		static const BufferLayout layout = {
-			Vivium::GLSLDataType::VEC2,	  // Position
-			Vivium::GLSLDataType::FLOAT,  // Alpha
-			Vivium::GLSLDataType::FLOAT   // Rotation
-		};
+		Batch batch(m_MaxSize, &m_Layout);
 
-		Batch batch(m_Index, &layout);
+		for (std::size_t i = 0; i < m_MaxSize; i++) {
+			Particle* particle = m_Particles[i];
 
-		for (std::size_t i = 0; i < m_Index; i++) {
-			Particle& particle = m_Particles[m_Index];
+			if (particle == nullptr) { continue; }
 
-			if (particle.IsAlive()) {
-				// TODO: Render particle subroutine that takes the batch
-				// TODO: rendering code from LeafParticles.h
-				particle.Update(m_Acceleration);
-
-				// TODO: ADD TO BATCH
+			if (particle->IsAlive()) {
+				m_UpdateParticle(particle);
+				m_RenderParticle(&batch, particle);
 			}
 		}
 
-		auto result = batch.End();
+		m_RenderBatch(&batch);
+	}
+
+	ParticleSystem::ParticleSystem(const std::size_t& max_size, Ref(Shader) shader, const Vector2<float>& acceleration)
+		: m_MaxSize(max_size), m_Shader(shader), m_Acceleration(acceleration)
+	{
+		m_Particles = new Particle*[max_size];
+
+		std::fill(m_Particles, m_Particles + max_size, nullptr);
+	}
+
+	ParticleSystem::~ParticleSystem()
+	{
+		for (std::size_t i = 0; i < m_MaxSize; i++) {
+			Particle* particle = m_Particles[i];
+
+			if (particle != nullptr) delete particle;
+		}
+
+		delete[] m_Particles;
+	}
+
+	void ParticleSystem::m_RenderBatch(Batch* batch)
+	{
+		auto result = batch->End();
 
 		if (result.count > 0) {
-			// TODO: Render batch subroutine
-			// TODO: RENDER COMMAND
+			Renderer::Submit(result.vertex_buffer.get(), result.index_buffer.get(), m_Shader.get());
 		}
 	}
 }

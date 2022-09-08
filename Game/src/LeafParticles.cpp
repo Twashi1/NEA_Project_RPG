@@ -1,136 +1,146 @@
 #include "LeafParticles.h"
 
 namespace Game {
-	Vivium::Shader* LeafParticleSystem::m_ParticleShader = nullptr;
+	LeafParticle::LeafParticle(const LeafParticle& other)
+		: Particle(other), leaf_type(other.leaf_type)
+	{}
 
-	bool LeafParticleSystem::Particle::isAlive() const { return lifespan > time_alive; }
-	
-	void LeafParticleSystem::Particle::Update()
+	LeafParticle::LeafParticle(LeafParticle&& other) noexcept
+		: Particle(std::move(other)), leaf_type(std::move(other.leaf_type))
+	{}
+
+	LeafParticle& LeafParticle::operator=(const LeafParticle& other)
 	{
-		float elapsed = timer.GetElapsed();
+		Particle::operator=(other);
 
-		time_alive += elapsed;
+		leaf_type = other.leaf_type;
 
-		pos += velocity * elapsed;
-		angle += angular_velocity * elapsed;
+		return *this;
 	}
 
-	LeafParticleSystem::Particle::Particle(const Vivium::Vector2<float>& pos, const Vivium::Vector2<float>& vel, float angle, float angle_vel, float lifespan, uint8_t leaf_type)
-		: pos(pos), velocity(vel), angle(angle), angular_velocity(angle_vel), lifespan(lifespan), leaf_type(leaf_type)
+	LeafParticle& LeafParticle::operator=(LeafParticle&& other) noexcept
 	{
-		timer.Start();
+		Particle::operator=(other);
+
+		leaf_type = std::move(other.leaf_type);
+
+		return *this;
 	}
 
-	Vivium::Vector2<int> LeafParticleSystem::m_LeafIndices[4] = {
+	Vivium::Vector2<int> LeavesParticleSystem::m_AtlasIndices[4] = {
 		{0, 0},
 		{1, 0},
 		{2, 0},
 		{3, 0}
 	};
 
-	float LeafParticleSystem::m_LeafTextureCoords[4][8];
-	
-	void LeafParticleSystem::m_LoadTextureCoords()
-	{
-		int i = 0;
-		for (const auto& index : m_LeafIndices) {
-			std::array<float, 8> coords = TextureManager::particle_atlas->GetCoordsArray(index);
-			
-			std::memcpy(m_LeafTextureCoords[i], &coords[0], sizeof(float) * 8);
+	float LeavesParticleSystem::m_TextureCoords[4][8];
 
-			++i;
-		}
-	}
-
-	void LeafParticleSystem::Init()
-	{
-		m_LoadTextureCoords();
-		m_ParticleShader = new Vivium::Shader("particle_vertex", "particle_frag");
-	}
-
-	void LeafParticleSystem::Emit(const Vivium::Vector2<float>& velocity, const Vivium::Vector2<float>& variation, const Vivium::Vector2<float>& pos, std::size_t count)
-	{
-		m_Velocity = velocity;
-		m_VelocityVariation = variation.abs();
-		m_Pos = pos;
-
-		for (std::size_t i = 0; i < count; i++) {
-			m_EmitParticle();
-		}
-	}
-
-	void LeafParticleSystem::Terminate()
-	{
-		delete m_ParticleShader;
-	}
-
-	LeafParticleSystem::LeafParticleSystem(std::size_t max)
-		: m_Velocity(0), m_VelocityVariation(0), m_Pos(0), m_Count(max)
-	{
-		m_Particles = new Particle[m_Count];
-	}
-
-	void LeafParticleSystem::m_EmitParticle()
-	{
-		Particle my_particle;
-
-		my_particle.pos = m_Pos;
-		my_particle.velocity = m_Velocity + Vivium::Vector2<float>(
-			Vivium::Random::GetFloat(-m_VelocityVariation.x, m_VelocityVariation.x),
-			Vivium::Random::GetFloat(-m_VelocityVariation.y, m_VelocityVariation.y)
-		);
-		my_particle.angular_velocity = Vivium::Random::GetFloat(-2.0f, 2.0f); // TODO: random value
-		my_particle.angle = Vivium::Random::GetFloat(-Vivium::Math::PI, Vivium::Math::PI);
-
-		my_particle.lifespan = 5.0f; // TODO: get lifespan
-		my_particle.timer.Start();
-
-		my_particle.leaf_type = Vivium::Random::GetInt(0, 3);
-
-		m_Particles[m_Index] = my_particle;
-
-		++m_Index;
-
-		// NOTE: should never be more than the count
-		if (m_Index >= m_Count) { m_Index -= m_Count; }
-	}
-
-	void LeafParticleSystem::Render()
-	{
-		static const Vivium::BufferLayout layout = {
+	const Vivium::BufferLayout LeavesParticleSystem::m_Layout = {
 			Vivium::GLSLDataType::VEC2,	  // Position
 			Vivium::GLSLDataType::VEC2,   // Tex coords
 			Vivium::GLSLDataType::FLOAT,  // Alpha
 			Vivium::GLSLDataType::FLOAT,  // Rotation
 			Vivium::GLSLDataType::VEC2,	  // Center
-		};
-		static const std::size_t vertex_stride = layout.GetStride();
+	};
 
-		Vivium::Batch batch(m_Count, &layout);
+	void LeavesParticleSystem::Init()
+	{
+		m_LoadTextureCoords();
+	}
+	
+	void LeavesParticleSystem::m_LoadTextureCoords()
+	{
+		int i = 0;
+		for (const auto& index : m_AtlasIndices) {
+			std::array<float, 8> coords = TextureManager::particle_atlas->GetCoordsArray(index);
+			
+			std::memcpy(m_TextureCoords[i], &coords[0], sizeof(float) * 8);
 
-		for (std::size_t i = 0; i < m_Count; i++) {
-			Particle& particle = m_Particles[i];
-
-			particle.Update();
-
-			if (particle.isAlive()) {
-				float* coords = m_LeafTextureCoords[particle.leaf_type];
-
-				float per_vertex_data[4] = { 1.0f, particle.angle, particle.pos.x, particle.pos.y };
-
-				batch.Submit(particle.pos, s_ParticleSize, coords[0], coords[2], coords[1], coords[5], per_vertex_data, 4);
-			}
-		}
-
-		auto result = batch.End();
-
-		if (result.count > 0) {
-			Vivium::Renderer::Submit(result.vertex_buffer.get(), result.index_buffer.get(), m_ParticleShader, TextureManager::particle_atlas->GetAtlas().get());
+			++i;
 		}
 	}
 
-	LeafParticleSystem::~LeafParticleSystem()
+	LeavesParticleSystem::LeavesParticleSystem(const std::size_t& max_size, const Vivium::Vector2<float>& acceleration)
+		: ParticleSystem(max_size, nullptr, acceleration)
 	{
-		delete[] m_Particles;
+		m_Shader = MakeRef(Vivium::Shader, "particle_vertex", "particle_frag");
+	}
+
+	void LeavesParticleSystem::Emit(std::size_t count, float lifespan, const Vivium::Vector2<float>& pos, const Vivium::Vector2<float>& vel, const Vivium::Vector2<float>& var, float angle, float angular_vel, float angular_var)
+	{
+		for (std::size_t i = 0; i < count; i++) {
+			m_EmitParticle(lifespan, pos, vel, var, angle, angular_vel, angular_var);
+			++m_Index;
+
+			if (m_Index >= m_MaxSize) { m_Index -= m_MaxSize; }
+		}
+	}
+
+	// NOTE: ~ParticleSystem will clean up m_Particles for us
+	LeavesParticleSystem::~LeavesParticleSystem() {}
+
+	void LeavesParticleSystem::Render() {
+		Vivium::Batch batch(m_MaxSize, &m_Layout);
+
+		for (std::size_t i = 0; i < m_MaxSize; i++) {
+			Vivium::Particle* particle = m_Particles[i];
+
+			if (particle == nullptr) { continue; }
+
+			if (particle->IsAlive()) {
+				m_UpdateParticle(particle);
+				m_RenderParticle(&batch, particle);
+			}
+		}
+
+		m_RenderBatch(&batch);
+	}
+
+	void LeavesParticleSystem::m_EmitParticle(float lifespan, const Vivium::Vector2<float>& pos, const Vivium::Vector2<float>& vel, const Vivium::Vector2<float>& var, float angle, float angular_vel, float angular_var)
+	{
+		LeafParticle* my_particle = new LeafParticle();
+
+		my_particle->position = pos;
+		my_particle->velocity = vel + Vivium::Vector2<float>(
+			Vivium::Random::GetFloat(-var.x, var.x),
+			Vivium::Random::GetFloat(-var.y, var.y)
+		);
+		my_particle->angular_velocity = angular_vel + Vivium::Random::GetFloat(-angular_var, angular_var);
+		my_particle->angle = angle;
+
+		my_particle->lifespan = lifespan;
+
+		my_particle->leaf_type = Vivium::Random::GetInt(0, 3);
+
+		Vivium::Particle* replacement = m_Particles[m_Index];
+
+		if (replacement != nullptr) {
+			delete replacement;
+		}
+
+		m_Particles[m_Index] = dynamic_cast<Vivium::Particle*>(my_particle);
+	}
+
+	void LeavesParticleSystem::m_RenderParticle(Vivium::Batch* batch, const Vivium::Particle* particle)
+	{
+		const LeafParticle* leaf = dynamic_cast<const LeafParticle*>(particle);
+
+		if (leaf->IsAlive()) {
+			float* coords = m_TextureCoords[leaf->leaf_type];
+
+			float per_vertex_data[4] = { 1.0f, leaf->angle, leaf->position.x, leaf->position.y };
+
+			batch->Submit(leaf->position, s_ParticleSize, coords[0], coords[2], coords[1], coords[5], per_vertex_data, 4);
+		}
+	}
+
+	void LeavesParticleSystem::m_RenderBatch(Vivium::Batch* batch)
+	{
+		auto result = batch->End();
+
+		if (result.count > 0) {
+			Vivium::Renderer::Submit(result.vertex_buffer.get(), result.index_buffer.get(), m_Shader.get(), TextureManager::particle_atlas->GetAtlas().get());
+		}
 	}
 }

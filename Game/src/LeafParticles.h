@@ -5,58 +5,52 @@
 #include "TextureManager.h"
 
 namespace Game {
-	class LeafParticleSystem {
+	struct LeafParticle : public virtual Vivium::Particle {
+		uint8_t leaf_type = 0;
+
+		using Particle::IsAlive;
+		using Particle::Update;
+
+		LeafParticle() = default;
+		LeafParticle(const LeafParticle& other);
+		LeafParticle(LeafParticle&& other) noexcept;
+
+		LeafParticle& operator=(const LeafParticle& other);
+		LeafParticle& operator=(LeafParticle&& other) noexcept;
+	};
+
+	class LeavesParticleSystem : public virtual Vivium::ParticleSystem {
 	private:
-		static Vivium::Vector2<int> m_LeafIndices[4];
-		static float m_LeafTextureCoords[4][8]; // look i used a 2D array do i get full marks now?
+		static const Vivium::BufferLayout m_Layout;
 
-		// TODO: replace with a "height" value? (wouldn't work for leaves in the air)
-		static constexpr float s_FadeoutStartPercent = 0.3f; // Start fading out when 30% of lifespan is remaining
-		static constexpr float s_ParticleSize = 32.0f;
+		static Vivium::Vector2<int> m_AtlasIndices[4];
+		static float m_TextureCoords[4][8]; // look i used a 2D array do i get full marks now?
 
-		static Vivium::Shader* m_ParticleShader;
+		static constexpr float s_FadeoutStartPercent = 0.3f; // TODO: should be in particle system
+		static constexpr float s_ParticleSize = 32.0f; // TODO: should be in particle system
 
-		Vivium::Vector2<float> m_Velocity;
-		Vivium::Vector2<float> m_VelocityVariation;
-		Vivium::Vector2<float> m_Pos;
+		using ParticleSystem::m_Shader;
+		using ParticleSystem::m_Acceleration;
 
-		struct Particle {
-			Vivium::Vector2<float> velocity;
-			Vivium::Vector2<float> pos;
-			float angle;
-			float angular_velocity;
-
-			float lifespan = 0.0f;
-			float time_alive = 0.0f;
-			Vivium::Timer timer;
-
-			uint8_t leaf_type;
-
-			bool isAlive() const;
-			void Update();
-
-			Particle() = default;
-			Particle(const Particle& other);
-			Particle(const Vivium::Vector2<float>& pos, const Vivium::Vector2<float>& vel, float angle, float angle_vel, float lifespan, uint8_t leaf_type);
-		};
-
-		Particle* m_Particles;
-		std::size_t m_Count;
-		std::size_t m_Index = 0;
+		using ParticleSystem::m_Particles;
+		using ParticleSystem::m_MaxSize;
+		using ParticleSystem::m_Index;
 
 		static void m_LoadTextureCoords();
+	
+		void m_EmitParticle(float lifespan, const Vivium::Vector2<float>& pos, const Vivium::Vector2<float>& vel, const Vivium::Vector2<float>& var, float angle, float angular_vel, float angular_var) override;
+		void m_RenderParticle(Vivium::Batch* batch, const Vivium::Particle* particle) override;
 
-		void m_EmitParticle();
+		void m_RenderBatch(Vivium::Batch* batch) override;
 
 	public:
+		// TODO: would like to have these be inherited from the particle system, but seems impossible
+		void Render() override;
+		void Emit(std::size_t count, float lifespan = 1.0f, const Vivium::Vector2<float>& pos = 0.0f, const Vivium::Vector2<float>& vel = 0.0f, const Vivium::Vector2<float>& var = 0.0f, float angle = 0.0f, float angular_vel = 0.0f, float angular_var = 0.0f) override;
+		
 		static void Init();
-		static void Terminate();
 
-		LeafParticleSystem(std::size_t max);
-		~LeafParticleSystem();
-
-		void Emit(const Vivium::Vector2<float>& velocity, const Vivium::Vector2<float>& variation, const Vivium::Vector2<float>& pos, std::size_t count);
-
-		void Render();
+		LeavesParticleSystem(const std::size_t& max_size, const Vivium::Vector2<float>& acceleration = 0.0f);
+		~LeavesParticleSystem();
 	};
 }

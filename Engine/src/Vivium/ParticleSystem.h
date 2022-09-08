@@ -3,6 +3,7 @@
 #include "Core.h"
 #include "Batch.h"
 #include "Shader.h"
+#include "Renderer.h"
 
 namespace Vivium {
 	struct VIVIUM_API Particle {
@@ -17,12 +18,13 @@ namespace Vivium {
 		float time_alive = 0.0f;
 		Timer timer;
 
-		virtual bool IsAlive();
+		virtual bool IsAlive() const;
 		virtual void Update(const Vector2<float>& accel);
 
 		Particle() = default;
 		Particle(const Particle& other);
 		Particle(Particle&& other) noexcept;
+		virtual ~Particle() = default;
 
 		Particle& operator=(const Particle& other);
 		Particle& operator=(Particle&& other) noexcept;
@@ -31,28 +33,30 @@ namespace Vivium {
 	// TODO: IRenderable, IBatchable ideal as well
 	class VIVIUM_API ParticleSystem {
 	protected:
-		// TODO: should make their own shaders
-		static Vivium::Shader* m_WorldParticleShader;
-		static Vivium::Shader* m_StaticParticleShader;
+		static const BufferLayout m_Layout;
+		Ref(Shader) m_Shader;
 
-		Vivium::Vector2<float> m_Acceleration;
+		Vector2<float> m_Acceleration;
 
-		Particle* m_Particles;
+		Particle** m_Particles;
 		std::size_t m_MaxSize;
 		std::size_t m_Index = 0;
 
-		void m_EmitParticle(float lifespan, const Vector2<float>& pos, const Vector2<float>& vel, const Vector2<float>& var, float angle, float angular_vel, float angular_var);
+		virtual void m_EmitParticle(float lifespan, const Vector2<float>& pos, const Vector2<float>& vel, const Vector2<float>& var, float angle, float angular_vel, float angular_var);
+
+		virtual void m_RenderParticle(Batch* batch, const Particle* particle) = 0;
+		virtual void m_UpdateParticle(Particle* particle);
+
+		virtual void m_RenderBatch(Batch* batch);
 
 	public:
-		static void Init();
-		static void Terminate();
-
-		ParticleSystem(const std::size_t& max_size, const Vector2<float>& acceleration = 0.0f);
-		~ParticleSystem();
+		ParticleSystem(const std::size_t& max_size, Ref(Shader) shader, const Vector2<float>& acceleration = 0.0f);
+		virtual ~ParticleSystem();
 
 		// TODO: Emit specification might be useful
-		void Emit(std::size_t count, float lifespan = 1.0f, const Vector2<float>& pos = 0.0f, const Vector2<float>& vel = 0.0f, const Vector2<float>& var = 0.0f, float angle = 0.0f, float angular_vel = 0.0f, float angular_var = 0.0f);
+		// TODO: Maybe emit just returns the particle instead?
+		virtual void Emit(std::size_t count, float lifespan = 1.0f, const Vector2<float>& pos = 0.0f, const Vector2<float>& vel = 0.0f, const Vector2<float>& var = 0.0f, float angle = 0.0f, float angular_vel = 0.0f, float angular_var = 0.0f);
 		
-		void Render();
+		virtual void Render();
 	};
 }

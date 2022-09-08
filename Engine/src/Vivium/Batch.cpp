@@ -248,8 +248,10 @@ namespace Vivium {
 	Batch::BatchData Batch::End() const
 	{
 		BatchData data;
-		data.vertex_buffer = MakeRef(VertexBuffer, m_Vertices, m_VerticesIndex + 1, *m_Layout);
-		data.index_buffer = MakeRef(IndexBuffer, m_Indices, m_IndicesIndex + 1);
+		if (m_Count > 0) {
+			data.vertex_buffer = MakeRef(VertexBuffer, m_Vertices, m_VerticesIndex + 1, *m_Layout);
+			data.index_buffer = MakeRef(IndexBuffer, m_Indices, m_IndicesIndex + 1);
+		}
 		data.count = m_Count;
 
 		return data;

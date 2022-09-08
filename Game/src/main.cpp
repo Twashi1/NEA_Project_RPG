@@ -52,17 +52,11 @@ int game(void)
     FloorItem::Init();
     Inventory::Init();
     CraftingInventory::Init();
-    LeafParticleSystem::Init();
+    LeavesParticleSystem::Init();
 
     Application::SetBGColor(RGBColor::BLACK);
 
     MainMenu main_menu{};
-
-    LeafParticleSystem system(500);
-
-    system.Emit(0.0f, 100.0f, {300.0f, 500.0f}, 50);
-
-    Timer secondTimer; secondTimer.Start();
 
     // Loop until window is closed by user
     while (Application::IsRunning())
@@ -77,21 +71,12 @@ int game(void)
 
         // Draw calls
         main_menu.Render();
-        system.Render();
-
-        float elapsed = secondTimer.GetElapsedNoReset();
-
-        if (elapsed > 1.0f) {
-            secondTimer.Start();
-            system.Emit(0.0f, 100.0f, { 300.0f, 500.0f }, 200);
-        }
 
         Application::EndFrame();
     }
 
     LogInfo("Window closed");
 
-    LeafParticleSystem::Terminate();
     CraftingInventory::Terminate();
     Biome::Terminate();
     Inventory::Terminate();
