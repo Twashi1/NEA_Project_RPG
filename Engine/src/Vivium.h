@@ -14,6 +14,7 @@
 #include "Vivium/Random.h"
 #include "Vivium/Scene.h"
 #include "Vivium/Text.h"
+#include "Vivium/ParticleSystem.h"
 
 // This is defined by Windows.h
 #undef VOID

@@ -1,4 +1,3 @@
-#include "ParticleSystem.h"
 #include "LeafParticles.h"
 
 namespace Game {
