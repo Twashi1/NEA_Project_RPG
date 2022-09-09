@@ -14,9 +14,9 @@ namespace Vivium {
         // Compiles vertex and fragment shader
         GLuint m_CreateShader(const char* vertex_name, const char* frag_name);
 
-    public:
-        GLuint id;
+        GLuint m_ID;
 
+    public:
         Shader(const char* vs_file, const char* fs_file);
         ~Shader();
 

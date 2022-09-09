@@ -107,7 +107,7 @@ namespace Vivium {
 
 	void VertexBuffer::Unbind()
 	{
-		glBindBuffer(GL_ARRAY_BUFFER, 0);
+		glBindBuffer(GL_ARRAY_BUFFER, NULL);
 	}
 
 	void VertexBuffer::Bind() const

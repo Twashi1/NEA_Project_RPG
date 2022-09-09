@@ -6,6 +6,7 @@ namespace Vivium {
 
     void Text::m_Construct(const std::string& input_str)
     {
+        // Splitting string by newlines, since they will need to be rendered on different y
         strings = Utils::SplitString(input_str, "\n");
 
         m_FontTexture = MakeRef(Vivium::Texture, m_DefaultFont.get());
@@ -22,8 +23,11 @@ namespace Vivium {
     {
         float width = 0.0f;
 
+        // Iterate each character
         for (char c : str) {
+            // Get character data for font
             Font::Character font_char = font->character_map.at(c);
+            // Get width (we're including spacing so we have to use the advance) and add to our running total
             width += float(font_char.advance >> 6) * scale;
         }
 
@@ -51,11 +55,12 @@ namespace Vivium {
 
     void Text::FixToWidth(float max_width)
     {
-        std::vector<std::string> new_strings;
-        new_strings.emplace_back("");
+        std::vector<std::string> new_strings; // Each entry is a string on a new line
+        new_strings.emplace_back(""); // Empty string we're gonna start appending to
 
         int current_new_string_index = 0;
 
+        // Running width of the string/line we're currently appending to
         float current_width = 0.0f;
 
         for (std::size_t str_idx = 0; str_idx < strings.size(); str_idx++) {
@@ -70,11 +75,13 @@ namespace Vivium {
 
                 current_width += char_width;
 
+                // The character we're about to add will be out of the bounds
                 if (current_width >= max_width) {
                     new_strings.emplace_back(1, current_char);
                     ++current_new_string_index;
                     current_width = char_width;
                 }
+                // Append to current string/line
                 else {
                     new_strings[current_new_string_index] += current_char;
                 }
@@ -103,6 +110,8 @@ namespace Vivium {
 
     std::string Text::GetText() const
     {
+        // Join all the strings into one
+        // TODO: end_str.reserve or something like that?
         std::string end_str;
         for (const std::string& str : strings) {
             end_str += str;
@@ -169,6 +178,7 @@ namespace Vivium {
 
                 std::array<float, 8> tex_coords = m_FontTextureAtlas->GetCoordsArray(c);
 
+                // Texture coordinates for character
                 float left = tex_coords[0];
                 float top = tex_coords[1];
                 float right = left + ((float)font_char.size.x / (float)m_FontTextureAtlas->GetAtlas()->GetWidth());

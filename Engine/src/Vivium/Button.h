@@ -32,12 +32,12 @@ namespace Vivium {
 	public:
 		typedef void (*CallbackFunc_t)(Button*, void*); // Shorthand for a callback function pointer (takes the button that was pressed as a paramater)
 
-		CallbackFunc_t callback; // Function called when button is pressed
-		std::string idle_text; // Text that displays when button is not pressed
-		std::string pressed_text; // Text that displays when button is pressed
+		CallbackFunc_t callback;	// Function called when button is pressed
+		std::string idle_text;		// Text that displays when button is not pressed
+		std::string pressed_text;	// Text that displays when button is pressed
 
 		// TODO: std shaders can be exposed through these
-		Ref(Shader) idle_shader; // Shader used when button is not pressed
+		Ref(Shader) idle_shader;	// Shader used when button is not pressed
 		Ref(Shader) pressed_shader; // Shader used when button is pressed
 
 		Ref(Texture) idle_texture = nullptr;

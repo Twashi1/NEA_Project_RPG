@@ -26,9 +26,9 @@ namespace Vivium {
 
 		Ref(TextureAtlas) m_Atlas; // The texture atlas we got the sprites from
 
-		Timer m_Timer;	 // Timer to track elapsed time between updates
-		float m_FrameTime = 0.0; // Time spent displaying the current frame
-		int m_FrameIndex = 0;	 // Index of frame of the animation we're currently displaying
+		Timer m_Timer;				// Timer to track elapsed time between updates
+		float m_FrameTime = 0.0;	// Time spent displaying the current frame
+		int m_FrameIndex = 0;		// Index of frame of the animation we're currently displaying
 
 	public:
 		static std::string FILE_EXTENSION;

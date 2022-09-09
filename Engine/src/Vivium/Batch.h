@@ -20,15 +20,15 @@ namespace Vivium {
 
 	class VIVIUM_API Batch {
 	private:
-		float* m_Vertices;
-		uint16_t* m_Indices;
+		float* m_Vertices;		// Vertices and vertex data
+		uint16_t* m_Indices;	// All vertex indices for index buffer
 
 		std::size_t m_VerticesIndex = 0;
 		std::size_t m_IndicesIndex = 0;
 
-		std::size_t m_Count = 0;
+		std::size_t m_Count = 0; // Total **shape** count
 		
-		const std::size_t m_MaxCount;
+		const std::size_t m_MaxCount; // Max shapes
 		const BufferLayout* m_Layout;
 
 	public:

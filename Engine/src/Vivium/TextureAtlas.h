@@ -10,8 +10,8 @@ namespace Vivium {
 	class VIVIUM_API TextureAtlas {
 	private:
 		Ref(Texture) m_Atlas;
-		Vector2<int> m_SpriteSize;
-		Vector2<int> m_AtlasDimRelative;
+		Vector2<int> m_SpriteSize;		 // Size in px of each sprite
+		Vector2<int> m_AtlasDimRelative; // Size of atlas in terms of the amount of sprites on x and y
 
 		void m_Construct();
 

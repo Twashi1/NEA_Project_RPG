@@ -21,9 +21,9 @@ namespace Game {
 		Tile::Properties("cactus_small",		true,		true,		false,		1.0f,		 {13, 0},		1.0f, {}),
 		Tile::Properties("cactus_tall_0",		true,		true,		false,		1.0f,		 {14, 1},		1.0f, {}),
 		Tile::Properties("cactus_tall_1",		true,		true,		false,		1.0f,		 {14, 0},		1.0f, {}),
-		Tile::Properties("cactus_fruit",		false,		true,		false,		0.5f,		 {15, 0},		0.5f, {}),
-		Tile::Properties("mossy_debris",		false,		true,		false,		0.5f,		 {0,  1},		0.5f, {}),
-		Tile::Properties("rocky_debris",		false,		true,		false,		0.5f,		 {0,  2},		0.5f, {}),
+		Tile::Properties("cactus_fruit",		false,		true,		false,		0.5f,		 {15, 0},		0.8f, {}),
+		Tile::Properties("mossy_debris",		false,		true,		false,		0.5f,		 {0,  1},		0.8f, {}),
+		Tile::Properties("rocky_debris",		false,		true,		false,		0.5f,		 {0,  2},		0.8f, {}),
 		Tile::Properties("pink_flower",			false,		true,		false,		0.5f,		 {1,  1},		0.5f, {}),
 		Tile::Properties("blue_flower",			false,		true,		false,		0.5f,		 {1,  2},		0.5f, {})
 	};

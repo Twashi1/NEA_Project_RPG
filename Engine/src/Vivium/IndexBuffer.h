@@ -6,8 +6,8 @@
 namespace Vivium {
 	class VIVIUM_API IndexBuffer {
 		GLuint m_ID;
-		GLushort m_Count; // Amount of indices
-		GLenum m_GLType; // GLSL data type
+		GLushort m_Count;	// Amount of indices
+		GLenum m_GLType;	// GLSL data type
 
 	public:
 		IndexBuffer(const std::vector<uint16_t>& indices);

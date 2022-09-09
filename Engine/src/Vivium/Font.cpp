@@ -92,7 +92,7 @@ namespace Vivium {
 		}
 
 		// Unbind texture
-		glBindTexture(GL_TEXTURE_2D, 0);
+		glBindTexture(GL_TEXTURE_2D, NULL);
 
 		// Free FreeType memory
 		FT_Done_Face(face);
@@ -106,8 +106,8 @@ namespace Vivium {
 		glBufferData(GL_ARRAY_BUFFER, sizeof(float) * 6 * 4, NULL, GL_DYNAMIC_DRAW);
 		glEnableVertexAttribArray(0);
 		glVertexAttribPointer(0, 4, GL_FLOAT, GL_FALSE, 4 * sizeof(float), 0);
-		glBindBuffer(GL_ARRAY_BUFFER, 0);
-		glBindVertexArray(0);
+		glBindBuffer(GL_ARRAY_BUFFER, NULL);
+		glBindVertexArray(NULL);
 	}
 
 	Font::~Font()

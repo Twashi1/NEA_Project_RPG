@@ -24,6 +24,7 @@ namespace Vivium {
 	{
 		static const float clearcolor[] = {0.0f, 0.0f, 0.0f, 0.0f};
 
+		// Clear the color attachment
 		glClearTexImage(m_ColorAttachment, 0, GL_RGBA, GL_FLOAT, clearcolor);
 	}
 
@@ -34,7 +35,7 @@ namespace Vivium {
 
 	void Framebuffer::Unbind()
 	{
-		glBindFramebuffer(GL_FRAMEBUFFER, 0);
+		glBindFramebuffer(GL_FRAMEBUFFER, NULL);
 	}
 
 	void Framebuffer::SetSlot(unsigned int slot) const
@@ -90,7 +91,7 @@ namespace Vivium {
 		if (glCheckFramebufferStatus(GL_FRAMEBUFFER) != GL_FRAMEBUFFER_COMPLETE) { LogError("Framebuffer is incomplete"); }
 
 		// Unbinds
-		glBindFramebuffer(GL_FRAMEBUFFER, 0);
-		glBindTexture(GL_TEXTURE_2D, 0);
+		glBindFramebuffer(GL_FRAMEBUFFER, NULL);
+		glBindTexture(GL_TEXTURE_2D, NULL);
 	}
 }

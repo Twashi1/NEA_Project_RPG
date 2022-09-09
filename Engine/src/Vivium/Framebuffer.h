@@ -10,8 +10,8 @@ namespace Vivium {
 	class VIVIUM_API Framebuffer {
 	private:
 		int m_Width, m_Height;
-		GLuint m_ID = 0;
-		GLuint m_ColorAttachment = 0;
+		GLuint m_ID = 0;				// Framebuffer id
+		GLuint m_ColorAttachment = 0;	// Color attachment (texture) id
 
 	public:
 		Framebuffer(const Vector2<int>& dim);

@@ -14,6 +14,7 @@ namespace Vivium {
 
 		Vector2<float> halfdim = dim * 0.5f; // Calculate half width and height
 
+		// Precalc some trig
 		float cos_angle = std::cos(angle);
 		float sin_angle = std::sin(angle);
 
@@ -70,6 +71,10 @@ namespace Vivium {
 
 	bool Rect::Contains(const Vector2<float>& point) const
 	{
+		// Equation from:
+		// https://stackoverflow.com/questions/17136084/checking-if-a-point-is-inside-a-rotated-rectangle
+		// Area = abs( (Bx * Ay - Ax * By) + (Cx * By - Bx * Cy) + (Ax * Cy - Cx * Ay) ) / 2
+
 		static const float epsilon = 0.1f;
 
 		std::array<Vector2<float>, 4> vertices = GetVertices();

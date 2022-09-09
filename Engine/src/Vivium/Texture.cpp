@@ -17,7 +17,7 @@ namespace Vivium {
 
 	void Texture::Unbind()
 	{
-		glBindTexture(GL_TEXTURE_2D, 0);
+		glBindTexture(GL_TEXTURE_2D, NULL);
 	}
 
 	void Texture::Bind(uint8_t slot) const
@@ -99,7 +99,7 @@ namespace Vivium {
 
 	void TextureArray::Unbind()
 	{
-		glBindTexture(GL_TEXTURE_2D_ARRAY, 0);
+		glBindTexture(GL_TEXTURE_2D_ARRAY, NULL);
 	}
 
 	void TextureArray::Bind(uint8_t slot) const

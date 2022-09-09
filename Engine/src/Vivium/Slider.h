@@ -13,7 +13,7 @@ namespace Vivium {
 		static Ref(Shader) m_DefaultBarShader;
 		static Ref(Shader) m_DefaultSliderShader;
 
-		float m_Value;
+		float m_Value; // Slider value from 0 -> 1
 
 		void m_UpdateValue();
 		void m_Construct();
@@ -21,7 +21,7 @@ namespace Vivium {
 		Ref(Quad) m_BarQuad;
 		Ref(Quad) m_SliderQuad;
 
-		bool isMovingSlider = false;
+		bool isMovingSlider = false; // Currently holding down the slider
 
 		void* m_UserParams = nullptr;
 

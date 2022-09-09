@@ -98,7 +98,6 @@ namespace Vivium {
 		Input::State lmb_state = Input::GetMouseState(GLFW_MOUSE_BUTTON_1);
 
 		m_UpdatePos();
-
 		if (lmb_state == Input::State::RELEASE) {
 			CheckClicked(cursor_pos);
 		}

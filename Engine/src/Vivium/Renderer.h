@@ -43,7 +43,7 @@ namespace Vivium {
 		static constexpr uint8_t INVALID_TEXTURE_SLOT = 0xff; // Constant to represent an invalid texture slot
 		static constexpr uint8_t MAX_TEXTURE_SLOT = 0xf; // TODO: get max texture slots from opengl
 
-		static constexpr int PHYSICS_DEBUG_SCENE = 0x4C2A5994; // Just some random number I made up
+		static constexpr int PHYSICS_DEBUG_SCENE = 0x4C2A5994; // NOTE: Just some random number I made up
 		static const std::vector<int> RESERVED_SCENE_IDS;
 
 		// Gives a free texture slot

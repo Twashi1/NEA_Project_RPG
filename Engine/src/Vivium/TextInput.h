@@ -39,11 +39,12 @@ namespace Vivium {
 
 		std::size_t m_CharLimit = 20;
 
-		RGBColor m_EmptyColor;
-		RGBColor m_TypedColor;
+		RGBColor m_EmptyColor; // Color for "empty_text"
+		RGBColor m_TypedColor; // Color for text user typed in
 
 		Ref(Text) m_Text = nullptr;
 
+		// TODO: ALLOW USER TO SET THIS
 		std::string empty_text;	// Text that displays when textinput is empty
 
 		// Updates the text based on user input
@@ -56,7 +57,7 @@ namespace Vivium {
 		CallbackFunc_t callback;
 		void* m_UserParams;
 
-		int m_Offset;
+		int m_Offset; // Offset of text from the left side of the text input quad
 
 	public:
 		std::string typed_text = ""; // Text that user has typed/is typing in

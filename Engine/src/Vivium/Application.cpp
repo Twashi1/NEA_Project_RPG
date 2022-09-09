@@ -279,7 +279,7 @@ namespace Vivium {
         m_FramesProcessed++;
         m_ProcessingTime += dt;
 
-        // If 10 seconds have passed
+        // If POLL_INTERVAL has passed
         if (m_FramesProcessed * m_TimePerFrame > POLL_INTERVAL) {
             double average_tpf = m_ProcessingTime / m_FramesProcessed; // Calculate average processing time taken per frame
 

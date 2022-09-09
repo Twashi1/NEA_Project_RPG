@@ -47,10 +47,10 @@ namespace Vivium {
 			Listener();
 		};
 
-		static std::vector<unsigned int> last_chars; // Stores a log of all key presses that occured before the last Update
-		static std::vector<unsigned int> current_chars; // Stores a log of all key presses that have occured after the last Update
-		static std::vector<KeypressLog> last_keypresses;
-		static std::vector<KeypressLog> current_keypresses;
+		static std::vector<unsigned int> last_chars;	// Stores a log of all (printable) key presses that occured before the last Update
+		static std::vector<unsigned int> current_chars; // Stores a log of all (printable) key presses that have occured after the last Update
+		static std::vector<KeypressLog> last_keypresses;    // Stores a log of all key presses that occured before the last Update
+		static std::vector<KeypressLog> current_keypresses;	// Stores a log of all key presses that have occured after the last Update
 
 		// Callback function for key presses as characters
 		static void m_CharCallback(GLFWwindow* window, unsigned int codepoint);
@@ -70,7 +70,7 @@ namespace Vivium {
 		static Timer m_Timer;
 
 		static int m_CurrentMods;
-		static float m_LastYScroll;
+		static float m_LastYScroll; // Last update scroll distance
 		static float m_ScrollSensitivity;
 
 	public:

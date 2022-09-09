@@ -22,7 +22,7 @@ namespace Vivium {
 		// Load text
 		std::string* filetext = Utils::ReadFile(Texture::PATH + animation_data_file + Animation::FILE_EXTENSION);
 
-		// Split by c
+		// Split by comma
 		std::vector<std::string> parts = Utils::SplitString(*filetext, ",");
 
 		int loop_start = 0;

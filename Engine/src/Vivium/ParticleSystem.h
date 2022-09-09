@@ -36,11 +36,11 @@ namespace Vivium {
 		static const BufferLayout m_Layout;
 		Ref(Shader) m_Shader;
 
-		Vector2<float> m_Acceleration;
+		Vector2<float> m_Acceleration; // General acceleration of all particles
 
-		Particle** m_Particles;
-		std::size_t m_MaxSize;
-		std::size_t m_Index = 0;
+		Particle** m_Particles;  // 1D array of Particle* (almost interpreted and used as a cyclical queue)
+		std::size_t m_MaxSize;	 // Maximum amount of particles that can exist at once
+		std::size_t m_Index = 0; // Current index of the rear of the particles queue
 
 		virtual void m_EmitParticle(float lifespan, const Vector2<float>& pos, const Vector2<float>& vel, const Vector2<float>& var, float angle, float angular_vel, float angular_var);
 

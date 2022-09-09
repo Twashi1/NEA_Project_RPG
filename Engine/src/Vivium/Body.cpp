@@ -84,9 +84,8 @@ namespace Vivium {
 
 	Math::AABB Body::PeekAABB(float dt)
 	{
-		// TODO: this doesn't create a true bounding box since it doesn't find the maximums/minimums of the vertices, since doing that would negate any performance benefit
-		// TODO: make AABB a member of a body? then changing the body changes the aabb? probably would equally ruin performance
-
+		// TODO: Make dimensions the max size the quad could take
+		
 		// Calculate future velocity
 		Vector2<float> next_vel = vel + (acc * dt);
 		// Calculate future position

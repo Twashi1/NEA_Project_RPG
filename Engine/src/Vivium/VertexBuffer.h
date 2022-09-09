@@ -3,6 +3,7 @@
 #include "Core.h"
 #include "Logger.h"
 
+// Ripped a lot of the buffer layout code from here:
 // https://www.youtube.com/watch?v=jIJFM_pi6gQ&ab_channel=TheCherno
 
 namespace Vivium {

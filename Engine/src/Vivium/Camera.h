@@ -4,15 +4,18 @@
 #include "Logger.h"
 #include "Math.h"
 
+// Lots ripped from here
+// https://www.youtube.com/watch?v=NjKv-HWstxA&ab_channel=TheCherno
+
 namespace Vivium {
     struct VIVIUM_API Camera {
     private:
-        glm::mat4 m_ProjMat;
-        glm::mat4 m_ViewMat;
+        glm::mat4 m_ProjMat; // Projection matrix
+        glm::mat4 m_ViewMat; // View matrix
 
-        glm::vec3 m_Scale = glm::vec3(1.0f);
-        glm::vec3 m_Pos;
-        float m_Rotation = 0.0f;
+        glm::vec3 m_Scale = glm::vec3(1.0f);    // Camera scale
+        glm::vec3 m_Pos;                        // Camera pos
+        float m_Rotation = 0.0f;                // Camera rotation
 
         void m_UpdateMatrix();
 

@@ -78,7 +78,7 @@ namespace Vivium {
 
     Shader::Shader(const char* vs_file, const char* fs_file)
     {
-        id = m_CreateShader(
+        m_ID = m_CreateShader(
             vs_file,
             fs_file
         );
@@ -88,7 +88,7 @@ namespace Vivium {
     Shader::~Shader()
     {
         // Delete program
-        glDeleteProgram(id);
+        glDeleteProgram(m_ID);
     }
 
     void Shader::Unbind()
@@ -98,78 +98,78 @@ namespace Vivium {
 
     void Shader::Bind() const
     {
-        glUseProgram(id);
+        glUseProgram(m_ID);
     }
 
     void Shader::SetUniform1i(const char* name, int x)
     {
-        GLuint location = glGetUniformLocation(id, name);
+        GLuint location = glGetUniformLocation(m_ID, name);
         glUniform1i(location, x);
     }
 
     void Shader::SetUniform1ui(const char* name, unsigned int x)
     {
-        GLuint location = glGetUniformLocation(id, name);
+        GLuint location = glGetUniformLocation(m_ID, name);
         glUniform1ui(location, x);
     }
 
     void Shader::SetUniform1f(const char* name, float x)
     {
-        GLuint location = glGetUniformLocation(id, name);
+        GLuint location = glGetUniformLocation(m_ID, name);
         glUniform1f(location, x);
     }
 
     void Shader::SetUniform2f(const char* name, float x, float y)
     {
-        GLuint location = glGetUniformLocation(id, name);
+        GLuint location = glGetUniformLocation(m_ID, name);
         glUniform2f(location, x, y);
     }
 
     void Shader::SetUniform2f(const char* name, Vector2<float> v)
     {
-        GLuint location = glGetUniformLocation(id, name);
+        GLuint location = glGetUniformLocation(m_ID, name);
         glUniform2f(location, v.x, v.y);
     }
 
     void Shader::SetUniform3f(const char* name, float x, float y, float z)
     {
-        GLuint location = glGetUniformLocation(id, name);
+        GLuint location = glGetUniformLocation(m_ID, name);
         glUniform3f(location, x, y, z);
     }
 
     void Shader::SetUniform3f(const char* name, const RGBColor& color)
     {
-        GLuint location = glGetUniformLocation(id, name);
+        GLuint location = glGetUniformLocation(m_ID, name);
         glUniform3f(location, color.r, color.g, color.b);
     }
 
     void Shader::SetUniform4f(const char* name, float x, float y, float z, float w)
     {
-        GLuint location = glGetUniformLocation(id, name);
+        GLuint location = glGetUniformLocation(m_ID, name);
         glUniform4f(location, x, y, z, w);
     }
 
     void Shader::SetUniformMat4fv(const char* name, const glm::mat4& mat)
     {
-        GLuint location = glGetUniformLocation(id, name);
+        GLuint location = glGetUniformLocation(m_ID, name);
         glUniformMatrix4fv(location, 1, false, &mat[0][0]);
     }
 
     void Shader::SetUniform1fv(const char* name, unsigned int count, const float* values)
     {
-        GLuint location = glGetUniformLocation(id, name);
+        GLuint location = glGetUniformLocation(m_ID, name);
         glUniform1fv(location, count, values);
     }
 
     void Shader::SetUniform1iv(const char* name, unsigned int count, const int* values)
     {
-        GLuint location = glGetUniformLocation(id, name);
+        GLuint location = glGetUniformLocation(m_ID, name);
         glUniform1iv(location, count, values);
     }
 
     void Shader::SetUniform1uiv(const char* name, unsigned int count, const unsigned int* values)
     {
-        GLuint location = glGetUniformLocation(id, name);
+        GLuint location = glGetUniformLocation(m_ID, name);
         glUniform1uiv(location, count, values);
     }
 }

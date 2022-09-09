@@ -12,6 +12,7 @@ namespace Vivium {
         void m_ConstructFromString(const char* string);
 
     public:
+        // major.minor.patch
         uint16_t major;
         uint16_t minor;
         uint16_t patch;

@@ -195,7 +195,9 @@ namespace Game {
 	Region& World::m_LoadRegion(const Vivium::Vector2<int>& index)
 	{
 		// Try find region in region map
+		regions_mutex.lock();
 		auto it = regions.find(index);
+		regions_mutex.unlock();
 
 		// If region at that index exists
 		if (it != regions.end()) {

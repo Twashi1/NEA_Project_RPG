@@ -15,8 +15,8 @@ namespace Vivium {
 			void m_RemoveExpiredBodies();
 
 		public:
-			std::vector<WeakRef(Body)> bodies;
-			std::set<uint32_t> collision_matrix; // Stores which other layer indices this one interacts with
+			std::vector<WeakRef(Body)> bodies;		// Store reference to all bodies being tracked in this layer
+			std::set<uint32_t> collision_matrix;	// Stores which other layer indices this one interacts/doesn't interact with (NOTE: name is the taken from Unity's collision matrix, but implemented slightly differently)
 
 			Layer() = default;
 			Layer(const std::set<uint32_t>& collision_matrix);

@@ -59,12 +59,12 @@ namespace Vivium {
 		// All quads/points we're editing
 		std::vector<Data*> m_PanelObjects;
 
-		Vector2<float> m_OldDim;
-		Vector2<float> m_OldPos;
-		Ref(Quad) m_Quad;
+		Vector2<float> m_OldDim; // Last update dimensions of m_Quad
+		Vector2<float> m_OldPos; // Last update position of m_Quad
+		Ref(Quad) m_Quad; // Position and dimension of panel
 
-		int m_ScrollYMax;
-		int m_ScrollYMin;
+		int m_ScrollYMax; // Maximum y scroll distance
+		int m_ScrollYMin; // Minimum y scroll distance
 
 		bool m_VerifyObject(Data& panel_object);
 		void m_Update(Data& panel_object, const Rect& new_rect);

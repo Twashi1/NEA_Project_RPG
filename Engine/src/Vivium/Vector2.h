@@ -6,7 +6,7 @@ namespace Vivium {
 	template <typename T> requires Arithmetic<T>
 	struct VIVIUM_API Vector2 {
 	public:
-		using value_type = T;
+		using value_type = T; // Unused
 
 		T x, y;
 

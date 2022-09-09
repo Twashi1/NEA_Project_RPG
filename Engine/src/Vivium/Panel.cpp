@@ -5,7 +5,6 @@ namespace Vivium {
 	{
 		switch (m_Type) {
 		case Type::QUAD:
-			// If we're the only one using this ref
 			quad.lock()->SetCenter(pos); break;
 		case Type::POINT:
 		{

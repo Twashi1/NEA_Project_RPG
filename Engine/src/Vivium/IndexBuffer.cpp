@@ -54,7 +54,7 @@ namespace Vivium {
 
 	void IndexBuffer::Unbind()
 	{
-		glBindBuffer(GL_ELEMENT_ARRAY_BUFFER, 0);
+		glBindBuffer(GL_ELEMENT_ARRAY_BUFFER, NULL);
 	}
 
 	void IndexBuffer::Bind() const
