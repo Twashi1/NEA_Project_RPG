@@ -6,6 +6,7 @@
 
 // TODO: system for sending raw vertices without indices?
 // TODO: specification
+// TODO: per buffer element data submission
 
 namespace Vivium {
 	class Batch;
