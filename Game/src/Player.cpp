@@ -155,7 +155,8 @@ namespace Game {
     {
         // Setup player quad and body
         quad = MakeRef(Vivium::Quad, 0.0f, 0.0f, 50.0f, 50.0f);
-        body = MakeRef(Vivium::Body, quad, true, 0.0f, 10.0f);
+        // TODO: fix later
+        body = MakeRef(Vivium::Body, quad, false, 0.5f, 2.0f);
 
         // Setup shader and uniforms
         shader = new Vivium::Shader("world_vertex", "color_frag");

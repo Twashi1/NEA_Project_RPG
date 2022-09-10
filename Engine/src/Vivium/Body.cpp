@@ -1,24 +1,22 @@
 #include "Body.h"
+#include "Physics.h"
 
 namespace Vivium {
-	Body::Body(Quad& quad, bool isImmovable, float restitution, float mass)
-		: quad(MakeRef(Quad, quad)),
-		isImmovable(isImmovable),
-		vel(), acc(),
-		restitution(restitution),
-		mass(mass), imass(1.0f / mass),
-		angular_acc(0.0f), angular_vel(0.0f)
+	void Body::m_InvokeCollisionCallback()
 	{
-		m_Timer.Start();
+		if (collision_callback != nullptr) {
+			collision_callback(this, user_params);
+		}
 	}
 
-	Body::Body(Ref(Quad) quad, bool isImmovable, float restitution, float mass)
+	Body::Body(Ref(Quad) quad, bool isImmovable, float restitution, float mass, CallbackFunc_t callback, void* user_params)
 		: quad(quad),
 		isImmovable(isImmovable),
 		vel(), acc(),
 		restitution(restitution),
 		mass(mass), imass(1.0f / mass),
-		angular_acc(0.0f), angular_vel(0.0f)
+		angular_acc(0.0f), angular_vel(0.0f),
+		collision_callback(callback), user_params(user_params)
 	{
 		m_Timer.Start();
 	}
@@ -29,7 +27,8 @@ namespace Vivium {
 		vel(other.vel), acc(other.acc),
 		restitution(other.restitution),
 		mass(other.mass), imass(other.imass),
-		angular_acc(other.angular_acc), angular_vel(other.angular_vel)
+		angular_acc(other.angular_acc), angular_vel(other.angular_vel),
+		collision_callback(other.collision_callback), user_params(other.user_params)
 	{
 		m_Timer.Start();
 	}

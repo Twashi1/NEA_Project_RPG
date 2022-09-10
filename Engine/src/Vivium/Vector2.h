@@ -25,8 +25,10 @@ namespace Vivium {
 		Vector2 operator*(const Vector2& other) const { return Vector2(x * other.x, y * other.y); }
 		Vector2 operator/(const Vector2& other) const { return Vector2(x / other.x, y / other.y); }
 
-		Vector2 operator*(const T& other) const { return Vector2(x * other, y * other); }
-		Vector2 operator/(const T& other) const { return Vector2(x / other, y / other); }
+		friend Vector2 operator*(const T& s, const Vector2& v) { return Vector2(s * v.x, s * v.y); }
+		friend Vector2 operator/(const T& s, const Vector2& v) { return Vector2(v.x / s, v.y / s); }
+		friend Vector2 operator*(const Vector2& v, const T& s) { return Vector2(s * v.x, s * v.y); }
+		friend Vector2 operator/(const Vector2& v, const T& s) { return Vector2(v.x / s, v.y / s); }
 
 		void operator+=(const Vector2& other) { x += other.x; y += other.y; }
 		void operator-=(const Vector2& other) { x -= other.x; y -= other.y; }

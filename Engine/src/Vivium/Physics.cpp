@@ -63,13 +63,28 @@ namespace Vivium {
 
 			// If either quad contains any points of the other quad (intersecting)
 			if (future_rect_a.IsIntersecting(future_rect_b)) {
-				// TODO: impulse resolution
-				a->vel = Vector2<float>(); b->vel = Vector2<float>();
-				a->acc = Vector2<float>(); b->acc = Vector2<float>();
-				a->angular_acc = 0; b->angular_acc = 0;
-				a->angular_vel = 0; b->angular_vel = 0;
+				m_ResolveCollision(a, b, future_rect_a, future_rect_b);
 			}
 		}
+	}
+
+	void Physics::m_ResolveCollision(Ref(Body) a, Ref(Body) b, const Rect& a_rect, const Rect& b_rect)
+	{
+		// https://math.stackexchange.com/questions/13261/how-to-get-a-reflection-vector
+		float restitution = std::min(a->restitution, b->restitution);
+
+		// TODO: calculating contact normals
+		// NOTE: did this algebra myself so its probably super inefficient
+		// e(u1-u2)
+		Vector2<float> k = (a->vel - b->vel) * restitution;
+
+		// [m1u1 + m2(u2-k)]/(m1+m2) = v1
+		Vector2<float> v1 = (a->vel * a->mass + (b->vel - k) * b->mass) / (a->mass + b->mass);
+		// k+v1=v2
+		Vector2<float> v2 = v1 + k;
+
+		a->vel = v1;
+		b->vel = v2;
 	}
 
 	void Physics::Update()

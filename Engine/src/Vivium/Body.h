@@ -4,45 +4,58 @@
 #include "Vector2.h"
 #include "Quad.h"
 
-// TODO: switch from using quads to rects
-
 namespace Vivium {
+	class Physics;
+
 	struct VIVIUM_API Body {
 	private:
 		Timer m_Timer;
 
+		// Technically doesn't make sense for this to be private while collision_callback and user_params are public
+		virtual void m_InvokeCollisionCallback();
+
 	public:
-		Ref(Quad) quad;		// Pointer to quad which describes location and dimensions of Body
-		bool isImmovable;	// If an object is immovable, collisions will not change velocity/acceleration of this body (infinite mass)
-		float restitution;	// Represents amount of velocity transferred to this object in collision, but has no link to actual coefficient of restitution in physics (basically just a bad name)
-		float mass;			// Mass of an object, also included in calculation of how much velocity is transferred to this object in a collision
-		float imass;		// Inverse mass
+		typedef void (*CallbackFunc_t)(Body*, void*); // Collision callback function shorthand
 
-		Vector2<float> vel; // Current velocity of object
-		Vector2<float> acc; // Current acceleration of object
+		// TODO: user params is weird, maybe something general for a callback function
+		CallbackFunc_t collision_callback = nullptr;
+		void* user_params = nullptr;
 
-		float angular_vel;  // Current angular velocity of object
-		float angular_acc;  // Current angular acceleration of object
+		Ref(Quad) quad = nullptr;	// Pointer to quad which describes location and dimensions of Body
+		bool isImmovable = false;	// If an object is immovable, collisions will not change velocity/acceleration of this body (infinite mass)
+		float restitution = 0.0f;	// Represents amount of velocity transferred to this object in collision, but has no link to actual coefficient of restitution in physics (basically just a bad name)
+		float mass = 1.0f;			// Mass of an object, also included in calculation of how much velocity is transferred to this object in a collision
+		float imass = 0.0f;			// Inverse mass
 
-		Body(Quad& quad, bool isImmovable, float restitution, float mass);
-		Body(Ref(Quad) quad, bool isImmovable, float restitution, float mass);
+		Vector2<float> vel = 0.0f;	// Current velocity of object
+		Vector2<float> acc = 0.0f;	// Current acceleration of object
+
+		float angular_vel = 0.0f;	// Current angular velocity of object
+		float angular_acc = 0.0f;	// Current angular acceleration of object
+
+		Body() = default;
+		Body(Ref(Quad) quad, bool isImmovable, float restitution, float mass, CallbackFunc_t callback = nullptr, void* user_params = nullptr);
 		Body(const Body& other);
 
-		// Updates position and velocity, takes time since last update as parameter
-		void Update();
-		// Returns a quad which represents the location the object will be at, "dt" seconds into the future (provided no outside influences)
-		Quad Peek(float dt);
-		Rect PeekRect(float dt);
-		Math::AABB PeekAABB(float dt);
-		Vector2<float> PeekPos(float dt);
+		virtual ~Body() = default;
 
-		bool operator==(const Body& other) const {
-			return *quad == *other.quad
-				&& isImmovable == other.isImmovable
-				&& vel == other.vel && acc == other.acc
-				&& mass == other.mass
-				&& restitution == other.restitution
-				&& angular_vel == other.angular_vel && angular_acc == other.angular_acc;
+		// Updates position and velocity, takes time since last update as parameter
+		virtual void Update();
+		// Returns a quad which predicts the location the object will be at "dt" seconds into the future
+		virtual Quad Peek(float dt);
+		virtual Rect PeekRect(float dt);
+		virtual Math::AABB PeekAABB(float dt);
+		virtual Vector2<float> PeekPos(float dt);
+
+		friend bool operator==(const Body& a, const Body& b) {
+			return *a.quad == *b.quad
+				&& a.isImmovable == b.isImmovable
+				&& a.vel == b.vel && a.acc == b.acc
+				&& a.mass == b.mass
+				&& a.restitution == b.restitution
+				&& a.angular_vel == b.angular_vel && a.angular_acc == b.angular_acc;
 		}
+
+		friend Physics;
 	};
 }

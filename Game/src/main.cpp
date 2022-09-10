@@ -14,16 +14,33 @@ int sandbox(void)
 {
     Application::Init(WIDTH, HEIGHT, FPS);
 
-    Text my_text("abcdefgh\nhijk\nlmnop", Vivium::Vector2<float>{200.0f, 200.0f}, Text::Alignment::CENTER, 0.25f);
-
     Application::SetBGColor(RGBColor::BLUE);
+
+    auto obj1 = MakeRef(Vivium::Quad, 200.0f, 100.0f, 100.0f, 100.0f, 0.5f);
+    auto obj2 = MakeRef(Vivium::Quad, 800.0f, 200.0f, 100.0f, 100.0f);
+
+    Vivium::Shader color = Vivium::Shader("static_vertex", "color_frag"); color.SetUniform3f("u_Color", RGBColor::RED);
+    Vivium::Shader color2 = Vivium::Shader("static_vertex", "color_frag"); color.SetUniform3f("u_Color", RGBColor::GREEN);
+
+    auto obj1b = MakeRef(Vivium::Body, obj1, false, 1.0f, 8.0f);
+    auto obj2b = MakeRef(Vivium::Body, obj2, false, 1.0f, 2.0f);
+
+    auto layer = Physics::CreateLayer(5, { 5 });
+
+    layer->bodies.push_back(obj1b);
+    layer->bodies.push_back(obj2b);
+
+    obj2b->vel.x = -100.0f;
+    obj1b->vel.x = 100.0f;
 
     while (Application::IsRunning()) {
         Application::BeginFrame();
 
-        my_text.Render();
+        Renderer::Submit(obj1.get(), &color);
+        Renderer::Submit(obj2.get(), &color2);
 
-        *my_text.pos = Input::GetCursorPos();
+        obj1b->Update();
+        obj2b->Update();
 
         Application::EndFrame();
     }
@@ -91,5 +108,5 @@ int game(void)
 }
 
 int main(int argc, char** argv) {
-    game();
+    sandbox();
 }
