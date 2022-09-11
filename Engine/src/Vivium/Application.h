@@ -83,6 +83,8 @@ namespace Vivium {
 
         static void SetCursor(const CURSOR_TYPE& cursor);
 
+        static void SetFPS(int new_fps);
+
         // TODO: pretty specific, only for games with players
         static void UpdateStats(const Body& player_body);
 

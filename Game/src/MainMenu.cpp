@@ -36,6 +36,17 @@ namespace Game {
 		m_LoadScene(SceneID::LOAD_WORLD);
 	}
 
+	void MainMenu::s_OptionsCallback(Vivium::Button* button, void* params)
+	{
+		MainMenu* main_menu = (MainMenu*)params;
+		main_menu->m_OptionsCallback(button);
+	}
+
+	void MainMenu::m_OptionsCallback(Vivium::Button* button)
+	{
+		m_LoadScene(SceneID::OPTIONS);
+	}
+
 	void MainMenu::m_LoadScene(const SceneID& id)
 	{
 		Vivium::IScene*& scene_ptr = m_Scenes.at(id);
@@ -49,6 +60,7 @@ namespace Game {
 			case SceneID::CREATE_WORLD: scene_ptr = new SceneType<MainMenu::SceneID::CREATE_WORLD>::type(this);	break;
 			case SceneID::LOAD_WORLD:	scene_ptr = new SceneType<MainMenu::SceneID::LOAD_WORLD>::type(this);	break;
 			case SceneID::GAME:			scene_ptr = new SceneType<MainMenu::SceneID::GAME>::type(0, "", true);	break;
+			case SceneID::OPTIONS:		scene_ptr = new SceneType<MainMenu::SceneID::OPTIONS>::type(this);		break;
 			default: LogWarn("Invalid scene ID"); break;
 			}
 		}
@@ -74,13 +86,7 @@ namespace Game {
 	{
 		for (auto& [scene_id, scene_ptr] : m_Scenes) {
 			if (scene_id != m_CurrentSceneID && scene_ptr != nullptr) {
-				switch (scene_id) {
-				case SceneID::START:		{ delete ((SceneType<SceneID::START>::type*)		scene_ptr);	break; }
-				case SceneID::CREATE_WORLD: { delete ((SceneType<SceneID::CREATE_WORLD>::type*)	scene_ptr);	break; }
-				case SceneID::LOAD_WORLD:	{ delete ((SceneType<SceneID::LOAD_WORLD>::type*)	scene_ptr); break; }
-				case SceneID::GAME:			{ delete ((SceneType<SceneID::GAME>::type*)			scene_ptr);	break; }
-				default: LogWarn("Invalid scene ID"); break;
-				}
+				delete scene_ptr;
 
 				scene_ptr = nullptr;
 			}
@@ -93,7 +99,8 @@ namespace Game {
 			{ SceneID::START,			nullptr },
 			{ SceneID::CREATE_WORLD,	nullptr },
 			{ SceneID::LOAD_WORLD,		nullptr },
-			{ SceneID::GAME,			nullptr }
+			{ SceneID::GAME,			nullptr },
+			{ SceneID::OPTIONS,			nullptr }
 			})
 	{
 		m_LoadScene(SceneID::START);
@@ -103,13 +110,7 @@ namespace Game {
 	{
 		for (auto& [scene_id, scene_ptr] : m_Scenes) {
 			if (scene_ptr != nullptr) {
-				switch (scene_id) {
-				case SceneID::START:		delete ((SceneType<SceneID::START>::type*)			scene_ptr); break;
-				case SceneID::CREATE_WORLD: delete ((SceneType<SceneID::CREATE_WORLD>::type*)	scene_ptr); break;
-				case SceneID::LOAD_WORLD:	delete ((SceneType<SceneID::LOAD_WORLD>::type*)		scene_ptr); break;
-				case SceneID::GAME:			delete ((SceneType<SceneID::GAME>::type*)			scene_ptr); break;
-				default: LogWarn("Invalid scene ID"); break;
-				}
+				delete scene_ptr;
 			}
 		}
 	}
@@ -122,13 +123,7 @@ namespace Game {
 			LogWarn("Scene has not been loaded");
 		}
 
-		switch (m_CurrentSceneID) {
-		case SceneID::START:		((SceneType<SceneID::START>::type*)			scene_ptr)->Update(); break;
-		case SceneID::CREATE_WORLD: ((SceneType<SceneID::CREATE_WORLD>::type*)	scene_ptr)->Update(); break;
-		case SceneID::LOAD_WORLD:	((SceneType<SceneID::LOAD_WORLD>::type*)	scene_ptr)->Update(); break;
-		case SceneID::GAME:			((SceneType<SceneID::GAME>::type*)			scene_ptr)->Update(); break;
-		default: LogWarn("Invalid scene ID"); break;
-		}
+		scene_ptr->Update();
 
 		m_DeallocateUnusedScenes();
 	}
@@ -141,16 +136,10 @@ namespace Game {
 			LogWarn("Scene has not been loaded");
 		}
 
-		switch (m_CurrentSceneID) {
-		case SceneID::START:		((SceneType<SceneID::START>::type*)			scene_ptr)->Render(); break;
-		case SceneID::CREATE_WORLD: ((SceneType<SceneID::CREATE_WORLD>::type*)	scene_ptr)->Render(); break;
-		case SceneID::LOAD_WORLD:	((SceneType<SceneID::LOAD_WORLD>::type*)	scene_ptr)->Render(); break;
-		case SceneID::GAME:			((SceneType<SceneID::GAME>::type*)			scene_ptr)->Render(); break;
-		default: LogWarn("Invalid scene ID"); break;
-		}
+		scene_ptr->Render();
 	}
 
-	__StartScene::__StartScene(MainMenu* menu)
+	StartScene::StartScene(MainMenu* menu)
 		: m_Manager(menu)
 	{
 		m_TitleSprite = MakeRef(Vivium::Sprite, Vivium::Vector2<float>(0.0f, 100.0f), Vivium::Vector2<float>(256.0f, 256.0f), "title.png", true);
@@ -167,64 +156,49 @@ namespace Game {
 			&MainMenu::s_LoadWorldCallback,
 			std::string("Load World"),
 			(void*)menu
-			);
+		);
+
+		m_OptionsButton = MakeRef(Vivium::Button,
+			Vivium::Quad(0.0f, -310.0f, 400.0f, 100.0f),
+			&MainMenu::s_OptionsCallback,
+			std::string("Options"),
+			(void*)menu
+		);
 
 		Vivium::Application::window_panel->Anchor(Vivium::Panel::ANCHOR::CENTER, Vivium::Panel::ANCHOR::CENTER, m_TitleSprite);
 		Vivium::Application::window_panel->Anchor(Vivium::Panel::ANCHOR::CENTER, Vivium::Panel::ANCHOR::CENTER, m_CreateWorldButton);
 		Vivium::Application::window_panel->Anchor(Vivium::Panel::ANCHOR::CENTER, Vivium::Panel::ANCHOR::CENTER, m_LoadWorldButton);
+		Vivium::Application::window_panel->Anchor(Vivium::Panel::ANCHOR::CENTER, Vivium::Panel::ANCHOR::CENTER, m_OptionsButton);
 	}
 
-	__StartScene::~__StartScene()
+	StartScene::~StartScene()
 	{
 	}
 
-	void __StartScene::Render()
+	void StartScene::Render()
 	{
 		Vivium::Renderer::Submit(m_TitleSprite.get());
 		Vivium::Renderer::Submit(m_CreateWorldButton.get());
 		Vivium::Renderer::Submit(m_LoadWorldButton.get());
+		Vivium::Renderer::Submit(m_OptionsButton.get());
 	}
 
-	void __StartScene::Update()
+	void StartScene::Update()
 	{
 		m_CreateWorldButton->Update();
 		m_LoadWorldButton->Update();
+		m_OptionsButton->Update();
 	}
 
-	void __CreateWorldScene::s_NameInputCallback(Vivium::TextInput* input_box, void* user_params)
+	void CreateWorldScene::s_ConfirmCallback(Vivium::Button* button, void* user_params)
 	{
-		__CreateWorldScene* instance = (__CreateWorldScene*)user_params;
-
-		instance->m_NameInputCallback(input_box);
-	}
-
-	void __CreateWorldScene::s_SeedInputCallback(Vivium::TextInput* input_box, void* user_params)
-	{
-		__CreateWorldScene* instance = (__CreateWorldScene*)user_params;
-
-		instance->m_SeedInputCallback(input_box);
-	}
-
-	void __CreateWorldScene::s_ConfirmCallback(Vivium::Button* button, void* user_params)
-	{
-		__CreateWorldScene* instance = (__CreateWorldScene*)(*(uintptr_t*)user_params);
-		void* other_params = (char*)user_params + sizeof(__CreateWorldScene*);
+		CreateWorldScene* instance = (CreateWorldScene*)(*(uintptr_t*)user_params);
+		void* other_params = (char*)user_params + sizeof(CreateWorldScene*);
 
 		instance->m_ConfirmCallback(button, other_params);
 	}
 
-	void __CreateWorldScene::m_NameInputCallback(Vivium::TextInput* input_box)
-	{
-		m_Name = input_box->GetText()->GetText();
-	}
-
-	void __CreateWorldScene::m_SeedInputCallback(Vivium::TextInput* input_box)
-	{
-		// TODO: validation
-		m_Seed = std::stoi(input_box->GetText()->GetText());
-	}
-
-	void __CreateWorldScene::m_ConfirmCallback(Vivium::Button* button, void* user_params)
+	void CreateWorldScene::m_ConfirmCallback(Vivium::Button* button, void* user_params)
 	{
 		m_Name = m_NameInputBox->GetText()->GetText();
 
@@ -257,13 +231,13 @@ namespace Game {
 
 		// Create instance of game scene
 		// NOTE: main menu will take care of freeing this
-		__GameScene* game_scene = new __GameScene(m_Seed, m_Name, true);
+		GameScene* game_scene = new GameScene(m_Seed, m_Name, true);
 
 		// Start game
 		main_menu->m_LoadScene(MainMenu::SceneID::GAME, game_scene);
 	}
 
-	__CreateWorldScene::__CreateWorldScene(MainMenu* menu)
+	CreateWorldScene::CreateWorldScene(MainMenu* menu)
 	{
 		m_BackButton = MakeRef(Vivium::Button,
 			Vivium::Quad(-200.0f, 100.0f, 200.0f, 100.0f),
@@ -294,19 +268,19 @@ namespace Game {
 
 		m_NameInputBox = MakeRef(Vivium::TextInput,
 			Vivium::Quad(0.0f, 300.0f, 300.0f, 100.0f),
-			&__CreateWorldScene::s_NameInputCallback,
+			nullptr,
 			(void*)this
 		);
 
 		m_SeedInputBox = MakeRef(Vivium::TextInput,
 			Vivium::Quad(0.0f, 150.0f, 300.0f, 100.0f),
-			&__CreateWorldScene::s_SeedInputCallback,
+			nullptr,
 			(void*)this
 		);
 
 		m_ConfirmButton = MakeRef(Vivium::Button,
 			Vivium::Quad(0.0f, 0.0f, 300.0f, 100.0f),
-			&__CreateWorldScene::s_ConfirmCallback,
+			&CreateWorldScene::s_ConfirmCallback,
 			std::string("Create World"),
 			params
 		);
@@ -318,12 +292,12 @@ namespace Game {
 		Vivium::Application::window_panel->Anchor(Vivium::Panel::ANCHOR::CENTER, Vivium::Panel::ANCHOR::CENTER, m_WorldAlreadyExistsText);
 	}
 
-	__CreateWorldScene::~__CreateWorldScene()
+	CreateWorldScene::~CreateWorldScene()
 	{
 		free(params);
 	}
 
-	void __CreateWorldScene::Render()
+	void CreateWorldScene::Render()
 	{
 		Vivium::Renderer::Submit(m_BackButton.get());
 		Vivium::Renderer::Submit(m_NameInputBox.get());
@@ -348,7 +322,7 @@ namespace Game {
 		}
 	}
 
-	void __CreateWorldScene::Update()
+	void CreateWorldScene::Update()
 	{
 		m_BackButton->Update();
 		m_NameInputBox->Update();
@@ -356,7 +330,7 @@ namespace Game {
 		m_ConfirmButton->Update();
 	}
 
-	__GameScene::__GameScene(uint32_t world_seed, const std::string& world_name, bool new_world)
+	GameScene::GameScene(uint32_t world_seed, const std::string& world_name, bool new_world)
 	{
 		if (new_world) {
 			LogInfo("Creating world with seed {}, and name {}", world_seed, world_name);
@@ -373,13 +347,13 @@ namespace Game {
 		Vivium::Application::SetCursor(Vivium::Application::CURSOR_TYPE::POINTER);
 	}
 
-	__GameScene::~__GameScene()
+	GameScene::~GameScene()
 	{
 		delete m_World;
 		delete m_Player;
 	}
 
-	void __GameScene::Render()
+	void GameScene::Render()
 	{
 		Vivium::Vector2<float> update_pos = (m_Player->quad->GetCenter() / World::PIXEL_SCALE).floor();
 		m_World->Render(update_pos);
@@ -388,7 +362,7 @@ namespace Game {
 		Vivium::Application::UpdateStats(*m_Player->body);
 	}
 
-	void __GameScene::Update()
+	void GameScene::Update()
 	{
 		Vivium::Renderer::camera->SetCamera(
 			m_Player->quad->GetCenter(),
@@ -401,14 +375,14 @@ namespace Game {
 		m_World->Update();
 	}
 
-	__LoadWorldScene::VisualWorldSelectable::VisualWorldSelectable(const Vivium::Vector2<float> pos, const std::string& world_name, __LoadWorldScene* world_scene)
+	LoadWorldScene::VisualWorldSelectable::VisualWorldSelectable(const Vivium::Vector2<float> pos, const std::string& world_name, LoadWorldScene* world_scene)
 		: world_name(world_name)
 	{
 		params = new __CallbackData(world_name, world_scene);
 
 		select_button = MakeRef(Vivium::Button,
 			Vivium::Quad(pos, { 200.0f, 100.0f }),
-			&__LoadWorldScene::s_SelectedWorldCallback,
+			&LoadWorldScene::s_SelectedWorldCallback,
 			world_name,
 			(void*)params
 		);
@@ -418,30 +392,28 @@ namespace Game {
 		LogTrace("Button position is now {}", select_button->GetPos());
 	}
 	
-	__LoadWorldScene::VisualWorldSelectable::~VisualWorldSelectable()
-	{
-	}
+	LoadWorldScene::VisualWorldSelectable::~VisualWorldSelectable() {}
 
-	void __LoadWorldScene::s_SelectedWorldCallback(Vivium::Button* button, void* user_params)
+	void LoadWorldScene::s_SelectedWorldCallback(Vivium::Button* button, void* user_params)
 	{
 		__CallbackData* callback_data = (__CallbackData*)user_params;
 			
 		callback_data->scene->m_SelectedWorldCallback(button, user_params);
 	}
 
-	void __LoadWorldScene::m_SelectedWorldCallback(Vivium::Button* button, void* user_params)
+	void LoadWorldScene::m_SelectedWorldCallback(Vivium::Button* button, void* user_params)
 	{
 		__CallbackData* callback_data = (__CallbackData*)user_params;
 
 		std::string world_name = callback_data->world_name;
 
 		// TODO: world seed needs to be stored
-		__GameScene* game = new __GameScene(0U, world_name, false);
+		GameScene* game = new GameScene(0U, world_name, false);
 
 		m_Manager->m_LoadScene(MainMenu::SceneID::GAME, game);
 	}
 
-	__LoadWorldScene::__LoadWorldScene(MainMenu* menu)
+	LoadWorldScene::LoadWorldScene(MainMenu* menu)
 		: m_Manager(menu)
 	{
 		m_BackButton = MakeRef(Vivium::Button,
@@ -480,14 +452,14 @@ namespace Game {
 		m_WorldsPanel->SetScrollLimits(0.0f, -Vivium::Application::height - current_offset.y);
 	}
 
-	__LoadWorldScene::~__LoadWorldScene()
+	LoadWorldScene::~LoadWorldScene()
 	{
 		for (VisualWorldSelectable& selectable : m_Worlds) {
 			delete selectable.params;
 		}
 	}
 
-	void __LoadWorldScene::Render()
+	void LoadWorldScene::Render()
 	{
 		Vivium::Renderer::Submit(m_BackButton.get());
 
@@ -496,7 +468,7 @@ namespace Game {
 		}
 	}
 
-	void __LoadWorldScene::Update()
+	void LoadWorldScene::Update()
 	{
 		m_BackButton->Update();
 		m_WorldsPanel->SetDim({ (float)Vivium::Application::width, (float)Vivium::Application::height });
@@ -507,8 +479,64 @@ namespace Game {
 		}
 	}
 
-	__LoadWorldScene::__CallbackData::__CallbackData(const std::string& world_name, __LoadWorldScene* scene)
+	LoadWorldScene::__CallbackData::__CallbackData(const std::string& world_name, LoadWorldScene* scene)
 		: world_name(world_name), scene(scene)
 	{
+	}
+
+	void OptionsScene::s_FPSCallback(Vivium::Slider* slider, void* user_params)
+	{
+		Vivium::Application::SetFPS(slider->GetValue(FPS_MIN, FPS_MAX));
+	}
+
+	OptionsScene::OptionsScene(MainMenu* manager)
+		: m_Manager(manager)
+	{
+		m_BackButton = MakeRef(Vivium::Button,
+			Vivium::Quad(-200.0f, 100.0f, 200.0f, 100.0f),
+			&MainMenu::s_BackButtonCallback,
+			"Go Back",
+			manager
+		);
+
+		m_FPSSlider = MakeRef(Vivium::Slider,
+			MakeRef(Vivium::Quad, 0.0f, 200.0f, 400.0f, 30.0f),
+			MakeRef(Vivium::Quad, 0.0f, 200.0f, 20.0f, 40.0f),
+			&OptionsScene::s_FPSCallback
+		);
+
+		m_FPSText = MakeRef(Vivium::Text,
+			"FPS: 0",
+			Vivium::Vector2<float>(-200.0f, 230.0f),
+			Vivium::Text::Alignment::LEFT,
+			0.25f
+		);
+
+		// TODO: scroll limits when more options
+		m_OptionsPanel = MakeRef(Vivium::Panel,
+			MakeRef(Vivium::Quad, 0.0f, 0.0f, 500.0f, 1000.0f)
+		);
+
+		Vivium::Application::window_panel->Anchor(Vivium::Panel::ANCHOR::RIGHT, Vivium::Panel::ANCHOR::BOTTOM, m_BackButton);
+
+		m_OptionsPanel->Anchor(Vivium::Panel::ANCHOR::CENTER, Vivium::Panel::ANCHOR::CENTER, m_FPSSlider);
+		m_OptionsPanel->Anchor(Vivium::Panel::ANCHOR::CENTER, Vivium::Panel::ANCHOR::CENTER, m_FPSText);
+		Vivium::Application::window_panel->Anchor(Vivium::Panel::ANCHOR::CENTER, Vivium::Panel::ANCHOR::CENTER, m_OptionsPanel);
+	}
+
+	void OptionsScene::Render()
+	{
+		Vivium::Renderer::Submit(m_BackButton.get());
+		Vivium::Renderer::Submit(m_FPSSlider.get());
+		Vivium::Renderer::Submit(m_FPSText.get());
+	}
+
+	void OptionsScene::Update()
+	{
+		m_BackButton->Update();
+		m_FPSSlider->Update();
+
+		int new_fps = m_FPSSlider->GetValue(FPS_MIN, FPS_MAX);
+		m_FPSText->SetText(std::format("FPS: {}", new_fps));
 	}
 }

@@ -6,9 +6,21 @@
 #include "Serialiser.h"
 
 namespace Vivium {
+	class Physics;
+
 	struct VIVIUM_API Rect : public Streamable {
 	protected:
 		static const Vector2<float> m_VertexOffsets[4]; // For calculating vertices
+
+		struct Manifold {
+			Vector2<float> intersecting_vertex = NAN;
+			Vector2<float> edge_vector = NAN;
+			Vector2<float> face_normal = NAN;
+			Vector2<float> intersecting_face_v0 = NAN;
+			Vector2<float> intersecting_face_v1 = NAN;
+
+			bool collisionOccured = false;
+		};
 
 	public:
 		// For indexing the return value of GetVertices
@@ -51,6 +63,10 @@ namespace Vivium {
 
 		bool IsIntersecting(const Rect& rect) const;
 
+		// TODO: ugly
+		static bool Contains(float width, float height, const std::array<Vector2<float>, 4>& my_vertices, const Vector2<float>& point);
+		static Manifold GetIntersection(float width1, float height1, float width2, float height2, const std::array<Vector2<float>, 4>& my_vertices, const std::array<Vector2<float>, 4>& their_vertices);
+
 		Rect();
 		Rect(float x, float y, float width, float height, float angle = 0.0f);
 		Rect(const Vector2<float>& center, const Vector2<float>& dim, float angle = 0.0f);
@@ -67,6 +83,8 @@ namespace Vivium {
 
 		void Write(Serialiser& s) const override;
 		void Read(Serialiser& s) override;
+
+		friend Physics;
 	};
 }
 

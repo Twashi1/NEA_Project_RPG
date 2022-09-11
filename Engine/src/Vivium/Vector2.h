@@ -86,6 +86,8 @@ namespace Vivium {
 
 		T MaxComponent() const { return std::max(x, y); }
 
+		static T Dot(const Vector2& a, const Vector2& b) { return a.x * b.x + a.y * b.y; }
+
 		// Cast to arithmetic type
 		template <typename C>
 		operator Vector2<C>() const requires Arithmetic<C> { return Vector2<C>((C)x, (C)y); }

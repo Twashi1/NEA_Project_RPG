@@ -36,11 +36,13 @@ int sandbox(void)
     while (Application::IsRunning()) {
         Application::BeginFrame();
 
-        Renderer::Submit(obj1.get(), &color);
-        Renderer::Submit(obj2.get(), &color2);
-
         obj1b->Update();
         obj2b->Update();
+
+        Physics::Update();
+
+        Renderer::Submit(obj1.get(), &color);
+        Renderer::Submit(obj2.get(), &color2);
 
         Application::EndFrame();
     }
@@ -86,6 +88,8 @@ int game(void)
         // Update title screen
         main_menu.Update();
 
+        Physics::Update();
+
         // Draw calls
         main_menu.Render();
 
@@ -108,5 +112,5 @@ int game(void)
 }
 
 int main(int argc, char** argv) {
-    sandbox();
+    game();
 }

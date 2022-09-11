@@ -518,7 +518,7 @@ namespace Game {
 									if (Tile::GetIsPhysical(id)) {
 										Ref(Vivium::Quad) quad = MakeRef(Vivium::Quad, Vivium::Vector2<float>(dx, dy), Vivium::Vector2<float>(halfscale));
 										// TODO: fix later
-										Ref(Vivium::Body) body = MakeRef(Vivium::Body, quad, false, 0.5f, 1.0f);
+										Ref(Vivium::Body) body = MakeRef(Vivium::Body, quad, true, 0.0f, 1.0f);
 
 										m_TileBodies.push_back(body);
 										m_TileLayer->bodies.push_back(body);

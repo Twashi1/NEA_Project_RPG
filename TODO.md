@@ -82,6 +82,7 @@
     - [x] Implement saving to/loading from file
 - [ ] Animating tiles / Drawing animated tiles
 - [x] Batch render tiles
+- [ ] Some tiles/parts of tiles should render in front of the player (maybe with some slight opacity or some pixel mask)
 - [x] Physics for tiles
     - ~~Better system for adding physics objects~~
 - [x] Drawing selection hover
@@ -93,7 +94,7 @@
     - [x] Tile will grow and shrink rapidly when being broken, until being removed and being converted into an item
 
 ## Gameplay
-- [ ] Crafting
+- [x] Crafting
     - [x] Recipes system
         - [x] Speed up by precomputing some values in Inventory (item counts)
     - [x] Crafting UI
@@ -113,8 +114,8 @@
 ## GUI
 - [x] Title screen
     - [x] Navigate to options, create new world, load world
-- [ ] Control config
-- [ ] Options menu
+- [ ] Keybinds config
+- [x] Options menu
 
 ## Player
 - [ ] Player sprites/animations

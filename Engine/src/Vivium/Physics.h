@@ -33,7 +33,7 @@ namespace Vivium {
 		static void m_ResolveInterLayer(Layer* layer0, Layer* layer1);
 		static void m_ResolveIntraLayer(Layer* layer);
 		static void m_TestCollision(const Ref(Body)& a, const Ref(Body)& b);
-		static void m_ResolveCollision(Ref(Body) a, Ref(Body) b, const Rect& a_rect, const Rect& b_rect);
+		static void m_ResolveCollision(Ref(Body) a, Ref(Body) b, const Rect& a_rect, const Rect& b_rect, const std::array<Vector2<float>, 4>& a_vertices, const std::array<Vector2<float>, 4>& b_vertices, const Rect::Manifold& manifold);
 
 		static void m_Init();
 

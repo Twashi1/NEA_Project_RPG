@@ -105,6 +105,12 @@ namespace Vivium {
         glfwSetCursor(window, m_CursorMap.at(cursor));
     }
 
+    void Application::SetFPS(int new_fps)
+    {
+        m_FPS = new_fps;
+        m_TimePerFrame = 1.0f / m_FPS;
+    }
+
     void Application::EnableWireframe()
     {
         glPolygonMode(GL_FRONT_AND_BACK, GL_LINE);

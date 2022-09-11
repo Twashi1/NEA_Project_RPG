@@ -12,24 +12,25 @@ namespace Game {
 
 	// TODO better sharing of data between scenes
 
-	class __StartScene : public Vivium::IScene {
+	class StartScene : public Vivium::IScene {
 	private:
 		MainMenu* m_Manager = nullptr;
 
 		Ref(Vivium::Sprite) m_TitleSprite;
 		Ref(Vivium::Button) m_CreateWorldButton;
 		Ref(Vivium::Button) m_LoadWorldButton;
+		Ref(Vivium::Button) m_OptionsButton;
 
 	public:
-		__StartScene(MainMenu* menu);
-		~__StartScene();
+		StartScene(MainMenu* menu);
+		virtual ~StartScene();
 
-		void Render() override;
-		void Update() override;
+		virtual void Render() override;
+		virtual void Update() override;
 	};
 
 	// TODO
-	class __CreateWorldScene : public Vivium::IScene {
+	class CreateWorldScene : public Vivium::IScene {
 	private:
 		Ref(Vivium::TextInput) m_NameInputBox;
 		Ref(Vivium::TextInput) m_SeedInputBox;
@@ -49,34 +50,52 @@ namespace Game {
 		uint32_t m_Seed;
 		std::string m_Name;
 
-		static void s_NameInputCallback(Vivium::TextInput* input_box, void* user_params);
-		static void s_SeedInputCallback(Vivium::TextInput* input_box, void* user_params);
 		static void s_ConfirmCallback(Vivium::Button* button, void* user_params);
 
-		void m_NameInputCallback(Vivium::TextInput* input_box);
-		void m_SeedInputCallback(Vivium::TextInput* input_box);
 		void m_ConfirmCallback(Vivium::Button* button, void* user_params);
 
 	public:
-		__CreateWorldScene(MainMenu* menu);
-		~__CreateWorldScene();
+		CreateWorldScene(MainMenu* menu);
+		virtual ~CreateWorldScene();
 
-		void Render() override;
-		void Update() override;
+		virtual void Render() override;
+		virtual void Update() override;
 	};
 
-	// TODO: Scrolling/scroll bar
-	class __LoadWorldScene : public Vivium::IScene {
+	class OptionsScene : public Vivium::IScene {
 	private:
-		// user_params: __LoadWorldScene*, VisualWorldSelectable*
+		MainMenu* m_Manager;
+
+		static void s_FPSCallback(Vivium::Slider* slider, void* user_params);
+
+		static constexpr int FPS_MIN = 60;
+		static constexpr int FPS_MAX = 240;
+
+		Ref(Vivium::Panel) m_OptionsPanel;
+		Ref(Vivium::Slider) m_FPSSlider;
+		Ref(Vivium::Text) m_FPSText;
+
+		Ref(Vivium::Button) m_BackButton;
+
+	public:
+		OptionsScene(MainMenu* manager);
+		virtual ~OptionsScene() = default;
+		
+		virtual void Render() override;
+		virtual void Update() override;
+	};
+
+	class LoadWorldScene : public Vivium::IScene {
+	private:
+		// user_params: LoadWorldScene*, VisualWorldSelectable*
 		static void s_SelectedWorldCallback(Vivium::Button* button, void* user_params);
 		void m_SelectedWorldCallback(Vivium::Button* button, void* user_params);
 
 		struct __CallbackData {
 			std::string world_name;
-			__LoadWorldScene* scene;
+			LoadWorldScene* scene;
 
-			__CallbackData(const std::string& world_name, __LoadWorldScene* scene);
+			__CallbackData(const std::string& world_name, LoadWorldScene* scene);
 		};
 
 		// For the load world scene, it should display all the worlds you have available as small rectangles with the world name, maybe file size, date of creation, etc.
@@ -87,7 +106,7 @@ namespace Game {
 			__CallbackData* params;
 
 			// TODO: should take some more world data in future
-			VisualWorldSelectable(const Vivium::Vector2<float> pos, const std::string& world_name, __LoadWorldScene* world_scene);
+			VisualWorldSelectable(const Vivium::Vector2<float> pos, const std::string& world_name, LoadWorldScene* world_scene);
 			~VisualWorldSelectable();
 		};
 
@@ -99,28 +118,25 @@ namespace Game {
 		Ref(Vivium::Button) m_BackButton; // Takes back to start screen
 
 	public:
-		__LoadWorldScene(MainMenu* menu);
-		~__LoadWorldScene();
+		LoadWorldScene(MainMenu* menu);
+		virtual ~LoadWorldScene();
 
-		void Render() override;
-		void Update() override;
+		virtual void Render() override;
+		virtual void Update() override;
 	};
 
-	// TODO
-	class __GameScene : public Vivium::IScene {
+	class GameScene : public Vivium::IScene {
 	private:
 		World* m_World = nullptr;
 		Player* m_Player = nullptr;
 
 	public:
-		__GameScene(uint32_t world_seed, const std::string& world_name, bool new_world);
-		~__GameScene();
+		GameScene(uint32_t world_seed, const std::string& world_name, bool new_world);
+		virtual ~GameScene();
 
-		void Render() override;
-		void Update() override;
+		virtual void Render() override;
+		virtual void Update() override;
 	};
-
-	// TODO: some sort of union or variant for better managing and getting the correct ptr type
 
 	class MainMenu {
 	public:
@@ -128,17 +144,19 @@ namespace Game {
 			START =			0x0062BF01,
 			CREATE_WORLD =	0x0062BF02,
 			LOAD_WORLD =	0x0062BF03,
-			GAME =			0x0062BF04
+			GAME =			0x0062BF04,
+			OPTIONS =		0x0062BF05
 		};
 
 	private:
 		template <MainMenu::SceneID id>
 		struct SceneType { using type = Vivium::IScene; };
 
-		template <> struct SceneType<MainMenu::SceneID::START>			{ using type = __StartScene; };
-		template <> struct SceneType<MainMenu::SceneID::CREATE_WORLD>	{ using type = __CreateWorldScene; };
-		template <> struct SceneType<MainMenu::SceneID::LOAD_WORLD>		{ using type = __LoadWorldScene; };
-		template <> struct SceneType<MainMenu::SceneID::GAME>			{ using type = __GameScene; };
+		template <> struct SceneType<MainMenu::SceneID::START>			{ using type = StartScene; };
+		template <> struct SceneType<MainMenu::SceneID::CREATE_WORLD>	{ using type = CreateWorldScene; };
+		template <> struct SceneType<MainMenu::SceneID::LOAD_WORLD>		{ using type = LoadWorldScene; };
+		template <> struct SceneType<MainMenu::SceneID::GAME>			{ using type = GameScene; };
+		template <> struct SceneType<MainMenu::SceneID::OPTIONS>		{ using type = OptionsScene; };
 
 		std::unordered_map<SceneID, Vivium::IScene*> m_Scenes;
 		SceneID m_CurrentSceneID;
@@ -152,6 +170,9 @@ namespace Game {
 		static void s_LoadWorldCallback(Vivium::Button* button, void* params);
 		void m_LoadWorldCallback(Vivium::Button* button);
 
+		static void s_OptionsCallback(Vivium::Button* button, void* params);
+		void m_OptionsCallback(Vivium::Button* button);
+
 		void m_LoadScene(const SceneID& id);
 		void m_LoadScene(const SceneID& id, Vivium::IScene* scene);
 
@@ -164,10 +185,11 @@ namespace Game {
 		void Update();
 		void Render();
 
-		friend __StartScene;
-		friend __CreateWorldScene;
-		friend __LoadWorldScene;
-		friend __GameScene;
+		friend StartScene;
+		friend CreateWorldScene;
+		friend LoadWorldScene;
+		friend GameScene;
+		friend OptionsScene;
 	};
 }
 

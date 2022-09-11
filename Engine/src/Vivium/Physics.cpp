@@ -61,19 +61,54 @@ namespace Vivium {
 			Rect future_rect_a = a->PeekRect(elapsed); // TODO: derive from previous peeked information + extra stuff
 			Rect future_rect_b = b->PeekRect(elapsed);
 
+			std::array<Vector2<float>, 4> a_vertices = future_rect_a.GetVertices();
+			std::array<Vector2<float>, 4> b_vertices = future_rect_b.GetVertices();
+
 			// If either quad contains any points of the other quad (intersecting)
-			if (future_rect_a.IsIntersecting(future_rect_b)) {
-				m_ResolveCollision(a, b, future_rect_a, future_rect_b);
+			Rect::Manifold manifold = Rect::GetIntersection(
+				future_rect_a.width, future_rect_a.height,
+				future_rect_b.width, future_rect_b.height,
+				a_vertices, b_vertices
+			);
+
+			if (manifold.collisionOccured) {
+				m_ResolveCollision(a, b, future_rect_a, future_rect_b, a_vertices, b_vertices, manifold);
 			}
 		}
 	}
 
-	void Physics::m_ResolveCollision(Ref(Body) a, Ref(Body) b, const Rect& a_rect, const Rect& b_rect)
+	void Physics::m_ResolveCollision(Ref(Body) a, Ref(Body) b, const Rect& a_rect, const Rect& b_rect, const std::array<Vector2<float>, 4>& a_vertices, const std::array<Vector2<float>, 4>& b_vertices, const Rect::Manifold& manifold)
 	{
-		// https://math.stackexchange.com/questions/13261/how-to-get-a-reflection-vector
 		float restitution = std::min(a->restitution, b->restitution);
 
-		// TODO: calculating contact normals
+//#define EXPERIMENTAL_IMPULSE_RESOLUTION
+#ifdef EXPERIMENTAL_IMPULSE_RESOLUTION
+		// Ripped formula for resolution from here, but manifold stuff is mine
+		// https://gamedevelopment.tutsplus.com/tutorials/how-to-create-a-custom-2d-physics-engine-the-basics-and-impulse-resolution--gamedev-6331
+
+		Vector2<float> rel_vel = b->vel - a->vel;
+
+		float vel_along_normal = Vector2<float>::Dot(rel_vel, manifold.face_normal);
+
+		// If moving away from each other
+		if (vel_along_normal > 0.0f) return;
+
+		// Impulse scalar
+		float j = -(1.0f + restitution) * vel_along_normal;
+		j /= a->imass + b->imass;
+
+		Vector2<float> impulse = j * manifold.face_normal;
+		// Not perfect
+		a->vel = a->isImmovable ? 0.0f : a->vel - a->imass * impulse;
+		b->vel = b->isImmovable ? 0.0f : b->vel + b->imass * impulse;
+
+		Vector2<float> correction = Vector2<float>(1.0f) / (a->imass + b->imass) * 0.2f * manifold.face_normal;
+		a->quad->SetCenter(a->quad->GetCenter() - a->imass * correction);
+		b->quad->SetCenter(b->quad->GetCenter() + b->imass * correction);
+
+		if (a->isImmovable) a->acc = 0.0f;
+		if (b->isImmovable) b->acc = 0.0f;
+#else
 		// NOTE: did this algebra myself so its probably super inefficient
 		// e(u1-u2)
 		Vector2<float> k = (a->vel - b->vel) * restitution;
@@ -83,8 +118,12 @@ namespace Vivium {
 		// k+v1=v2
 		Vector2<float> v2 = v1 + k;
 
-		a->vel = v1;
-		b->vel = v2;
+		a->vel = a->isImmovable ? 0.0f : v1;
+		b->vel = b->isImmovable ? 0.0f : v2;
+
+		if (a->isImmovable) a->acc = 0.0f;
+		if (b->isImmovable) b->acc = 0.0f;
+#endif
 	}
 
 	void Physics::Update()
