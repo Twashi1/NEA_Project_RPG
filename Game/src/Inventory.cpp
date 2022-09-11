@@ -375,7 +375,7 @@ namespace Game {
 		Vivium::Vector2<float> player_scale_pos = player_pos / World::PIXEL_SCALE;
 		Vivium::Vector2<int> region_pos = world->GetRegionIndex(Vivium::Vector2<int>((player_scale_pos).floor()));
 
-		int count = 0;
+		bool pickedUpItem = false;
 
 		for (int region_y = region_pos.y - 1; region_y <= region_pos.y + 1; region_y++) {
 			for (int region_x = region_pos.x - 1; region_x <= region_pos.x + 1; region_x++) {
@@ -393,14 +393,18 @@ namespace Game {
 
 					// Within pickup range
 					if (sqr_distance <= FloorItem::PICKUP_RANGE * FloorItem::PICKUP_RANGE) {
+						pickedUpItem = true;
+						
 						// Add item to inventory
 						int remainder = AddItem(it->GetItemData());
+
+						// If entire stack was picked up
 						if (remainder == 0) {
-							// Item was added to inventory, so erase the floor item
+							// Erase from floor items
 							it = floor_items->erase(it);
 						}
 						else {
-							// Just increment iterator
+							// Remove amount picked up from floor item
 							it->m_ItemData.count = remainder;
 						}
 					}
@@ -435,6 +439,10 @@ namespace Game {
 					}
 				}
 			}
+		}
+
+		if (pickedUpItem) {
+			Vivium::Application::StartSound("pickup_item.wav");
 		}
 	}
 

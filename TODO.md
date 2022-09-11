@@ -1,4 +1,4 @@
-# Vivium
+# Engine (Vivium)
 ## General
 - [ ] Event handler https://stackoverflow.com/questions/9711414/what-is-the-proper-way-of-doing-event-handling-in-c
 - [ ] Update and Render methods could have a virtual behind them, also splitting them is inconvenient for a lot of classes 
@@ -63,6 +63,7 @@
 ## General
 - ~~Switch to 16x16~~
 - [ ] Tileset https://www.gamedev.net/tutorials/_/technical/game-programming/tilemap-based-game-techniques-handling-terrai-r934/
+- [ ] Some way to escape game and go back to main menu
 
 ## World
 - ~~Remove bot/mid/top for tiles, just foreground/background~~
@@ -94,6 +95,7 @@
     - [x] Tile will grow and shrink rapidly when being broken, until being removed and being converted into an item
 
 ## Gameplay
+- [ ] Play block breaking sound in sync with block breaking "animation"
 - [x] Crafting
     - [x] Recipes system
         - [x] Speed up by precomputing some values in Inventory (item counts)
@@ -132,8 +134,8 @@
 
 # Bugs
 - Tall cacti not spawning in desert biome
-- Rare bug where a Vector2 which is an index for a loaded region is unallocated and checked for equivelance
+- ~~Rare bug where a Vector2 which is an index for a loaded region is unallocated and checked for equivelance~~
 - ~~Going fullscreen crashes game~~
-- Can't move items between hotbar slots unless inventory is opened
+- ~~Can't move items between hotbar slots unless inventory is opened~~
 - ~~Cursor no longer switches when hovering text input box~~
 - Renderer::BeginScene and EndScene interfere with transparency (Application clear color is mixed in?)

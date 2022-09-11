@@ -12,6 +12,7 @@ namespace Vivium {
 
     int Application::m_FPS = 0;
     double Application::m_TimePerFrame = 0.0;
+    float Application::m_Volume = 1.0f;
 
     std::unordered_map<Application::STATS_INDEX, Ref(Text)> Application::m_StatsTextMap{};
     std::unordered_map<Application::CURSOR_TYPE, GLFWcursor*> Application::m_CursorMap{};
@@ -109,6 +110,12 @@ namespace Vivium {
     {
         m_FPS = new_fps;
         m_TimePerFrame = 1.0f / m_FPS;
+    }
+
+    void Application::SetVolume(float volume)
+    {
+        m_Volume = std::min(std::max(volume, 0.0f), 1.0f); // Clamp to range 0.0f -> 1.0f
+        sound_engine->setSoundVolume(m_Volume);
     }
 
     void Application::EnableWireframe()

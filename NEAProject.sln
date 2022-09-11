@@ -36,8 +36,6 @@ Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "sprites", "sprites", "{09A9
 		Resources\sprites\title.png = Resources\sprites\title.png
 	EndProjectSection
 EndProject
-Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "scenes", "scenes", "{279A77EC-76C2-4E6F-A014-FAFB36A16B4A}"
-EndProject
 Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "_animationfiles", "_animationfiles", "{590723D0-7424-4DAF-8286-94C13FC15F88}"
 	ProjectSection(SolutionItems) = preProject
 		Resources\sprites\data.animation = Resources\sprites\data.animation
@@ -77,6 +75,12 @@ Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "_vertex", "_vertex", "{7BBE
 		Resources\shaders\world_vertex.glsl = Resources\shaders\world_vertex.glsl
 	EndProjectSection
 EndProject
+Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "sounds", "sounds", "{0C70094B-8CE9-4CCC-8919-7F2E49FFD4E1}"
+	ProjectSection(SolutionItems) = preProject
+		Resources\sounds\breaking_block.wav = Resources\sounds\breaking_block.wav
+		Resources\sounds\pickup_item.wav = Resources\sounds\pickup_item.wav
+	EndProjectSection
+EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
 		Debug|x86 = Debug|x86
@@ -101,10 +105,10 @@ Global
 		{AD78A436-E971-44E3-A8A6-A5287D198026} = {8450CC3B-3D01-46B1-99CE-AD62BB93F784}
 		{E42AB3D6-99D8-4BBF-86EA-8511129968F3} = {8450CC3B-3D01-46B1-99CE-AD62BB93F784}
 		{09A99787-00EB-4920-AA8F-67E5B1B52DFA} = {8450CC3B-3D01-46B1-99CE-AD62BB93F784}
-		{279A77EC-76C2-4E6F-A014-FAFB36A16B4A} = {8450CC3B-3D01-46B1-99CE-AD62BB93F784}
 		{590723D0-7424-4DAF-8286-94C13FC15F88} = {09A99787-00EB-4920-AA8F-67E5B1B52DFA}
 		{E8A12835-60D9-4A96-B9BD-D867803098B4} = {AD78A436-E971-44E3-A8A6-A5287D198026}
 		{7BBE11D5-A004-4A3D-AAFD-8FD8CD485B32} = {AD78A436-E971-44E3-A8A6-A5287D198026}
+		{0C70094B-8CE9-4CCC-8919-7F2E49FFD4E1} = {8450CC3B-3D01-46B1-99CE-AD62BB93F784}
 	EndGlobalSection
 	GlobalSection(ExtensibilityGlobals) = postSolution
 		SolutionGuid = {2AA395CE-ACD5-43DE-A8C5-164B98FFF289}

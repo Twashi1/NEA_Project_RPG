@@ -35,6 +35,8 @@ namespace Vivium {
         static int m_FPS; // Frames per second
         static double m_TimePerFrame; // Time per frame in seconds
 
+        static float m_Volume; // Volume of sounds in range 0.0 -> 1.0
+
         enum class STATS_INDEX : int {
             AVERAGE_TPF,
             FPS,
@@ -84,6 +86,7 @@ namespace Vivium {
         static void SetCursor(const CURSOR_TYPE& cursor);
 
         static void SetFPS(int new_fps);
+        static void SetVolume(float volume);
 
         // TODO: pretty specific, only for games with players
         static void UpdateStats(const Body& player_body);

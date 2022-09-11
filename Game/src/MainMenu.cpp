@@ -489,6 +489,11 @@ namespace Game {
 		Vivium::Application::SetFPS(slider->GetValue(FPS_MIN, FPS_MAX));
 	}
 
+	void OptionsScene::s_VolumeCallback(Vivium::Slider* slider, void* user_params)
+	{
+		Vivium::Application::SetVolume(slider->GetValue());
+	}
+
 	OptionsScene::OptionsScene(MainMenu* manager)
 		: m_Manager(manager)
 	{
@@ -512,6 +517,19 @@ namespace Game {
 			0.25f
 		);
 
+		m_VolumeSlider = MakeRef(Vivium::Slider,
+			MakeRef(Vivium::Quad, 0.0f, 100.0f, 400.0f, 30.0f),
+			MakeRef(Vivium::Quad, 0.0f, 100.0f, 20.0f, 40.0f),
+			&OptionsScene::s_VolumeCallback
+		);
+
+		m_VolumeText = MakeRef(Vivium::Text,
+			"Volume: 100%",
+			Vivium::Vector2<float>(-200.0f, 130.0f),
+			Vivium::Text::Alignment::LEFT,
+			0.25f
+		);
+
 		// TODO: scroll limits when more options
 		m_OptionsPanel = MakeRef(Vivium::Panel,
 			MakeRef(Vivium::Quad, 0.0f, 0.0f, 500.0f, 1000.0f)
@@ -521,6 +539,8 @@ namespace Game {
 
 		m_OptionsPanel->Anchor(Vivium::Panel::ANCHOR::CENTER, Vivium::Panel::ANCHOR::CENTER, m_FPSSlider);
 		m_OptionsPanel->Anchor(Vivium::Panel::ANCHOR::CENTER, Vivium::Panel::ANCHOR::CENTER, m_FPSText);
+		m_OptionsPanel->Anchor(Vivium::Panel::ANCHOR::CENTER, Vivium::Panel::ANCHOR::CENTER, m_VolumeSlider);
+		m_OptionsPanel->Anchor(Vivium::Panel::ANCHOR::CENTER, Vivium::Panel::ANCHOR::CENTER, m_VolumeText);
 		Vivium::Application::window_panel->Anchor(Vivium::Panel::ANCHOR::CENTER, Vivium::Panel::ANCHOR::CENTER, m_OptionsPanel);
 	}
 
@@ -529,14 +549,21 @@ namespace Game {
 		Vivium::Renderer::Submit(m_BackButton.get());
 		Vivium::Renderer::Submit(m_FPSSlider.get());
 		Vivium::Renderer::Submit(m_FPSText.get());
+		Vivium::Renderer::Submit(m_VolumeSlider.get());
+		Vivium::Renderer::Submit(m_VolumeText.get());
 	}
 
 	void OptionsScene::Update()
 	{
 		m_BackButton->Update();
 		m_FPSSlider->Update();
+		m_VolumeSlider->Update();
 
 		int new_fps = m_FPSSlider->GetValue(FPS_MIN, FPS_MAX);
 		m_FPSText->SetText(std::format("FPS: {}", new_fps));
+
+		// As percentage
+		int new_volume = m_VolumeSlider->GetValue(100.0f);
+		m_VolumeText->SetText(std::format("Volume: {}%", new_volume));
 	}
 }

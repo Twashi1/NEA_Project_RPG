@@ -67,13 +67,18 @@ namespace Game {
 		MainMenu* m_Manager;
 
 		static void s_FPSCallback(Vivium::Slider* slider, void* user_params);
+		static void s_VolumeCallback(Vivium::Slider* slider, void* user_params);
 
 		static constexpr int FPS_MIN = 60;
 		static constexpr int FPS_MAX = 240;
 
 		Ref(Vivium::Panel) m_OptionsPanel;
+
 		Ref(Vivium::Slider) m_FPSSlider;
 		Ref(Vivium::Text) m_FPSText;
+
+		Ref(Vivium::Slider) m_VolumeSlider;
+		Ref(Vivium::Text) m_VolumeText;
 
 		Ref(Vivium::Button) m_BackButton;
 
