@@ -17,7 +17,11 @@ namespace Game {
 			RIVER,
 			MAX
 		};
+	
+	private:
+		static const char* m_GetBiomeName(const Biome::ID& id);
 
+	public:
 		class IBiome {
 		protected:
 			static Vivium::Noise::Interpolated m_HeightNoise;
@@ -47,6 +51,9 @@ namespace Game {
 			static const std::unordered_map<float, Tile::ID> m_DebrisWeights;
 			
 		public:
+			// TODO: handled by world rn, but maybe biomes should deal with this
+			static constexpr float LEAF_PARTICLE_FREQUENCY = 0.3f; // Every second, release a particle
+
 			ForestBiome(unsigned int seed);
 			
 			void GenerateAt(int x, int y, Tile& tile, World* world, std::unordered_map<Vivium::Vector2<int>, Structure::ID>& structures) const override;
@@ -128,6 +135,8 @@ namespace Game {
 		template<> struct BiomeType<ID::FOREST> { using type = ForestBiome; };
 		template<> struct BiomeType<ID::DESERT> { using type = DesertBiome; };
 		template<> struct BiomeType<ID::RIVER>	{ using type = RiverBiome;	};
+		
+		friend World;
 	};
 }
 

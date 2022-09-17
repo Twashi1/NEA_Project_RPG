@@ -5,6 +5,9 @@
 #include "WorldMap.h"
 #include "Biome.h"
 #include "TerrainGenerator.h"
+#include "LeafParticles.h"
+
+// TODO: m_Player is property now, don't pass to functions
 
 namespace Game {
 	class Player;
@@ -25,19 +28,28 @@ namespace Game {
 
 		std::string m_WorldName;
 
+		LeavesParticleSystem m_LeafBlockBreaking;
+		LeavesParticleSystem m_LeafWind; // TODO: should be screenspace not worldspace
+
 		Vivium::Timer m_UpdateTimer;
+		float m_TimeAlive = 0.0f;
 
 		Vivium::Vector2<int> mined_tile_pos = Vivium::Vector2<int>(INT_MAX, INT_MAX);
 		Tile::ID mined_tile_id;
 		float mined_tile_time; // Time we've been mining tile for
 
 		Player* m_Player;
+		Biome::ID m_CurrentBiome; // Biome we're in
+		float m_LastParticleEmitTime = 0.0f;
+
 		Vivium::Physics::Layer* m_PlayerLayer = nullptr;
 		static constexpr uint32_t PLAYER_PHYSICS_LAYER = 0;
 		Vivium::Physics::Layer* m_TileLayer = nullptr;
 		static constexpr uint32_t TILE_PHYSICS_LAYER = 1;
 
 		std::vector<Ref(Vivium::Body)> m_TileBodies;
+
+		irrklang::ISoundSource* m_BlockBreakingSound;
 
 		std::string m_ToRegionName(const Vivium::Vector2<int>& index) const;
 
@@ -51,6 +63,8 @@ namespace Game {
 		void m_GenerateRegion(const Vivium::Vector2<int>& index);
 
 		void m_UpdateMining(Player* player, float elapsed);
+
+		void m_UpdateCurrentBiome();
 
 		void m_AddFloorItem(const Vivium::Vector2<int>& region_pos, const FloorItem& item);
 

@@ -68,7 +68,8 @@ namespace Game {
 	}
 
 	World::World(const uint32_t& seed, const std::string& world_name, Player* player)
-		: m_WorldName(world_name), m_Seed(seed), m_Player(player)
+		// TODO: non static acceleration for leaf wind
+		: m_WorldName(world_name), m_Seed(seed), m_Player(player), m_LeafBlockBreaking(100, {0.0f, -400.0f}), m_LeafWind(50, {0.0f, 0.0f})
 	{
 		std::string fullpath = PATH + world_name + "/";
 
@@ -96,6 +97,8 @@ namespace Game {
 		m_TileLayer = Vivium::Physics::CreateLayer(World::TILE_PHYSICS_LAYER, {});
 
 		m_PlayerLayer->bodies.push_back(m_Player->body);
+
+		m_BlockBreakingSound = Vivium::Application::sound_engine->addSoundSourceFromFile((Vivium::Application::resources_path + "sounds/breaking_block.wav").c_str(), irrklang::ESM_AUTO_DETECT, true);
 
 		m_UpdateTimer.Start();
 	}
@@ -244,6 +247,8 @@ namespace Game {
 		delete m_DaylightShader;
 
 		delete m_WorldMap;
+
+		m_BlockBreakingSound = nullptr;
 	}
 
 	void World::m_DeserialiseRegion(const std::string& filename, const Vivium::Vector2<int>& index)
@@ -360,11 +365,16 @@ namespace Game {
 				// Same tile
 				else {
 					mined_tile_time += elapsed;
+
+					// TODO: give longer delay between sound if tile is taking longer to mine
+					if (!Vivium::Application::sound_engine->isCurrentlyPlaying(m_BlockBreakingSound)) {
+						Vivium::Application::sound_engine->play2D(m_BlockBreakingSound);
+					}
 				}
 			}
 			else {
 				mined_tile_time = 0.0f;
-				mined_tile_pos = Vivium::Vector2<int>(INT_MAX, INT_MAX);
+				mined_tile_pos = INT_MAX;
 				mined_tile_id = Tile::ID::VOID;
 			}
 
@@ -387,8 +397,12 @@ namespace Game {
 					}
 				}
 				
-				// TODO: foreground tile only
 				if (Structure::IsStructure(tile.foreground)) {
+					if (Structure::GetStructureID(tile.foreground) == Structure::ID::TREE) {
+						Vivium::Vector2<int> offset = tile.foreground == Tile::ID::TREE_0 ? 0 : Vivium::Vector2<int>(0, 1);
+						m_LeafBlockBreaking.Emit(20, 1.0f, (mined_tile_pos + offset) * World::PIXEL_SCALE, 0.0f, 70.0f, 0.0f, 0.0f, Vivium::Math::PI);
+					}
+
 					Structure::Delete(mined_tile_pos, tile.foreground, this);
 				}
 				else {
@@ -401,6 +415,15 @@ namespace Game {
 			mined_tile_time = 0.0f;
 			mined_tile_pos = Vivium::Vector2<int>(INT_MAX, INT_MAX);
 		}
+	}
+
+	void World::m_UpdateCurrentBiome()
+	{
+		Vivium::Vector2<int> player_tile_pos = (m_Player->quad->GetCenter() / World::PIXEL_SCALE).floor();
+		Vivium::Vector2<int> player_region_pos = GetRegionIndex(player_tile_pos);
+		Region* current_region = regions[player_region_pos];
+
+		m_CurrentBiome = current_region->IndexBiome(player_tile_pos - player_region_pos * Region::LENGTH);
 	}
 
 	void World::m_AddFloorItem(const Vivium::Vector2<int>& region_pos, const FloorItem& item)
@@ -605,7 +628,6 @@ namespace Game {
 						// Bottom left, Bottom right, Top right, Top left
 						std::array<Vivium::Vector2<float>, 4> vertices = item_quad->GetVertices();
 
-						// TODO: wasting 3 * sizeof(float) bytes for each render, item_count_f only needed once
 						std::array<float, 16> this_vertex_data =
 						{
 							vertices[0].x + item_offset.x, vertices[0].y + item_offset.y, tex_coords[0], tex_coords[1],
@@ -630,7 +652,7 @@ namespace Game {
 						indexCoords.insert(indexCoords.end(), this_indices.begin(), this_indices.end());
 						vertex_data.insert(vertex_data.end(), this_vertex_data.begin(), this_vertex_data.end());
 
-						count++;
+						++count;
 					}
 				}
 			}
@@ -646,16 +668,18 @@ namespace Game {
 
 	float World::m_GetMiningTileScale(float tile_scale, const Tile::ID& id)
 	{
+		static constexpr float SCALE_RANGE = 8.0f;
+
 		// TODO: cleanup
 		// Get time spent mining as percentage (0 -> 1)
 		float time_ratio = mined_tile_time / Tile::GetMiningTime(id);
 		// Multiply by amount of cycles of growth/shrinking
-		time_ratio *= 9;
+		time_ratio *= 9.0f;
 		// Fix to 0 -> 1 range
 		float integer_part; // NOTE: unused
 		time_ratio = std::modf(time_ratio, &integer_part);
 		// Move to -4 -> 4 range
-		time_ratio = (time_ratio - 0.5f) * 8;
+		time_ratio = (time_ratio - 0.5f) * SCALE_RANGE;
 		// Clamp to more than 0
 		time_ratio = std::max(0.0f, time_ratio);
 
@@ -678,6 +702,8 @@ namespace Game {
 		m_DaylightFramebuffer->Bind();
 		m_RenderTiles(pos);
 		m_RenderFloorItems(pos);
+		m_LeafBlockBreaking.Render();
+		m_LeafWind.Render();
 		m_DaylightFramebuffer->Unbind();
 
 		// Drawing from daylight framebuffer onto screen
@@ -692,10 +718,24 @@ namespace Game {
 	void World::Update()
 	{
 		float elapsed = m_UpdateTimer.GetElapsed();
+		m_TimeAlive += elapsed;
 		
 		m_LoadRegions(m_Player);
 
 		m_UpdateMining(m_Player, elapsed);
+
+		m_UpdateCurrentBiome();
+
+		if (m_CurrentBiome == Biome::ID::FOREST) {
+			if (m_TimeAlive > m_LastParticleEmitTime + Biome::ForestBiome::LEAF_PARTICLE_FREQUENCY) {
+				m_LastParticleEmitTime = m_TimeAlive;
+
+				Vivium::Vector2<float> top_left = m_Player->quad->GetX() - (Vivium::Application::width * 0.5f);
+				top_left.y = m_Player->quad->GetY() + (Vivium::Application::height * Vivium::Random::GetFloat(-1.0f, 1.0f));
+
+				m_LeafWind.Emit(1, 15.0f, top_left, { 100.0f, 0.0f }, 50.0f, 0.0f, 0.0f, Vivium::Math::PI);
+			}
+		}
 
 		m_WorldMap->GenerateFullMap(m_Player->quad->GetCenter(), *this);
 	}

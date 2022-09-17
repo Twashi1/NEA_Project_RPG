@@ -141,6 +141,18 @@ namespace Game {
 		}
 	}
 
+	const char* Biome::m_GetBiomeName(const Biome::ID& id)
+	{
+		switch (id) {
+		case ID::VOID: return "Void";
+		case ID::PLAIN: return "Plains";
+		case ID::FOREST: return "Forest";
+		case ID::DESERT: return "Desert";
+		case ID::RIVER: return "River";
+		default: return "InvalidBiome";
+		}
+	}
+
 	Tile::ID Biome::m_GetTileFromHeightMap(const std::map<float, Tile::ID>& height_map, float height)
 	{
 		for (auto& [max_height, tile_id] : height_map) {

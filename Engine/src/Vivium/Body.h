@@ -33,8 +33,10 @@ namespace Vivium {
 		float angular_vel = 0.0f;	// Current angular velocity of object
 		float angular_acc = 0.0f;	// Current angular acceleration of object
 
+		bool isPhysical = true;		// If is physical collider or not (non-physical only check for collisions, don't actually change velocity/acceleration)
+
 		Body() = default;
-		Body(Ref(Quad) quad, bool isImmovable, float restitution, float mass, CallbackFunc_t callback = nullptr, void* user_params = nullptr);
+		Body(Ref(Quad) quad, bool isImmovable, float restitution, float mass, bool isPhysical = true, CallbackFunc_t callback = nullptr, void* user_params = nullptr);
 		Body(const Body& other);
 
 		virtual ~Body() = default;

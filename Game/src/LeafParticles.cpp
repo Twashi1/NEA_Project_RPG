@@ -109,7 +109,8 @@ namespace Game {
 		my_particle->angular_velocity = angular_vel + Vivium::Random::GetFloat(-angular_var, angular_var);
 		my_particle->angle = angle;
 
-		my_particle->lifespan = lifespan;
+		// TODO: lifespan variation
+		my_particle->lifespan = lifespan * Vivium::Random::GetFloat(0.8f, 1.2f);
 
 		my_particle->leaf_type = Vivium::Random::GetInt(0, 3);
 
@@ -129,7 +130,9 @@ namespace Game {
 		if (leaf->IsAlive()) {
 			float* coords = m_TextureCoords[leaf->leaf_type];
 
-			float per_vertex_data[4] = { 1.0f, leaf->angle, leaf->position.x, leaf->position.y };
+			float alpha = std::min((1.0f - leaf->time_alive / leaf->lifespan) / s_FadeoutStartPercent, 1.0f);
+
+			float per_vertex_data[4] = { alpha, leaf->angle, leaf->position.x, leaf->position.y };
 
 			batch->Submit(leaf->position, s_ParticleSize, coords[0], coords[2], coords[1], coords[5], per_vertex_data, 4);
 		}

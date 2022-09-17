@@ -9,14 +9,15 @@ namespace Vivium {
 		}
 	}
 
-	Body::Body(Ref(Quad) quad, bool isImmovable, float restitution, float mass, CallbackFunc_t callback, void* user_params)
+	Body::Body(Ref(Quad) quad, bool isImmovable, float restitution, float mass, bool isPhysical, CallbackFunc_t callback, void* user_params)
 		: quad(quad),
 		isImmovable(isImmovable),
 		vel(), acc(),
 		restitution(restitution),
 		mass(mass), imass(1.0f / mass),
 		angular_acc(0.0f), angular_vel(0.0f),
-		collision_callback(callback), user_params(user_params)
+		collision_callback(callback), user_params(user_params),
+		isPhysical(isPhysical)
 	{
 		m_Timer.Start();
 	}
@@ -28,7 +29,8 @@ namespace Vivium {
 		restitution(other.restitution),
 		mass(other.mass), imass(other.imass),
 		angular_acc(other.angular_acc), angular_vel(other.angular_vel),
-		collision_callback(other.collision_callback), user_params(other.user_params)
+		collision_callback(other.collision_callback), user_params(other.user_params),
+		isPhysical(other.isPhysical)
 	{
 		m_Timer.Start();
 	}
