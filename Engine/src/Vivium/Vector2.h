@@ -19,6 +19,7 @@ namespace Vivium {
 		Vector2(Vector2&& other) noexcept = default;
 
 		Vector2& operator=(const Vector2& other) = default;
+		Vector2& operator=(Vector2& other) noexcept = default;
 
 		Vector2 operator+(const Vector2& other) const { return Vector2(x + other.x, y + other.y); }
 		Vector2 operator-(const Vector2& other) const { return Vector2(x - other.x, y - other.y); }
@@ -54,24 +55,22 @@ namespace Vivium {
 
 		Vector2 floor() const requires FloatingPoint<T> { return Vector2(std::floor(x), std::floor(y)); }
 		Vector2 ceil() const requires FloatingPoint<T> { return Vector2(std::ceil(x), std::ceil(y)); }
-		Vector2 normalise() const { return *this * InverseSquareRoot(x * x + y * y); }
+		Vector2 normalise() const requires FloatingPoint<T> { return *this * InverseSquareRoot(x * x + y * y); }
 		Vector2 fract() const requires FloatingPoint<T>
 		{
 			float int_part;
 			float fx = std::modf(x, &int_part);
 			float fy = std::modf(y, &int_part);
-			
+
 			return Vector2<float>(fx, fy);
 		}
 
 		Vector2 abs() const requires Signed<T> { return Vector2(std::abs(x), std::abs(y)); }
 
-		T length() const { return std::sqrt(x * x + y * y); }
-
 		T magnitude() const { return std::sqrt(x * x + y * y); }
 
 		T distance(const Vector2& other) const
-		{ 
+		{
 			T dx = x - other.x;
 			T dy = y - other.y;
 			return std::sqrt(dx * dx + dy * dy);
@@ -87,6 +86,40 @@ namespace Vivium {
 		T MaxComponent() const { return std::max(x, y); }
 
 		static T Dot(const Vector2& a, const Vector2& b) { return a.x * b.x + a.y * b.y; }
+		static T Magnitude(const Vector2& v) {
+			return std::sqrt(v.x * v.x + v.y * v.y);
+		}
+		static T Distance(const Vector2& a, const Vector2& b)
+		{
+			T dx = a.x - b.x;
+			T dy = a.y - b.y;
+			return std::sqrt(dx * dx + dy * dy);
+		}
+		static T SqrDistance(const Vector2& a, const Vector2& b)
+		{
+			T dx = a.x - b.x;
+			T dy = a.y - b.y;
+			return dx * dx + dy * dy;
+		}
+		static Vector2 Fract(const Vector2& v) requires FloatingPoint<T> {
+			float int_part;
+			float fx = std::modf(v.x, &int_part);
+			float fy = std::modf(v.y, &int_part);
+
+			return Vector2<float>(fx, fy);
+		}
+		static Vector2 Normalise(const Vector2& v) requires FloatingPoint<T> {
+			return v * InverseSquareRoot(v.x * v.x + v.y * v.y);
+		}
+		static Vector2 Floor(const Vector2& v) requires FloatingPoint<T> {
+			return Vector2<T>(std::floor(v.x), std::floor(v.y));
+		}
+		static Vector2 Ceil(const Vector2& v) requires FloatingPoint<T> {
+			return Vector2<T>(std::ceil(v.x), std::ceil(v.y));
+		}
+		static Vector2 Abs(const Vector2& v) requires Signed<T> {
+			return Vector2<T>(::std::abs(v.x), ::std::abs(v.y));
+		}
 
 		// Cast to arithmetic type
 		template <typename C>

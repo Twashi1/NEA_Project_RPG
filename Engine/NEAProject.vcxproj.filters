@@ -112,6 +112,7 @@
     <ClCompile Include="src\Vivium\ParticleSystem.cpp">
       <Filter>Source</Filter>
     </ClCompile>
+    <ClCompile Include="src\Vivium\Pathfinding.cpp" />
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="src\Vivium.h" />
@@ -227,6 +228,9 @@
       <Filter>Headers</Filter>
     </ClInclude>
     <ClInclude Include="src\Vivium\ParticleSystem.h">
+      <Filter>Headers</Filter>
+    </ClInclude>
+    <ClInclude Include="src\Vivium\Pathfinding.h">
       <Filter>Headers</Filter>
     </ClInclude>
   </ItemGroup>
