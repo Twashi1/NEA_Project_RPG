@@ -19,6 +19,25 @@ int sandbox(void)
 #define XDIM 5
 #define YDIM 4
 
+    //#define OLD
+#ifndef OLD
+    bool* dat = new bool[XDIM * YDIM];
+
+    for (int i = 0; i < XDIM * YDIM; i++) {
+        dat[i] = false;
+    }
+
+    dat[1 + 1 * XDIM] = true;
+    dat[2 + 1 * XDIM] = true;
+    dat[3 + 1 * XDIM] = true;
+
+    Pathfinding::Map map(dat, {XDIM, YDIM});
+    auto path = Pathfinding::Calculate({ 1, 0 }, { 3, 3 }, map);
+
+    for (auto& node : path.GetNodes()) {
+        LogTrace("Going to position: {}", node.pos);
+    }
+#else
     Pathfinder::ObstacleMap_t map = Pathfinder::MakeObstaclePath(XDIM * YDIM);
 
     for (int i = 0; i < XDIM * YDIM; i++) {
@@ -36,6 +55,7 @@ int sandbox(void)
     for (auto& node : path) {
         LogTrace("Going to node: {}", node.pos);
     }
+#endif
 
     Application::Terminate();
 

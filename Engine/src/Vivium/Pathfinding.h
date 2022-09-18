@@ -5,9 +5,7 @@
 #include "Logger.h"
 
 namespace Vivium {
-	// Ripped from
-	// https://dev.to/jansonsa/a-star-a-path-finding-c-4a4h
-	class VIVIUM_API Pathfinder {
+	class VIVIUM_API Pathfinding {
 	public:
 		struct VIVIUM_API Node {
 			Vector2<int> pos;
@@ -32,33 +30,70 @@ namespace Vivium {
 			}
 		};
 
-		typedef Ref(bool[]) ObstacleMap_t;
-		typedef Node* NodeMap_t;
+		// Map of obstacles in the world, where true represents an obstacle, and false a walkable area
+		class VIVIUM_API Map {
+		private:
+			// TODO: some bit-packing optimisation for storing the obstacle map
+			bool* m_Data = nullptr;
+			Vector2<int> m_Dim;
 
-	private:
-		Vector2<int> m_Start;
-		Vector2<int> m_End;
-		Vector2<int> m_Dim;
+		public:
+			Map(bool* data, const Vector2<int>& dim);
 
-		ObstacleMap_t m_ObstacleMap;
-		NodeMap_t m_NodeMap;
+			void UpdateMap(bool* new_data);
 
-		// Check not an obstacle and not out of bounds
-		bool m_IsValidNode(const Vector2<int>& pos);
+			Vector2<int> GetDim() const;
+			std::size_t Area() const;
+			std::size_t ToIndex(const Vector2<int>& pos) const;
 
-		std::vector<Node> m_MakePath();
+			bool IsObstacle(const Vector2<int>& pos) const;
+			bool IsWalkable(const Vector2<int>& pos) const;
+			bool IsWithinDim(const Vector2<int>& pos) const;
+
+			Map(const Map& other);
+
+			Map& operator=(const Map& other) {
+				m_Dim = other.m_Dim;
+
+				if (m_Data != nullptr) { delete[] m_Data; }
+				
+				m_Data = new bool[other.m_Dim.x * other.m_Dim.y];
+				
+				std::copy(other.m_Data, other.m_Data + other.m_Dim.x * other.m_Dim.y, m_Data);
+
+				return *this;
+			}
+
+			~Map();
+
+			friend Pathfinding;
+		};
+
+		class VIVIUM_API Path {
+		private:
+			std::vector<Node> m_Data;
+
+		public:
+			std::vector<Node> GetNodes() const;
+			std::vector<Vector2<int>> GetPositions() const;
+			std::vector<Vector2<int>> GetDirectionVectors() const;
+
+			Path() = default;
+
+			Path(const Vector2<int>& end, Node* node_map, const Map& obstacle_map);
+			Path(const std::vector<Node>& data);
+			Path(std::vector<Node>&& data);
+
+			Path(const Path& other) = default;
+			Path(Path&& other) noexcept = default;
+
+			Path& operator=(const Path& other) = default;
+			Path& operator=(Path&& other) = default;
+
+			friend Pathfinding;
+		};
 
 	public:
-		template<typename... Args>
-		static inline auto MakeObstaclePath(Args&&... args) -> decltype(std::make_shared_for_overwrite<bool[]>(std::forward<Args>(args)...))
-		{
-			return std::make_shared_for_overwrite<bool[]>(std::forward<Args>(args)...);
-		}
-
-		Pathfinder(const Vector2<int>& start, const Vector2<int>& end, const Vector2<int>& map_dim, ObstacleMap_t map);
-
-		std::vector<Node> Calculate();
-
-		~Pathfinder();
+		static Path Calculate(const Vector2<int>& start, const Vector2<int>& end, const Map& map);
 	};
 }
