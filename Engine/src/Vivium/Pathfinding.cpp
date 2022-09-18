@@ -38,7 +38,7 @@ namespace Vivium {
 		bool found_dest = false;
 		Path path;
 
-		while (!open_nodes.empty() && open_nodes.size() < map.Area()) {
+		while ((!open_nodes.empty()) && (open_nodes.size() < map.Area())) {
 			Node parent;
 
 			do {
@@ -60,12 +60,13 @@ namespace Vivium {
 				open_nodes.erase(closest_it);
 			} while (map.IsObstacle(parent.pos));
 
+			Vector2<int> pos = parent.pos;
 			closed_nodes[map.ToIndex(parent.pos)] = true;
 
 			for (int offset_y = -1; offset_y <= 1; offset_y++) {
 				for (int offset_x = -1; offset_x <= 1; offset_x++) {
 					// If we're checking a diagonal
-					if (std::abs(offset_x) == std::abs(offset_y) && offset_y != 0) {
+					if (std::abs(offset_x) == std::abs(offset_y) && offset_x != 0) {
 						// Check that no obstacles blocking diag path
 						/*
 						Going diagonal here is valid
@@ -81,8 +82,10 @@ namespace Vivium {
 						10  \							   ¦
 						*/
 
+						/*
 						std::size_t idx_a = map.ToIndex(parent.pos + Vector2<int>(offset_x, 0));
 						std::size_t idx_b = map.ToIndex(parent.pos + Vector2<int>(0, offset_y));
+						*/
 
 						// If either is an obstacle
 						if (map.IsObstacle(parent.pos + Vector2<int>(offset_x, 0)) || map.IsObstacle(parent.pos + Vector2<int>(0, offset_y))) {
@@ -91,32 +94,33 @@ namespace Vivium {
 						}
 					}
 
+					float gnew, hnew, fnew;
+
 					Vector2<int> offset_vector(offset_x, offset_y);
 					Vector2<int> look_pos = parent.pos + offset_vector;
-
-					LogTrace("Searching node {}", look_pos);
+					std::size_t look_idx = map.ToIndex(look_pos);
 
 					if (map.IsWalkable(look_pos)) {
 						// Found destination
 						if (look_pos == end) {
 							found_dest = true;
-							node_map[map.ToIndex(look_pos)].parent_pos = parent.pos;
+							node_map[look_idx].parent_pos = pos;
 
 							path = Path(end, node_map, map);
 						}
-						else if (!closed_nodes[map.ToIndex(look_pos)]) {
-							float g_cost = parent.g_cost + 1.0f;
-							float h_cost = Vector2<float>::Distance(look_pos, end);
-							float f_cost = g_cost + h_cost;
+						else if (!closed_nodes[look_idx]) {
+							gnew = parent.g_cost + 1.0f;
+							hnew = Vector2<float>::Distance(look_pos, end);
+							fnew = gnew + hnew;
 
-							Node& looking_node = node_map[map.ToIndex(look_pos)];
+							Node& looking_node = node_map[look_idx];
 
-							if (looking_node.f_cost > f_cost) {
-								looking_node.g_cost = g_cost;
-								looking_node.h_cost = h_cost;
-								looking_node.f_cost = f_cost;
+							if (looking_node.f_cost > fnew || looking_node.f_cost == FLT_MAX) {
+								looking_node.g_cost = gnew;
+								looking_node.h_cost = hnew;
+								looking_node.f_cost = fnew;
 
-								looking_node.parent_pos = parent.pos;
+								looking_node.parent_pos = pos;
 								open_nodes.push_back(looking_node);
 							}
 						}
@@ -167,24 +171,23 @@ namespace Vivium {
 		return directions;
 	}
 
-	Pathfinding::Path::Path(const Vector2<int>& end, Node* node_map, const Map& obstacle_map)
+	Pathfinding::Path::Path(const Vector2<int>& end, Node* node_map, const Map& map)
 	{
 		std::vector<Node> reverse_path;
 
 		Vector2<int> pos = end;
-		std::size_t pos_idx = obstacle_map.ToIndex(pos);
+		Node& current_node = node_map[map.ToIndex(pos)];
 
-		Node& current_node = node_map[pos_idx];
-		while (!(current_node.parent_pos == pos)) {
+		while (current_node.parent_pos != pos) {
 			reverse_path.push_back(current_node);
 
 			pos = current_node.parent_pos;
-			pos_idx = obstacle_map.ToIndex(pos);
+			current_node = node_map[map.ToIndex(pos)];
 		}
 
-		reverse_path.push_back(current_node);
+		reverse_path.push_back(node_map[map.ToIndex(pos)]);
 
-		m_Data.reserve(reverse_path.size());
+		m_Data.resize(reverse_path.size());
 		std::reverse_copy(reverse_path.begin(), reverse_path.end(), m_Data.begin());
 	}
 
@@ -215,7 +218,7 @@ namespace Vivium {
 
 	std::size_t Pathfinding::Map::Area() const
 	{
-		return m_Dim.x + m_Dim.y;
+		return m_Dim.x * m_Dim.y;
 	}
 
 	std::size_t Pathfinding::Map::ToIndex(const Vector2<int>& pos) const
@@ -243,7 +246,7 @@ namespace Vivium {
 
 	bool Pathfinding::Map::IsWithinDim(const Vector2<int>& pos) const
 	{
-		return pos.x >= 0 && pos.x < m_Dim.x&& pos.y >= 0 && pos.y < m_Dim.y;
+		return pos.x >= 0 && pos.x < m_Dim.x && pos.y >= 0 && pos.y < m_Dim.y;
 	}
 
 	Pathfinding::Map::Map(const Map& other)
