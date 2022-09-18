@@ -1,119 +1,71 @@
 #include "Pathfinding.h"
 
 namespace Vivium {
-	Pathfinder::Node::Node(const Vector2<int>& pos)
-		: pos(pos)
-	{}
-
-	// Check not an obstacle and not out of bounds
-
-	bool Pathfinder::m_IsValidNode(const Vector2<int>& pos) {
-		// OOB check
-		if (pos.x < 0 || pos.x >= m_Dim.x || pos.y < 0 || pos.y >= m_Dim.y) {
-			return false;
-		}
-
-		// Is obstacle check (obstacles represented as true, walkable represented as false)
-		return !m_ObstacleMap[pos.x + pos.y * m_Dim.x];
-	}
-	
-	std::vector<Pathfinder::Node> Pathfinder::m_MakePath() {
-		LogTrace("Found path");
-
-		std::vector<Node> path;
-		std::vector<Node> useable_path;
-
-		Vector2<int> pos = m_End;
-		std::size_t pos_idx = pos.x + pos.y * m_Dim.x;
-
-		while (!(m_NodeMap[pos_idx].parent_pos == pos) && m_End != Vector2<int>(-1)) {
-			path.push_back(m_NodeMap[pos_idx]);
-
-			pos = m_NodeMap[pos_idx].parent_pos;
-			pos_idx = pos.x + pos.y * m_Dim.x;
-		}
-
-		path.push_back(m_NodeMap[pos_idx]);
-
-		// NOTE: reversing it?
-		while (!path.empty()) {
-			Node& last = path[path.size() - 1];
-			path.pop_back();
-
-			useable_path.emplace_back(last);
-		}
-
-		return useable_path;
-	}
-	
-	Pathfinder::Pathfinder(const Vector2<int>& start, const Vector2<int>& end, const Vector2<int>& map_dim, ObstacleMap_t map)
-		: m_Start(start), m_End(end), m_Dim(map_dim), m_ObstacleMap(map)
+	Pathfinding::Path Pathfinding::Calculate(const Vector2<int>& start, const Vector2<int>& end, const Map& map)
 	{
-		// Initialise node map
-		m_NodeMap = new Node[m_Dim.x * m_Dim.y];
+		if (map.IsObstacle(end)) { LogTrace("End is not valid node"); return Path(); }
+		if (start == end) { LogTrace("Already at destination"); return Path(); }
 
-		for (std::size_t i = 0; i < m_Dim.x * m_Dim.y; i++) {
-			int y = i / m_Dim.x;
-			int x = i - (y * m_Dim.x);
+		Node* node_map = new Node[map.Area()];
+		Vector2<int> dim = map.GetDim();
 
-			m_NodeMap[i] = Node({ x, y });
+		for (std::size_t i = 0; i < map.Area(); i++) {
+			int y = i / dim.x;
+			int x = i - (y * dim.x);
+
+			node_map[i] = Node({ x, y });
 		}
-	}
-	
-	std::vector<Pathfinder::Node> Pathfinder::Calculate() {
-		if (!m_IsValidNode(m_End)) { LogTrace("End was not valid node"); return {}; }
-		if (m_Start == m_End) { LogTrace("Start was also end"); return {}; }
 
 		// All nodes that have already been checked
-		bool* closed = new bool[m_Dim.x * m_Dim.y];
+		// TODO: bit-packing optimisation
+		bool* closed_nodes = new bool[map.Area()];
 
-		std::fill(closed, closed + m_Dim.x * m_Dim.y, false);
+		std::fill(closed_nodes, closed_nodes + map.Area(), false);
 
-		// Create node map
-		std::vector<Node> open;
-		open.reserve(m_Dim.x * m_Dim.y); // Not like we really care about memory efficiency anyway
+		// List of open nodes (nodes where not all paths have been checked)
+		std::vector<Node> open_nodes;
+		open_nodes.reserve(map.Area());
 
-		// Setup our starting node
-		Node& start_node = m_NodeMap[m_Start.x + m_Start.y * m_Dim.x];
+		// Create starting node and add to open nodes
+		Node& start_node = node_map[map.ToIndex(start)];
 		start_node.f_cost = 0.0f;
 		start_node.g_cost = 0.0f;
 		start_node.h_cost = 0.0f;
-		start_node.parent_pos = m_Start;
+		start_node.parent_pos = start;
 
-		open.push_back(m_NodeMap[m_Start.x + m_Start.y * m_Dim.x]);
+		open_nodes.push_back(start_node);
+		
+		bool found_dest = false;
+		Path path;
 
-		bool destination_found = false;
-
-		while ((!open.empty()) && (open.size() < m_Dim.x * m_Dim.y)) {
-			Node node;
+		while (!open_nodes.empty() && open_nodes.size() < map.Area()) {
+			Node parent;
 
 			do {
-				float temp = FLT_MAX;
+				float lowest_fcost = FLT_MAX;
 
 				std::vector<Node>::iterator closest_it;
 
-				for (std::vector<Node>::iterator it = open.begin(); it != open.end(); it = std::next(it)) {
+				for (std::vector<Node>::iterator it = open_nodes.begin(); it != open_nodes.end(); it = std::next(it)) {
 					Node& current = *it;
 
-					if (current.f_cost < temp) {
-						temp = current.f_cost;
+					if (current.f_cost < lowest_fcost) {
+						lowest_fcost = current.f_cost;
 						closest_it = it;
 					}
 				}
 
-				// We've looked at this node
-				node = *closest_it;
-				open.erase(closest_it);
-			} while (!m_IsValidNode(node.pos));
+				// This node has been investigated, move to next node
+				parent = *closest_it;
+				open_nodes.erase(closest_it);
+			} while (map.IsObstacle(parent.pos));
 
-			Vector2<int> pos = node.pos;
-			std::size_t idx = pos.x + pos.y * m_Dim.x;
-			closed[idx] = true;
+			closed_nodes[map.ToIndex(parent.pos)] = true;
 
-			for (int offx = -1; offx <= 1; offx++) {
-				for (int offy = -1; offy <= 1; offy++) {
-					// If we're checking one of the diagonals
-					if (std::abs(offx) == std::abs(offy) && offx != 0) {
+			for (int offset_y = -1; offset_y <= 1; offset_y++) {
+				for (int offset_x = -1; offset_x <= 1; offset_x++) {
+					// If we're checking a diagonal
+					if (std::abs(offset_x) == std::abs(offset_y) && offset_y != 0) {
 						// Check that no obstacles blocking diag path
 						/*
 						Going diagonal here is valid
@@ -123,46 +75,49 @@ namespace Vivium {
 						Going diagonal here is **not** valid (take the long path around)
 						01 \
 						10  \
-						
+
 						Going diagonal here is also **not** valid
 						00 \	(instead takes this path) -¬
 						10  \							   ¦
 						*/
-						Vector2<int> loc_a = node.pos + Vector2<int>(offx, 0);
-						Vector2<int> loc_b = node.pos + Vector2<int>(0, offy);
 
-						// If either are obstacles
-						if (m_ObstacleMap[loc_a.x + loc_a.y * m_Dim.x] || m_ObstacleMap[loc_b.x + loc_b.y * m_Dim.x]) {
+						std::size_t idx_a = map.ToIndex(parent.pos + Vector2<int>(offset_x, 0));
+						std::size_t idx_b = map.ToIndex(parent.pos + Vector2<int>(0, offset_y));
+
+						// If either is an obstacle
+						if (map.IsObstacle(parent.pos + Vector2<int>(offset_x, 0)) || map.IsObstacle(parent.pos + Vector2<int>(0, offset_y))) {
+							// Stop considering this node, move to the next
 							continue;
 						}
 					}
 
-					float gnew, hnew, fnew;
+					Vector2<int> offset_vector(offset_x, offset_y);
+					Vector2<int> look_pos = parent.pos + offset_vector;
 
-					Vector2<int> off_vec(offx, offy);
-					Vector2<int> look_pos = node.pos + off_vec;
-					std::size_t look_idx = look_pos.x + look_pos.y * m_Dim.x;
+					LogTrace("Searching node {}", look_pos);
 
-					if (m_IsValidNode(look_pos)) {
-						if (look_pos == m_End) {
-							destination_found = true;
-							m_NodeMap[look_idx].parent_pos = pos;
+					if (map.IsWalkable(look_pos)) {
+						// Found destination
+						if (look_pos == end) {
+							found_dest = true;
+							node_map[map.ToIndex(look_pos)].parent_pos = parent.pos;
 
-							return m_MakePath();
+							path = Path(end, node_map, map);
 						}
-						else if (!closed[look_idx]) {
-							gnew = node.g_cost + 1.0f;
-							hnew = Vector2<float>::Distance(look_pos, m_End);
-							fnew = gnew + hnew;
+						else if (!closed_nodes[map.ToIndex(look_pos)]) {
+							float g_cost = parent.g_cost + 1.0f;
+							float h_cost = Vector2<float>::Distance(look_pos, end);
+							float f_cost = g_cost + h_cost;
 
-							if (m_NodeMap[look_idx].f_cost == FLT_MAX || m_NodeMap[look_idx].f_cost > fnew) {
-								Node& node_to_update = m_NodeMap[look_idx];
-								node_to_update.g_cost = gnew;
-								node_to_update.h_cost = hnew;
-								node_to_update.f_cost = fnew;
+							Node& looking_node = node_map[map.ToIndex(look_pos)];
 
-								node_to_update.parent_pos = pos;
-								open.push_back(node_to_update);
+							if (looking_node.f_cost > f_cost) {
+								looking_node.g_cost = g_cost;
+								looking_node.h_cost = h_cost;
+								looking_node.f_cost = f_cost;
+
+								looking_node.parent_pos = parent.pos;
+								open_nodes.push_back(looking_node);
 							}
 						}
 					}
@@ -170,17 +125,140 @@ namespace Vivium {
 			}
 		}
 
-		if (!destination_found) {
-			LogTrace("Couldn't find destination while pathfinding!");
+		if (!found_dest) {
+			LogTrace("Couldn't find destination pathfinding!");
 
-			return {};
+			return Path();
 		}
 
-		delete[] closed;
+		delete[] closed_nodes;
+		delete[] node_map;
+
+		LogTrace("Found path!");
+		return path;
 	}
 	
-	Pathfinder::~Pathfinder()
+	std::vector<Pathfinding::Node> Pathfinding::Path::GetNodes() const { return m_Data; }
+	
+	std::vector<Vector2<int>> Pathfinding::Path::GetPositions() const
 	{
-		delete[] m_NodeMap;
+		if (m_Data.empty()) return {};
+
+		std::vector<Vector2<int>> positions(m_Data.size());
+
+		for (std::size_t i = 0; i < m_Data.size(); i++) {
+			positions[i] = m_Data[i].pos;
+		}
+
+		return positions;
 	}
+	
+	std::vector<Vector2<int>> Pathfinding::Path::GetDirectionVectors() const
+	{
+		if (m_Data.empty()) return {};
+		if (m_Data.size() == 1) return {0}; // Return no direction
+
+		std::vector<Vector2<int>> directions(m_Data.size() - 1);
+
+		for (std::size_t i = 0; i < m_Data.size() - 1; i++) {
+			directions[i] = m_Data[i + 1].pos - m_Data[i].pos;
+		}
+
+		return directions;
+	}
+
+	Pathfinding::Path::Path(const Vector2<int>& end, Node* node_map, const Map& obstacle_map)
+	{
+		std::vector<Node> reverse_path;
+
+		Vector2<int> pos = end;
+		std::size_t pos_idx = obstacle_map.ToIndex(pos);
+
+		Node& current_node = node_map[pos_idx];
+		while (!(current_node.parent_pos == pos)) {
+			reverse_path.push_back(current_node);
+
+			pos = current_node.parent_pos;
+			pos_idx = obstacle_map.ToIndex(pos);
+		}
+
+		reverse_path.push_back(current_node);
+
+		m_Data.reserve(reverse_path.size());
+		std::reverse_copy(reverse_path.begin(), reverse_path.end(), m_Data.begin());
+	}
+
+	Pathfinding::Path::Path(const std::vector<Node>& data)
+		: m_Data(data)
+	{}
+	
+	Pathfinding::Path::Path(std::vector<Node>&& data)
+		: m_Data(std::move(data))
+	{}
+	
+	Pathfinding::Map::Map(bool* data, const Vector2<int>& dim)
+		: m_Dim(dim)
+	{
+		m_Data = new bool[m_Dim.x * m_Dim.y];
+		std::copy(data, data + m_Dim.x * m_Dim.y, m_Data);
+	}
+
+	void Pathfinding::Map::UpdateMap(bool* new_data)
+	{
+		std::copy(new_data, new_data + m_Dim.x * m_Dim.y, m_Data);
+	}
+
+	Vector2<int> Pathfinding::Map::GetDim() const
+	{
+		return m_Dim;
+	}
+
+	std::size_t Pathfinding::Map::Area() const
+	{
+		return m_Dim.x + m_Dim.y;
+	}
+
+	std::size_t Pathfinding::Map::ToIndex(const Vector2<int>& pos) const
+	{
+		return pos.x + pos.y * m_Dim.x;
+	}
+
+	bool Pathfinding::Map::IsObstacle(const Vector2<int>& pos) const
+	{
+		if (IsWithinDim(pos)) {
+			return m_Data[pos.x + pos.y * m_Dim.x];
+		}
+
+		return true;
+	}
+
+	bool Pathfinding::Map::IsWalkable(const Vector2<int>& pos) const
+	{
+		if (IsWithinDim(pos)) {
+			return !m_Data[pos.x + pos.y * m_Dim.x];
+		}
+
+		return false;
+	}
+
+	bool Pathfinding::Map::IsWithinDim(const Vector2<int>& pos) const
+	{
+		return pos.x >= 0 && pos.x < m_Dim.x&& pos.y >= 0 && pos.y < m_Dim.y;
+	}
+
+	Pathfinding::Map::Map(const Map& other)
+		: m_Dim(other.m_Dim)
+	{
+		if (m_Data != nullptr) { delete[] m_Data; }
+
+		m_Data = new bool[other.m_Dim.x * other.m_Dim.y];
+
+		std::copy(other.m_Data, other.m_Data + other.m_Dim.x * other.m_Dim.y, m_Data);
+	}
+	
+	Pathfinding::Map::~Map() { delete[] m_Data; }
+
+	Pathfinding::Node::Node(const Vector2<int>& pos)
+		: pos(pos)
+	{}
 }
