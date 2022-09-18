@@ -36,7 +36,6 @@ namespace Vivium {
 		open_nodes.push_back(start_node);
 		
 		bool found_dest = false;
-		Path path;
 
 		while ((!open_nodes.empty()) && (open_nodes.size() < map.Area())) {
 			Node parent;
@@ -61,12 +60,12 @@ namespace Vivium {
 			} while (map.IsObstacle(parent.pos));
 
 			Vector2<int> pos = parent.pos;
-			closed_nodes[map.ToIndex(parent.pos)] = true;
+			closed_nodes[map.ToIndex(pos)] = true;
 
 			for (int offset_y = -1; offset_y <= 1; offset_y++) {
 				for (int offset_x = -1; offset_x <= 1; offset_x++) {
 					// If we're checking a diagonal
-					if (std::abs(offset_x) == std::abs(offset_y) && offset_x != 0) {
+					if (std::abs(offset_x) == std::abs(offset_y) && offset_y != 0) {
 						// Check that no obstacles blocking diag path
 						/*
 						Going diagonal here is valid
@@ -82,19 +81,12 @@ namespace Vivium {
 						10  \							   ¦
 						*/
 
-						/*
-						std::size_t idx_a = map.ToIndex(parent.pos + Vector2<int>(offset_x, 0));
-						std::size_t idx_b = map.ToIndex(parent.pos + Vector2<int>(0, offset_y));
-						*/
-
 						// If either is an obstacle
 						if (map.IsObstacle(parent.pos + Vector2<int>(offset_x, 0)) || map.IsObstacle(parent.pos + Vector2<int>(0, offset_y))) {
 							// Stop considering this node, move to the next
 							continue;
 						}
 					}
-
-					float gnew, hnew, fnew;
 
 					Vector2<int> offset_vector(offset_x, offset_y);
 					Vector2<int> look_pos = parent.pos + offset_vector;
@@ -106,16 +98,21 @@ namespace Vivium {
 							found_dest = true;
 							node_map[look_idx].parent_pos = pos;
 
-							path = Path(end, node_map, map);
+							auto path = Path(end, node_map, map);
+
+							delete[] closed_nodes;
+							delete[] node_map;
+							
+							return path;
 						}
 						else if (!closed_nodes[look_idx]) {
-							gnew = parent.g_cost + 1.0f;
-							hnew = Vector2<float>::Distance(look_pos, end);
-							fnew = gnew + hnew;
+							float gnew = parent.g_cost + 1.0f;
+							float hnew = Vector2<float>::Distance(look_pos, end);
+							float fnew = gnew + hnew;
 
 							Node& looking_node = node_map[look_idx];
 
-							if (looking_node.f_cost > fnew || looking_node.f_cost == FLT_MAX) {
+							if (looking_node.f_cost > fnew) {
 								looking_node.g_cost = gnew;
 								looking_node.h_cost = hnew;
 								looking_node.f_cost = fnew;
@@ -132,14 +129,11 @@ namespace Vivium {
 		if (!found_dest) {
 			LogTrace("Couldn't find destination pathfinding!");
 
+			delete[] closed_nodes;
+			delete[] node_map;
+
 			return Path();
 		}
-
-		delete[] closed_nodes;
-		delete[] node_map;
-
-		LogTrace("Found path!");
-		return path;
 	}
 	
 	std::vector<Pathfinding::Node> Pathfinding::Path::GetNodes() const { return m_Data; }
@@ -176,16 +170,16 @@ namespace Vivium {
 		std::vector<Node> reverse_path;
 
 		Vector2<int> pos = end;
-		Node& current_node = node_map[map.ToIndex(pos)];
+		std::size_t pos_idx = map.ToIndex(pos);
 
-		while (current_node.parent_pos != pos) {
-			reverse_path.push_back(current_node);
+		while (node_map[pos_idx].parent_pos != pos) {
+			reverse_path.push_back(node_map[pos_idx]);
 
-			pos = current_node.parent_pos;
-			current_node = node_map[map.ToIndex(pos)];
+			pos = node_map[pos_idx].parent_pos;
+			pos_idx = map.ToIndex(pos);
 		}
 
-		reverse_path.push_back(node_map[map.ToIndex(pos)]);
+		reverse_path.push_back(node_map[pos_idx]);
 
 		m_Data.resize(reverse_path.size());
 		std::reverse_copy(reverse_path.begin(), reverse_path.end(), m_Data.begin());

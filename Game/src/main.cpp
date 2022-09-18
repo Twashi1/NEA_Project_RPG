@@ -32,7 +32,7 @@ int sandbox(void)
     dat[3 + 1 * XDIM] = true;
 
     Pathfinding::Map map(dat, {XDIM, YDIM});
-    auto path = Pathfinding::Calculate({ 1, 0 }, { 2, 0 }, map);
+    auto path = Pathfinding::Calculate({ 1, 0 }, { 3, 3 }, map);
 
     for (auto& node : path.GetNodes()) {
         LogTrace("Going to position: {}", node.pos);
