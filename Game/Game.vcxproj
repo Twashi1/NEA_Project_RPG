@@ -25,6 +25,7 @@
     <ClCompile Include="src\Item.cpp" />
     <ClCompile Include="src\LeafParticles.cpp" />
     <ClCompile Include="src\main.cpp" />
+    <ClCompile Include="src\NPC.cpp" />
     <ClCompile Include="src\Player.cpp" />
     <ClCompile Include="src\Recipe.cpp" />
     <ClCompile Include="src\Region.cpp" />
@@ -48,6 +49,8 @@
     <ClInclude Include="src\Inventory.h" />
     <ClInclude Include="src\Item.h" />
     <ClInclude Include="src\LeafParticles.h" />
+    <ClInclude Include="src\NPC.h" />
+    <ClInclude Include="src\PassiveEntity.h" />
     <ClInclude Include="src\Player.h" />
     <ClInclude Include="src\Recipe.h" />
     <ClInclude Include="src\Region.h" />

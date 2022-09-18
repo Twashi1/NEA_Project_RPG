@@ -26,6 +26,8 @@ namespace Game {
 
 	public:
 		NPC(Ref(Vivium::Body) body);
+		// Make polymorphic
+		virtual ~NPC() = default;
 
 		virtual void UpdatePath(World* world);
 	};

@@ -6,6 +6,7 @@
 #include "Biome.h"
 #include "TerrainGenerator.h"
 #include "LeafParticles.h"
+#include "NPC.h"
 
 // TODO: m_Player is property now, don't pass to functions
 
