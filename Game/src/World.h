@@ -6,7 +6,6 @@
 #include "Biome.h"
 #include "TerrainGenerator.h"
 #include "LeafParticles.h"
-#include "NPC.h"
 
 // TODO: m_Player is property now, don't pass to functions
 
@@ -50,6 +49,10 @@ namespace Game {
 
 		std::vector<Ref(Vivium::Body)> m_TileBodies;
 
+		static constexpr int OBSTACLE_MAP_REGION_PADDING = 2;
+		Vivium::Vector2<int> m_WorldToObstacleMapTransform;
+		Vivium::Pathfinding::Map m_ObstacleMap;
+
 		irrklang::ISoundSource* m_BlockBreakingSound;
 
 		std::string m_ToRegionName(const Vivium::Vector2<int>& index) const;
@@ -75,6 +78,8 @@ namespace Game {
 		void m_RenderFloorItems(const Vivium::Vector2<int>& pos);
 
 		float m_GetMiningTileScale(float tile_scale, const Tile::ID& id);
+
+		void m_UpdateObstacleMap();
 
 	public:
 		// TODO: weird statics

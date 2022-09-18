@@ -34,11 +34,12 @@ namespace Vivium {
 		class VIVIUM_API Map {
 		private:
 			// TODO: some bit-packing optimisation for storing the obstacle map
-			bool* m_Data = nullptr;
-			Vector2<int> m_Dim;
+			Ref(bool[]) m_Data = nullptr;
+			Vector2<int> m_Dim = 0;
 
 		public:
-			Map(bool* data, const Vector2<int>& dim);
+			Map() {}
+			Map(Ref(bool[]) data, const Vector2<int>& dim);
 
 			void UpdateMap(bool* new_data);
 
@@ -51,18 +52,6 @@ namespace Vivium {
 			bool IsWithinDim(const Vector2<int>& pos) const;
 
 			Map(const Map& other);
-
-			Map& operator=(const Map& other) {
-				m_Dim = other.m_Dim;
-
-				if (m_Data != nullptr) { delete[] m_Data; }
-				
-				m_Data = new bool[other.m_Dim.x * other.m_Dim.y];
-				
-				std::copy(other.m_Data, other.m_Data + other.m_Dim.x * other.m_Dim.y, m_Data);
-
-				return *this;
-			}
 
 			~Map();
 

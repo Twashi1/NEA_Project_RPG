@@ -689,6 +689,72 @@ namespace Game {
 		return tile_scale;
 	}
 
+	void World::m_UpdateObstacleMap()
+	{
+		Vivium::Vector2<int> player_tile = m_Player->quad->GetCenter() / World::PIXEL_SCALE;
+
+		// TODO: Really need a function/shorthand/preprocessor for this
+		Vivium::Vector2<int> frame = Vivium::Application::GetScreenDim() / (PIXEL_SCALE * 2.0f);
+
+		float reg_scale = Region::LENGTH;
+
+		int left = player_tile.x - frame.x;		int reg_left = std::floor(left / reg_scale) - OBSTACLE_MAP_REGION_PADDING;
+		int right = player_tile.x + frame.x;	int reg_right = std::floor(right / reg_scale) + OBSTACLE_MAP_REGION_PADDING;
+		int bottom = player_tile.y - frame.y;	int reg_bottom = std::floor(bottom / reg_scale) - OBSTACLE_MAP_REGION_PADDING;
+		int top = player_tile.y + frame.y;		int reg_top = std::floor(top / reg_scale) + OBSTACLE_MAP_REGION_PADDING;
+
+		Vivium::Vector2<int> dim(right - left, top - bottom);
+
+		// Create obstacle map data
+		Ref(bool[]) obstacle_data = std::make_shared_for_overwrite<bool[]>(dim.x * dim.y);
+		std::size_t obstacle_data_idx = 0;
+
+		// Fill with obstacles, unloaded areas will be defaulted to obstacles
+		for (std::size_t i = 0; i < dim.x * dim.y; i++) {
+			obstacle_data.get()[i] = true;
+		}
+
+		for (int reg_y = reg_bottom; reg_y <= reg_top; reg_y++) {
+			for (int reg_x = reg_left; reg_x <= reg_right; reg_x++) {
+				// Load the region
+				Vivium::Vector2<int> region_index(reg_x, reg_y);
+				Region& region = m_LoadRegion(region_index);
+
+				// Calculate offset which transforms from region relative coordinates to world coordinates
+				Vivium::Vector2<int> region_offset = region_index * Region::LENGTH;
+
+				// Iterate tiles in region
+				for (int rel_y = 0; rel_y < Region::LENGTH; rel_y++) {
+					int world_y = rel_y + region_offset.y;
+
+					// Check y position is within bounds of what we want to render
+					if (world_y >= bottom && world_y < top) {
+						for (int rel_x = 0; rel_x < Region::LENGTH; rel_x++) {
+							int world_x = rel_x + region_offset.x;
+
+							// Check x position is within bounds of what we want to render
+							if (world_x >= left && world_x < right) {
+								// Get tile from region, since we know both its x and y are within the obstacle map's bounds
+								Tile& tile = region.Index(rel_x, rel_y);
+
+								// If either foreground or background are physical: true, else false
+								obstacle_data.get()[obstacle_data_idx++] = Tile::GetIsPhysical(tile.foreground) || Tile::GetIsPhysical(tile.background);
+
+								if (obstacle_data_idx > dim.x * dim.y) {
+									LogError("Overrun buffer! {} >= {}", obstacle_data_idx, dim.x * dim.y);
+								}
+							}
+						}
+					}
+				}
+			}
+		}
+
+		// Update map
+		m_ObstacleMap = Vivium::Pathfinding::Map(obstacle_data, dim);
+		m_WorldToObstacleMapTransform = Vivium::Vector2<int>(-left, -bottom);
+	}
+
 	void World::Render(const Vivium::Vector2<int>& pos)
 	{
 		// TODO: some sort of registry system to auto-update these framebuffers
@@ -738,6 +804,8 @@ namespace Game {
 		}
 
 		m_WorldMap->GenerateFullMap(m_Player->quad->GetCenter(), *this);
+
+		m_UpdateObstacleMap();
 	}
 
 	std::string World::GetName() const

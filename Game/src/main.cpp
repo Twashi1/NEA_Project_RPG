@@ -18,9 +18,8 @@ int sandbox(void)
 
 #define XDIM 5
 #define YDIM 4
+#ifdef __fakfkafkakfakfk
 
-    //#define OLD
-#ifndef OLD
     bool* dat = new bool[XDIM * YDIM];
 
     for (int i = 0; i < XDIM * YDIM; i++) {
@@ -36,24 +35,6 @@ int sandbox(void)
 
     for (auto& node : path.GetNodes()) {
         LogTrace("Going to position: {}", node.pos);
-    }
-#else
-    Pathfinder::ObstacleMap_t map = Pathfinder::MakeObstaclePath(XDIM * YDIM);
-
-    for (int i = 0; i < XDIM * YDIM; i++) {
-        map[i] = false;
-    }
-
-    map[1 + 1 * XDIM] = true;
-    map[2 + 1 * XDIM] = true;
-    map[3 + 1 * XDIM] = true;
-
-    Pathfinder finder({ 1, 0 }, { 3, 3 }, { XDIM, YDIM }, map);
-
-    auto path = finder.Calculate();
-
-    for (auto& node : path) {
-        LogTrace("Going to node: {}", node.pos);
     }
 #endif
 
@@ -123,4 +104,6 @@ int game(void)
 
 int main(int argc, char** argv) {
     game();
+
+    LogTrace("Game finished");
 }

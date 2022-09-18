@@ -193,16 +193,15 @@ namespace Vivium {
 		: m_Data(std::move(data))
 	{}
 	
-	Pathfinding::Map::Map(bool* data, const Vector2<int>& dim)
-		: m_Dim(dim)
-	{
-		m_Data = new bool[m_Dim.x * m_Dim.y];
-		std::copy(data, data + m_Dim.x * m_Dim.y, m_Data);
-	}
+	Pathfinding::Map::Map(Ref(bool[]) data, const Vector2<int>& dim)
+		: m_Dim(dim), m_Data(data)
+	{}
 
 	void Pathfinding::Map::UpdateMap(bool* new_data)
 	{
-		std::copy(new_data, new_data + m_Dim.x * m_Dim.y, m_Data);
+		for (std::size_t i = 0; i < m_Dim.x * m_Dim.y; i++) {
+			m_Data.get()[i] = new_data[i];
+		}
 	}
 
 	Vector2<int> Pathfinding::Map::GetDim() const
@@ -223,7 +222,7 @@ namespace Vivium {
 	bool Pathfinding::Map::IsObstacle(const Vector2<int>& pos) const
 	{
 		if (IsWithinDim(pos)) {
-			return m_Data[pos.x + pos.y * m_Dim.x];
+			return m_Data.get()[pos.x + pos.y * m_Dim.x];
 		}
 
 		return true;
@@ -232,7 +231,7 @@ namespace Vivium {
 	bool Pathfinding::Map::IsWalkable(const Vector2<int>& pos) const
 	{
 		if (IsWithinDim(pos)) {
-			return !m_Data[pos.x + pos.y * m_Dim.x];
+			return !m_Data.get()[pos.x + pos.y * m_Dim.x];
 		}
 
 		return false;
@@ -244,16 +243,10 @@ namespace Vivium {
 	}
 
 	Pathfinding::Map::Map(const Map& other)
-		: m_Dim(other.m_Dim)
-	{
-		if (m_Data != nullptr) { delete[] m_Data; }
-
-		m_Data = new bool[other.m_Dim.x * other.m_Dim.y];
-
-		std::copy(other.m_Data, other.m_Data + other.m_Dim.x * other.m_Dim.y, m_Data);
-	}
+		: m_Dim(other.m_Dim), m_Data(other.m_Data)
+	{}
 	
-	Pathfinding::Map::~Map() { delete[] m_Data; }
+	Pathfinding::Map::~Map() {}
 
 	Pathfinding::Node::Node(const Vector2<int>& pos)
 		: pos(pos)
