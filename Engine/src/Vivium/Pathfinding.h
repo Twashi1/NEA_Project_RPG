@@ -7,9 +7,9 @@
 namespace Vivium {
 	// Ripped from
 	// https://dev.to/jansonsa/a-star-a-path-finding-c-4a4h
-	class Pathfinder {
+	class VIVIUM_API Pathfinder {
 	public:
-		struct Node {
+		struct VIVIUM_API Node {
 			Vector2<int> pos;
 			Vector2<int> parent_pos = INT_MAX;
 
@@ -49,6 +49,12 @@ namespace Vivium {
 		std::vector<Node> m_MakePath();
 
 	public:
+		template<typename... Args>
+		static inline auto MakeObstaclePath(Args&&... args) -> decltype(std::make_shared_for_overwrite<bool[]>(std::forward<Args>(args)...))
+		{
+			return std::make_shared_for_overwrite<bool[]>(std::forward<Args>(args)...);
+		}
+
 		Pathfinder(const Vector2<int>& start, const Vector2<int>& end, const Vector2<int>& map_dim, ObstacleMap_t map);
 
 		std::vector<Node> Calculate();

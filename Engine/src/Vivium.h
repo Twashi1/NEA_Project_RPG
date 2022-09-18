@@ -15,6 +15,7 @@
 #include "Vivium/Scene.h"
 #include "Vivium/Text.h"
 #include "Vivium/ParticleSystem.h"
+#include "Vivium/Pathfinding.h"
 
 // This is defined by Windows.h
 #undef VOID

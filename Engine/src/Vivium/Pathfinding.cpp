@@ -24,14 +24,16 @@ namespace Vivium {
 		std::vector<Node> useable_path;
 
 		Vector2<int> pos = m_End;
+		std::size_t pos_idx = pos.x + pos.y * m_Dim.x;
 
-		while (!(m_NodeMap[m_End.x + m_End.y * m_Dim.x].parent_pos == pos) && m_End != Vector2<int>(-1)) {
-			path.push_back(m_NodeMap[m_End.x + m_End.y * m_Dim.x]);
+		while (!(m_NodeMap[pos_idx].parent_pos == pos) && m_End != Vector2<int>(-1)) {
+			path.push_back(m_NodeMap[pos_idx]);
 
-			pos = m_NodeMap[m_End.x + m_End.y * m_Dim.x].parent_pos;
+			pos = m_NodeMap[pos_idx].parent_pos;
+			pos_idx = pos.x + pos.y * m_Dim.x;
 		}
 
-		path.push_back(m_NodeMap[m_End.x + m_End.y * m_Dim.x]);
+		path.push_back(m_NodeMap[pos_idx]);
 
 		// NOTE: reversing it?
 		while (!path.empty()) {
@@ -59,13 +61,13 @@ namespace Vivium {
 	}
 	
 	std::vector<Pathfinder::Node> Pathfinder::Calculate() {
-		if (!m_IsValidNode(m_End)) { return {}; }
-		{
-			if (m_Start == m_End) { return {}; }
-		}
+		if (!m_IsValidNode(m_End)) { LogTrace("End was not valid node"); return {}; }
+		if (m_Start == m_End) { LogTrace("Start was also end"); return {}; }
 
 		// All nodes that have already been checked
 		bool* closed = new bool[m_Dim.x * m_Dim.y];
+
+		std::fill(closed, closed + m_Dim.x * m_Dim.y, false);
 
 		// Create node map
 		std::vector<Node> open;
@@ -82,67 +84,96 @@ namespace Vivium {
 
 		bool destination_found = false;
 
-		while (!open.empty() && open.size() < m_Dim.x * m_Dim.y) {
-			Node node = m_NodeMap[0];
+		while ((!open.empty()) && (open.size() < m_Dim.x * m_Dim.y)) {
+			Node node;
 
-			while (m_IsValidNode(node.pos)) {
+			do {
 				float temp = FLT_MAX;
 
-				Node* closest_node;
-				std::size_t closest_index = INT_MAX;
+				std::vector<Node>::iterator closest_it;
 
-				for (std::size_t i = 0; i < open.size(); i++) {
-					Node& current_node = open[i];
+				for (std::vector<Node>::iterator it = open.begin(); it != open.end(); it = std::next(it)) {
+					Node& current = *it;
 
-					if (current_node.f_cost < temp) {
-						temp = current_node.f_cost;
-						closest_node = &current_node;
-						closest_index = i;
+					if (current.f_cost < temp) {
+						temp = current.f_cost;
+						closest_it = it;
 					}
 				}
 
-				node = *closest_node;
-				open.erase(open.begin() + closest_index);
-			}
+				// We've looked at this node
+				node = *closest_it;
+				open.erase(closest_it);
+			} while (!m_IsValidNode(node.pos));
 
-			closed[node.pos.x + node.pos.y * m_Dim.x] = true;
+			Vector2<int> pos = node.pos;
+			std::size_t idx = pos.x + pos.y * m_Dim.x;
+			closed[idx] = true;
 
 			for (int offx = -1; offx <= 1; offx++) {
 				for (int offy = -1; offy <= 1; offy++) {
+					// If we're checking one of the diagonals
+					if (std::abs(offx) == std::abs(offy) && offx != 0) {
+						// Check that no obstacles blocking diag path
+						/*
+						Going diagonal here is valid
+						00 \
+						00  \
+
+						Going diagonal here is **not** valid (take the long path around)
+						01 \
+						10  \
+						
+						Going diagonal here is also **not** valid
+						00 \	(instead takes this path) -¬
+						10  \							   ¦
+						*/
+						Vector2<int> loc_a = node.pos + Vector2<int>(offx, 0);
+						Vector2<int> loc_b = node.pos + Vector2<int>(0, offy);
+
+						// If either are obstacles
+						if (m_ObstacleMap[loc_a.x + loc_a.y * m_Dim.x] || m_ObstacleMap[loc_b.x + loc_b.y * m_Dim.x]) {
+							continue;
+						}
+					}
+
+					float gnew, hnew, fnew;
+
 					Vector2<int> off_vec(offx, offy);
 					Vector2<int> look_pos = node.pos + off_vec;
+					std::size_t look_idx = look_pos.x + look_pos.y * m_Dim.x;
 
 					if (m_IsValidNode(look_pos)) {
 						if (look_pos == m_End) {
 							destination_found = true;
-							m_NodeMap[look_pos.x + look_pos.y * m_Dim.x].parent_pos = node.pos;
+							m_NodeMap[look_idx].parent_pos = pos;
 
 							return m_MakePath();
 						}
-						else if (!closed[look_pos.x + look_pos.y * m_Dim.x]) {
-							float g_cost = node.g_cost + 1.0f;
-							float h_cost = Vector2<float>::Distance(look_pos, m_End);
-							float f_cost = g_cost + h_cost;
+						else if (!closed[look_idx]) {
+							gnew = node.g_cost + 1.0f;
+							hnew = Vector2<float>::Distance(look_pos, m_End);
+							fnew = gnew + hnew;
 
-							if (m_NodeMap[look_pos.x + look_pos.y * m_Dim.x].f_cost == FLT_MAX || m_NodeMap[look_pos.x + look_pos.y * m_Dim.x].f_cost > f_cost) {
-								Node& node_to_update = m_NodeMap[look_pos.x + look_pos.y * m_Dim.x];
-								node_to_update.g_cost = g_cost;
-								node_to_update.h_cost = h_cost;
-								node_to_update.f_cost = f_cost;
+							if (m_NodeMap[look_idx].f_cost == FLT_MAX || m_NodeMap[look_idx].f_cost > fnew) {
+								Node& node_to_update = m_NodeMap[look_idx];
+								node_to_update.g_cost = gnew;
+								node_to_update.h_cost = hnew;
+								node_to_update.f_cost = fnew;
 
-								node_to_update.parent_pos = node.pos;
+								node_to_update.parent_pos = pos;
 								open.push_back(node_to_update);
 							}
 						}
 					}
 				}
 			}
+		}
 
-			if (!destination_found) {
-				LogTrace("Couldn't find destination while pathfinding!");
+		if (!destination_found) {
+			LogTrace("Couldn't find destination while pathfinding!");
 
-				return {};
-			}
+			return {};
 		}
 
 		delete[] closed;

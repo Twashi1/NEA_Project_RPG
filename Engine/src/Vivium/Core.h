@@ -57,6 +57,13 @@
 	#define Ref(T) std::shared_ptr<T>
 	#define MakeRef(T, ...) std::make_shared<T>(__VA_ARGS__)
 	#define WeakRef(T) std::weak_ptr<T>
+
+	#define FunctionAlias(highLevelF, lowLevelF) \
+	template<typename... Args> \
+	inline auto highLevelF(Args&&... args) -> decltype(lowLevelF(std::forward<Args>(args)...)) \
+	{ \
+		return lowLevelF(std::forward<Args>(args)...); \
+	}
 #endif
 
 namespace Vivium {

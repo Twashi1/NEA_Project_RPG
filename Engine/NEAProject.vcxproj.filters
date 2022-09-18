@@ -112,7 +112,9 @@
     <ClCompile Include="src\Vivium\ParticleSystem.cpp">
       <Filter>Source</Filter>
     </ClCompile>
-    <ClCompile Include="src\Vivium\Pathfinding.cpp" />
+    <ClCompile Include="src\Vivium\Pathfinding.cpp">
+      <Filter>Source</Filter>
+    </ClCompile>
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="src\Vivium.h" />

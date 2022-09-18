@@ -16,35 +16,25 @@ int sandbox(void)
 
     Application::SetBGColor(RGBColor::BLUE);
 
-    auto obj1 = MakeRef(Vivium::Quad, 200.0f, 100.0f, 100.0f, 100.0f, 0.5f);
-    auto obj2 = MakeRef(Vivium::Quad, 800.0f, 200.0f, 100.0f, 100.0f);
+#define XDIM 5
+#define YDIM 4
 
-    Vivium::Shader color = Vivium::Shader("static_vertex", "color_frag"); color.SetUniform3f("u_Color", RGBColor::RED);
-    Vivium::Shader color2 = Vivium::Shader("static_vertex", "color_frag"); color.SetUniform3f("u_Color", RGBColor::GREEN);
+    Pathfinder::ObstacleMap_t map = Pathfinder::MakeObstaclePath(XDIM * YDIM);
 
-    auto obj1b = MakeRef(Vivium::Body, obj1, false, 1.0f, 8.0f);
-    auto obj2b = MakeRef(Vivium::Body, obj2, false, 1.0f, 2.0f);
+    for (int i = 0; i < XDIM * YDIM; i++) {
+        map[i] = false;
+    }
 
-    auto layer = Physics::CreateLayer(5, { 5 });
+    map[1 + 1 * XDIM] = true;
+    map[2 + 1 * XDIM] = true;
+    map[3 + 1 * XDIM] = true;
 
-    layer->bodies.push_back(obj1b);
-    layer->bodies.push_back(obj2b);
+    Pathfinder finder({ 1, 0 }, { 3, 3 }, { XDIM, YDIM }, map);
 
-    obj2b->vel.x = -100.0f;
-    obj1b->vel.x = 100.0f;
+    auto path = finder.Calculate();
 
-    while (Application::IsRunning()) {
-        Application::BeginFrame();
-
-        obj1b->Update();
-        obj2b->Update();
-
-        Physics::Update();
-
-        Renderer::Submit(obj1.get(), &color);
-        Renderer::Submit(obj2.get(), &color2);
-
-        Application::EndFrame();
+    for (auto& node : path) {
+        LogTrace("Going to node: {}", node.pos);
     }
 
     Application::Terminate();
@@ -112,5 +102,5 @@ int game(void)
 }
 
 int main(int argc, char** argv) {
-    game();
+    sandbox();
 }
