@@ -129,6 +129,21 @@ namespace Game {
 			);
 	}
 
+	const Vivium::Pathfinding::Map* World::GetObstacleMap() const
+	{
+		return &m_ObstacleMap;
+	}
+
+	Vivium::Vector2<int> World::GetObstacleMapIndex(const Vivium::Vector2<int>& pos) const
+	{
+		return pos + m_WorldToObstacleMapTransform;
+	}
+
+	bool World::GetIsObstacle(const Vivium::Vector2<int>& pos) const
+	{
+		return m_ObstacleMap.IsObstacle(GetObstacleMapIndex(pos));
+	}
+
 	std::string World::m_ToRegionName(const Vivium::Vector2<int>& index) const
 	{
 		return std::format("{}{}/region{}_{}{}", PATH, m_WorldName, index.x, index.y, FILE_EXTENSION);
@@ -697,17 +712,17 @@ namespace Game {
 		Vivium::Vector2<int> frame = Vivium::Application::GetScreenDim() / (PIXEL_SCALE * 2.0f);
 
 		float reg_scale = Region::LENGTH;
+		int padding = OBSTACLE_MAP_REGION_PADDING * Region::LENGTH;
 
-		int left = player_tile.x - frame.x;		int reg_left = std::floor(left / reg_scale) - OBSTACLE_MAP_REGION_PADDING;
-		int right = player_tile.x + frame.x;	int reg_right = std::floor(right / reg_scale) + OBSTACLE_MAP_REGION_PADDING;
-		int bottom = player_tile.y - frame.y;	int reg_bottom = std::floor(bottom / reg_scale) - OBSTACLE_MAP_REGION_PADDING;
-		int top = player_tile.y + frame.y;		int reg_top = std::floor(top / reg_scale) + OBSTACLE_MAP_REGION_PADDING;
+		int left = player_tile.x - frame.x - padding;	int reg_left = std::floor(left / reg_scale);
+		int right = player_tile.x + frame.x + padding;	int reg_right = std::floor(right / reg_scale);
+		int bottom = player_tile.y - frame.y - padding;	int reg_bottom = std::floor(bottom / reg_scale);
+		int top = player_tile.y + frame.y + padding;	int reg_top = std::floor(top / reg_scale);
 
 		Vivium::Vector2<int> dim(right - left, top - bottom);
 
 		// Create obstacle map data
 		Ref(bool[]) obstacle_data = std::make_shared_for_overwrite<bool[]>(dim.x * dim.y);
-		std::size_t obstacle_data_idx = 0;
 
 		// Fill with obstacles, unloaded areas will be defaulted to obstacles
 		for (std::size_t i = 0; i < dim.x * dim.y; i++) {
@@ -737,12 +752,12 @@ namespace Game {
 								// Get tile from region, since we know both its x and y are within the obstacle map's bounds
 								Tile& tile = region.Index(rel_x, rel_y);
 
-								// If either foreground or background are physical: true, else false
-								obstacle_data.get()[obstacle_data_idx++] = Tile::GetIsPhysical(tile.foreground) || Tile::GetIsPhysical(tile.background);
+								int obs_x = world_x - left;
+								int obs_y = world_y - bottom;
 
-								if (obstacle_data_idx > dim.x * dim.y) {
-									LogError("Overrun buffer! {} >= {}", obstacle_data_idx, dim.x * dim.y);
-								}
+								// If either foreground or background are physical: true, else false
+								// TODO: needs to be easier to make obstacle map
+								obstacle_data.get()[obs_x + obs_y * dim.x] = Tile::GetIsPhysical(tile.foreground) || Tile::GetIsPhysical(tile.background);
 							}
 						}
 					}
@@ -752,7 +767,7 @@ namespace Game {
 
 		// Update map
 		m_ObstacleMap = Vivium::Pathfinding::Map(obstacle_data, dim);
-		m_WorldToObstacleMapTransform = Vivium::Vector2<int>(-left, -bottom);
+		m_WorldToObstacleMapTransform = -Vivium::Vector2<int>(left, bottom);
 	}
 
 	void World::Render(const Vivium::Vector2<int>& pos)

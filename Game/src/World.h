@@ -50,7 +50,7 @@ namespace Game {
 
 		std::vector<Ref(Vivium::Body)> m_TileBodies;
 
-		static constexpr int OBSTACLE_MAP_REGION_PADDING = 2;
+		static constexpr int OBSTACLE_MAP_REGION_PADDING = 1;
 		Vivium::Vector2<int> m_WorldToObstacleMapTransform;
 		Vivium::Pathfinding::Map m_ObstacleMap;
 
@@ -107,6 +107,10 @@ namespace Game {
 		static Vivium::Vector2<int> GetRegionIndex(const Vivium::Vector2<int>& pos);
 		static Vivium::Vector2<int> GetRegionIndex(int x, int y);
 
+		const Vivium::Pathfinding::Map* GetObstacleMap() const;
+		Vivium::Vector2<int> GetObstacleMapIndex(const Vivium::Vector2<int>& pos) const;
+		bool GetIsObstacle(const Vivium::Vector2<int>& pos) const;
+
 		std::vector<FloorItem>* GetFloorItems(const Vivium::Vector2<int>& pos);
 		
 		void Render(const Vivium::Vector2<int>& pos);
@@ -115,7 +119,6 @@ namespace Game {
 		std::string GetName() const;
 
 		// Converts from screen coordinate to world position
-		// TODO: functions assumes no scale/rotation, use camera
 		Vivium::Vector2<int> GetWorldPos(const Vivium::Vector2<float>& pos) const;
 		Tile& GetTile(const Vivium::Vector2<int>& tile);
 		Tile& GetTile(int x, int y);
