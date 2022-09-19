@@ -26,6 +26,7 @@
     <ClCompile Include="src\LeafParticles.cpp" />
     <ClCompile Include="src\main.cpp" />
     <ClCompile Include="src\NPC.cpp" />
+    <ClCompile Include="src\PassiveEntity.cpp" />
     <ClCompile Include="src\Player.cpp" />
     <ClCompile Include="src\Recipe.cpp" />
     <ClCompile Include="src\Region.cpp" />

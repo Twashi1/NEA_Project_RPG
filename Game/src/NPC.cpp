@@ -3,7 +3,7 @@
 
 namespace Game {
 	const Vivium::Vector2<float> NPC::WANDER_RANGE_VARIATION = Vivium::Vector2<float>(0.5f, 1.0f);
-	const float NPC::PATHFINDING_EPSILON = World::PIXEL_SCALE / 10.0f; // 1/10th of a tile
+	const float NPC::PATHFINDING_EPSILON = 1.0f / 10.0f; // 1/10th of a tile
 
 	void NPC::m_Wander(World* world)
 	{
@@ -20,23 +20,16 @@ namespace Game {
 		// Scale
 		Vivium::Vector2<int> dest_tile_index = dest / World::PIXEL_SCALE;
 
-		//bool isValid = world->IsObstacle(dest_tile_index);
-		bool isValid = false;
+		bool isValid = !world->GetIsObstacle(dest_tile_index);
 
 		if (isValid) {
-			/*
 			Vivium::Vector2<int> rel_dest = world->GetObstacleMapIndex(dest_tile_index);
 			Vivium::Vector2<int> rel_start = world->GetObstacleMapIndex(pos / World::PIXEL_SCALE);
-			*/
 
-			Vivium::Vector2<int> rel_dest = 0;
-			Vivium::Vector2<int> rel_start = 0;
-
-			Vivium::Pathfinding::Path path;
-			//Vivium::Pathfinding::Path path = Vivium::Pathfinding::Calculate(rel_start, rel_dest, *world->GetObstacleMap());
+			Vivium::Pathfinding::Path path = Vivium::Pathfinding::Calculate(rel_start, rel_dest, *world->GetObstacleMap());
 
 			for (auto& pathing_pos : path.GetPositions()) {
-				m_PathfindingDestinations.push(pathing_pos * World::PIXEL_SCALE);
+				m_PathfindingDestinations.push(world->ObstacleMapToWorld(pathing_pos));
 			}
 		}
 	}
@@ -49,7 +42,7 @@ namespace Game {
 		else {
 			Vivium::Vector2<float> dest = m_PathfindingDestinations.front();
 			// Vector from position to destination
-			Vivium::Vector2<float> dir = Vivium::Vector2<float>::Normalise(dest - m_Body->quad->GetCenter());
+			Vivium::Vector2<float> dir = Vivium::Vector2<float>::Normalise(dest - (m_Body->quad->GetCenter() / World::PIXEL_SCALE));
 			// Set our velocity to travel in that direction
 			m_Body->vel = SPEED * dir;
 		}
@@ -59,20 +52,27 @@ namespace Game {
 		: m_Body(body)
 	{}
 
-	void NPC::UpdatePath(World* world)
+	void NPC::Update(World* world)
+	{
+		m_Body->Update();
+		m_UpdatePath(world);
+		m_UpdateDirection();
+	}
+
+	void NPC::m_UpdatePath(World* world)
 	{
 		// If no pathfinding destinations, wander
 		if (m_PathfindingDestinations.empty()) {
 			m_Wander(world);
 		}
+		else {
+			Vivium::Vector2<float> pos = m_Body->quad->GetCenter() / World::PIXEL_SCALE;
 
-		Vivium::Vector2<float> pos = m_Body->quad->GetCenter();
-
-		// If distance between pos and our destination is less than the PATHFINDING_EPSILON (if we're close enough to our dest)
-		if (Vivium::Vector2<float>::Distance(pos, m_PathfindingDestinations.front()) < PATHFINDING_EPSILON * PATHFINDING_EPSILON) {
-			m_PathfindingDestinations.pop();
+			// If distance between pos and our destination is less than the PATHFINDING_EPSILON (if we're close enough to our dest)
+			float dist = Vivium::Vector2<float>::Distance(pos, m_PathfindingDestinations.front());
+			if (dist < PATHFINDING_EPSILON) {
+				m_PathfindingDestinations.pop();
+			}
 		}
-
-		m_UpdateDirection();
 	}
 }

@@ -7,6 +7,7 @@
 #include "TerrainGenerator.h"
 #include "LeafParticles.h"
 #include "NPC.h"
+#include "PassiveEntity.h"
 
 // TODO: m_Player is property now, don't pass to functions
 
@@ -55,6 +56,8 @@ namespace Game {
 		Vivium::Pathfinding::Map m_ObstacleMap;
 
 		irrklang::ISoundSource* m_BlockBreakingSound;
+
+		std::vector<Ref(NPC)> m_NPCs;
 
 		std::string m_ToRegionName(const Vivium::Vector2<int>& index) const;
 
@@ -109,6 +112,7 @@ namespace Game {
 
 		const Vivium::Pathfinding::Map* GetObstacleMap() const;
 		Vivium::Vector2<int> GetObstacleMapIndex(const Vivium::Vector2<int>& pos) const;
+		Vivium::Vector2<int> ObstacleMapToWorld(const Vivium::Vector2<int>& pos) const;
 		bool GetIsObstacle(const Vivium::Vector2<int>& pos) const;
 
 		std::vector<FloorItem>* GetFloorItems(const Vivium::Vector2<int>& pos);

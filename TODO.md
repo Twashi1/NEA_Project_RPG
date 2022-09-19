@@ -43,7 +43,7 @@
 - [ ] GUI objects should not be responsible for the rendering methods, only giving the correct position data for the object
 
 ## General
-- [ ] Pathfinding
+- [x] Pathfinding
 - [ ] Ambient particles/Particle system
 - [ ] Sound API
     - [x] Sound library
@@ -100,14 +100,17 @@
     - [x] Recipes system
         - [x] Speed up by precomputing some values in Inventory (item counts)
     - [x] Crafting UI
-- [ ] Complex movement
-     - [ ] Double tap to dash
+- [ ] Double tap to dash
 - [ ] Inventory
     - [x] Hotbar
     - [ ] Some sort of "pending item changes"
     - [ ] Keyboard shortcuts
     - [x] Selected item slot
     - [ ] Sync up better with crafting inventory?
+
+## NPCs
+- [ ] Thinking time between wanders
+- [ ] Home/tether range for passive entities
 
 ## Enemies
 - [ ] Enemy AI

@@ -15,6 +15,7 @@ namespace Vivium {
 		virtual void m_InvokeCollisionCallback();
 
 	public:
+		// TODO: callback should take both bodies which are colliding
 		typedef void (*CallbackFunc_t)(Body*, void*); // Collision callback function shorthand
 
 		// TODO: user params is weird, maybe something general for a callback function
