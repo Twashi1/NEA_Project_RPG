@@ -26,6 +26,8 @@ namespace Vivium {
 		double GetElapsed();
 		// Start calculating elapsed time
 		void Start();
+		// Stop calculating elapsed time/reset timer
+		void Reset();
 	};
 
 	// NOTE: made this for things that should display temporarily, but i probably won't use it after all

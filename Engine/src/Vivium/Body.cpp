@@ -108,4 +108,36 @@ namespace Vivium {
 		// Calculate future position and return
 		return quad->GetCenter() + (next_vel * dt);
 	}
+
+	void Body::Write(Serialiser& s) const
+	{
+		s.Write(*quad);
+		s.Write(isImmovable);
+		s.Write(restitution);
+		s.Write(mass);
+		s.Write(vel);
+		s.Write(acc);
+		s.Write(angular_vel);
+		s.Write(angular_acc);
+		s.Write(isPhysical);
+
+		// TODO: collision callback can't be serialised, as well as user params
+	}
+
+	void Body::Read(Serialiser& s)
+	{
+		if (quad == nullptr) {
+			quad = MakeRef(Quad);
+		}
+
+		s.Read(quad.get());
+		s.Read(&isImmovable);
+		s.Read(&restitution);
+		s.Read(&mass);
+		s.Read(&vel);
+		s.Read(&acc);
+		s.Read(&angular_vel);
+		s.Read(&angular_acc);
+		s.Read(&isPhysical);
+	}
 }

@@ -37,7 +37,7 @@ namespace Game {
 	void NPC::m_UpdateDirection()
 	{
 		if (m_PathfindingDestinations.empty()) {
-			m_Body->vel = 0.0f;
+			m_Body->vel = 0.0f; // Stop moving
 		}
 		else {
 			Vivium::Vector2<float> dest = m_PathfindingDestinations.front();
@@ -50,7 +50,28 @@ namespace Game {
 
 	NPC::NPC(Ref(Vivium::Body) body)
 		: m_Body(body)
-	{}
+	{
+		m_HomeLocation = m_Body->quad->GetCenter();
+	}
+
+	NPC::EntityType NPC::GetEntityType() const
+	{
+		return EntityType::NPC;
+	}
+
+	bool NPC::IsPassive() const { return true; }
+
+	bool NPC::IsSame(const Ref(NPC) a, const Ref(NPC) b)
+	{
+		return a->GetEntityType() == b->GetEntityType();
+	}
+
+	bool NPC::IsValidSpawn(const Vivium::Vector2<int>& pos, World* world)
+	{
+		bool isObstacle = world->GetIsObstacle(pos);
+
+		return isObstacle;
+	}
 
 	void NPC::Update(World* world)
 	{
@@ -61,9 +82,21 @@ namespace Game {
 
 	void NPC::m_UpdatePath(World* world)
 	{
-		// If no pathfinding destinations, wander
+		// If no pathfinding destinations
 		if (m_PathfindingDestinations.empty()) {
-			m_Wander(world);
+			// If we've been thinking for long enough
+			if (m_BeenThinkingFor > THINKING_TIME) {
+				// Generate a direction to wander in
+				m_Wander(world);
+
+				// If we didn't successfully find a path, force to wait for 1 second before searching for a new one
+				if (m_PathfindingDestinations.empty()) {
+					m_BeenThinkingFor -= SEARCH_FREQUENCY;
+				}
+			}
+			else {
+				m_BeenThinkingFor += m_BeenThinkingForTimer.GetElapsed();
+			}
 		}
 		else {
 			Vivium::Vector2<float> pos = m_Body->quad->GetCenter() / World::PIXEL_SCALE;
@@ -72,6 +105,12 @@ namespace Game {
 			float dist = Vivium::Vector2<float>::Distance(pos, m_PathfindingDestinations.front());
 			if (dist < PATHFINDING_EPSILON) {
 				m_PathfindingDestinations.pop();
+
+				// Ensures when we get to the last location in our pathfinding destinations list, we start the timer, and reset thinking time
+				if (m_PathfindingDestinations.empty()) {
+					m_BeenThinkingForTimer.Start();
+					m_BeenThinkingFor = 0.0f;
+				}
 			}
 		}
 	}

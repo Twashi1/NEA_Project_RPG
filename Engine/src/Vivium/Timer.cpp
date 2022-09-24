@@ -14,6 +14,11 @@ namespace Vivium {
 		m_Time = GetTime();
 	}
 
+	void Timer::Reset()
+	{
+		m_Time = GetTime();
+	}
+
 	std::string Timer::GetTimeString()
 	{
 		return std::format("{:%H:%M:%OS}", std::chrono::system_clock::now());

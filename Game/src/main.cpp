@@ -16,28 +16,6 @@ int sandbox(void)
 
     Application::SetBGColor(RGBColor::BLUE);
 
-#define XDIM 5
-#define YDIM 4
-#ifdef __fakfkafkakfakfk
-
-    bool* dat = new bool[XDIM * YDIM];
-
-    for (int i = 0; i < XDIM * YDIM; i++) {
-        dat[i] = false;
-    }
-
-    dat[1 + 1 * XDIM] = true;
-    dat[2 + 1 * XDIM] = true;
-    dat[3 + 1 * XDIM] = true;
-
-    Pathfinding::Map map(dat, {XDIM, YDIM});
-    auto path = Pathfinding::Calculate({ 1, 0 }, { 3, 3 }, map);
-
-    for (auto& node : path.GetNodes()) {
-        LogTrace("Going to position: {}", node.pos);
-    }
-#endif
-
     Application::Terminate();
 
     return EXIT_SUCCESS;
@@ -78,8 +56,6 @@ int game(void)
 
         // Update title screen
         main_menu.Update();
-
-        Physics::Update();
 
         // Draw calls
         main_menu.Render();

@@ -144,18 +144,6 @@ namespace Game {
 		return *this;
 	}
 
-	void Item::Write(Vivium::Serialiser& s) const
-	{
-		s.Write((uint16_t)id);
-		s.Write(count);
-	}
-
-	void Item::Read(Vivium::Serialiser& s)
-	{
-		s.Read((uint16_t*)&id);
-		s.Read(&count);
-	}
-
 	Vivium::Shader* FloorItem::floor_shader = nullptr;
 
 	void FloorItem::Init()

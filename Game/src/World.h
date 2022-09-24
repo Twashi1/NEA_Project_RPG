@@ -57,8 +57,6 @@ namespace Game {
 
 		irrklang::ISoundSource* m_BlockBreakingSound;
 
-		std::vector<Ref(NPC)> m_NPCs;
-
 		std::string m_ToRegionName(const Vivium::Vector2<int>& index) const;
 
 		void m_SaveWorld();
@@ -114,6 +112,8 @@ namespace Game {
 		Vivium::Vector2<int> GetObstacleMapIndex(const Vivium::Vector2<int>& pos) const;
 		Vivium::Vector2<int> ObstacleMapToWorld(const Vivium::Vector2<int>& pos) const;
 		bool GetIsObstacle(const Vivium::Vector2<int>& pos) const;
+
+		// TODO: GetLoadedNPCs
 
 		std::vector<FloorItem>* GetFloorItems(const Vivium::Vector2<int>& pos);
 		

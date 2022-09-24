@@ -100,12 +100,6 @@ namespace Game {
 
 		m_BlockBreakingSound = Vivium::Application::sound_engine->addSoundSourceFromFile((Vivium::Application::resources_path + "sounds/breaking_block.wav").c_str(), irrklang::ESM_AUTO_DETECT, true);
 
-		// TMP: Spawn some pigs around player
-		for (int i = 0; i < 1; i++) {
-			Ref(NPC) new_npc = MakeRef(Pig, Vivium::Vector2<float>(64.0f, 64.0f));
-			m_NPCs.push_back(new_npc);
-		}
-
 		m_UpdateTimer.Start();
 	}
 
@@ -797,9 +791,7 @@ namespace Game {
 		m_LeafBlockBreaking.Render();
 		m_LeafWind.Render();
 
-		for (auto& npc : m_NPCs) {
-			npc->Render();
-		}
+		// TODO: rendering npcs
 
 		m_DaylightFramebuffer->Unbind();
 
@@ -838,9 +830,7 @@ namespace Game {
 
 		m_UpdateObstacleMap();
 
-		for (auto& npc : m_NPCs) {
-			npc->Update(this);
-		}
+		// TODO: updating npcs
 	}
 
 	std::string World::GetName() const

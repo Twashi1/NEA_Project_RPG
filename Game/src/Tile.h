@@ -3,7 +3,7 @@
 #include "Item.h"
 
 namespace Game {
-	class Tile {
+	class Tile : public Vivium::StreamablePOD {
 	public:
 		static constexpr float SPRITE_SIZE = 16.0f;
 

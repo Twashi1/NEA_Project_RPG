@@ -3,7 +3,7 @@
 #include "TextureManager.h"
 
 namespace Game {
-	class Item : Vivium::Streamable {
+	class Item : Vivium::StreamablePOD {
 	public:
 		enum class ID : uint16_t {
 			VOID,
@@ -87,9 +87,6 @@ namespace Game {
 		Item(const Item::ID& id, const uint16_t& count);
 
 		Item& operator=(const Item& other);
-
-		void Write(Vivium::Serialiser& s) const override;
-		void Read(Vivium::Serialiser& s) override;
 
 		friend std::ostream& operator<<(std::ostream& os, const Item::ID& id) {
 			os << Item::GetName(id);

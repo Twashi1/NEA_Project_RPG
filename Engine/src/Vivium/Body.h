@@ -7,7 +7,7 @@
 namespace Vivium {
 	class Physics;
 
-	struct VIVIUM_API Body {
+	struct VIVIUM_API Body : public Streamable {
 	private:
 		Timer m_Timer;
 
@@ -58,6 +58,9 @@ namespace Vivium {
 				&& a.restitution == b.restitution
 				&& a.angular_vel == b.angular_vel && a.angular_acc == b.angular_acc;
 		}
+
+		virtual void Write(Serialiser& s) const override;
+		virtual void Read(Serialiser& s) override;
 
 		friend Physics;
 	};
