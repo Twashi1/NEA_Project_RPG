@@ -27,6 +27,7 @@
     <ClCompile Include="src\Vivium\Camera.cpp" />
     <ClCompile Include="src\Vivium\Color.cpp" />
     <ClCompile Include="src\Vivium\Core.cpp" />
+    <ClCompile Include="src\Vivium\Events.cpp" />
     <ClCompile Include="src\Vivium\Font.cpp" />
     <ClCompile Include="src\Vivium\Framebuffer.cpp" />
     <ClCompile Include="src\Vivium\IndexBuffer.cpp" />
@@ -68,6 +69,7 @@
     <ClInclude Include="src\Vivium\Camera.h" />
     <ClInclude Include="src\Vivium\Color.h" />
     <ClInclude Include="src\Vivium\Core.h" />
+    <ClInclude Include="src\Vivium\Events.h" />
     <ClInclude Include="src\Vivium\Font.h" />
     <ClInclude Include="src\Vivium\Framebuffer.h" />
     <ClInclude Include="src\Vivium\IndexBuffer.h" />

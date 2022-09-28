@@ -15,11 +15,11 @@ namespace Vivium {
 	public:
 		struct VIVIUM_API Data {
 			std::vector<float> frame_timings; // Holds values for minimum time to be spent on each frame before displaying the next
-			int start_index = 0;			  // Index in texture atlas where we're meant to start the animation
-			int frame_count;				  // Amount of sprites there are in the animation
+			std::vector<int> frame_indices;   // Indices of sprites in texture atlas
+			std::size_t frame_count = 0;
 
 			Data(const std::vector<float>& frame_timings);
-			Data(const std::string& animation_data_file);
+			Data(const std::string& animation_data_file, const Vector2<int>& atlas_dim = NULL);
 		};
 	private:
 		Animation::Data m_AnimationData;

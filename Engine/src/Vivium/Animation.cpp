@@ -4,20 +4,22 @@ namespace Vivium {
 
 	Animation::Data::Data(const std::vector<float>& frame_timings)
 	{
+		int sprite_index = 0;
+
 		// Iterate timing data passed
 		for (float frame_time : frame_timings) {
 			// If its a valid time value
 			if (frame_time > 0.0) {
 				this->frame_timings.push_back(frame_time);
+				++frame_count;
+				frame_indices.push_back(sprite_index);
 			}
-			// Otherwise increment starting index (since values of 0 indicate a sprite is not included in the animation)
-			else {
-				start_index++;
-			}
+
+			++sprite_index;
 		}
 	}
 
-	Animation::Data::Data(const std::string& animation_data_file)
+	Animation::Data::Data(const std::string& animation_data_file, const Vector2<int>& atlas_dim)
 	{
 		// Load text
 		std::string* filetext = Utils::ReadFile(Texture::PATH + animation_data_file + Animation::FILE_EXTENSION);
@@ -26,15 +28,47 @@ namespace Vivium {
 		std::vector<std::string> parts = Utils::SplitString(*filetext, ",");
 
 		int loop_start = 0;
+		int sprite_index = 0;
+		bool indices_list = false;
 
 		// Check if the first part of the data is a #n, indicating to skip n sprites forward
 		if (parts[0][0] == '#') {
 			// Erase first character (which is #)
 			parts[0].erase(parts[0].begin());
 			// Set our starting index to that value
-			start_index = std::stoi(parts[0]);
+			sprite_index = std::stoi(parts[0]);
 			// Start at next index since the first isn't a float value
 			loop_start = 1;
+		}
+
+		// Indicating we are entering a list of indices
+		if (parts[0][0] == '{') {
+			indices_list = true;
+			
+			LogTrace("Detected indices list");
+			
+			// TODO: So unreadable
+			for (int i = 0; i < parts.size(); i += 2) {
+				std::string index_str = parts[i] + "," + parts[i + 1];
+				// TODO: use regex next time
+				Utils::EraseSubstring(index_str, "{");
+				Utils::EraseSubstring(index_str, "}\n");
+
+				if (index_str[0] != '(') break;
+
+				Utils::EraseSubstring(index_str, "(");
+				Utils::EraseSubstring(index_str, ")");
+				
+				std::vector<std::string> index_split = Utils::SplitString(index_str, ",");
+				int x_index = std::stoi(index_split[0]);
+				int y_index = std::stoi(index_split[1]);
+				int index_1d = x_index + y_index * atlas_dim.x;
+
+				frame_indices.push_back(index_1d);
+			}
+
+			frame_count = frame_indices.size();
+			loop_start = frame_indices.size() * 2;
 		}
 
 		// Iterate over each string
@@ -56,14 +90,12 @@ namespace Vivium {
 			// If value is more than 0, add the timing to our timings
 			if (value > 0.0) {
 				frame_timings.push_back(value);
+				++frame_count;
+				if (!indices_list) { frame_indices.push_back(sprite_index); }
 			}
-			// Otherwise increase the starting index
-			else {
-				start_index++;
-			}
+			
+			++sprite_index;
 		}
-
-		frame_count = frame_timings.size();
 
 		delete filetext;
 	}
@@ -93,15 +125,12 @@ namespace Vivium {
 		// If we have spent enough time on this frame
 		if (m_FrameTime > this_frame_timing) {
 			// Increment frame counter
-			m_FrameIndex++;
-			// If frame counter is more than amount of key frames, roll over
-			if (m_FrameIndex >= m_AnimationData.frame_count) {
-				m_FrameIndex = m_AnimationData.frame_count % m_FrameIndex;
-			}
+			++m_FrameIndex;
+			m_FrameIndex %= m_AnimationData.frame_count;
 			// Reset current frame time
 			m_FrameTime -= this_frame_timing;
 			// Change texture coordinates
-			m_Atlas->Set(quad.get(), m_FrameIndex);
+			m_Atlas->Set(quad.get(), m_AnimationData.frame_indices[m_FrameIndex]);
 		}
 	}
 }

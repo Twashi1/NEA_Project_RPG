@@ -6,6 +6,7 @@
 #include "Text.h"
 #include "TextInput.h"
 #include "Button.h"
+#include "Events.h"
 
 namespace Vivium {
     Timer Application::m_Timer = Timer();
@@ -70,6 +71,9 @@ namespace Vivium {
         Renderer::m_BeginScene(Renderer::PHYSICS_DEBUG_SCENE);
         Physics::Update();
         Renderer::EndScene();
+
+        // Update vivium events system
+        EventSystem::m_Update();
 
         // Poll and process events
         glfwPollEvents();

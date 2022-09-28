@@ -1,6 +1,7 @@
 # Engine (Vivium)
 ## General
-- [ ] Event handler https://stackoverflow.com/questions/9711414/what-is-the-proper-way-of-doing-event-handling-in-c
+- [x] Event handler https://stackoverflow.com/questions/9711414/what-is-the-proper-way-of-doing-event-handling-in-c
+    - [ ] Prefer event handler to callback functions
 - [ ] Update and Render methods could have a virtual behind them, also splitting them is inconvenient for a lot of classes 
 
 ## Application

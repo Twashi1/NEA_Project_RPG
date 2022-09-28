@@ -12,6 +12,8 @@ namespace Game {
 			RUBY_PICKAXE,
 			SAPPHIRE_PICKAXE,
 			TOPAZ_PICKAXE,
+			AMETHYST_SWORD,
+			EMERALD_WAND,
 			MAX
 		};
 

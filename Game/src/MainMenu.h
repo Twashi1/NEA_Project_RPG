@@ -29,7 +29,6 @@ namespace Game {
 		virtual void Update() override;
 	};
 
-	// TODO
 	class CreateWorldScene : public Vivium::IScene {
 	private:
 		Ref(Vivium::TextInput) m_NameInputBox;

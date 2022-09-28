@@ -55,6 +55,7 @@ namespace Game {
         }
 
         body->acc -= body->vel * FRICTION;
+        // TODO: body->Update() instead?
         body->vel = body->vel + (body->acc * elapsed);
     }
 

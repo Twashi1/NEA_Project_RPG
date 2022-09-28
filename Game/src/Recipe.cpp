@@ -6,7 +6,9 @@ namespace Game {
 		Recipe({{Item::ID::EMERALD_CRYSTAL, 3},		{Item::ID::LOG, 2}}, {{Item::ID::EMERALD_PICKAXE, 1}}	), // EMERALD_PICKAXE
 		Recipe({{Item::ID::RUBY_CRYSTAL, 3},		{Item::ID::LOG, 2}}, {{Item::ID::RUBY_PICKAXE, 1}}		), // RUBY_PICKAXE
 		Recipe({{Item::ID::SAPPHIRE_CRYSTAL, 3},	{Item::ID::LOG, 2}}, {{Item::ID::SAPPHIRE_PICKAXE, 1}}	), // SAPPHIRE_PICKAXE
-		Recipe({{Item::ID::TOPAZ_CRYSTAL, 3},		{Item::ID::LOG, 2}}, {{Item::ID::TOPAZ_PICKAXE, 1}}		)  // TOPAZ_PICKAXE
+		Recipe({{Item::ID::TOPAZ_CRYSTAL, 3},		{Item::ID::LOG, 2}}, {{Item::ID::TOPAZ_PICKAXE, 1}}		), // TOPAZ_PICKAXE
+		Recipe({{Item::ID::AMETHYST_CRYSTAL, 3},	{Item::ID::LOG, 2}}, {{Item::ID::AMETHYST_SWORD, 1}}	), // AMETHYST_SWORD
+		Recipe({{Item::ID::EMERALD_CRYSTAL, 3},		{Item::ID::LOG, 2}}, {{Item::ID::EMERALD_WAND, 1}}		)  // EMERALD_WAND
 	};
 
 	Recipe::Recipe(const std::initializer_list<Item>& ingredients, const std::initializer_list<Item>& results)

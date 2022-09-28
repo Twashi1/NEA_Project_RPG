@@ -19,6 +19,17 @@ namespace Game {
 			RUBY_PICKAXE,
 			SAPPHIRE_PICKAXE,
 			TOPAZ_PICKAXE,
+			/* Swords */
+			AMETHYST_SWORD,
+			EMERALD_SWORD,
+			RUBY_SWORD,
+			SAPPHIRE_SWORD,
+			TOPAZ_SWORD,
+			/* Wands */
+			EMERALD_WAND,
+			RUBY_WAND,
+			SAPPHIRE_WAND,
+			TOPAZ_WAND,
 			/* Misc */
 			LOG,
 			BERRIES,

@@ -38,6 +38,7 @@ namespace Vivium {
 		static void m_Init();
 
 	public:
+		// TODO: private?
 		// Resolve collisions (ONLY! Doesn't update bodies for you)
 		static void Update();
 

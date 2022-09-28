@@ -15,6 +15,15 @@ namespace Game {
 		Item::Properties("Ruby Pickaxe",		false,	false,	{10, 2}),
 		Item::Properties("Sapphire Pickaxe",	false,	false,	{11, 2}),
 		Item::Properties("Topaz Pickaxe",		false,	false,	{12, 2}),
+		Item::Properties("Amethyst Sword",		false,	false,	{8,  3}),
+		Item::Properties("Emerald Sword",		false,	false,	{9,  3}),
+		Item::Properties("Ruby Sword",			false,	false,	{10, 3}),
+		Item::Properties("Sapphire Sword",		false,	false,	{11, 3}),
+		Item::Properties("Topaz Sword",			false,	false,	{12, 3}),
+		Item::Properties("Emerald Wand",		false,	false,	{9,  4}),
+		Item::Properties("Ruby Wand",			false,	false,	{10, 4}),
+		Item::Properties("Sapphire Wand",		false,	false,	{11, 4}),
+		Item::Properties("Topaz Wand",			false,	false,	{12, 4}),
 		Item::Properties("Log", 				true,	true,	{3, 2}),
 		Item::Properties("Berries",				true,	false,	{7, 1})
 	};
