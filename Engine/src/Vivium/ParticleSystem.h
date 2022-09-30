@@ -7,6 +7,10 @@
 
 namespace Vivium {
 	struct VIVIUM_API Particle {
+	protected:
+		virtual void m_UpdateMotion(const Vector2<float>& accel);
+		virtual void m_Update(const Vector2<float>& accel);
+
 	public:
 		Vector2<float> position = 0.0f;
 		Vector2<float> velocity = 0.0f;

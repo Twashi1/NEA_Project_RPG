@@ -126,7 +126,7 @@ namespace Game {
 				Recipe recipe = Recipe::GetRecipe(recipe_id);
 				Item first_item = recipe.results.at(0);
 				
-				std::array<float, 8> coords = TextureManager::game_atlas->GetCoordsArray(Item::GetAltasIndex(first_item.id));
+				std::array<float, 8> coords = TextureManager::game_atlas->GetCoordsArray(Item::GetAtlasIndex(first_item.id));
 
 				item_batch.Submit(draw_pos, s_SlotSize * s_ItemScale, coords[0], coords[2], coords[1], coords[5], &alpha, 1U);
 			}

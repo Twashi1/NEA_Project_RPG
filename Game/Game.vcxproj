@@ -21,6 +21,7 @@
   <ItemGroup>
     <ClCompile Include="src\Biome.cpp" />
     <ClCompile Include="src\CraftingInventory.cpp" />
+    <ClCompile Include="src\Equipable.cpp" />
     <ClCompile Include="src\Inventory.cpp" />
     <ClCompile Include="src\Item.cpp" />
     <ClCompile Include="src\LeafParticles.cpp" />
@@ -60,6 +61,7 @@
     <ClInclude Include="src\TextureManager.h" />
     <ClInclude Include="src\Tile.h" />
     <ClInclude Include="src\MainMenu.h" />
+    <ClInclude Include="src\Equipable.h" />
     <ClInclude Include="src\World.h" />
     <ClInclude Include="src\WorldMap.h" />
   </ItemGroup>

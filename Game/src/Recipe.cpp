@@ -3,12 +3,20 @@
 namespace Game {
 	const std::array<Recipe, (uint16_t)Recipe::ID::MAX> Recipe::m_Recipes = {
 		Recipe({{Item::ID::AMETHYST_CRYSTAL, 3},	{Item::ID::LOG, 2}}, {{Item::ID::AMETHYST_PICKAXE, 1}}	), // AMETHYST_PICKAXE
-		Recipe({{Item::ID::EMERALD_CRYSTAL, 3},		{Item::ID::LOG, 2}}, {{Item::ID::EMERALD_PICKAXE, 1}}	), // EMERALD_PICKAXE
-		Recipe({{Item::ID::RUBY_CRYSTAL, 3},		{Item::ID::LOG, 2}}, {{Item::ID::RUBY_PICKAXE, 1}}		), // RUBY_PICKAXE
+		Recipe({{Item::ID::EMERALD_CRYSTAL,  3},	{Item::ID::LOG, 2}}, {{Item::ID::EMERALD_PICKAXE, 1}}	), // EMERALD_PICKAXE
+		Recipe({{Item::ID::RUBY_CRYSTAL,     3},	{Item::ID::LOG, 2}}, {{Item::ID::RUBY_PICKAXE, 1}}		), // RUBY_PICKAXE
 		Recipe({{Item::ID::SAPPHIRE_CRYSTAL, 3},	{Item::ID::LOG, 2}}, {{Item::ID::SAPPHIRE_PICKAXE, 1}}	), // SAPPHIRE_PICKAXE
-		Recipe({{Item::ID::TOPAZ_CRYSTAL, 3},		{Item::ID::LOG, 2}}, {{Item::ID::TOPAZ_PICKAXE, 1}}		), // TOPAZ_PICKAXE
+		Recipe({{Item::ID::TOPAZ_CRYSTAL,    3},	{Item::ID::LOG, 2}}, {{Item::ID::TOPAZ_PICKAXE, 1}}		), // TOPAZ_PICKAXE
 		Recipe({{Item::ID::AMETHYST_CRYSTAL, 3},	{Item::ID::LOG, 2}}, {{Item::ID::AMETHYST_SWORD, 1}}	), // AMETHYST_SWORD
-		Recipe({{Item::ID::EMERALD_CRYSTAL, 3},		{Item::ID::LOG, 2}}, {{Item::ID::EMERALD_WAND, 1}}		)  // EMERALD_WAND
+		Recipe({{Item::ID::EMERALD_CRYSTAL,  3},	{Item::ID::LOG, 2}}, {{Item::ID::EMERALD_SWORD, 1}}		), // EMERALD_SWORD
+		Recipe({{Item::ID::RUBY_CRYSTAL,     3},	{Item::ID::LOG, 2}}, {{Item::ID::RUBY_SWORD, 1}}		), // RUBY_SWORD
+		Recipe({{Item::ID::SAPPHIRE_CRYSTAL, 3},	{Item::ID::LOG, 2}}, {{Item::ID::SAPPHIRE_SWORD, 1}}	), // SAPPHIRE_SWORD
+		Recipe({{Item::ID::TOPAZ_CRYSTAL,    3},	{Item::ID::LOG, 2}}, {{Item::ID::TOPAZ_SWORD, 1}}		), // TOPAZ_SWORD
+		Recipe({{Item::ID::AMETHYST_CRYSTAL, 3},	{Item::ID::LOG, 2}}, {{Item::ID::AMETHYST_WAND, 1}}		), // AMETHYST_WAND
+		Recipe({{Item::ID::EMERALD_CRYSTAL,  3},	{Item::ID::LOG, 2}}, {{Item::ID::EMERALD_WAND, 1}}		), // EMERALD_WAND
+		Recipe({{Item::ID::RUBY_CRYSTAL,     3},	{Item::ID::LOG, 2}}, {{Item::ID::RUBY_WAND, 1}}			), // RUBY_WAND
+		Recipe({{Item::ID::SAPPHIRE_CRYSTAL, 3},	{Item::ID::LOG, 2}}, {{Item::ID::SAPPHIRE_WAND, 1}}		), // SAPPHIRE_WAND
+		Recipe({{Item::ID::TOPAZ_CRYSTAL,    3},	{Item::ID::LOG, 2}}, {{Item::ID::TOPAZ_WAND, 1}}		)  // TOPAZ_WAND
 	};
 
 	Recipe::Recipe(const std::initializer_list<Item>& ingredients, const std::initializer_list<Item>& results)

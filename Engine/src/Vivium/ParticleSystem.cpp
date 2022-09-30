@@ -54,16 +54,26 @@ namespace Vivium {
 		return lifespan > time_alive;
 	}
 
+	void Particle::m_UpdateMotion(const Vector2<float>& accel)
+	{
+		float elapsed = timer.GetElapsed();
+
+		velocity += accel * elapsed;
+		position += velocity * elapsed;
+		angle += angular_velocity * elapsed;
+
+		time_alive += elapsed;
+	}
+
+	void Particle::m_Update(const Vector2<float>& accel)
+	{
+	}
+
 	void Particle::Update(const Vector2<float>& accel)
 	{
 		if (IsAlive()) {
-			float elapsed = timer.GetElapsed();
-
-			velocity += accel * elapsed;
-			position += velocity * elapsed;
-			angle += angular_velocity * elapsed;
-
-			time_alive += elapsed;
+			m_UpdateMotion(accel);
+			m_Update(accel);
 		}
 	}
 

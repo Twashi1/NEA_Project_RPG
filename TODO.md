@@ -27,6 +27,7 @@
 - [x] Color type
 - [ ] Rendering API for entities
     - [ ] Add a tag to an entity, and given the entity has the requires components for the tag, it will render that entity on the next Renderer::Update() call
+- [ ] Default shaders accessible through an enum or something similar
 
 ## GUI
 - [x] Buttons
@@ -108,9 +109,14 @@
     - [ ] Keyboard shortcuts
     - [x] Selected item slot
     - [ ] Sync up better with crafting inventory?
+- [ ] Weapons
+    - [x] Weapon rendering
+    - [x] Weapons fire projectiles
+    - [ ] Weapons damage enemies
+- [ ] Spell system? Buff system? maybe this is useless but i really wanna use those magic circle sprites
 
 ## NPCs
-- [ ] Thinking time between wanders
+- [x] Thinking time between wanders
 - [ ] Home/tether range for passive entities
 
 ## Enemies
@@ -135,6 +141,8 @@
 - Inconsistent data layout between GUI objects
 - docs docs docs docs docs docs docs docs
 - INL file for Vector2
+- Match colour of the amethyst wand, ball, and sword to amethyst crystal/sword, or other way round
+- Fix NPC spawning
 
 # Bugs
 - Tall cacti not spawning in desert biome

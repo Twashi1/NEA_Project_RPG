@@ -3,29 +3,30 @@
 
 namespace Game {
 	std::array<Item::Properties, (uint16_t)Item::ID::MAX> Item::m_Properties = {
-		Item::Properties("Void",				false,  false,	INT_MAX),
+		Item::Properties("Void",				false,  false, false,	INT_MAX),
 
-		Item::Properties("Amethyst Crystal",	true,	true,	{8,  1}),
-		Item::Properties("Emerald Crystal",		true,	true,	{9,  1}),
-		Item::Properties("Ruby Crystal",		true,	true,	{10, 1}),
-		Item::Properties("Sapphire Crystal",	true,	true,	{11, 1}),
-		Item::Properties("Topaz Crystal",		true,	true,	{12, 1}),
-		Item::Properties("Amethyst Pickaxe",	false,	false,	{8,  2}),
-		Item::Properties("Emerald Pickaxe",		false,	false,	{9,  2}),
-		Item::Properties("Ruby Pickaxe",		false,	false,	{10, 2}),
-		Item::Properties("Sapphire Pickaxe",	false,	false,	{11, 2}),
-		Item::Properties("Topaz Pickaxe",		false,	false,	{12, 2}),
-		Item::Properties("Amethyst Sword",		false,	false,	{8,  3}),
-		Item::Properties("Emerald Sword",		false,	false,	{9,  3}),
-		Item::Properties("Ruby Sword",			false,	false,	{10, 3}),
-		Item::Properties("Sapphire Sword",		false,	false,	{11, 3}),
-		Item::Properties("Topaz Sword",			false,	false,	{12, 3}),
-		Item::Properties("Emerald Wand",		false,	false,	{9,  4}),
-		Item::Properties("Ruby Wand",			false,	false,	{10, 4}),
-		Item::Properties("Sapphire Wand",		false,	false,	{11, 4}),
-		Item::Properties("Topaz Wand",			false,	false,	{12, 4}),
-		Item::Properties("Log", 				true,	true,	{3, 2}),
-		Item::Properties("Berries",				true,	false,	{7, 1})
+		Item::Properties("Amethyst Crystal",	true,	true,	false, {8,  1}),
+		Item::Properties("Emerald Crystal",		true,	true,	false, {9,  1}),
+		Item::Properties("Ruby Crystal",		true,	true,	false, {10, 1}),
+		Item::Properties("Sapphire Crystal",	true,	true,	false, {11, 1}),
+		Item::Properties("Topaz Crystal",		true,	true,	false, {12, 1}),
+		Item::Properties("Amethyst Pickaxe",	false,	false,	true,  {8,  2}),
+		Item::Properties("Emerald Pickaxe",		false,	false,	true,  {9,  2}),
+		Item::Properties("Ruby Pickaxe",		false,	false,	true,  {10, 2}),
+		Item::Properties("Sapphire Pickaxe",	false,	false,	true,  {11, 2}),
+		Item::Properties("Topaz Pickaxe",		false,	false,	true,  {12, 2}),
+		Item::Properties("Amethyst Sword",		false,	false,	true,  {8,  3}),
+		Item::Properties("Emerald Sword",		false,	false,	true,  {9,  3}),
+		Item::Properties("Ruby Sword",			false,	false,	true,  {10, 3}),
+		Item::Properties("Sapphire Sword",		false,	false,	true,  {11, 3}),
+		Item::Properties("Topaz Sword",			false,	false,	true,  {12, 3}),
+		Item::Properties("Amethyst Wand",		false,	false,	true,  {8,  4}),
+		Item::Properties("Emerald Wand",		false,	false,	true,  {9,  4}),
+		Item::Properties("Ruby Wand",			false,	false,	true,  {10, 4}),
+		Item::Properties("Sapphire Wand",		false,	false,	true,  {11, 4}),
+		Item::Properties("Topaz Wand",			false,	false,	false, {12, 4}),
+		Item::Properties("Log", 				true,	true,	false, {3, 2} ),
+		Item::Properties("Berries",				true,	false,	false, {7, 1} )
 	};
 
 	Item::DropTable::DropTable()
@@ -86,8 +87,8 @@ namespace Game {
 		// TODO
 	}
 
-	Item::Properties::Properties(std::string name, bool isStackable, bool displayMultiple, Vivium::Vector2<int> atlas_index)
-		: name(name), isStackable(isStackable), displayMultiple(displayMultiple), atlas_index(atlas_index)
+	Item::Properties::Properties(std::string name, bool isStackable, bool displayMultiple, bool isHandEquipable, Vivium::Vector2<int> atlas_index)
+		: name(name), isStackable(isStackable), displayMultiple(displayMultiple), isHandEquipable(isHandEquipable), atlas_index(atlas_index)
 	{}
 
 	void Item::Properties::Write(Vivium::Serialiser& s) const
@@ -124,7 +125,12 @@ namespace Game {
 		return m_Properties[(uint16_t)id].displayMultiple;
 	}
 
-	Vivium::Vector2<int> Item::GetAltasIndex(const Item::ID& id)
+	bool Item::GetIsHandEquipable(const Item::ID& id)
+	{
+		return m_Properties[(uint16_t)id].isHandEquipable;
+	}
+
+	Vivium::Vector2<int> Item::GetAtlasIndex(const Item::ID& id)
 	{
 		return m_Properties[(uint16_t)id].atlas_index;
 	}

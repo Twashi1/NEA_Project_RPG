@@ -26,6 +26,7 @@ namespace Game {
 			SAPPHIRE_SWORD,
 			TOPAZ_SWORD,
 			/* Wands */
+			AMETHYST_WAND,
 			EMERALD_WAND,
 			RUBY_WAND,
 			SAPPHIRE_WAND,
@@ -42,9 +43,10 @@ namespace Game {
 			std::string name;
 			bool isStackable;
 			bool displayMultiple;
+			bool isHandEquipable;
 			Vivium::Vector2<int> atlas_index;
 
-			Properties(std::string name, bool isStackable, bool displayMultiple, Vivium::Vector2<int> atlas_index);
+			Properties(std::string name, bool isStackable, bool displayMultiple, bool isHandEquipable, Vivium::Vector2<int> atlas_index);
 
 			void Write(Vivium::Serialiser& s) const override;
 			void Read(Vivium::Serialiser& s) override;
@@ -86,7 +88,8 @@ namespace Game {
 		static std::string GetName(const Item::ID& id);
 		static bool GetIsStackable(const Item::ID& id);
 		static bool GetDisplayMultiple(const Item::ID& id);
-		static Vivium::Vector2<int> GetAltasIndex(const Item::ID& id);
+		static bool GetIsHandEquipable(const Item::ID& id);
+		static Vivium::Vector2<int> GetAtlasIndex(const Item::ID& id);
 
 		static constexpr uint16_t STACK_LIMIT = 999;
 		Item::ID id;

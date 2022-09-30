@@ -53,7 +53,7 @@ namespace Game {
 		return Tile::m_Properties[uint16_t(id)].mining_time;
 	}
 
-	Vivium::Vector2<int> Tile::GetAltasIndex(const Tile::ID& id)
+	Vivium::Vector2<int> Tile::GetAtlasIndex(const Tile::ID& id)
 	{
 		return Tile::m_Properties[uint16_t(id)].atlas_index;
 	}

@@ -54,7 +54,7 @@ namespace Game {
 		static bool GetIsPhysical(const Tile::ID& id);
 		static bool GetIsMineable(const Tile::ID& id);
 		static float GetMiningTime(const Tile::ID& id);
-		static Vivium::Vector2<int> GetAltasIndex(const Tile::ID& id);
+		static Vivium::Vector2<int> GetAtlasIndex(const Tile::ID& id);
 		static float GetScale(const Tile::ID& id);
 		static Item::DropTable GetDropData(const Tile::ID& id);
 

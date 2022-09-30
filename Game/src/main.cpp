@@ -101,6 +101,8 @@ int game(void)
     Inventory::Init();
     CraftingInventory::Init();
     LeavesParticleSystem::Init();
+    Weapon::Init();
+    ProjectileSystem::Init();
 
     Application::SetBGColor(RGBColor::BLACK);
 

@@ -4,6 +4,7 @@
 #include "Inventory.h"
 #include "Recipe.h"
 #include "CraftingInventory.h"
+#include "Equipable.h"
 
 namespace Game {
     class Player : Vivium::Streamable {
@@ -29,6 +30,8 @@ namespace Game {
         Inventory::Slot m_SelectedSlot = Inventory::Slot::INVALID;
         Item m_SelectedItem = Item(Item::ID::VOID, 0);
 
+        Ref(HandEquipable) m_HandEquipable = nullptr;
+
         bool m_isMainInventoryOpened = false;
 
     public:
@@ -49,6 +52,8 @@ namespace Game {
 
         void Write(Vivium::Serialiser& s) const override;
         void Read(Vivium::Serialiser& s) override;
+
+        const Inventory& GetMainInventory() const;
 
         void Save(World& world);
 

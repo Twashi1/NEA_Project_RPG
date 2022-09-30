@@ -388,8 +388,6 @@ namespace Game {
 		);
 
 		world_scene->m_WorldsPanel->Anchor(Vivium::Panel::ANCHOR::CENTER, Vivium::Panel::ANCHOR::TOP, select_button);
-
-		LogTrace("Button position is now {}", select_button->GetPos());
 	}
 	
 	LoadWorldScene::VisualWorldSelectable::~VisualWorldSelectable() {}

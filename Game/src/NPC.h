@@ -8,7 +8,6 @@ namespace Game {
 	// Non Playing Character
 	// Base for enemies, animals, etc; some creature that will have pathfinding
 	// TODO: set a "home"; a position the NPC will attempt to not wander too far from, and a "tether range" to determine the max distance an NPC will wander from home
-	// TODO: some "thinking" time between wanders
 	class NPC : Vivium::Streamable {
 	public:
 		enum class EntityType : unsigned int {

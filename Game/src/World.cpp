@@ -567,7 +567,7 @@ namespace Game {
 										m_TileLayer->bodies.push_back(body);
 									}
 
-									const Vivium::Vector2<int>& index = Tile::GetAltasIndex(id);
+									const Vivium::Vector2<int>& index = Tile::GetAtlasIndex(id);
 									std::array<float, 8> tex_coords = TextureManager::game_atlas->GetCoordsArray(index);
 
 									batch.Submit({ dx, dy }, tile_scale * 2.0f, &tex_coords[0]);
@@ -625,7 +625,7 @@ namespace Game {
 
 					const Ref(Vivium::Quad) item_quad = item.GetQuad();
 
-					const Vivium::Vector2<int>& index = Item::GetAltasIndex(item_data.id);
+					const Vivium::Vector2<int>& index = Item::GetAtlasIndex(item_data.id);
 					std::array<float, 8> tex_coords = TextureManager::game_atlas->GetCoordsArray(index);
 
 					float angle = item_quad->GetAngle();

@@ -62,6 +62,7 @@ namespace Game {
     void Player::m_UpdateSelectedSlot()
     {
         m_SelectedSlot = m_MainInventory.GetSelectedSlot();
+        m_SelectedItem = m_MainInventory.GetItem(m_SelectedSlot);
 
         for (int i = GLFW_KEY_1; i <= GLFW_KEY_9; i++) {
             Vivium::Input::State state = Vivium::Input::GetKeyState(i);
@@ -69,8 +70,19 @@ namespace Game {
             if (state == Vivium::Input::State::RELEASE) {
                 m_SelectedSlot = (Inventory::Slot)((Inventory::slot_base_t)Inventory::Slot::INV_0 + i - GLFW_KEY_1);
                 m_MainInventory.SetSelectedSlot(m_SelectedSlot);
-                m_SelectedItem = m_MainInventory.GetItem(m_SelectedSlot);
             }
+        }
+
+        if (Item::GetIsHandEquipable(m_SelectedItem.id)) {
+            if (m_HandEquipable == nullptr) {
+                m_HandEquipable = HandEquipable::CreateInstance(m_SelectedItem.id);
+            }
+            else if (m_HandEquipable->id != m_SelectedItem.id) {
+                m_HandEquipable = HandEquipable::CreateInstance(m_SelectedItem.id);
+            }
+        }
+        else {
+            m_HandEquipable = nullptr;
         }
     }
 
@@ -104,6 +116,10 @@ namespace Game {
         m_UpdateInventory(world);
         m_UpdateMovement();
         m_UpdateSelectedTile(world);
+
+        if (m_HandEquipable != nullptr) {
+            m_HandEquipable->Update(&world, this);
+        }
     }
 
     void Player::Render()
@@ -111,6 +127,10 @@ namespace Game {
         m_RenderSelectedTile();
         Vivium::Renderer::Submit(quad.get(), shader);
         m_RenderInventory();
+
+        if (m_HandEquipable != nullptr) {
+            m_HandEquipable->Render();
+        }
     }
 
     void Player::Write(Vivium::Serialiser& s) const
@@ -126,6 +146,10 @@ namespace Game {
         s.Read(&player_pos);
 
         quad->SetCenter(player_pos);
+    }
+
+    const Inventory& Player::GetMainInventory() const {
+        return m_MainInventory;
     }
 
     void Player::Save(World& world)

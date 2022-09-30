@@ -268,7 +268,7 @@ namespace Game {
 
 	void Inventory::m_RenderItem(Vivium::Batch* batch, const Item& item, const Vivium::Vector2<float>& pos, const float& size)
 	{
-		std::array<float, 8> coords = TextureManager::game_atlas->GetCoordsArray(Item::GetAltasIndex(item.id));
+		std::array<float, 8> coords = TextureManager::game_atlas->GetCoordsArray(Item::GetAtlasIndex(item.id));
 		
 		int start_index = std::min(item.count, (uint16_t)3) - 1;
 
@@ -537,11 +537,11 @@ namespace Game {
 
 	const Item& Inventory::GetItem(const Slot& slot)
 	{
-		return m_InventoryData.at((uint8_t)slot);
+		return m_InventoryData.at((slot_base_t)slot);
 	}
 
 	// TODO: same thing?
-	void Inventory::Update(const Slot& start_slot, uint8_t length, const Vivium::Vector2<float>& player_pos, World* world)
+	void Inventory::Update(const Slot& start_slot, slot_base_t length, const Vivium::Vector2<float>& player_pos, World* world)
 	{
 		m_UpdateFloorItems(player_pos, world);
 	}
