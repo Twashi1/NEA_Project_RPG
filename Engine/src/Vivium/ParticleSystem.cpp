@@ -54,6 +54,11 @@ namespace Vivium {
 		return lifespan > time_alive;
 	}
 
+	void Particle::Kill()
+	{
+		time_alive = lifespan;
+	}
+
 	void Particle::m_UpdateMotion(const Vector2<float>& accel)
 	{
 		float elapsed = timer.GetElapsed();

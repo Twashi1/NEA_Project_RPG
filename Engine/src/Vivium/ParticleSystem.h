@@ -23,6 +23,7 @@ namespace Vivium {
 		Timer timer;
 
 		virtual bool IsAlive() const;
+		virtual void Kill();
 		virtual void Update(const Vector2<float>& accel);
 
 		Particle() = default;
@@ -42,7 +43,7 @@ namespace Vivium {
 
 		Vector2<float> m_Acceleration; // General acceleration of all particles
 
-		Particle** m_Particles;  // 1D array of Particle* (almost interpreted and used as a cyclical queue)
+		Particle** m_Particles;  // 1D array of Particle* (cyclical buffer kinda thing?)
 		std::size_t m_MaxSize;	 // Maximum amount of particles that can exist at once
 		std::size_t m_Index = 0; // Current index of the rear of the particles queue
 
@@ -58,7 +59,8 @@ namespace Vivium {
 		virtual ~ParticleSystem();
 
 		// TODO: Emit specification might be useful
-		// TODO: Maybe emit just returns the particle instead?
+		// TODO: Maybe emit just returns the particle* instead? and user assigns values (impossible because inside emit can't allocate?)
+		// TODO: Maybe user gives particle* to emit? but then how does emit allocate the ptr? user shouldn't control lifespan
 		virtual void Emit(std::size_t count, float lifespan = 1.0f, const Vector2<float>& pos = 0.0f, const Vector2<float>& vel = 0.0f, const Vector2<float>& var = 0.0f, float angle = 0.0f, float angular_vel = 0.0f, float angular_var = 0.0f);
 		
 		virtual void Render();

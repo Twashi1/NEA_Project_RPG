@@ -100,6 +100,20 @@ namespace Game {
 
 		m_BlockBreakingSound = Vivium::Application::sound_engine->addSoundSourceFromFile((Vivium::Application::resources_path + "sounds/breaking_block.wav").c_str(), irrklang::ESM_AUTO_DETECT, true);
 
+		// TEMP generate some npcs
+#define MANUALLY_GEN_NPCS
+#ifdef MANUALLY_GEN_NPCS
+		Region& region = m_LoadRegion(GetRegionIndex(player->quad->GetCenter() / World::PIXEL_SCALE));
+
+		for (int i = 0; i < 5; i++) {
+			Ref(NPC) npc = MakeRef(Pig, 0.0f);
+			region.npcs.push_back(npc);
+			__npcs.push_back(npc);
+		}
+
+		Weapon::UpdateNPCList(__npcs);
+#endif
+
 		m_UpdateTimer.Start();
 	}
 
@@ -801,6 +815,10 @@ namespace Game {
 
 		m_WorldMap->Render(screen_dim - Vivium::Vector2<int>(100, 100));
 
+		for (auto& npc : __npcs) {
+			npc->Render();
+		}
+
 		m_DaylightFramebuffer->Clear();
 	}
 
@@ -829,8 +847,6 @@ namespace Game {
 		m_WorldMap->GenerateFullMap(m_Player->quad->GetCenter(), *this);
 
 		m_UpdateObstacleMap();
-
-		// TODO: updating npcs
 	}
 
 	std::string World::GetName() const

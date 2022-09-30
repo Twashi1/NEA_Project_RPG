@@ -51,6 +51,8 @@ namespace Game {
 		// Make polymorphic
 		virtual ~NPC() = default;
 
+		virtual Vivium::Vector2<float> GetPos() const;
+
 		static bool IsValidSpawn(const Vivium::Vector2<int>& pos, World* world);
 		virtual void Update(World* world);
 		virtual void Render() = 0;

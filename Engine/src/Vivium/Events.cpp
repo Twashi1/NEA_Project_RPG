@@ -19,28 +19,37 @@ namespace Vivium {
 		}
 	}
 	
-	EventHandler::EventHandler(const std::string& type) : m_HandlingType(type) {}
+	EventHandler::EventHandler(const std::string& type) : m_HandlingType(type), m_Events() {}
 	 
 	Event::Event(const std::string& type) : type(type) {}
 
 	void EventSystem::m_Update()
 	{
-		for (auto& event_handler : m_EventHandlers) {
-			event_handler->Update();
+		if (!m_EventHandlers.empty()) {
+			for (auto event_handler : m_EventHandlers) {
+				event_handler->Update();
+			}
 		}
 	}
 
 	void EventSystem::AddEvent(Ref(Event) event)
 	{
-		for (auto& handler : m_EventHandlers) {
-			if (handler->m_HandlingType == event->type) {
-				handler->m_AddEvent(event);
+		if (!m_EventHandlers.empty()) {
+			for (auto& handler : m_EventHandlers) {
+				if (handler->m_HandlingType == event->type) {
+					handler->m_AddEvent(event);
+				}
 			}
 		}
 	}
 
 	void EventSystem::RegisterHandler(Ref(EventHandler) handler)
 	{
-		m_EventHandlers.push_back(std::move(handler));
+		m_EventHandlers.push_back(handler);
+	}
+
+	const std::vector<Ref(EventHandler)> EventSystem::GetHandlers()
+	{
+		return m_EventHandlers;
 	}
 }

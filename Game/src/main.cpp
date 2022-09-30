@@ -54,7 +54,7 @@ int sandbox(void)
 
     Application::SetBGColor(RGBColor::BLUE);
 
-    Animation::Data test("ruby_wand", {32, 32});
+    Animation::Data test("ruby_wand", { 32, 32 });
     Animation::Data test2("emmy_wand", { 32, 32 });
 
     TextureManager::Init();

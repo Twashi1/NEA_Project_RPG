@@ -146,6 +146,7 @@
 
 # Bugs
 - Tall cacti not spawning in desert biome
+- Topaz wand not working
 - ~~Rare bug where a Vector2 which is an index for a loaded region is unallocated and checked for equivelance~~
 - ~~Going fullscreen crashes game~~
 - ~~Can't move items between hotbar slots unless inventory is opened~~

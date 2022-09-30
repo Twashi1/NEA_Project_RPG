@@ -1,6 +1,9 @@
 #pragma once
 
 #include "Item.h"
+#include "NPC.h"
+
+// TODO: split up this file
 
 namespace Game {
 	class Weapon;
@@ -44,6 +47,7 @@ namespace Game {
 	class Weapon : public HandEquipable {
 	protected:
 		static Ref(Vivium::Shader) m_ShaderDefault;
+		static std::vector<WeakRef(NPC)> m_NPCList;
 
 		Ref(Vivium::Shader) m_Shader;
 		ProjectileSystem* m_ProjectileSystem;
@@ -51,8 +55,11 @@ namespace Game {
 
 		using Item::id;
 
+		static std::vector<WeakRef(NPC)>* m_GetNPCList();
+
 	public:
 		static void Init();
+		static void UpdateNPCList(const std::vector<Ref(NPC)>& npcs);
 
 		struct Properties;
 
@@ -73,28 +80,49 @@ namespace Game {
 			};
 
 		private:
+			// TODO: in future this should be a property of each projectile/weapon
+			static constexpr float s_RANGE = 300.0f;
+
 			float m_Damage;
 			float m_Knockback;
 			ID m_ID;
 
+			virtual void m_Update(const Vivium::Vector2<float>& accel) override;
+
 		public:
-			class Hit : Vivium::Event {
+			class Hit : public virtual Vivium::Event {
 			private:
 				static constexpr const char* s_TYPE = "WeaponProjectileHit";
 
 			public:
+				using Vivium::Event::type;
+
 				float damage;
 				float knockback; // Measured as an impulse
-				Ref(Vivium::Body) body_a;
-				Ref(Vivium::Body) body_b;
+				Ref(NPC) npc;
+				Projectile* projectile; // no guarantee on lifetime
 
-				Hit(float damage, float knockback);
+				Hit(float damage, float knockback, Ref(NPC) npc, Projectile* projectile);
+			};
+
+			class HitHandler : public virtual Vivium::EventHandler {
+			private:
+				static constexpr const char* s_TYPE = "WeaponProjectileHit";
+
+				int x = 5;
+
+			protected:
+				virtual void m_HandleEvent(Ref(Vivium::Event) event) override;
+
+			public:
+				HitHandler();
 			};
 
 			Projectile(const ID& id, float damage, float knockback);
 			Projectile(const Properties& props);
 
 			friend ProjectileSystem;
+			friend Projectile;
 		};
 
 		// TODO: maybe projectile system stored here? need an init function then but still
@@ -110,6 +138,7 @@ namespace Game {
 		};
 		
 		static const std::unordered_map<Item::ID, Properties> m_Properties;
+		static Ref(Projectile::HitHandler) m_HitHandler;
 
 		Weapon(const Item::ID& id);
 		~Weapon();

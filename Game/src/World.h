@@ -99,6 +99,9 @@ namespace Game {
 		RegionMap_t regions; // Maps a region index to a Region object
 		std::mutex regions_mutex;
 
+		// TEMP
+		std::vector<Ref(NPC)> __npcs;
+
 		FloorItemMap_t floor_items; // Maps a region index to a list of floor items, so only items within adjacent regions are drawn
 
 		static void Init();
@@ -112,8 +115,6 @@ namespace Game {
 		Vivium::Vector2<int> GetObstacleMapIndex(const Vivium::Vector2<int>& pos) const;
 		Vivium::Vector2<int> ObstacleMapToWorld(const Vivium::Vector2<int>& pos) const;
 		bool GetIsObstacle(const Vivium::Vector2<int>& pos) const;
-
-		// TODO: GetLoadedNPCs
 
 		std::vector<FloorItem>* GetFloorItems(const Vivium::Vector2<int>& pos);
 		

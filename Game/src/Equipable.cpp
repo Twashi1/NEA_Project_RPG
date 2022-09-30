@@ -51,20 +51,78 @@ namespace Game {
 	}
 
 	Ref(Vivium::Shader) Weapon::m_ShaderDefault;
+	std::vector<WeakRef(NPC)> Weapon::m_NPCList;
+	Ref(Weapon::Projectile::HitHandler) Weapon::m_HitHandler;
+
+	void Weapon::UpdateNPCList(const std::vector<Ref(NPC)>& npcs)
+	{
+		m_NPCList.clear();
+
+		for (const Ref(NPC)& npc : npcs) {
+			m_NPCList.push_back(npc);
+		}
+	}
+
+	std::vector<WeakRef(NPC)>* Weapon::m_GetNPCList()
+	{
+		return &m_NPCList;
+	}
 
 	void Weapon::Init()
 	{
 		m_ShaderDefault = MakeRef(Vivium::Shader, "texture_vertex", "texture_frag");
+		
+		Vivium::EventSystem::RegisterHandler(
+			dynamic_pointer_cast<Vivium::EventHandler>(MakeRef(Weapon::Projectile::HitHandler))
+		);
 	}
 
-	Weapon::Projectile::Hit::Hit(float damage, float knockback)
-		: Vivium::Event(s_TYPE), damage(damage), knockback(knockback) {}
+	Weapon::Projectile::Hit::Hit(float damage, float knockback, Ref(NPC) npc, Projectile* projectile)
+		: Vivium::Event(s_TYPE), damage(damage), knockback(knockback), npc(npc), projectile(projectile) {}
+
+	Weapon::Projectile::HitHandler::HitHandler()
+		: Vivium::EventHandler(s_TYPE)
+	{}
+
+	void Weapon::Projectile::HitHandler::m_HandleEvent(Ref(Vivium::Event) event)
+	{
+		Ref(Weapon::Projectile::Hit) hit_event = dynamic_pointer_cast<Weapon::Projectile::Hit>(event);
+		LogTrace("Hit event was detected, damage: {}!", hit_event->damage);
+
+		// TODO: do stuff
+	}
 
 	Weapon::Projectile::Projectile(const ID& id, float damage, float knockback)
 		: m_ID(id), m_Damage(damage), m_Knockback(knockback) {}
 
 	Weapon::Projectile::Projectile(const Weapon::Properties& properties)
 		: m_ID(properties.projectile_id), m_Damage(properties.damage), m_Knockback(properties.knockback) {}
+
+	void Weapon::Projectile::m_Update(const Vivium::Vector2<float>& accel)
+	{
+		std::vector<WeakRef(NPC)>* npcs = Weapon::m_GetNPCList();
+	
+		if (npcs->empty()) return;
+
+		for (WeakRef(NPC)& npc : *npcs) {
+			if (npc.expired()) continue;
+
+			Ref(NPC) current_npc = npc.lock();
+
+			Vivium::Vector2<float> npc_pos = current_npc->GetPos();
+
+			// If close enough
+			// TODO: also detect some iframes maybe? or do that later, acc now is better because less processing
+			if (Vivium::Vector2<float>::Distance(npc_pos, position) < s_RANGE) {
+				// Create hit event
+				Vivium::EventSystem::AddEvent(
+					dynamic_pointer_cast<Vivium::Event>(
+						MakeRef(Weapon::Projectile::Hit, m_Damage, m_Knockback, current_npc, this)
+					)
+				);
+			}
+		}
+	}
 
 	Weapon::Weapon(const Item::ID& id)
 		: HandEquipable(id), m_Shader(m_ShaderDefault), m_ProjectileSystem(new ProjectileSystem(10))

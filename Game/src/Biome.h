@@ -7,6 +7,7 @@
 namespace Game {
 	class World;
 
+	// TODO: biome generateat needs to take some sort of list of npcs so it can generate npcs as well
 	class Biome {
 	public:
 		enum class ID : uint8_t {

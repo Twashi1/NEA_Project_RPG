@@ -73,6 +73,11 @@ namespace Game {
 		return isObstacle;
 	}
 
+	Vivium::Vector2<float> NPC::GetPos() const
+	{
+		return m_Body->quad->GetCenter();
+	}
+
 	void NPC::Update(World* world)
 	{
 		m_Body->Update();

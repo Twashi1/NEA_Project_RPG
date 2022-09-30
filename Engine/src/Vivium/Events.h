@@ -30,7 +30,7 @@ namespace Vivium {
 
 	protected:
 		std::string m_HandlingType;
-		std::queue<Ref(Event)> m_Events;
+		std::queue<Ref(Event)> m_Events = {};
 
 		virtual void m_HandleEvent(Ref(Event) event) = 0;
 
@@ -51,6 +51,7 @@ namespace Vivium {
 	public:
 		static void AddEvent(Ref(Event) event);
 		static void RegisterHandler(Ref(EventHandler) handler);
+		static const std::vector<Ref(EventHandler)> GetHandlers();
 
 		friend Application;
 	};
