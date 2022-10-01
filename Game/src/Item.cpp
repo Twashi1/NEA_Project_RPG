@@ -24,7 +24,7 @@ namespace Game {
 		Item::Properties("Emerald Wand",		false,	false,	true,  {9,  4}),
 		Item::Properties("Ruby Wand",			false,	false,	true,  {10, 4}),
 		Item::Properties("Sapphire Wand",		false,	false,	true,  {11, 4}),
-		Item::Properties("Topaz Wand",			false,	false,	false, {12, 4}),
+		Item::Properties("Topaz Wand",			false,	false,	true,  {12, 4}),
 		Item::Properties("Log", 				true,	true,	false, {3, 2} ),
 		Item::Properties("Berries",				true,	false,	false, {7, 1} )
 	};

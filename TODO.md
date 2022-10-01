@@ -141,12 +141,12 @@
 - Inconsistent data layout between GUI objects
 - docs docs docs docs docs docs docs docs
 - INL file for Vector2
-- Match colour of the amethyst wand, ball, and sword to amethyst crystal/sword, or other way round
+- ~~Match colour of the amethyst wand, ball, and sword to amethyst crystal/sword, or other way round~~
 - Fix NPC spawning
 
 # Bugs
 - Tall cacti not spawning in desert biome
-- Topaz wand not working
+- ~~Topaz wand not working~~
 - ~~Rare bug where a Vector2 which is an index for a loaded region is unallocated and checked for equivelance~~
 - ~~Going fullscreen crashes game~~
 - ~~Can't move items between hotbar slots unless inventory is opened~~
