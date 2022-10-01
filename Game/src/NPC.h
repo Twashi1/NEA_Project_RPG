@@ -3,15 +3,11 @@
 #include "Core.h"
 
 namespace Game {
+	class World;
+
 	namespace Pathfinding {
-		// API will be
-		// Behaviour is inherited from, declaring some global and per npc settings for the behaviour
-		// Global settings are statically stored with the behaviour
-		// Behaviour will provide some functions, taking some per npc settings
-		// Declare entity id, declare list of behaviours
-		// TODO: StreamablePOD and Streamable
+		// TODO: Streamable for NPC
 		struct NPC;
-		class World;
 
 		class Behaviour {
 		public:
@@ -22,8 +18,8 @@ namespace Game {
 			virtual ~Behaviour() = default;
 			
 			virtual void ExecuteOn(NPC* npc) const = 0;
-			virtual void Update(Client* client) const = 0;
-			virtual bool IsOver(Client* client) const = 0;
+			virtual void Update(std::shared_ptr<Client> client) const = 0;
+			virtual bool IsOver(std::shared_ptr<Client> client) const = 0;
 
 			enum class ID : uint8_t {
 				IDLE,
@@ -43,17 +39,9 @@ namespace Game {
 
 			Global global;
 
-			virtual void ExecuteOn(NPC* npc) const override
-			{
-				// TODO: kill velocity
-			}
-			virtual void Update(Behaviour::Client* client) const override {}
-			virtual bool IsOver(Behaviour::Client* client) const override
-			{
-				Idle::Client* my_client = dynamic_cast<Idle::Client*>(client);
-
-				return my_client->thinking_timer.GetElapsedNoReset() > global.thinking_time;
-			}
+			virtual void ExecuteOn(NPC* npc) const override;
+			virtual void Update(std::shared_ptr<Behaviour::Client> client) const override;
+			virtual bool IsOver(std::shared_ptr<Behaviour::Client> client) const override;
 		};
 
 		class Wandering : virtual public Behaviour {
@@ -65,9 +53,7 @@ namespace Game {
 
 				float home_range;
 
-				Global(float thinking_time, float wander_range, Vivium::Vector2<float> wander_range_variation, float wander_speed, float home_range)
-					: thinking_time(thinking_time), wander_range(wander_range), wander_range_variation(wander_range_variation), wander_speed(wander_speed), home_range(home_range)
-				{}
+				Global(float thinking_time, float wander_range, Vivium::Vector2<float> wander_range_variation, float wander_speed, float home_range);
 			};
 
 			struct Client : virtual public Behaviour::Client {
@@ -77,28 +63,10 @@ namespace Game {
 
 			Global global;
 
-			virtual void ExecuteOn(NPC* npc) const override
-			{
-				Client* my_client = dynamic_cast<Client*>(npc->behaviour_data.at(Behaviour::ID::WANDER));
+			virtual void ExecuteOn(NPC* npc) const override;
 
-				// Select direction to move in
-				Vivium::Vector2<float> move_vector = Vivium::Random::GetVector2f(
-					global.wander_range * Vivium::Random::GetFloat(global.wander_range_variation.x, global.wander_range_variation.y)
-				);
-
-				// Select a tile in that direction
-				Vivium::Vector2<float> pos = npc->body->quad->GetCenter();
-				Vivium::Vector2<float> dest = pos + move_vector;
-				Vivium::Vector2<int> dest_tile = dest / World::PIXEL_SCALE;
-				
-				// Attempt to spawn on valid tile
-				if (!NPC::world->GetIsObstacle(dest_tile)) {
-					// TODO
-				}
-			}
-
-			virtual void Update(Behaviour::Client* client) const override;
-			virtual bool IsOver(Behaviour::Client* client) const override;
+			virtual void Update(std::shared_ptr<Behaviour::Client> client) const override;
+			virtual bool IsOver(std::shared_ptr<Behaviour::Client> client) const override;
 		};
 
 		// TODO: some rendering stuff
@@ -113,11 +81,11 @@ namespace Game {
 
 			NPC::ID id;
 			std::shared_ptr<Vivium::Body> body;
-			std::unordered_map<Behaviour::ID, std::shared_ptr<Behaviour::Client>> behaviour_data;
 			Vivium::Pathfinding::Path path;
+			std::unordered_map<Behaviour::ID, std::shared_ptr<Behaviour::Client>> behaviour_data;
 
 			NPC(const NPC& other) = default;
-			~NPC();
+			~NPC() = default;
 
 			struct Properties {
 				std::vector<std::shared_ptr<Behaviour>> behaviours;

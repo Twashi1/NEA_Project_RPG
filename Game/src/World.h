@@ -7,8 +7,6 @@
 #include "TerrainGenerator.h"
 #include "LeafParticles.h"
 #include "NPC.h"
-#include "PassiveEntity.h"
-
 // TODO: m_Player is property now, don't pass to functions
 
 namespace Game {
