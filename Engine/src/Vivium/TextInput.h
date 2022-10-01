@@ -12,14 +12,14 @@ namespace Vivium {
 	public:
 		typedef void (*CallbackFunc_t)(TextInput*, void*); // Shorthand for a callback function pointer (takes the text input that was entered as a paramater)
 
-		static Ref(Animation) m_TypingBar; // Animation for the bar that shows where your cursor currently is
+		static std::shared_ptr<Animation> m_TypingBar; // Animation for the bar that shows where your cursor currently is
 		static RGBColor m_DefaultEmptyColor; // Default color for text that displays when input is empty
 		static RGBColor m_DefaultTypedColor; // Default color for text that user has typed in
 		static std::string m_DefaultEmptyText; // Default text that displays when box is empty
-		static Ref(Font) m_DefaultFont;
-		static Ref(Shader) m_DefaultBgShader;
-		static Ref(Shader) m_TextShader;
-		static Ref(Shader) m_TypingBarShader;
+		static std::shared_ptr<Font> m_DefaultFont;
+		static std::shared_ptr<Shader> m_DefaultBgShader;
+		static std::shared_ptr<Shader> m_TextShader;
+		static std::shared_ptr<Shader> m_TypingBarShader;
 
 		static bool m_TypingOnAnyInput;
 
@@ -42,7 +42,7 @@ namespace Vivium {
 		RGBColor m_EmptyColor; // Color for "empty_text"
 		RGBColor m_TypedColor; // Color for text user typed in
 
-		Ref(Text) m_Text = nullptr;
+		std::shared_ptr<Text> m_Text = nullptr;
 
 		// TODO: ALLOW USER TO SET THIS
 		std::string empty_text;	// Text that displays when textinput is empty
@@ -50,7 +50,7 @@ namespace Vivium {
 		// Updates the text based on user input
 		void m_UpdateText();
 
-		static void m_Init(Ref(TextureAtlas) engine_icons);
+		static void m_Init(std::shared_ptr<TextureAtlas> engine_icons);
 
 		static void m_ResetTypingStatus();
 
@@ -62,28 +62,28 @@ namespace Vivium {
 	public:
 		std::string typed_text = ""; // Text that user has typed/is typing in
 
-		Ref(Texture) bg_texture = nullptr;
-		Ref(Shader) bg_shader;
+		std::shared_ptr<Texture> bg_texture = nullptr;
+		std::shared_ptr<Shader> bg_shader;
 
-		Ref(Quad) quad;
+		std::shared_ptr<Quad> quad;
 
 		void SetPos(const Vector2<float>& new_pos);
 		Vector2<float> GetPos() const;
 
-		Ref(Animation) GetTypingBar();
+		std::shared_ptr<Animation> GetTypingBar();
 		bool GetIsTyping();
-		Ref(Text) GetText();
+		std::shared_ptr<Text> GetText();
 
 		void SetUserParams(void* userParams);
 
 		void SetCharLimit(const std::size_t& char_limit);
 
 		TextInput(const Quad& quad, CallbackFunc_t callback = nullptr, void* userParams = nullptr, int offset = 0);
-		TextInput(const Quad& quad, CallbackFunc_t callback, Ref(Shader) bg_shader, void* userParams = nullptr, int offset = 0);
-		TextInput(const Quad& quad, CallbackFunc_t callback, Ref(Shader) bg_shader, Ref(Texture) bg_texture, void* userParams = nullptr, int offset = 0);
+		TextInput(const Quad& quad, CallbackFunc_t callback, std::shared_ptr<Shader> bg_shader, void* userParams = nullptr, int offset = 0);
+		TextInput(const Quad& quad, CallbackFunc_t callback, std::shared_ptr<Shader> bg_shader, std::shared_ptr<Texture> bg_texture, void* userParams = nullptr, int offset = 0);
 		TextInput(const Quad& quad, CallbackFunc_t callback, const RGBColor& typed_color, const RGBColor& empty_color, void* userParams = nullptr, int offset = 0);
-		TextInput(const Quad& quad, CallbackFunc_t callback, const RGBColor& typed_color, const RGBColor& empty_color, Ref(Shader) bg_shader, void* userParams = nullptr, int offset = 0);
-		TextInput(const Quad& quad, CallbackFunc_t callback, const RGBColor& typed_color, const RGBColor& empty_color, Ref(Shader) bg_shader, Ref(Texture) bg_texture, void* userParams = nullptr, int offset = 0);
+		TextInput(const Quad& quad, CallbackFunc_t callback, const RGBColor& typed_color, const RGBColor& empty_color, std::shared_ptr<Shader> bg_shader, void* userParams = nullptr, int offset = 0);
+		TextInput(const Quad& quad, CallbackFunc_t callback, const RGBColor& typed_color, const RGBColor& empty_color, std::shared_ptr<Shader> bg_shader, std::shared_ptr<Texture> bg_texture, void* userParams = nullptr, int offset = 0);
 		~TextInput();
 
 		void CheckClicked(const Vector2<float>& cursor_pos, const Input::State& lmb_state);

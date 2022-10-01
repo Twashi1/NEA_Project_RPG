@@ -4,9 +4,9 @@
 
 namespace Game {
 #define __GAME_EQUIPABLE_CONSTRUCT_ID(id) case id: \
-	return dynamic_pointer_cast<HandEquipable>(MakeRef(GetEquipType<id>::type, id))
+	return dynamic_pointer_cast<HandEquipable>(std::make_shared<GetEquipType<id>::type>(id))
 
-	Ref(HandEquipable) HandEquipable::CreateInstance(const Item::ID& id) {
+	std::shared_ptr<HandEquipable> HandEquipable::CreateInstance(const Item::ID& id) {
 		switch (id) {
 			__GAME_EQUIPABLE_CONSTRUCT_ID(Item::ID::AMETHYST_SWORD);
 			__GAME_EQUIPABLE_CONSTRUCT_ID(Item::ID::EMERALD_SWORD);
@@ -42,7 +42,7 @@ namespace Game {
 	HandEquipable::HandEquipable(const Item::ID& id)
 		: Item(id, 1)
 	{
-		m_Quad = MakeRef(Vivium::Quad, 0.0f, 0.0f, 0.0f, 0.0f);
+		m_Quad = std::make_shared<Vivium::Quad>(0.0f, 0.0f, 0.0f, 0.0f);
 	}
 
 	void HandEquipable::Update(World* world, Player* player)
@@ -50,8 +50,8 @@ namespace Game {
 		m_UpdateQuad(world, player->quad->GetCenter());
 	}
 
-	Ref(Vivium::Shader) Weapon::m_ShaderDefault;
-	Ref(Weapon::Projectile::HitHandler) Weapon::m_HitHandler;
+	std::shared_ptr<Vivium::Shader> Weapon::m_ShaderDefault;
+	std::shared_ptr<Weapon::Projectile::HitHandler> Weapon::m_HitHandler;
 	World* Weapon::Projectile::m_World = nullptr;
 
 	void Weapon::Projectile::SetWorld(World* world)
@@ -61,23 +61,23 @@ namespace Game {
 
 	void Weapon::Init()
 	{
-		m_ShaderDefault = MakeRef(Vivium::Shader, "texture_vertex", "texture_frag");
+		m_ShaderDefault = std::make_shared<Vivium::Shader>("texture_vertex", "texture_frag");
 		
 		Vivium::EventSystem::RegisterHandler(
-			dynamic_pointer_cast<Vivium::EventHandler>(MakeRef(Weapon::Projectile::HitHandler))
+			dynamic_pointer_cast<Vivium::EventHandler>(std::make_shared<Weapon::Projectile::HitHandler>())
 		);
 	}
 
-	Weapon::Projectile::Hit::Hit(float damage, float knockback, Ref(NPC) npc, Projectile* projectile)
+	Weapon::Projectile::Hit::Hit(float damage, float knockback, std::shared_ptr<NPC> npc, Projectile* projectile)
 		: Vivium::Event(s_TYPE), damage(damage), knockback(knockback), npc(npc), projectile(projectile) {}
 
 	Weapon::Projectile::HitHandler::HitHandler()
 		: Vivium::EventHandler(s_TYPE)
 	{}
 
-	void Weapon::Projectile::HitHandler::m_HandleEvent(Ref(Vivium::Event) event)
+	void Weapon::Projectile::HitHandler::m_HandleEvent(std::shared_ptr<Vivium::Event> event)
 	{
-		Ref(Weapon::Projectile::Hit) hit_event = dynamic_pointer_cast<Weapon::Projectile::Hit>(event);
+		std::shared_ptr<Weapon::Projectile::Hit> hit_event = dynamic_pointer_cast<Weapon::Projectile::Hit>(event);
 		LogTrace("Hit event was detected, damage: {}!", hit_event->damage);
 
 		// TODO: do stuff
@@ -91,6 +91,7 @@ namespace Game {
 
 	void Weapon::Projectile::m_Update(const Vivium::Vector2<float>& accel)
 	{
+#ifdef OLD_NPC_CODE
 		std::vector<WeakRef(NPC)>* npcs = m_World->GetLoadedNPCs();
 	
 		if (npcs->empty()) return;
@@ -108,11 +109,12 @@ namespace Game {
 				// Create hit event
 				Vivium::EventSystem::AddEvent(
 					dynamic_pointer_cast<Vivium::Event>(
-						MakeRef(Weapon::Projectile::Hit, m_Damage, m_Knockback, current_npc, this)
+						std::make_shared<Weapon::Projectile::Hit>(m_Damage, m_Knockback, current_npc, this)
 					)
 				);
 			}
 		}
+#endif
 	}
 
 	Weapon::Weapon(const Item::ID& id)
@@ -218,7 +220,7 @@ namespace Game {
 	ProjectileSystem::ProjectileSystem(const std::size_t& max_size)
 		: ParticleSystem(max_size, nullptr, 0.0f)
 	{
-		m_Shader = MakeRef(Vivium::Shader, "particle_vertex", "particle_frag");
+		m_Shader = std::make_shared<Vivium::Shader>("particle_vertex", "particle_frag");
 	}
 
 	void ProjectileSystem::Emit(std::size_t count, const Weapon::ID& id, float lifespan, const Vivium::Vector2<float>& pos, const Vivium::Vector2<float>& vel, const Vivium::Vector2<float>& var, float angle, float angular_vel, float angular_var)

@@ -26,13 +26,13 @@ namespace Vivium {
 
 	class VIVIUM_API EventHandler {
 	private:
-		void m_AddEvent(Ref(Event) event);
+		void m_AddEvent(std::shared_ptr<Event> event);
 
 	protected:
 		std::string m_HandlingType;
-		std::queue<Ref(Event)> m_Events = {};
+		std::queue<std::shared_ptr<Event>> m_Events = {};
 
-		virtual void m_HandleEvent(Ref(Event) event) = 0;
+		virtual void m_HandleEvent(std::shared_ptr<Event> event) = 0;
 
 	public:
 		void Update();
@@ -45,13 +45,13 @@ namespace Vivium {
 
 	class VIVIUM_API EventSystem {
 	private:
-		static std::vector<Ref(EventHandler)> m_EventHandlers;
+		static std::vector<std::shared_ptr<EventHandler>> m_EventHandlers;
 		static void m_Update();
 
 	public:
-		static void AddEvent(Ref(Event) event);
-		static void RegisterHandler(Ref(EventHandler) handler);
-		static const std::vector<Ref(EventHandler)> GetHandlers();
+		static void AddEvent(std::shared_ptr<Event> event);
+		static void RegisterHandler(std::shared_ptr<EventHandler> handler);
+		static const std::vector<std::shared_ptr<EventHandler>> GetHandlers();
 
 		friend Application;
 	};

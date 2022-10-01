@@ -249,8 +249,8 @@ namespace Vivium {
 	{
 		BatchData data;
 		// TODO: if count is 0, set these both to nullptr?
-		data.vertex_buffer = MakeRef(VertexBuffer, m_Vertices, m_VerticesIndex + 1, *m_Layout);
-		data.index_buffer = MakeRef(IndexBuffer, m_Indices, m_IndicesIndex + 1);
+		data.vertex_buffer = std::make_shared<VertexBuffer>(m_Vertices, m_VerticesIndex + 1, *m_Layout);
+		data.index_buffer = std::make_shared<IndexBuffer>(m_Indices, m_IndicesIndex + 1);
 		data.count = m_Count;
 
 		return data;

@@ -2,6 +2,7 @@
 #include "World.h"
 
 namespace Game {
+	// TODO: update colours
 	std::array<Vivium::RGBColor, (uint16_t)Tile::ID::MAX> WorldMap::m_TileColors{
 		Vivium::RGBColor::BLACK,
 		Vivium::RGBColor("#b67a48"), // GROUND

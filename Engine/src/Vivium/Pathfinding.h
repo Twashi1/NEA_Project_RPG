@@ -34,12 +34,12 @@ namespace Vivium {
 		class VIVIUM_API Map {
 		private:
 			// TODO: some bit-packing optimisation for storing the obstacle map
-			Ref(bool[]) m_Data = nullptr;
+			std::shared_ptr<bool[]> m_Data = nullptr;
 			Vector2<int> m_Dim = 0;
 
 		public:
 			Map() {}
-			Map(Ref(bool[]) data, const Vector2<int>& dim);
+			Map(std::shared_ptr<bool[]> data, const Vector2<int>& dim);
 
 			void UpdateMap(bool* new_data);
 

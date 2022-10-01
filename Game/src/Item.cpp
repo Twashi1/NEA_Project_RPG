@@ -176,7 +176,7 @@ namespace Game {
 		return m_ItemData;
 	}
 
-	const Ref(Vivium::Quad) FloorItem::GetQuad() const
+	const std::shared_ptr<Vivium::Quad> FloorItem::GetQuad() const
 	{
 		return m_Quad;
 	}
@@ -212,7 +212,7 @@ namespace Game {
 	FloorItem::FloorItem(const Item& item_data, const Vivium::Vector2<float>& pos, const Vivium::Vector2<float> dim)
 		: m_ItemData(item_data)
 	{
-		m_Quad = MakeRef(Vivium::Quad, pos, dim, Vivium::Random::GetFloat(0.0f, 2.0f * Vivium::Math::PI));
+		m_Quad = std::make_shared<Vivium::Quad>(pos, dim, Vivium::Random::GetFloat(0.0f, 2.0f * Vivium::Math::PI));
 		velocity = Vivium::Random::GetVector2f(100.0f);
 		m_RemainingMovingTime = Vivium::Random::GetFloat(0.50f, 0.70f);
 		acceleration = -velocity / m_RemainingMovingTime;
@@ -249,7 +249,7 @@ namespace Game {
 		s.Read(&dim);
 		s.Read(&angle);
 
-		m_Quad = MakeRef(Vivium::Quad, pos, dim, angle);
+		m_Quad = std::make_shared<Vivium::Quad>(pos, dim, angle);
 
 		s.Read(&velocity);
 		s.Read(&acceleration);

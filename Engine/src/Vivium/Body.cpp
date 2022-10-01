@@ -9,7 +9,7 @@ namespace Vivium {
 		}
 	}
 
-	Body::Body(Ref(Quad) quad, bool isImmovable, float restitution, float mass, bool isPhysical, CallbackFunc_t callback, void* user_params)
+	Body::Body(std::shared_ptr<Quad> quad, bool isImmovable, float restitution, float mass, bool isPhysical, CallbackFunc_t callback, void* user_params)
 		: quad(quad),
 		isImmovable(isImmovable),
 		vel(), acc(),
@@ -127,7 +127,7 @@ namespace Vivium {
 	void Body::Read(Serialiser& s)
 	{
 		if (quad == nullptr) {
-			quad = MakeRef(Quad);
+			quad = std::make_shared<Quad>();
 		}
 
 		s.Read(quad.get());

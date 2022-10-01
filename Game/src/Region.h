@@ -15,7 +15,7 @@ namespace Game {
 		std::array<Biome::ID, SIZE> biomes; // 1D array of the biome each tile is in
 
 		// NPCs stored in the region which contains of their "Home"
-		std::vector<Ref(NPC)> npcs;
+		std::vector<std::shared_ptr<NPC>> npcs;
 
 		Region() = default;
 		Region(const Region& other) = delete; // NOTE: could be available now

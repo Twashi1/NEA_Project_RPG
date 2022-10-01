@@ -114,9 +114,9 @@ namespace Game {
 		float noise = m_AnimalNoise.Get(x, y);
 
 		if (noise > 0.9f) {
-			Ref(NPC) new_animal = dynamic_pointer_cast<NPC>(MakeRef(Pig, Vivium::Vector2<float>(x, y) * World::PIXEL_SCALE));
+			// Ref(NPC) new_animal = dynamic_pointer_cast<NPC>(std::make_shared<Pig>(Pig, Vivium::Vector2<float>(x, y) * World::PIXEL_SCALE));
 
-			region.npcs.push_back(new_animal);
+			// region.npcs.push_back(new_animal);
 
 			// world->m_LoadedNPCs.emplace_back(new_animal);
 		}
@@ -229,9 +229,9 @@ namespace Game {
 		float noise = m_AnimalNoise.Get(x, y);
 
 		if (noise > 0.9f) {
-			Ref(NPC) new_animal = dynamic_pointer_cast<NPC>(MakeRef(Cow, Vivium::Vector2<float>(x, y) * World::PIXEL_SCALE));
+			//Ref(NPC) new_animal = dynamic_pointer_cast<NPC>((Cow, Vivium::Vector2<float>(x, y) * World::PIXEL_SCALE));
 
-			region.npcs.push_back(new_animal);
+			//region.npcs.push_back(new_animal);
 
 			// world->m_LoadedNPCs.emplace_back(new_animal);
 		}

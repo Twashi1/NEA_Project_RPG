@@ -35,7 +35,7 @@ namespace Vivium {
 		};
 
 		// Create buffer for vertex coords and tex coords
-		vb = MakeRef(VertexBuffer, vertex_data, 16, *layout);
+		vb = std::make_shared<VertexBuffer>(vertex_data, 16, *layout);
 	}
 
 	void Quad::m_Init()
@@ -147,7 +147,7 @@ namespace Vivium {
 		m_Construct();
 	}
 
-	const Ref(VertexBuffer) Quad::GetVertexBuffer() const
+	const std::shared_ptr<VertexBuffer> Quad::GetVertexBuffer() const
 	{
 		return vb;
 	}

@@ -142,23 +142,23 @@ namespace Game {
 	StartScene::StartScene(MainMenu* menu)
 		: m_Manager(menu)
 	{
-		m_TitleSprite = MakeRef(Vivium::Sprite, Vivium::Vector2<float>(0.0f, 100.0f), Vivium::Vector2<float>(256.0f, 256.0f), "title.png", true);
+		m_TitleSprite = std::make_shared<Vivium::Sprite>(Vivium::Vector2<float>(0.0f, 100.0f), Vivium::Vector2<float>(256.0f, 256.0f), "title.png", true);
 		
-		m_CreateWorldButton = MakeRef(Vivium::Button,
+		m_CreateWorldButton = std::make_shared<Vivium::Button>(
 			Vivium::Quad(0.0f, -50.0f, 400.0f, 100.0f),
 			&MainMenu::s_CreateWorldCallback,
 			std::string("New World"),
 			(void*)menu
 		);
 
-		m_LoadWorldButton = MakeRef(Vivium::Button,
+		m_LoadWorldButton = std::make_shared<Vivium::Button>(
 			Vivium::Quad(0.0f, -180.0f, 400.0f, 100.0f),
 			&MainMenu::s_LoadWorldCallback,
 			std::string("Load World"),
 			(void*)menu
 		);
 
-		m_OptionsButton = MakeRef(Vivium::Button,
+		m_OptionsButton = std::make_shared<Vivium::Button>(
 			Vivium::Quad(0.0f, -310.0f, 400.0f, 100.0f),
 			&MainMenu::s_OptionsCallback,
 			std::string("Options"),
@@ -239,21 +239,21 @@ namespace Game {
 
 	CreateWorldScene::CreateWorldScene(MainMenu* menu)
 	{
-		m_BackButton = MakeRef(Vivium::Button,
+		m_BackButton = std::make_shared<Vivium::Button>(
 			Vivium::Quad(-200.0f, 100.0f, 200.0f, 100.0f),
 			&MainMenu::s_BackButtonCallback,
 			"Go Back",
 			menu
 		);
 
-		m_WorldAlreadyExistsText = MakeRef(Vivium::Text,
+		m_WorldAlreadyExistsText = std::make_shared<Vivium::Text>(
 			"World already exists",
 			Vivium::Vector2<float>(0.0f, -75.0f),
 			Vivium::Text::Alignment::CENTER,
 			0.25f
 		);
 
-		m_WorldAlreadyExistsShader = MakeRef(Vivium::Shader, "text_vertex", "text_frag");
+		m_WorldAlreadyExistsShader = std::make_shared<Vivium::Shader>("text_vertex", "text_frag");
 		m_WorldAlreadyExistsText->shader = m_WorldAlreadyExistsShader;
 
 		m_WorldAlreadyExistsTimer.Start();
@@ -266,19 +266,19 @@ namespace Game {
 		// TODO: needs some fixing, we're writing the address of the address or something like that
 		params = Vivium::Utils::VoidArray::Make(__size_unused, intaddr0, intaddr1);
 
-		m_NameInputBox = MakeRef(Vivium::TextInput,
+		m_NameInputBox = std::make_shared<Vivium::TextInput>(
 			Vivium::Quad(0.0f, 300.0f, 300.0f, 100.0f),
 			nullptr,
 			(void*)this
 		);
 
-		m_SeedInputBox = MakeRef(Vivium::TextInput,
+		m_SeedInputBox = std::make_shared<Vivium::TextInput>(
 			Vivium::Quad(0.0f, 150.0f, 300.0f, 100.0f),
 			nullptr,
 			(void*)this
 		);
 
-		m_ConfirmButton = MakeRef(Vivium::Button,
+		m_ConfirmButton = std::make_shared<Vivium::Button>(
 			Vivium::Quad(0.0f, 0.0f, 300.0f, 100.0f),
 			&CreateWorldScene::s_ConfirmCallback,
 			std::string("Create World"),
@@ -380,7 +380,7 @@ namespace Game {
 	{
 		params = new __CallbackData(world_name, world_scene);
 
-		select_button = MakeRef(Vivium::Button,
+		select_button = std::make_shared<Vivium::Button>(
 			Vivium::Quad(pos, { 200.0f, 100.0f }),
 			&LoadWorldScene::s_SelectedWorldCallback,
 			world_name,
@@ -414,15 +414,16 @@ namespace Game {
 	LoadWorldScene::LoadWorldScene(MainMenu* menu)
 		: m_Manager(menu)
 	{
-		m_BackButton = MakeRef(Vivium::Button,
+		m_BackButton = std::make_shared<Vivium::Button>(
 			Vivium::Quad(-200.0f, 100.0f, 200.0f, 100.0f),
 			&MainMenu::s_BackButtonCallback,
 			"Go Back",
 			menu
 		);
 
-		m_WorldsPanel = MakeRef(Vivium::Panel,
-			Vivium::Quad(Vivium::Application::width / 2, Vivium::Application::height / 2, Vivium::Application::width, Vivium::Application::height));
+		m_WorldsPanel = std::make_shared<Vivium::Panel>(
+			Vivium::Quad(Vivium::Application::width / 2, Vivium::Application::height / 2, Vivium::Application::width, Vivium::Application::height)
+		);
 
 		Vivium::Application::window_panel->Anchor(Vivium::Panel::ANCHOR::RIGHT, Vivium::Panel::ANCHOR::BOTTOM, m_BackButton);
 
@@ -495,33 +496,33 @@ namespace Game {
 	OptionsScene::OptionsScene(MainMenu* manager)
 		: m_Manager(manager)
 	{
-		m_BackButton = MakeRef(Vivium::Button,
+		m_BackButton = std::make_shared<Vivium::Button>(
 			Vivium::Quad(-200.0f, 100.0f, 200.0f, 100.0f),
 			&MainMenu::s_BackButtonCallback,
 			"Go Back",
 			manager
 		);
 
-		m_FPSSlider = MakeRef(Vivium::Slider,
-			MakeRef(Vivium::Quad, 0.0f, 200.0f, 400.0f, 30.0f),
-			MakeRef(Vivium::Quad, 0.0f, 200.0f, 20.0f, 40.0f),
+		m_FPSSlider = std::make_shared<Vivium::Slider>(
+			std::make_shared<Vivium::Quad>(0.0f, 200.0f, 400.0f, 30.0f),
+			std::make_shared<Vivium::Quad>(0.0f, 200.0f, 20.0f, 40.0f),
 			&OptionsScene::s_FPSCallback
 		);
 
-		m_FPSText = MakeRef(Vivium::Text,
+		m_FPSText = std::make_shared<Vivium::Text>(
 			"FPS: 0",
 			Vivium::Vector2<float>(-200.0f, 230.0f),
 			Vivium::Text::Alignment::LEFT,
 			0.25f
 		);
 
-		m_VolumeSlider = MakeRef(Vivium::Slider,
-			MakeRef(Vivium::Quad, 0.0f, 100.0f, 400.0f, 30.0f),
-			MakeRef(Vivium::Quad, 0.0f, 100.0f, 20.0f, 40.0f),
+		m_VolumeSlider = std::make_shared<Vivium::Slider>(
+			std::make_shared<Vivium::Quad>(0.0f, 100.0f, 400.0f, 30.0f),
+			std::make_shared<Vivium::Quad>(0.0f, 100.0f, 20.0f, 40.0f),
 			&OptionsScene::s_VolumeCallback
 		);
 
-		m_VolumeText = MakeRef(Vivium::Text,
+		m_VolumeText = std::make_shared<Vivium::Text>(
 			"Volume: 100%",
 			Vivium::Vector2<float>(-200.0f, 130.0f),
 			Vivium::Text::Alignment::LEFT,
@@ -529,8 +530,8 @@ namespace Game {
 		);
 
 		// TODO: scroll limits when more options
-		m_OptionsPanel = MakeRef(Vivium::Panel,
-			MakeRef(Vivium::Quad, 0.0f, 0.0f, 500.0f, 1000.0f)
+		m_OptionsPanel = std::make_shared<Vivium::Panel>(
+			std::make_shared<Vivium::Quad>(0.0f, 0.0f, 500.0f, 1000.0f)
 		);
 
 		Vivium::Application::window_panel->Anchor(Vivium::Panel::ANCHOR::RIGHT, Vivium::Panel::ANCHOR::BOTTOM, m_BackButton);

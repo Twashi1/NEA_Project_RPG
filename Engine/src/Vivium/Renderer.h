@@ -38,7 +38,7 @@ namespace Vivium {
 		static void m_BeginScene(int id);
 
 	public:
-		static Ref(Camera) camera; // Camera currently being used on all Renderable objects
+		static std::shared_ptr<Camera> camera; // Camera currently being used on all Renderable objects
 
 		static constexpr uint8_t INVALID_TEXTURE_SLOT = 0xff; // Constant to represent an invalid texture slot
 		static constexpr uint8_t MAX_TEXTURE_SLOT = 0xf; // TODO: get max texture slots from opengl

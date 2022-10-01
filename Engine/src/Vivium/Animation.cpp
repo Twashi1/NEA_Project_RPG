@@ -100,12 +100,12 @@ namespace Vivium {
 		delete filetext;
 	}
 
-	const Ref(Texture) Animation::GetAtlas() const
+	const std::shared_ptr<Texture> Animation::GetAtlas() const
 	{
 		return m_Atlas->GetAtlas();
 	}
 
-	Animation::Animation(Ref(Quad) quad, Ref(Shader) shader, Ref(TextureAtlas) atlas, const Animation::Data& animation_data)
+	Animation::Animation(std::shared_ptr<Quad> quad, std::shared_ptr<Shader> shader, std::shared_ptr<TextureAtlas> atlas, const Animation::Data& animation_data)
 		: quad(quad), shader(shader), m_Atlas(atlas), m_AnimationData(animation_data)
 	{}
 

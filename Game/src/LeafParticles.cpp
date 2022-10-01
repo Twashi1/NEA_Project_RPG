@@ -64,7 +64,7 @@ namespace Game {
 	LeavesParticleSystem::LeavesParticleSystem(const std::size_t& max_size, const Vivium::Vector2<float>& acceleration)
 		: ParticleSystem(max_size, nullptr, acceleration)
 	{
-		m_Shader = MakeRef(Vivium::Shader, "particle_vertex", "particle_frag");
+		m_Shader = std::make_shared<Vivium::Shader>("particle_vertex", "particle_frag");
 	}
 
 	void LeavesParticleSystem::Emit(std::size_t count, float lifespan, const Vivium::Vector2<float>& pos, const Vivium::Vector2<float>& vel, const Vivium::Vector2<float>& var, float angle, float angular_vel, float angular_var)

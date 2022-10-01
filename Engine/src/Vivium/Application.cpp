@@ -15,14 +15,14 @@ namespace Vivium {
     double Application::m_TimePerFrame = 0.0;
     float Application::m_Volume = 1.0f;
 
-    std::unordered_map<Application::STATS_INDEX, Ref(Text)> Application::m_StatsTextMap{};
+    std::unordered_map<Application::STATS_INDEX, std::shared_ptr<Text>> Application::m_StatsTextMap{};
     std::unordered_map<Application::CURSOR_TYPE, GLFWcursor*> Application::m_CursorMap{};
 
     unsigned int Application::m_FramesProcessed = 0;
     double Application::m_ProcessingTime = 0.0;
 
     VersionNumber Application::m_VersionNumber = "v0.0.0";
-    Ref(TextureAtlas) Application::engine_icons = nullptr;
+    std::shared_ptr<TextureAtlas> Application::engine_icons = nullptr;
 
     GLFWwindow* Application::window = nullptr;
     int Application::width = 0;
@@ -32,7 +32,7 @@ namespace Vivium {
 
     std::string Application::resources_path = "../Resources/";
 
-    Ref(Panel) Application::window_panel = nullptr;
+    std::shared_ptr<Panel> Application::window_panel = nullptr;
 
     void Application::m_WindowResizeCallback(GLFWwindow* window, int nwidth, int nheight)
     {
@@ -218,7 +218,7 @@ namespace Vivium {
         Renderer::m_Init();
 
         // Create icons texture
-        engine_icons = MakeRef(TextureAtlas, "engine_icons.png", Vivium::Vector2<int>(16, 16));
+        engine_icons = std::make_shared<TextureAtlas>("engine_icons.png", Vivium::Vector2<int>(16, 16));
 
         // Initialise input system
         Input::m_Init();
@@ -242,8 +242,8 @@ namespace Vivium {
 
         // TODO Panel::Init(width, height)
         // Construct window panel
-        Ref(Quad) panel_quad = MakeRef(Quad, width * 0.5f, height * 0.5f, (float)width, (float)height);
-        window_panel = MakeRef(Panel, panel_quad);
+        std::shared_ptr<Quad> panel_quad = std::make_shared<Quad>(width * 0.5f, height * 0.5f, (float)width, (float)height);
+        window_panel = std::make_shared<Panel>(panel_quad);
 
         // Setup message callbacks
         glEnable(GL_DEBUG_OUTPUT);
@@ -257,10 +257,10 @@ namespace Vivium {
         glBlendFunc(GL_SRC_ALPHA, GL_ONE_MINUS_SRC_ALPHA);
 
         // Create all text renderables for stats
-        m_StatsTextMap.insert({ STATS_INDEX::AVERAGE_TPF,            MakeRef(Text, "", Vector2<float>(5, -15), Text::Alignment::LEFT, 0.25)  });
-        m_StatsTextMap.insert({ STATS_INDEX::PROCESSING_PERCENTAGE,  MakeRef(Text, "", Vector2<float>(5, -30), Text::Alignment::LEFT, 0.25)  });
-        m_StatsTextMap.insert({ STATS_INDEX::FPS,                    MakeRef(Text, "", Vector2<float>(5, -45), Text::Alignment::LEFT, 0.25)  });
-        m_StatsTextMap.insert({ STATS_INDEX::PLAYER_POS,             MakeRef(Text, "", Vector2<float>(5, -100), Text::Alignment::LEFT, 0.25) });
+        m_StatsTextMap.insert({ STATS_INDEX::AVERAGE_TPF,            std::make_shared<Text>("", Vector2<float>(5, -15), Text::Alignment::LEFT, 0.25)  });
+        m_StatsTextMap.insert({ STATS_INDEX::PROCESSING_PERCENTAGE,  std::make_shared<Text>("", Vector2<float>(5, -30), Text::Alignment::LEFT, 0.25)  });
+        m_StatsTextMap.insert({ STATS_INDEX::FPS,                    std::make_shared<Text>("", Vector2<float>(5, -45), Text::Alignment::LEFT, 0.25)  });
+        m_StatsTextMap.insert({ STATS_INDEX::PLAYER_POS,             std::make_shared<Text>("", Vector2<float>(5, -100), Text::Alignment::LEFT, 0.25) });
 
         // Anchor the text objects
         for (auto& [index, text] : m_StatsTextMap) {
@@ -323,7 +323,7 @@ namespace Vivium {
 
             std::string text = std::format("Average time per frame: {:.3f}ms/{:.3f}ms", avg_tpf_ms, m_TimePerFrame * 1000);
 
-            Ref(Text) t = m_StatsTextMap[STATS_INDEX::AVERAGE_TPF];
+            std::shared_ptr<Text> t = m_StatsTextMap[STATS_INDEX::AVERAGE_TPF];
             t->shader->Bind(); t->shader->SetUniform3f("u_TextColor", color.r, color.g, color.b);
             t->SetText(text);
 
@@ -339,7 +339,7 @@ namespace Vivium {
 
             std::string text = std::format("Processing time: {:.3f}%", percentage_processing);
 
-            Ref(Text) t = m_StatsTextMap[STATS_INDEX::PROCESSING_PERCENTAGE];
+            std::shared_ptr<Text> t = m_StatsTextMap[STATS_INDEX::PROCESSING_PERCENTAGE];
             t->shader->Bind(); t->shader->SetUniform3f("u_TextColor", color.r, color.g, color.b);
             t->SetText(text);
 
@@ -364,7 +364,7 @@ namespace Vivium {
                 text = std::format("Max FPS: {:.3f}; Actual FPS: {}", fps, m_FPS);
             }
 
-            Ref(Text) t = m_StatsTextMap[STATS_INDEX::FPS];
+            std::shared_ptr<Text> t = m_StatsTextMap[STATS_INDEX::FPS];
             t->shader->Bind(); t->shader->SetUniform3f("u_TextColor", color.r, color.g, color.b);
             t->SetText(text);
 
@@ -376,7 +376,7 @@ namespace Vivium {
 
             std::string text = std::format("Player position: [{:.3f}, {:.3f}]", player_position.x, player_position.y);
 
-            Ref(Text) t = m_StatsTextMap[STATS_INDEX::PLAYER_POS];
+            std::shared_ptr<Text> t = m_StatsTextMap[STATS_INDEX::PLAYER_POS];
             t->shader->Bind(); t->shader->SetUniform3f("u_TextColor", RGBColor::WHITE);
             t->SetText(text);
 

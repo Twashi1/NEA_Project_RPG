@@ -54,16 +54,7 @@
 #endif
 
 #ifdef VIVIUM_EXPOSE_CORE
-	#define Ref(T) std::shared_ptr<T>
-	#define MakeRef(T, ...) std::make_shared<T>(__VA_ARGS__)
-	#define WeakRef(T) std::weak_ptr<T>
-
-	#define FunctionAlias(highLevelF, lowLevelF) \
-	template<typename... Args> \
-	inline auto highLevelF(Args&&... args) -> decltype(lowLevelF(std::forward<Args>(args)...)) \
-	{ \
-		return lowLevelF(std::forward<Args>(args)...); \
-	}
+// Nothing left here lol
 #endif
 
 namespace Vivium {
@@ -85,7 +76,7 @@ namespace Vivium {
 	template <typename T> concept Integral = std::is_integral_v<T>;
 	template <typename T> concept FloatingPoint = std::is_floating_point_v<T>;
 
-	// TODO: move
+	// TODO: move somewhere appropriate (needs vector, but should be in maths? maybe new maths namespace, maybe .inl for vector2)
 	// Quake fast inverse square root
 	// https://en.wikipedia.org/wiki/Fast_inverse_square_root
 	VIVIUM_API float InverseSquareRoot(float number);

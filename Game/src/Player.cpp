@@ -179,9 +179,9 @@ namespace Game {
         : m_MainInventory(Inventory::ID::SMALL_WITH_HOTBAR), m_CraftingInventory()
     {
         // Setup player quad and body
-        quad = MakeRef(Vivium::Quad, 0.0f, 0.0f, 50.0f, 50.0f);
+        quad = std::make_shared<Vivium::Quad>(0.0f, 0.0f, 50.0f, 50.0f);
         // TODO: fix later
-        body = MakeRef(Vivium::Body, quad, true, 0.0f, 1.0f);
+        body = std::make_shared<Vivium::Body>(quad, true, 0.0f, 1.0f);
 
         // Setup shader and uniforms
         shader = new Vivium::Shader("world_vertex", "color_frag");

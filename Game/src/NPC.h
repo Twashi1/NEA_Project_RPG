@@ -3,64 +3,130 @@
 #include "Core.h"
 
 namespace Game {
-	class World;
+	namespace Pathfinding {
+		// API will be
+		// Behaviour is inherited from, declaring some global and per npc settings for the behaviour
+		// Global settings are statically stored with the behaviour
+		// Behaviour will provide some functions, taking some per npc settings
+		// Declare entity id, declare list of behaviours
+		// TODO: StreamablePOD and Streamable
+		struct NPC;
+		class World;
 
-	// Non Playing Character
-	// Base for enemies, animals, etc; some creature that will have pathfinding
-	// TODO: set a "home"; a position the NPC will attempt to not wander too far from, and a "tether range" to determine the max distance an NPC will wander from home
-	class NPC : Vivium::Streamable {
-	public:
-		enum class EntityType : unsigned int {
-			NPC,
-			PASSIVE_ENTITY,
-			PIG,
-			COW
+		class Behaviour {
+		public:
+			struct Client {
+				virtual ~Client() = default;
+			};
+
+			virtual ~Behaviour() = default;
+			
+			virtual void ExecuteOn(NPC* npc) const = 0;
+			virtual void Update(Client* client) const = 0;
+			virtual bool IsOver(Client* client) const = 0;
+
+			enum class ID : uint8_t {
+				IDLE,
+				WANDER,
+				MAX
+			};
 		};
 
-	protected:
-		static constexpr float SPEED = 200.0f;
-		static constexpr float THINKING_TIME = 5.0f; // 5 seconds
-		static constexpr float SEARCH_FREQUENCY = 1.0f; // Search for new path every 1 second
-		static constexpr float HOME_RANGE = 800.0f;
-		static constexpr float WANDER_RANGE = 800.0f;
-		static const Vivium::Vector2<float> WANDER_RANGE_VARIATION;
-		// If the NPC is within this distance from the current pathfinding destination, it will begin movement to the next destination
-		static const float PATHFINDING_EPSILON;
+		class Idle : virtual public Behaviour {
+			struct Global {
+				float thinking_time;
+			};
 
-		Ref(Vivium::Body) m_Body = nullptr;
-		Vivium::Timer m_BeenThinkingForTimer;
-		float m_BeenThinkingFor = 0.0f;
-		Vivium::Vector2<float> m_HomeLocation = FLT_MAX;
+			struct Client {
+				Vivium::Timer thinking_timer;
+			};
 
-		// List of positions we have to walk to on our path
-		std::queue<Vivium::Vector2<int>> m_PathfindingDestinations;
+			Global global;
 
-		virtual void m_Wander(World* world);
-		virtual void m_UpdateDirection();
-		virtual void m_UpdatePath(World* world);
+			virtual void ExecuteOn(NPC* npc) const override
+			{
+				// TODO: kill velocity
+			}
+			virtual void Update(Behaviour::Client* client) const override {}
+			virtual bool IsOver(Behaviour::Client* client) const override
+			{
+				Idle::Client* my_client = dynamic_cast<Idle::Client*>(client);
 
-		NPC() = default;
-		NPC(Ref(Vivium::Body) body);
+				return my_client->thinking_timer.GetElapsedNoReset() > global.thinking_time;
+			}
+		};
 
-	public:
-		virtual EntityType GetEntityType() const;
+		class Wandering : virtual public Behaviour {
+			struct Global {
+				float thinking_time;
+				float wander_range;
+				Vivium::Vector2<float> wander_range_variation;
+				float wander_speed;
 
-		virtual bool IsPassive() const;
-		static bool IsSame(const Ref(NPC) a, const Ref(NPC) b);
+				float home_range;
 
-		// Make polymorphic
-		virtual ~NPC() = default;
+				Global(float thinking_time, float wander_range, Vivium::Vector2<float> wander_range_variation, float wander_speed, float home_range)
+					: thinking_time(thinking_time), wander_range(wander_range), wander_range_variation(wander_range_variation), wander_speed(wander_speed), home_range(home_range)
+				{}
+			};
 
-		virtual Vivium::Vector2<float> GetPos() const;
+			struct Client : virtual public Behaviour::Client {
+				float thinking_for;
+				Vivium::Vector2<int> home_tile;
+			};
 
-		static bool IsValidSpawn(const Vivium::Vector2<int>& pos, World* world);
-		virtual void Update(World* world);
-		virtual void Render() = 0;
+			Global global;
 
-		virtual void Write(Vivium::Serialiser& s) const = 0;
-		virtual void Read(Vivium::Serialiser& s) = 0;
-	};
+			virtual void ExecuteOn(NPC* npc) const override
+			{
+				Client* my_client = dynamic_cast<Client*>(npc->behaviour_data.at(Behaviour::ID::WANDER));
 
-	template <typename T>
-	concept IsNPC = std::is_base_of_v<NPC, T> || std::is_same_v<NPC, T>;
+				// Select direction to move in
+				Vivium::Vector2<float> move_vector = Vivium::Random::GetVector2f(
+					global.wander_range * Vivium::Random::GetFloat(global.wander_range_variation.x, global.wander_range_variation.y)
+				);
+
+				// Select a tile in that direction
+				Vivium::Vector2<float> pos = npc->body->quad->GetCenter();
+				Vivium::Vector2<float> dest = pos + move_vector;
+				Vivium::Vector2<int> dest_tile = dest / World::PIXEL_SCALE;
+				
+				// Attempt to spawn on valid tile
+				if (!NPC::world->GetIsObstacle(dest_tile)) {
+					// TODO
+				}
+			}
+
+			virtual void Update(Behaviour::Client* client) const override;
+			virtual bool IsOver(Behaviour::Client* client) const override;
+		};
+
+		// TODO: some rendering stuff
+		struct NPC {
+			enum class ID : uint8_t {
+				COW,
+				PIG,
+				MAX
+			};
+
+			static World* world;
+
+			NPC::ID id;
+			std::shared_ptr<Vivium::Body> body;
+			std::unordered_map<Behaviour::ID, std::shared_ptr<Behaviour::Client>> behaviour_data;
+			Vivium::Pathfinding::Path path;
+
+			NPC(const NPC& other) = default;
+			~NPC();
+
+			struct Properties {
+				std::vector<std::shared_ptr<Behaviour>> behaviours;
+			};
+
+			static std::array<Properties, (uint8_t)ID::MAX> m_Properties;
+
+			static const Properties& GetProperties(const ID& id) { return m_Properties[(uint8_t)id]; }
+			static const std::vector<std::shared_ptr<Behaviour>>& GetBehaviours(const ID& id) { return m_Properties[(uint8_t)id].behaviours; }
+		};
+	}
 }

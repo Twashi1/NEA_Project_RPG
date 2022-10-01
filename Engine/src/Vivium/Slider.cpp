@@ -1,8 +1,8 @@
 #include "Slider.h"
 
 namespace Vivium {
-	Ref(Shader) Slider::m_DefaultBarShader = nullptr;
-	Ref(Shader) Slider::m_DefaultSliderShader = nullptr;
+	std::shared_ptr<Shader> Slider::m_DefaultBarShader = nullptr;
+	std::shared_ptr<Shader> Slider::m_DefaultSliderShader = nullptr;
 
 	void Slider::m_UpdateValue()
 	{
@@ -19,11 +19,11 @@ namespace Vivium {
 
 	void Slider::m_Init()
 	{
-		m_DefaultBarShader = MakeRef(Shader, "static_texture_vertex", "slider_frag");
+		m_DefaultBarShader = std::make_shared<Shader>("static_texture_vertex", "slider_frag");
 		m_DefaultBarShader->SetUniform3f("u_BarColor", 0.3, 0.3, 0.3);
 		m_DefaultBarShader->SetUniform3f("u_ShadedColor", 0.2, 0.2, 0.2);
 
-		m_DefaultSliderShader = MakeRef(Shader, "static_texture_vertex", "color_frag");
+		m_DefaultSliderShader = std::make_shared<Shader>("static_texture_vertex", "color_frag");
 		m_DefaultSliderShader->SetUniform3f("u_Color", 0.2, 0.2, 0.2);
 	}
 
@@ -104,19 +104,19 @@ namespace Vivium {
 		bar_shader->SetUniform1f("u_Value", m_Value);
 	}
 
-	Slider::Slider(Ref(Quad) bar_quad, Ref(Quad) slider_quad, CallbackFunc_t callback, void* userParams)
+	Slider::Slider(std::shared_ptr<Quad> bar_quad, std::shared_ptr<Quad> slider_quad, CallbackFunc_t callback, void* userParams)
 		: m_Value(0.0f), m_BarQuad(bar_quad), m_SliderQuad(slider_quad), callback(callback), bar_shader(m_DefaultBarShader), slider_shader(m_DefaultSliderShader), m_UserParams(userParams)
 	{
 		m_Construct();
 	}
 
-	Slider::Slider(Ref(Quad) bar_quad, Ref(Quad) slider_quad, Ref(Shader) bar_shader, Ref(Shader) slider_shader, CallbackFunc_t callback, void* userParams)
+	Slider::Slider(std::shared_ptr<Quad> bar_quad, std::shared_ptr<Quad> slider_quad, std::shared_ptr<Shader> bar_shader, std::shared_ptr<Shader> slider_shader, CallbackFunc_t callback, void* userParams)
 		: m_Value(0.0f), m_BarQuad(bar_quad), m_SliderQuad(slider_quad), callback(callback), bar_shader(bar_shader), slider_shader(slider_shader), m_UserParams(userParams)
 	{
 		m_Construct();
 	}
 
-	Slider::Slider(Ref(Quad) bar_quad, Ref(Quad) slider_quad, Ref(Shader) bar_shader, Ref(Shader) slider_shader, Ref(Texture) bar_texture, Ref(Texture) slider_texture, CallbackFunc_t callback, void* userParams)
+	Slider::Slider(std::shared_ptr<Quad> bar_quad, std::shared_ptr<Quad> slider_quad, std::shared_ptr<Shader> bar_shader, std::shared_ptr<Shader> slider_shader, std::shared_ptr<Texture> bar_texture, std::shared_ptr<Texture> slider_texture, CallbackFunc_t callback, void* userParams)
 		: m_Value(0.0f), m_BarQuad(bar_quad), m_SliderQuad(slider_quad), callback(callback), bar_shader(bar_shader), slider_shader(slider_shader), bar_texture(bar_texture), slider_texture(slider_texture), m_UserParams(userParams)
 	{
 		m_Construct();

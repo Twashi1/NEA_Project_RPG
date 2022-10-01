@@ -16,10 +16,10 @@ namespace Game {
 	private:
 		MainMenu* m_Manager = nullptr;
 
-		Ref(Vivium::Sprite) m_TitleSprite;
-		Ref(Vivium::Button) m_CreateWorldButton;
-		Ref(Vivium::Button) m_LoadWorldButton;
-		Ref(Vivium::Button) m_OptionsButton;
+		std::shared_ptr<Vivium::Sprite> m_TitleSprite;
+		std::shared_ptr<Vivium::Button> m_CreateWorldButton;
+		std::shared_ptr<Vivium::Button> m_LoadWorldButton;
+		std::shared_ptr<Vivium::Button> m_OptionsButton;
 
 	public:
 		StartScene(MainMenu* menu);
@@ -31,18 +31,18 @@ namespace Game {
 
 	class CreateWorldScene : public Vivium::IScene {
 	private:
-		Ref(Vivium::TextInput) m_NameInputBox;
-		Ref(Vivium::TextInput) m_SeedInputBox;
-		Ref(Vivium::Button) m_ConfirmButton;
-		Ref(Vivium::Text) m_WorldAlreadyExistsText;
-		Ref(Vivium::Shader) m_WorldAlreadyExistsShader;
+		std::shared_ptr<Vivium::TextInput> m_NameInputBox;
+		std::shared_ptr<Vivium::TextInput> m_SeedInputBox;
+		std::shared_ptr<Vivium::Button> m_ConfirmButton;
+		std::shared_ptr<Vivium::Text> m_WorldAlreadyExistsText;
+		std::shared_ptr<Vivium::Shader> m_WorldAlreadyExistsShader;
 		float m_WorldAlreadyExistsLifespan = 0.0f;
 		Vivium::Timer m_WorldAlreadyExistsTimer;
 
 		static constexpr float s_WorldAlreadyExistsMaxLifespan = 3.0f;
 		static constexpr float s_WorldAlreadyExistsFadeout = 0.5f; // Begin fading out 0.5 seconds before the end
 		
-		Ref(Vivium::Button) m_BackButton; // Takes back to start screen
+		std::shared_ptr<Vivium::Button> m_BackButton; // Takes back to start screen
 
 		void* params;
 
@@ -71,15 +71,15 @@ namespace Game {
 		static constexpr int FPS_MIN = 60;
 		static constexpr int FPS_MAX = 240;
 
-		Ref(Vivium::Panel) m_OptionsPanel;
+		std::shared_ptr<Vivium::Panel> m_OptionsPanel;
 
-		Ref(Vivium::Slider) m_FPSSlider;
-		Ref(Vivium::Text) m_FPSText;
+		std::shared_ptr<Vivium::Slider> m_FPSSlider;
+		std::shared_ptr<Vivium::Text> m_FPSText;
 
-		Ref(Vivium::Slider) m_VolumeSlider;
-		Ref(Vivium::Text) m_VolumeText;
+		std::shared_ptr<Vivium::Slider> m_VolumeSlider;
+		std::shared_ptr<Vivium::Text> m_VolumeText;
 
-		Ref(Vivium::Button) m_BackButton;
+		std::shared_ptr<Vivium::Button> m_BackButton;
 
 	public:
 		OptionsScene(MainMenu* manager);
@@ -104,7 +104,8 @@ namespace Game {
 
 		// For the load world scene, it should display all the worlds you have available as small rectangles with the world name, maybe file size, date of creation, etc.
 		struct VisualWorldSelectable {
-			Ref(Vivium::Button) select_button;
+			// TODO: unique?
+			std::shared_ptr<Vivium::Button> select_button;
 			std::string			world_name;
 
 			__CallbackData* params;
@@ -118,8 +119,8 @@ namespace Game {
 
 		std::vector<VisualWorldSelectable> m_Worlds;
 		
-		Ref(Vivium::Panel) m_WorldsPanel; // Panel for the possible worlds to select
-		Ref(Vivium::Button) m_BackButton; // Takes back to start screen
+		std::shared_ptr<Vivium::Panel> m_WorldsPanel; // Panel for the possible worlds to select
+		std::shared_ptr<Vivium::Button> m_BackButton; // Takes back to start screen
 
 	public:
 		LoadWorldScene(MainMenu* menu);

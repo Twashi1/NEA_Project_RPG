@@ -15,6 +15,7 @@ namespace Vivium {
 		struct Manifold {
 			Vector2<float> intersecting_vertex = NAN;
 			Vector2<float> edge_vector = NAN;
+			// TODO: fix face normal not always pointing outwards?
 			Vector2<float> face_normal = NAN;
 			Vector2<float> intersecting_face_v0 = NAN;
 			Vector2<float> intersecting_face_v1 = NAN;

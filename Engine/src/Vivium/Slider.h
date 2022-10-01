@@ -10,16 +10,16 @@
 namespace Vivium {
 	class VIVIUM_API Slider {
 	public:
-		static Ref(Shader) m_DefaultBarShader;
-		static Ref(Shader) m_DefaultSliderShader;
+		static std::shared_ptr<Shader> m_DefaultBarShader;
+		static std::shared_ptr<Shader> m_DefaultSliderShader;
 
 		float m_Value; // Slider value from 0 -> 1
 
 		void m_UpdateValue();
 		void m_Construct();
 
-		Ref(Quad) m_BarQuad;
-		Ref(Quad) m_SliderQuad;
+		std::shared_ptr<Quad> m_BarQuad;
+		std::shared_ptr<Quad> m_SliderQuad;
 
 		bool isMovingSlider = false; // Currently holding down the slider
 
@@ -32,11 +32,11 @@ namespace Vivium {
 
 		CallbackFunc_t callback;
 
-		Ref(Texture) bar_texture = nullptr;
-		Ref(Shader) bar_shader;
+		std::shared_ptr<Texture> bar_texture = nullptr;
+		std::shared_ptr<Shader> bar_shader;
 
-		Ref(Texture) slider_texture = nullptr;
-		Ref(Shader) slider_shader;
+		std::shared_ptr<Texture> slider_texture = nullptr;
+		std::shared_ptr<Shader> slider_shader;
 
 		float GetValue() const;
 		float GetValue(float scale) const;
@@ -53,9 +53,9 @@ namespace Vivium {
 
 		void Update();
 
-		Slider(Ref(Quad) bar_quad, Ref(Quad) slider_quad, CallbackFunc_t callback, void* userParams = nullptr);
-		Slider(Ref(Quad) bar_quad, Ref(Quad) slider_quad, Ref(Shader) bar_shader, Ref(Shader) slider_shader, CallbackFunc_t callback, void* userParams = nullptr);
-		Slider(Ref(Quad) bar_quad, Ref(Quad) slider_quad, Ref(Shader) bar_shader, Ref(Shader) slider_shader, Ref(Texture) bar_texture, Ref(Texture) slider_texture, CallbackFunc_t callback, void* userParams = nullptr);
+		Slider(std::shared_ptr<Quad> bar_quad, std::shared_ptr<Quad> slider_quad, CallbackFunc_t callback, void* userParams = nullptr);
+		Slider(std::shared_ptr<Quad> bar_quad, std::shared_ptr<Quad> slider_quad, std::shared_ptr<Shader> bar_shader, std::shared_ptr<Shader> slider_shader, CallbackFunc_t callback, void* userParams = nullptr);
+		Slider(std::shared_ptr<Quad> bar_quad, std::shared_ptr<Quad> slider_quad, std::shared_ptr<Shader> bar_shader, std::shared_ptr<Shader> slider_shader, std::shared_ptr<Texture> bar_texture, std::shared_ptr<Texture> slider_texture, CallbackFunc_t callback, void* userParams = nullptr);
 		~Slider();
 
 		friend Renderer;

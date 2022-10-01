@@ -28,7 +28,7 @@ namespace Vivium {
 		}
 	}
 
-	void Physics::m_TestCollision(const Ref(Body)& a, const Ref(Body)& b)
+	void Physics::m_TestCollision(const std::shared_ptr<Body>& a, const std::shared_ptr<Body>& b)
 	{
 		float elapsed = m_Timer.GetElapsedNoReset();
 
@@ -80,7 +80,7 @@ namespace Vivium {
 		}
 	}
 
-	void Physics::m_ResolveCollision(Ref(Body) a, Ref(Body) b, const Rect& a_rect, const Rect& b_rect, const std::array<Vector2<float>, 4>& a_vertices, const std::array<Vector2<float>, 4>& b_vertices, const Rect::Manifold& manifold)
+	void Physics::m_ResolveCollision(std::shared_ptr<Body> a, std::shared_ptr<Body> b, const Rect& a_rect, const Rect& b_rect, const std::array<Vector2<float>, 4>& a_vertices, const std::array<Vector2<float>, 4>& b_vertices, const Rect::Manifold& manifold)
 	{
 		if (a->isPhysical && b->isPhysical) {
 			float restitution = std::min(a->restitution, b->restitution);

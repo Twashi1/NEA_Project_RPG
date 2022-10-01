@@ -35,7 +35,7 @@ namespace Game {
         // Write npcs
         s.Write(npcs.size());
 
-        for (Ref(NPC) npc : npcs) {
+        for (std::shared_ptr<NPC> npc : npcs) {
             // TODO: this would write a NPC type object, not whatever the derived class is
             //s.Write(*npc);
         }

@@ -1,15 +1,15 @@
 #include "Button.h"
 
 namespace Vivium {
-	Ref(Shader) Button::m_DefaultIdleShader = nullptr;
-	Ref(Shader) Button::m_DefaultPressedShader = nullptr;
+	std::shared_ptr<Shader> Button::m_DefaultIdleShader = nullptr;
+	std::shared_ptr<Shader> Button::m_DefaultPressedShader = nullptr;
 	Ref(Font) Button::m_DefaultFont = nullptr;
 
 	void Button::m_Construct()
 	{
 		// Construct text object
 		Vector2<float> pos = quad->GetCenter();
-		text = MakeRef(Text, idle_text, pos, Text::Alignment::CENTER, Button::m_DefaultScale);
+		text = std::make_shared<Text>(idle_text, pos, Text::Alignment::CENTER, Button::m_DefaultScale);
 	}
 
 	void Button::m_Init()
@@ -20,10 +20,10 @@ namespace Vivium {
 		}
 
 		// Construct default shaders
-		m_DefaultIdleShader = MakeRef(Shader, "static_vertex", "transparency_frag");
+		m_DefaultIdleShader = std::make_shared<Shader>("static_vertex", "transparency_frag");
 		m_DefaultIdleShader->SetUniform4f("u_Color", 0.3, 0.3, 0.3, Button::m_DefaultScale);
 
-		m_DefaultPressedShader = MakeRef(Shader, "static_vertex", "transparency_frag");
+		m_DefaultPressedShader = std::make_shared<Shader>("static_vertex", "transparency_frag");
 		m_DefaultPressedShader->SetUniform4f("u_Color", 0.2, 0.2, 0.2, Button::m_DefaultScale);
 
 		// Construct default font
@@ -41,7 +41,7 @@ namespace Vivium {
 		return quad->GetCenter();
 	}
 
-	Button::Button(const Quad& quad, CallbackFunc_t callback, const std::string& idle_text, const std::string& pressed_text, Ref(Shader) idle_shader, Ref(Shader) pressed_shader, Ref(Texture) idle_texture, Ref(Texture) pressed_texture, void* userParams)
+	Button::Button(const Quad& quad, CallbackFunc_t callback, const std::string& idle_text, const std::string& pressed_text, std::shared_ptr<Shader> idle_shader, std::shared_ptr<Shader> pressed_shader, std::shared_ptr<Texture> idle_texture, std::shared_ptr<Texture> pressed_texture, void* userParams)
 		:
 		callback(callback),
 		idle_text(idle_text), pressed_text(pressed_text),
@@ -49,18 +49,18 @@ namespace Vivium {
 		idle_texture(idle_texture), pressed_texture(pressed_texture),
 		m_UserParams(userParams)
 	{
-		this->quad = MakeRef(Quad, quad);
+		this->quad = std::make_shared<Quad>(quad);
 		m_Construct();
 	}
 
-	Button::Button(const Quad& quad, CallbackFunc_t callback, const std::string& idle_text, const std::string& pressed_text, Ref(Shader) idle_shader, Ref(Shader) pressed_shader, void* userParams)
+	Button::Button(const Quad& quad, CallbackFunc_t callback, const std::string& idle_text, const std::string& pressed_text, std::shared_ptr<Shader> idle_shader, std::shared_ptr<Shader> pressed_shader, void* userParams)
 		:
 		callback(callback),
 		idle_text(idle_text), pressed_text(pressed_text),
 		idle_shader(idle_shader), pressed_shader(pressed_shader),
 		m_UserParams(userParams)
 	{
-		this->quad = MakeRef(Quad, quad);
+		this->quad = std::make_shared<Quad>(quad);
 		m_Construct();
 	}
 
@@ -71,7 +71,7 @@ namespace Vivium {
 		idle_shader(m_DefaultIdleShader), pressed_shader(m_DefaultPressedShader),
 		m_UserParams(userParams)
 	{
-		this->quad = MakeRef(Quad, quad);
+		this->quad = std::make_shared<Quad>(quad);
 		m_Construct();
 	}
 
@@ -82,7 +82,7 @@ namespace Vivium {
 		idle_shader(m_DefaultIdleShader), pressed_shader(m_DefaultPressedShader),
 		m_UserParams(userParams)
 	{
-		this->quad = MakeRef(Quad, quad);
+		this->quad = std::make_shared<Quad>(quad);
 		m_Construct();
 	}
 
@@ -143,12 +143,12 @@ namespace Vivium {
 		}
 	}
 
-	Ref(Shader) Button::CurrentShader()
+	std::shared_ptr<Shader> Button::CurrentShader()
 	{
 		return isPressed ? pressed_shader : idle_shader;
 	}
 
-	Ref(Texture) Button::CurrentTexture()
+	std::shared_ptr<Texture> Button::CurrentTexture()
 	{
 		return isPressed ? pressed_texture : idle_texture;
 	}

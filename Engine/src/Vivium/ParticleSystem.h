@@ -39,7 +39,7 @@ namespace Vivium {
 	class VIVIUM_API ParticleSystem {
 	protected:
 		static const BufferLayout m_Layout;
-		Ref(Shader) m_Shader;
+		std::shared_ptr<Shader> m_Shader;
 
 		Vector2<float> m_Acceleration; // General acceleration of all particles
 
@@ -55,7 +55,7 @@ namespace Vivium {
 		virtual void m_RenderBatch(Batch* batch);
 
 	public:
-		ParticleSystem(const std::size_t& max_size, Ref(Shader) shader, const Vector2<float>& acceleration = 0.0f);
+		ParticleSystem(const std::size_t& max_size, std::shared_ptr<Shader> shader, const Vector2<float>& acceleration = 0.0f);
 		virtual ~ParticleSystem();
 
 		// TODO: Emit specification might be useful

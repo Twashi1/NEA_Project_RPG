@@ -49,8 +49,8 @@ namespace Game {
 		Vivium::Physics::Layer* m_TileLayer = nullptr;
 		static constexpr uint32_t TILE_PHYSICS_LAYER = 1;
 
-		std::vector<Ref(Vivium::Body)> m_TileBodies;
-		std::vector<WeakRef(NPC)> m_LoadedNPCs;
+		std::vector<std::shared_ptr<Vivium::Body>> m_TileBodies;
+		std::vector<std::weak_ptr<NPC>> m_LoadedNPCs;
 
 		static constexpr int OBSTACLE_MAP_REGION_PADDING = 1;
 		Vivium::Vector2<int> m_WorldToObstacleMapTransform;
@@ -129,7 +129,7 @@ namespace Game {
 		Tile* GetLoadedTile(const Vivium::Vector2<int>& pos);
 		Tile* GetLoadedTile(int x, int y);
 
-		std::vector<WeakRef(NPC)>* GetLoadedNPCs();
+		std::vector<std::weak_ptr<NPC>>* GetLoadedNPCs();
 
 		World(const uint32_t& seed, const std::string& world_name, Player* player);
 		~World();

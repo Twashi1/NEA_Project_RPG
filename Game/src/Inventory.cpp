@@ -577,7 +577,7 @@ namespace Game {
 	}
 
 	Inventory::Inventory()
-		: m_InventoryData({}), m_InventoryID(ID::MAX), inventory_pos(MakeRef(Vivium::Vector2<float>, 0.0f, 0.0f))
+		: m_InventoryData({}), m_InventoryID(ID::MAX), inventory_pos(std::make_shared<Vivium::Vector2<float>>(0.0f, 0.0f))
 	{}
 
 	void Inventory::m_UpdateItemCounts()
@@ -628,7 +628,7 @@ namespace Game {
 	}
 
 	Inventory::Inventory(const ID& inventory_id)
-		: m_InventoryID(inventory_id), m_InventoryData(inventory_id), inventory_pos(MakeRef(Vivium::Vector2<float>, 0.0f, 0.0f))
+		: m_InventoryID(inventory_id), m_InventoryData(inventory_id), inventory_pos(std::make_shared<Vivium::Vector2<float>>(0.0f, 0.0f))
 	{}
 
 	Inventory::~Inventory() {}

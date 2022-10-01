@@ -100,19 +100,6 @@ namespace Game {
 
 		m_BlockBreakingSound = Vivium::Application::sound_engine->addSoundSourceFromFile((Vivium::Application::resources_path + "sounds/breaking_block.wav").c_str(), irrklang::ESM_AUTO_DETECT, true);
 
-		// TEMP generate some npcs
-#ifdef MANUALLY_GEN_NPCS
-		Region& region = m_LoadRegion(GetRegionIndex(player->quad->GetCenter() / World::PIXEL_SCALE));
-
-		for (int i = 0; i < 5; i++) {
-			Ref(NPC) npc = MakeRef(Pig, 0.0f);
-			region.npcs.push_back(npc);
-			__npcs.push_back(npc);
-		}
-
-		Weapon::UpdateNPCList(__npcs);
-#endif
-
 		Weapon::Projectile::SetWorld(this);
 
 		m_UpdateTimer.Start();
@@ -574,9 +561,9 @@ namespace Game {
 									/* TODO: UpdatePhysics */
 									// TODO: bad
 									if (Tile::GetIsPhysical(id)) {
-										Ref(Vivium::Quad) quad = MakeRef(Vivium::Quad, Vivium::Vector2<float>(dx, dy), Vivium::Vector2<float>(halfscale));
+										std::shared_ptr<Vivium::Quad> quad = std::make_shared<Vivium::Quad>(Vivium::Vector2<float>(dx, dy), Vivium::Vector2<float>(halfscale));
 										// TODO: fix later
-										Ref(Vivium::Body) body = MakeRef(Vivium::Body, quad, true, 0.0f, 1.0f);
+										std::shared_ptr<Vivium::Body> body = std::make_shared<Vivium::Body>(quad, true, 0.0f, 1.0f);
 
 										m_TileBodies.push_back(body);
 										m_TileLayer->bodies.push_back(body);
@@ -638,7 +625,7 @@ namespace Game {
 
 					if (item_data.id == Item::ID::VOID) { continue; }
 
-					const Ref(Vivium::Quad) item_quad = item.GetQuad();
+					const std::shared_ptr<Vivium::Quad> item_quad = item.GetQuad();
 
 					const Vivium::Vector2<int>& index = Item::GetAtlasIndex(item_data.id);
 					std::array<float, 8> tex_coords = TextureManager::game_atlas->GetCoordsArray(index);
@@ -742,7 +729,7 @@ namespace Game {
 		Vivium::Vector2<int> dim(right - left, top - bottom);
 
 		// Create obstacle map data
-		Ref(bool[]) obstacle_data = std::make_shared_for_overwrite<bool[]>(dim.x * dim.y);
+		std::shared_ptr<bool[]> obstacle_data = std::make_shared_for_overwrite<bool[]>(dim.x * dim.y);
 
 		// Fill with obstacles, unloaded areas will be defaulted to obstacles
 		for (std::size_t i = 0; i < dim.x * dim.y; i++) {
@@ -809,7 +796,7 @@ namespace Game {
 		for (auto& npc : m_LoadedNPCs) {
 			if (npc.expired()) continue;
 
-			npc.lock()->Render();
+			// npc.lock()->Render();
 		}
 
 		m_DaylightFramebuffer->Unbind();
@@ -853,7 +840,7 @@ namespace Game {
 					it = m_LoadedNPCs.erase(it);
 				}
 				else {
-					it->lock()->Update(this);
+					// it->lock()->Update(this);
 
 					++it;
 				}
@@ -863,7 +850,7 @@ namespace Game {
 		m_UpdateObstacleMap();
 	}
 
-	std::vector<WeakRef(NPC)>* World::GetLoadedNPCs()
+	std::vector<std::weak_ptr<NPC>>* World::GetLoadedNPCs()
 	{
 		return &m_LoadedNPCs;
 	}
