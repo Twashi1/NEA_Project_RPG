@@ -34,11 +34,13 @@ namespace Game {
 	Vivium::Noise::White Biome::ForestBiome::m_VegitationNoise; // TODO: Switch to worley noise
 	Vivium::Noise::White Biome::ForestBiome::m_OreNoise;
 	Vivium::Noise::White Biome::ForestBiome::m_DebrisNoise;
+	Vivium::Noise::Cellular Biome::ForestBiome::m_AnimalNoise;
 
 	Vivium::Noise::White Biome::DesertBiome::m_CactusNoise;
 	Vivium::Noise::White Biome::DesertBiome::m_VegitationNoise; // TODO: Switch to worley noise
 	Vivium::Noise::White Biome::DesertBiome::m_OreNoise;
 	Vivium::Noise::White Biome::DesertBiome::m_DebrisNoise;
+	Vivium::Noise::Cellular Biome::DesertBiome::m_AnimalNoise;
 
 	// TODO: if they have the same key they will replace each other!
 	const std::unordered_map<float, Structure::ID> Biome::ForestBiome::m_TreeWeights = {
@@ -101,7 +103,23 @@ namespace Game {
 		m_TreeNoise.m_Seed = seed;
 		m_VegitationNoise.m_Seed = seed;
 		m_OreNoise.m_Seed = seed;
+		m_AnimalNoise.m_Seed = seed;
+		m_AnimalNoise.wavelength = 6; // TODO: decide wavelength
 		m_HeightNoise.wavelength = 6;
+	}
+
+	void Biome::ForestBiome::SpawnNPCs(int x, int y, Region& region, World* world) const
+	{
+		// Spawning animals
+		float noise = m_AnimalNoise.Get(x, y);
+
+		if (noise > 0.9f) {
+			Ref(NPC) new_animal = dynamic_pointer_cast<NPC>(MakeRef(Pig, Vivium::Vector2<float>(x, y) * World::PIXEL_SCALE));
+
+			region.npcs.push_back(new_animal);
+
+			// world->m_LoadedNPCs.emplace_back(new_animal);
+		}
 	}
 
 	void Biome::ForestBiome::GenerateAt(int x, int y, Tile& tile, World* world, std::unordered_map<Vivium::Vector2<int>, Structure::ID>& structures) const
@@ -179,6 +197,7 @@ namespace Game {
 
 	void Biome::Terminate()
 	{
+		// TODO: don't need to do a dynamic cast here?
 		// DELETE_BIOME_PTR(Biome::ID::VOID);
 		DELETE_BIOME_PTR(Biome::ID::PLAIN);
 		DELETE_BIOME_PTR(Biome::ID::FOREST);
@@ -199,7 +218,25 @@ namespace Game {
 		m_CactusNoise.m_Seed = seed;
 		m_VegitationNoise.m_Seed = seed;
 		m_OreNoise.m_Seed = seed;
+		m_AnimalNoise.m_Seed = seed;
+		m_AnimalNoise.wavelength = 6; // TODO: decide wavelength
 		m_HeightNoise.wavelength = 4;
+	}
+
+	void Biome::DesertBiome::SpawnNPCs(int x, int y, Region& region, World* world) const
+	{
+		// Spawning animals
+		float noise = m_AnimalNoise.Get(x, y);
+
+		if (noise > 0.9f) {
+			Ref(NPC) new_animal = dynamic_pointer_cast<NPC>(MakeRef(Cow, Vivium::Vector2<float>(x, y) * World::PIXEL_SCALE));
+
+			region.npcs.push_back(new_animal);
+
+			// world->m_LoadedNPCs.emplace_back(new_animal);
+		}
+
+		region.npcs;
 	}
 
 	void Biome::DesertBiome::GenerateAt(int x, int y, Tile& tile, World* world, std::unordered_map<Vivium::Vector2<int>, Structure::ID>& structures) const
@@ -240,6 +277,13 @@ namespace Game {
 	{
 		m_HeightNoise.m_Seed = seed;
 		m_HeightNoise.wavelength = 4;
+	}
+
+	void Biome::RiverBiome::SpawnNPCs(int x, int y, Region& region, World* world) const
+	{
+		if (world->GetIsObstacle({ x, y })) return;
+
+		// TODO
 	}
 
 	void Biome::RiverBiome::GenerateAt(int x, int y, Tile& tile, World* world, std::unordered_map<Vivium::Vector2<int>, Structure::ID>& structures) const

@@ -101,7 +101,6 @@ namespace Game {
 		m_BlockBreakingSound = Vivium::Application::sound_engine->addSoundSourceFromFile((Vivium::Application::resources_path + "sounds/breaking_block.wav").c_str(), irrklang::ESM_AUTO_DETECT, true);
 
 		// TEMP generate some npcs
-#define MANUALLY_GEN_NPCS
 #ifdef MANUALLY_GEN_NPCS
 		Region& region = m_LoadRegion(GetRegionIndex(player->quad->GetCenter() / World::PIXEL_SCALE));
 
@@ -113,6 +112,8 @@ namespace Game {
 
 		Weapon::UpdateNPCList(__npcs);
 #endif
+
+		Weapon::Projectile::SetWorld(this);
 
 		m_UpdateTimer.Start();
 	}
@@ -368,7 +369,7 @@ namespace Game {
 				Tile& tile = region->Index(x, y);
 				Biome::ID& biome = region->IndexBiome(x, y);
 
-				biome = TerrainGenerator::GenerateAt(world_x, world_y, tile, this, structures);
+				biome = TerrainGenerator::GenerateAt(world_x, world_y, tile, *region, this, structures);
 			}
 		}
 
@@ -805,7 +806,11 @@ namespace Game {
 		m_LeafBlockBreaking.Render();
 		m_LeafWind.Render();
 
-		// TODO: rendering npcs
+		for (auto& npc : m_LoadedNPCs) {
+			if (npc.expired()) continue;
+
+			npc.lock()->Render();
+		}
 
 		m_DaylightFramebuffer->Unbind();
 
@@ -814,10 +819,6 @@ namespace Game {
 		Vivium::Renderer::Submit(&screen_quad, m_DaylightShader, m_DaylightFramebuffer, 0);
 
 		m_WorldMap->Render(screen_dim - Vivium::Vector2<int>(100, 100));
-
-		for (auto& npc : __npcs) {
-			npc->Render();
-		}
 
 		m_DaylightFramebuffer->Clear();
 	}
@@ -846,7 +847,25 @@ namespace Game {
 
 		m_WorldMap->GenerateFullMap(m_Player->quad->GetCenter(), *this);
 
+		if (!m_LoadedNPCs.empty()) {
+			for (auto it = m_LoadedNPCs.begin(); it < m_LoadedNPCs.end();) {
+				if (it->expired()) {
+					it = m_LoadedNPCs.erase(it);
+				}
+				else {
+					it->lock()->Update(this);
+
+					++it;
+				}
+			}
+		}
+
 		m_UpdateObstacleMap();
+	}
+
+	std::vector<WeakRef(NPC)>* World::GetLoadedNPCs()
+	{
+		return &m_LoadedNPCs;
 	}
 
 	std::string World::GetName() const

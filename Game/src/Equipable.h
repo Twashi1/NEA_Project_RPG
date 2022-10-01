@@ -47,7 +47,6 @@ namespace Game {
 	class Weapon : public HandEquipable {
 	protected:
 		static Ref(Vivium::Shader) m_ShaderDefault;
-		static std::vector<WeakRef(NPC)> m_NPCList;
 
 		Ref(Vivium::Shader) m_Shader;
 		ProjectileSystem* m_ProjectileSystem;
@@ -55,11 +54,8 @@ namespace Game {
 
 		using Item::id;
 
-		static std::vector<WeakRef(NPC)>* m_GetNPCList();
-
 	public:
 		static void Init();
-		static void UpdateNPCList(const std::vector<Ref(NPC)>& npcs);
 
 		struct Properties;
 
@@ -82,6 +78,7 @@ namespace Game {
 		private:
 			// TODO: in future this should be a property of each projectile/weapon
 			static constexpr float s_RANGE = 300.0f;
+			static World* m_World;
 
 			float m_Damage;
 			float m_Knockback;
@@ -109,6 +106,7 @@ namespace Game {
 			private:
 				static constexpr const char* s_TYPE = "WeaponProjectileHit";
 
+				// TODO: remove
 				int x = 5;
 
 			protected:
@@ -120,6 +118,8 @@ namespace Game {
 
 			Projectile(const ID& id, float damage, float knockback);
 			Projectile(const Properties& props);
+
+			static void SetWorld(World* world);
 
 			friend ProjectileSystem;
 			friend Projectile;

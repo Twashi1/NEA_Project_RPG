@@ -50,6 +50,7 @@ namespace Game {
 		static constexpr uint32_t TILE_PHYSICS_LAYER = 1;
 
 		std::vector<Ref(Vivium::Body)> m_TileBodies;
+		std::vector<WeakRef(NPC)> m_LoadedNPCs;
 
 		static constexpr int OBSTACLE_MAP_REGION_PADDING = 1;
 		Vivium::Vector2<int> m_WorldToObstacleMapTransform;
@@ -99,9 +100,6 @@ namespace Game {
 		RegionMap_t regions; // Maps a region index to a Region object
 		std::mutex regions_mutex;
 
-		// TEMP
-		std::vector<Ref(NPC)> __npcs;
-
 		FloorItemMap_t floor_items; // Maps a region index to a list of floor items, so only items within adjacent regions are drawn
 
 		static void Init();
@@ -131,11 +129,14 @@ namespace Game {
 		Tile* GetLoadedTile(const Vivium::Vector2<int>& pos);
 		Tile* GetLoadedTile(int x, int y);
 
+		std::vector<WeakRef(NPC)>* GetLoadedNPCs();
+
 		World(const uint32_t& seed, const std::string& world_name, Player* player);
 		~World();
 
 		friend Inventory;
 		friend WorldMap;
 		friend Biome;
+		friend TerrainGenerator;
 	};
 }

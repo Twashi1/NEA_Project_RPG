@@ -6,8 +6,10 @@
 
 namespace Game {
 	class World;
+	class Region;
 
-	// TODO: biome generateat needs to take some sort of list of npcs so it can generate npcs as well
+	// TODO: rename river biome to lake?
+	// TODO: better blending between biomes
 	class Biome {
 	public:
 		enum class ID : uint8_t {
@@ -32,6 +34,7 @@ namespace Game {
 			IBiome(unsigned int sed);
 
 			virtual void GenerateAt(int x, int y, Tile& tile, World* world, std::unordered_map<Vivium::Vector2<int>, Structure::ID>& structures) const = 0;
+			virtual void SpawnNPCs(int x, int y, Region& region, World* world) const = 0;
 		};
 
 		class ForestBiome : IBiome {
@@ -42,6 +45,7 @@ namespace Game {
 			static Vivium::Noise::White m_VegitationNoise; // TODO: Switch to worley noise
 			static Vivium::Noise::White m_OreNoise;		// TODO: Switch to worley noise
 			static Vivium::Noise::White m_DebrisNoise;
+			static Vivium::Noise::Cellular m_AnimalNoise;
 
 			static const std::map<float, Tile::ID> m_HeightToTileMap;
 
@@ -58,6 +62,7 @@ namespace Game {
 			ForestBiome(unsigned int seed);
 			
 			void GenerateAt(int x, int y, Tile& tile, World* world, std::unordered_map<Vivium::Vector2<int>, Structure::ID>& structures) const override;
+			void SpawnNPCs(int x, int y, Region& region, World* world) const override;
 		};
 
 		class DesertBiome : IBiome {
@@ -68,6 +73,7 @@ namespace Game {
 			static Vivium::Noise::White m_VegitationNoise;
 			static Vivium::Noise::White m_OreNoise;
 			static Vivium::Noise::White m_DebrisNoise;
+			static Vivium::Noise::Cellular m_AnimalNoise;
 
 			static const std::map<float, Tile::ID> m_HeightToTileMap;
 
@@ -80,6 +86,7 @@ namespace Game {
 			DesertBiome(unsigned int seed);
 
 			void GenerateAt(int x, int y, Tile& tile, World* world, std::unordered_map<Vivium::Vector2<int>, Structure::ID>& structures) const override;
+			void SpawnNPCs(int x, int y, Region& region, World* world) const override;
 		};
 
 		class RiverBiome : IBiome {
@@ -91,6 +98,7 @@ namespace Game {
 			RiverBiome(unsigned int seed);
 			
 			void GenerateAt(int x, int y, Tile& tile, World* world, std::unordered_map<Vivium::Vector2<int>, Structure::ID>& structures) const override;
+			void SpawnNPCs(int x, int y, Region& region, World* world) const override;
 		};
 
 	private:

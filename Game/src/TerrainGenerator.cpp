@@ -28,17 +28,52 @@ namespace Game {
 		m_BiomeNoise = Vivium::Noise::Cellular(seed, 1.0f, BIOME_WAVELENGTH);
 	}
 
-	Biome::ID TerrainGenerator::GenerateAt(int x, int y, Tile& tile, World* world, std::unordered_map<Vivium::Vector2<int>, Structure::ID>& structures)
+	Biome::ID TerrainGenerator::GenerateAt(int x, int y, Tile& tile, Region& region, World* world, std::unordered_map<Vivium::Vector2<int>, Structure::ID>& structures)
 	{
 		Biome::ID id = m_GetBiomeID(x, y);
 
 		const Biome::IBiome* ibiome_ptr = Biome::GetBiome(id);
 		
 		switch (id) {
-		case Biome::ID::FOREST: BIOME_CAST_TO(Biome::ID::FOREST, ibiome_ptr)->GenerateAt(x, y, tile, world, structures); break;
-		case Biome::ID::DESERT: BIOME_CAST_TO(Biome::ID::DESERT, ibiome_ptr)->GenerateAt(x, y, tile, world, structures); break;
-		case Biome::ID::PLAIN:	BIOME_CAST_TO(Biome::ID::PLAIN, ibiome_ptr)->GenerateAt(x, y, tile, world, structures); break;
-		case Biome::ID::RIVER:	BIOME_CAST_TO(Biome::ID::RIVER, ibiome_ptr)->GenerateAt(x, y, tile, world, structures); break;
+		case Biome::ID::FOREST:
+		{
+			auto typed_ptr = BIOME_CAST_TO(Biome::ID::FOREST, ibiome_ptr);
+			typed_ptr->GenerateAt(x, y, tile, world, structures);
+
+			if (!Tile::GetIsPhysical(tile.foreground) && !Tile::GetIsPhysical(tile.background)) {
+				typed_ptr->SpawnNPCs(x, y, region, world);
+			}
+		} break;
+
+		case Biome::ID::DESERT:
+		{
+			auto typed_ptr = BIOME_CAST_TO(Biome::ID::DESERT, ibiome_ptr);
+			typed_ptr->GenerateAt(x, y, tile, world, structures);
+
+			if (!Tile::GetIsPhysical(tile.foreground) && !Tile::GetIsPhysical(tile.background)) {
+				typed_ptr->SpawnNPCs(x, y, region, world);
+			}
+		} break;
+		case Biome::ID::PLAIN:
+
+		{
+			auto typed_ptr = BIOME_CAST_TO(Biome::ID::PLAIN, ibiome_ptr);
+			typed_ptr->GenerateAt(x, y, tile, world, structures);
+			
+			if (!Tile::GetIsPhysical(tile.foreground) && !Tile::GetIsPhysical(tile.background)) {
+				typed_ptr->SpawnNPCs(x, y, region, world);
+			}
+		} break;
+		case Biome::ID::RIVER:
+
+		{
+			auto typed_ptr = BIOME_CAST_TO(Biome::ID::RIVER, ibiome_ptr);
+			typed_ptr->GenerateAt(x, y, tile, world, structures);
+			
+			if (!Tile::GetIsPhysical(tile.foreground) && !Tile::GetIsPhysical(tile.background)) {
+				typed_ptr->SpawnNPCs(x, y, region, world);
+			}
+		} break;
 		default:
 			LogWarn("Got invalid biome id: {}", (uint8_t)id); break;
 		}

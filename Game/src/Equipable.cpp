@@ -51,21 +51,12 @@ namespace Game {
 	}
 
 	Ref(Vivium::Shader) Weapon::m_ShaderDefault;
-	std::vector<WeakRef(NPC)> Weapon::m_NPCList;
 	Ref(Weapon::Projectile::HitHandler) Weapon::m_HitHandler;
+	World* Weapon::Projectile::m_World = nullptr;
 
-	void Weapon::UpdateNPCList(const std::vector<Ref(NPC)>& npcs)
+	void Weapon::Projectile::SetWorld(World* world)
 	{
-		m_NPCList.clear();
-
-		for (const Ref(NPC)& npc : npcs) {
-			m_NPCList.push_back(npc);
-		}
-	}
-
-	std::vector<WeakRef(NPC)>* Weapon::m_GetNPCList()
-	{
-		return &m_NPCList;
+		m_World = world;
 	}
 
 	void Weapon::Init()
@@ -100,7 +91,7 @@ namespace Game {
 
 	void Weapon::Projectile::m_Update(const Vivium::Vector2<float>& accel)
 	{
-		std::vector<WeakRef(NPC)>* npcs = Weapon::m_GetNPCList();
+		std::vector<WeakRef(NPC)>* npcs = m_World->GetLoadedNPCs();
 	
 		if (npcs->empty()) return;
 

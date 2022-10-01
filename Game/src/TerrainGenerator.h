@@ -18,7 +18,7 @@ namespace Game {
 		static void m_Init(unsigned int seed);
 
 	public:
-		static Biome::ID GenerateAt(int x, int y, Tile& tile, World* world, std::unordered_map<Vivium::Vector2<int>, Structure::ID>& structures);
+		static Biome::ID GenerateAt(int x, int y, Tile& tile, Region& region, World* world, std::unordered_map<Vivium::Vector2<int>, Structure::ID>& structures);
 
 		friend World;
 	};
