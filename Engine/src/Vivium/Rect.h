@@ -72,14 +72,27 @@ namespace Vivium {
 		Rect(float x, float y, float width, float height, float angle = 0.0f);
 		Rect(const Vector2<float>& center, const Vector2<float>& dim, float angle = 0.0f);
 		Rect(const Rect& other);
+		Rect(Rect&& other) noexcept;
 		~Rect() = default;
 
-		void operator=(const Rect& other) {
+		Rect& operator=(const Rect& other) {
 			x = other.x;
 			y = other.y;
 			width = other.width;
 			height = other.height;
 			angle = other.angle;
+
+			return *this;
+		}
+		
+		Rect& operator=(Rect&& other) noexcept {
+			x = std::move(other.x);
+			y = std::move(other.y);
+			width = std::move(other.width);
+			height = std::move(other.height);
+			angle = std::move(other.angle);
+
+			return *this;
 		}
 
 		void Write(Serialiser& s) const override;

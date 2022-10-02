@@ -35,6 +35,54 @@ namespace Vivium {
 		m_Timer.Start();
 	}
 
+	Body::Body(Body&& other) noexcept
+		: quad(std::move(other.quad)),
+		collision_callback(std::move(other.collision_callback)), user_params(std::move(other.user_params)),
+		isImmovable(std::move(other.isImmovable)), isPhysical(std::move(other.isPhysical)),
+		restitution(std::move(other.restitution)), mass(std::move(other.mass)), imass(std::move(other.imass)),
+		vel(std::move(other.vel)), acc(std::move(other.acc)), angular_vel(std::move(other.angular_vel)), angular_acc(std::move(other.angular_acc))
+	{}
+
+	Body& Body::operator=(const Body& other)
+	{
+		quad = other.quad;
+		collision_callback = other.collision_callback;
+		user_params = other.user_params;
+
+		isImmovable = other.isImmovable;
+		restitution = other.restitution;
+		mass = other.mass;
+		imass = other.imass;
+
+		vel = other.vel;
+		acc = other.acc;
+
+		angular_vel = other.angular_vel;
+		angular_acc = other.angular_acc;
+
+		isPhysical = other.isPhysical;
+
+		return *this;
+	}
+
+	Body& Body::operator=(Body&& other) noexcept
+	{
+		quad = std::move(other.quad);
+		collision_callback = std::move(other.collision_callback);
+		user_params = std::move(other.user_params);
+		isImmovable = std::move(other.isImmovable);
+		isPhysical = std::move(other.isPhysical);
+		restitution = std::move(other.restitution);
+		mass = std::move(other.mass);
+		imass = std::move(other.imass);
+		vel = std::move(other.vel);
+		acc = std::move(other.acc);
+		angular_vel = std::move(other.angular_vel);
+		angular_acc = std::move(other.angular_acc);
+
+		return *this;
+	}
+
 	void Body::Update()
 	{
 		float elapsed = m_Timer.GetElapsed();

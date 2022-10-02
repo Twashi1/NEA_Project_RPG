@@ -96,10 +96,10 @@ namespace Game {
 
 				float damage;
 				float knockback; // Measured as an impulse
-				std::shared_ptr<NPC> npc;
+				Pathfinding::NPC* npc;
 				Projectile* projectile; // no guarantee on lifetime
 
-				Hit(float damage, float knockback, std::shared_ptr<NPC> npc, Projectile* projectile);
+				Hit(float damage, float knockback, Pathfinding::NPC* npc, Projectile* projectile);
 			};
 
 			class HitHandler : public virtual Vivium::EventHandler {

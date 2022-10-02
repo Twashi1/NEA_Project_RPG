@@ -2,8 +2,8 @@
 #include "Tile.h"
 
 namespace Game {
-	Ref(Vivium::TextureAtlas) TextureManager::game_atlas = nullptr;
-	Ref(Vivium::TextureAtlas) TextureManager::particle_atlas = nullptr;
+	std::shared_ptr<Vivium::TextureAtlas> TextureManager::game_atlas = nullptr;
+	std::shared_ptr<Vivium::TextureAtlas> TextureManager::particle_atlas = nullptr;
 
 	void TextureManager::Init() {
 		game_atlas = std::make_shared<Vivium::TextureAtlas>("game_atlas.png", Vivium::Vector2<int>(Tile::SPRITE_SIZE, Tile::SPRITE_SIZE));

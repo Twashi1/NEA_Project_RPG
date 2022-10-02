@@ -7,6 +7,7 @@ namespace Vivium {
 
 	class VIVIUM_API Streamable {
 	public:
+		// TODO streamable constructor?
 		virtual void Write(Serialiser& s) const = 0;
 		virtual void Read(Serialiser& s) = 0;
 

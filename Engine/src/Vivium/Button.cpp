@@ -3,7 +3,7 @@
 namespace Vivium {
 	std::shared_ptr<Shader> Button::m_DefaultIdleShader = nullptr;
 	std::shared_ptr<Shader> Button::m_DefaultPressedShader = nullptr;
-	Ref(Font) Button::m_DefaultFont = nullptr;
+	std::shared_ptr<Font> Button::m_DefaultFont = nullptr;
 
 	void Button::m_Construct()
 	{

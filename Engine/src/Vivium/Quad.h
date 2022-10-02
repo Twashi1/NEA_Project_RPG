@@ -57,7 +57,11 @@ namespace Vivium {
 		Quad(const Vector2<float>& center, const Vector2<float>& dim, const std::vector<float>& tex_coords, float angle = 0.0f);
 		Quad(const Rect& rect);
 		Quad(const Quad& other);
+		Quad(Quad&& other) noexcept;
 		~Quad();
+
+		Quad& operator=(const Quad& other);
+		Quad& operator=(Quad&& other) noexcept;
 
 		Vector2<float> GetCenter() const;
 		Vector2<float> GetDim() const;

@@ -39,6 +39,10 @@ namespace Vivium {
 		Body() = default;
 		Body(std::shared_ptr<Quad> quad, bool isImmovable, float restitution, float mass, bool isPhysical = true, CallbackFunc_t callback = nullptr, void* user_params = nullptr);
 		Body(const Body& other);
+		Body(Body&& other) noexcept;
+
+		Body& operator=(const Body& other);
+		Body& operator=(Body&& other) noexcept;
 
 		virtual ~Body() = default;
 

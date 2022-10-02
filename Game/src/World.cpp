@@ -71,6 +71,8 @@ namespace Game {
 		// TODO: non static acceleration for leaf wind
 		: m_WorldName(world_name), m_Seed(seed), m_Player(player), m_LeafBlockBreaking(100, {0.0f, -400.0f}), m_LeafWind(50, {0.0f, 0.0f})
 	{
+		Pathfinding::NPC::world = this;
+
 		std::string fullpath = PATH + world_name + "/";
 
 		// Create folder for our world
@@ -83,9 +85,6 @@ namespace Game {
 
 		Biome::Init(m_Seed);
 		TerrainGenerator::m_Init(m_Seed);
-
-		// Load world
-		m_LoadRegions(player);
 
 		m_WorldMap = new WorldMap(MAP_SIZE);
 
@@ -103,6 +102,28 @@ namespace Game {
 		Weapon::Projectile::SetWorld(this);
 
 		m_UpdateTimer.Start();
+
+		Update();
+
+//#define MANUALLY_GEN_NPC
+#ifdef MANUALLY_GEN_NPC
+		Region& region = m_LoadRegion({ 0, 0 });
+
+		region.npcs.emplace_back(
+			Pathfinding::NPC::ID::PIG,
+			// TEMP values
+			std::make_shared<Vivium::Body>(
+				std::make_shared<Vivium::Quad>(Vivium::Vector2<float>(0, 0) * World::PIXEL_SCALE, Vivium::Vector2<float>(World::PIXEL_SCALE)),
+				true,
+				1.0f,
+				1.0f
+				),
+			Pathfinding::NPC::BehaviourDataMap{
+				{Pathfinding::Behaviour::ID::WANDER,	std::make_shared<Pathfinding::Wandering::Client>(Vivium::Vector2<int>(0, 0))},
+				{Pathfinding::Behaviour::ID::IDLE,		std::make_shared<Pathfinding::Idle::Client>()},
+			}
+		);
+#endif
 	}
 
 	void World::Init()
@@ -688,6 +709,61 @@ namespace Game {
 		}
 	}
 
+	void World::m_RenderNPCs(const Vivium::Vector2<int>& pos)
+	{
+		static const Vivium::BufferLayout layout = {
+			Vivium::GLSLDataType::VEC2, // position
+			Vivium::GLSLDataType::VEC2  // tex coords
+		};
+
+		std::vector<float> vertices;
+		std::vector<unsigned short> indices;
+		std::size_t shape_count = 0; // Amount of npcs
+
+		// Calculate bounds of tiles we need to render
+		Vivium::Vector2<int> frame = Vivium::Application::GetScreenDim() / World::PIXEL_SCALE + Vivium::Vector2<int>(1, 1);
+		Vivium::Vector2<int> bottom_left = GetRegionIndex(pos - frame);
+		Vivium::Vector2<int> top_right = GetRegionIndex(pos + frame);
+
+		for (int y = bottom_left.y; y <= top_right.y; y++) {
+			for (int x = bottom_left.x; x <= top_right.x; x++) {
+				// Load region and get npcs for given region
+				// TODO: loading region twice! since rendering floor items does this as well
+				Region& region = m_LoadRegion({ x, y });
+
+				if (region.npcs.empty()) continue;
+
+				// Reserve space
+				vertices.reserve(vertices.size() + (4 * 4 * region.npcs.size())); // 4 floats per vertex, 4 vertices
+				indices.reserve(indices.size() + (6 * region.npcs.size()));
+
+				for (Pathfinding::NPC& npc : region.npcs) {
+					// Weird location, but only place we can really update the npc
+					npc.Update();
+
+					npc.AddVertices(vertices);
+					
+					int stride = shape_count * 4;
+					indices.emplace_back(0 + stride);
+					indices.emplace_back(1 + stride);
+					indices.emplace_back(2 + stride);
+					indices.emplace_back(2 + stride);
+					indices.emplace_back(3 + stride);
+					indices.emplace_back(0 + stride);
+
+					++shape_count;
+				}
+			}
+		}
+
+		if (shape_count > 0) {
+			Vivium::VertexBuffer vb(vertices, layout);
+			Vivium::IndexBuffer ib(indices);
+
+			Vivium::Renderer::Submit(&vb, &ib, Pathfinding::NPC::m_Shader.get(), TextureManager::game_atlas->GetAtlas().get());
+		}
+	}
+
 	float World::m_GetMiningTileScale(float tile_scale, const Tile::ID& id)
 	{
 		static constexpr float SCALE_RANGE = 8.0f;
@@ -790,14 +866,9 @@ namespace Game {
 		m_DaylightFramebuffer->Bind();
 		m_RenderTiles(pos);
 		m_RenderFloorItems(pos);
+		m_RenderNPCs(pos);
 		m_LeafBlockBreaking.Render();
 		m_LeafWind.Render();
-
-		for (auto& npc : m_LoadedNPCs) {
-			if (npc.expired()) continue;
-
-			// npc.lock()->Render();
-		}
 
 		m_DaylightFramebuffer->Unbind();
 
@@ -821,6 +892,8 @@ namespace Game {
 
 		m_UpdateCurrentBiome();
 
+		// Rendering leaf particles
+		// TODO: needs work
 		if (m_CurrentBiome == Biome::ID::FOREST) {
 			if (m_TimeAlive > m_LastParticleEmitTime + Biome::ForestBiome::LEAF_PARTICLE_FREQUENCY) {
 				m_LastParticleEmitTime = m_TimeAlive;
@@ -834,25 +907,7 @@ namespace Game {
 
 		m_WorldMap->GenerateFullMap(m_Player->quad->GetCenter(), *this);
 
-		if (!m_LoadedNPCs.empty()) {
-			for (auto it = m_LoadedNPCs.begin(); it < m_LoadedNPCs.end();) {
-				if (it->expired()) {
-					it = m_LoadedNPCs.erase(it);
-				}
-				else {
-					// it->lock()->Update(this);
-
-					++it;
-				}
-			}
-		}
-
 		m_UpdateObstacleMap();
-	}
-
-	std::vector<std::weak_ptr<NPC>>* World::GetLoadedNPCs()
-	{
-		return &m_LoadedNPCs;
 	}
 
 	std::string World::GetName() const

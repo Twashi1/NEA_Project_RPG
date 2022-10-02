@@ -243,7 +243,7 @@ namespace Vivium {
 		*m_Text->pos = Vector2<float>(new_pos.x - (quad->GetWidth() / 2.0f) + m_Offset, new_pos.y);
 	}
 
-	Ref(Animation) TextInput::GetTypingBar()
+	std::shared_ptr<Animation> TextInput::GetTypingBar()
 	{
 		// TODO Function is 2 in 1 kinda ugly
 		// Update pos

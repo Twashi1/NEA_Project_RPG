@@ -48,10 +48,9 @@ namespace Game {
 		static constexpr uint32_t TILE_PHYSICS_LAYER = 1;
 
 		std::vector<std::shared_ptr<Vivium::Body>> m_TileBodies;
-		std::vector<std::weak_ptr<NPC>> m_LoadedNPCs;
 
 		static constexpr int OBSTACLE_MAP_REGION_PADDING = 1;
-		Vivium::Vector2<int> m_WorldToObstacleMapTransform;
+		Vivium::Vector2<int> m_WorldToObstacleMapTransform = 0;
 		Vivium::Pathfinding::Map m_ObstacleMap;
 
 		irrklang::ISoundSource* m_BlockBreakingSound;
@@ -77,6 +76,7 @@ namespace Game {
 
 		void m_RenderTiles(const Vivium::Vector2<int>& pos);
 		void m_RenderFloorItems(const Vivium::Vector2<int>& pos);
+		void m_RenderNPCs(const Vivium::Vector2<int>& pos);
 
 		float m_GetMiningTileScale(float tile_scale, const Tile::ID& id);
 
@@ -126,8 +126,6 @@ namespace Game {
 
 		Tile* GetLoadedTile(const Vivium::Vector2<int>& pos);
 		Tile* GetLoadedTile(int x, int y);
-
-		std::vector<std::weak_ptr<NPC>>* GetLoadedNPCs();
 
 		World(const uint32_t& seed, const std::string& world_name, Player* player);
 		~World();

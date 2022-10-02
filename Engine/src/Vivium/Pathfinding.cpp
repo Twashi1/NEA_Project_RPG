@@ -3,8 +3,8 @@
 namespace Vivium {
 	Pathfinding::Path Pathfinding::Calculate(const Vector2<int>& start, const Vector2<int>& end, const Map& map)
 	{
-		if (map.IsObstacle(end)) { LogTrace("End is not valid node"); return Path(); }
-		if (start == end) { LogTrace("Already at destination"); return Path(); }
+		if (map.IsObstacle(end) || map.IsObstacle(start)) { return Path(); }
+		if (start == end) { return Path(); }
 
 		Node* node_map = new Node[map.Area()];
 		Vector2<int> dim = map.GetDim();
@@ -57,7 +57,7 @@ namespace Vivium {
 				// This node has been investigated, move to next node
 				parent = *closest_it;
 				open_nodes.erase(closest_it);
-			} while (map.IsObstacle(parent.pos));
+			} while (map.IsObstacle(parent.pos) && !open_nodes.empty());
 
 			Vector2<int> pos = parent.pos;
 			closed_nodes[map.ToIndex(pos)] = true;
@@ -193,7 +193,7 @@ namespace Vivium {
 		: m_Data(std::move(data))
 	{}
 	
-	Pathfinding::Map::Map(Ref(bool[]) data, const Vector2<int>& dim)
+	Pathfinding::Map::Map(std::shared_ptr<bool[]> data, const Vector2<int>& dim)
 		: m_Dim(dim), m_Data(data)
 	{}
 

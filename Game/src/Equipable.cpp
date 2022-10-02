@@ -68,7 +68,7 @@ namespace Game {
 		);
 	}
 
-	Weapon::Projectile::Hit::Hit(float damage, float knockback, std::shared_ptr<NPC> npc, Projectile* projectile)
+	Weapon::Projectile::Hit::Hit(float damage, float knockback, Pathfinding::NPC* npc, Projectile* projectile)
 		: Vivium::Event(s_TYPE), damage(damage), knockback(knockback), npc(npc), projectile(projectile) {}
 
 	Weapon::Projectile::HitHandler::HitHandler()
