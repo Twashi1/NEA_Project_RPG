@@ -119,6 +119,7 @@ namespace Game {
 
 			for (auto& [id, client] : behaviour_data) {
 				s.Write(id);
+				// TODO: possible this doesn't write correct thing?
 				client->Write(s);
 			}
 		}
@@ -149,7 +150,7 @@ namespace Game {
 
 				case Behaviour::ID::WANDER:
 				{
-					auto data_ptr = std::make_shared<Idle::Client>();
+					auto data_ptr = std::make_shared<Wandering::Client>();
 					data_ptr->Read(s);
 					new_data_ptr = dynamic_pointer_cast<Behaviour::Client>(data_ptr);
 				} break;

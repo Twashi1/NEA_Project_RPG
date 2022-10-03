@@ -85,6 +85,7 @@ namespace Game {
 				virtual void Write(Vivium::Serialiser& s) const override;
 				virtual void Read(Vivium::Serialiser& s) override;
 
+				Client() = default;
 				Client(const Vivium::Vector2<int>& home_tile);
 			};
 
