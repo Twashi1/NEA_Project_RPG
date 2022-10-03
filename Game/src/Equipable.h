@@ -13,7 +13,7 @@ namespace Game {
 
 	class HandEquipable : public Item {
 	protected:
-		Ref(Vivium::Quad) m_Quad;
+		std::shared_ptr<Vivium::Quad> m_Quad;
 
 		void m_UpdateQuad(World* world, const Vivium::Vector2<float>& player_pos);
 
@@ -41,14 +41,14 @@ namespace Game {
 		template <> struct GetEquipType<Item::ID::SAPPHIRE_WAND>	{ using type = Weapon; };
 		template <> struct GetEquipType<Item::ID::TOPAZ_WAND>		{ using type = Weapon; };
 
-		static Ref(HandEquipable) CreateInstance(const Item::ID& id);
+		static std::shared_ptr<HandEquipable> CreateInstance(const Item::ID& id);
 	};
 
 	class Weapon : public HandEquipable {
 	protected:
-		static Ref(Vivium::Shader) m_ShaderDefault;
+		static std::shared_ptr<Vivium::Shader> m_ShaderDefault;
 
-		Ref(Vivium::Shader) m_Shader;
+		std::shared_ptr<Vivium::Shader> m_Shader;
 		ProjectileSystem* m_ProjectileSystem;
 		Vivium::Timer m_AttackTimer;
 
@@ -96,10 +96,10 @@ namespace Game {
 
 				float damage;
 				float knockback; // Measured as an impulse
-				Ref(NPC) npc;
+				Pathfinding::NPC* npc;
 				Projectile* projectile; // no guarantee on lifetime
 
-				Hit(float damage, float knockback, Ref(NPC) npc, Projectile* projectile);
+				Hit(float damage, float knockback, Pathfinding::NPC* npc, Projectile* projectile);
 			};
 
 			class HitHandler : public virtual Vivium::EventHandler {
@@ -110,7 +110,7 @@ namespace Game {
 				int x = 5;
 
 			protected:
-				virtual void m_HandleEvent(Ref(Vivium::Event) event) override;
+				virtual void m_HandleEvent(std::shared_ptr<Vivium::Event> event) override;
 
 			public:
 				HitHandler();
@@ -138,7 +138,7 @@ namespace Game {
 		};
 		
 		static const std::unordered_map<Item::ID, Properties> m_Properties;
-		static Ref(Projectile::HitHandler) m_HitHandler;
+		static std::shared_ptr<Projectile::HitHandler> m_HitHandler;
 
 		Weapon(const Item::ID& id);
 		~Weapon();

@@ -14,7 +14,7 @@ namespace Vivium {
 			void m_RemoveExpiredBodies();
 
 		public:
-			std::vector<WeakRef(Body)> bodies;		// Store reference to all bodies being tracked in this layer
+			std::vector<std::weak_ptr<Body>> bodies;		// Store reference to all bodies being tracked in this layer
 			std::set<uint32_t> collision_matrix;	// Stores which other layer indices this one interacts/doesn't interact with (NOTE: name is the taken from Unity's collision matrix, but implemented slightly differently)
 
 			Layer() = default;
@@ -32,8 +32,8 @@ namespace Vivium {
 
 		static void m_ResolveInterLayer(Layer* layer0, Layer* layer1);
 		static void m_ResolveIntraLayer(Layer* layer);
-		static void m_TestCollision(const Ref(Body)& a, const Ref(Body)& b);
-		static void m_ResolveCollision(Ref(Body) a, Ref(Body) b, const Rect& a_rect, const Rect& b_rect, const std::array<Vector2<float>, 4>& a_vertices, const std::array<Vector2<float>, 4>& b_vertices, const Rect::Manifold& manifold);
+		static void m_TestCollision(const std::shared_ptr<Body>& a, const std::shared_ptr<Body>& b);
+		static void m_ResolveCollision(std::shared_ptr<Body> a, std::shared_ptr<Body> b, const Rect& a_rect, const Rect& b_rect, const std::array<Vector2<float>, 4>& a_vertices, const std::array<Vector2<float>, 4>& b_vertices, const Rect::Manifold& manifold);
 
 		static void m_Init();
 

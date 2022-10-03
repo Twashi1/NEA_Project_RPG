@@ -6,7 +6,7 @@
 
 namespace Game {
 	class World;
-	class Region;
+	struct Region;
 
 	// TODO: rename river biome to lake?
 	// TODO: better blending between biomes

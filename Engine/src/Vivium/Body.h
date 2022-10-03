@@ -22,7 +22,7 @@ namespace Vivium {
 		CallbackFunc_t collision_callback = nullptr;
 		void* user_params = nullptr;
 
-		Ref(Quad) quad = nullptr;	// Pointer to quad which describes location and dimensions of Body
+		std::shared_ptr<Quad> quad = nullptr;	// Pointer to quad which describes location and dimensions of Body
 		bool isImmovable = false;	// If an object is immovable, collisions will not change velocity/acceleration of this body (infinite mass)
 		float restitution = 0.0f;	// Represents amount of velocity transferred to this object in collision, but has no link to actual coefficient of restitution in physics (basically just a bad name)
 		float mass = 1.0f;			// Mass of an object, also included in calculation of how much velocity is transferred to this object in a collision
@@ -37,8 +37,12 @@ namespace Vivium {
 		bool isPhysical = true;		// If is physical collider or not (non-physical only check for collisions, don't actually change velocity/acceleration)
 
 		Body() = default;
-		Body(Ref(Quad) quad, bool isImmovable, float restitution, float mass, bool isPhysical = true, CallbackFunc_t callback = nullptr, void* user_params = nullptr);
+		Body(std::shared_ptr<Quad> quad, bool isImmovable, float restitution, float mass, bool isPhysical = true, CallbackFunc_t callback = nullptr, void* user_params = nullptr);
 		Body(const Body& other);
+		Body(Body&& other) noexcept;
+
+		Body& operator=(const Body& other);
+		Body& operator=(Body&& other) noexcept;
 
 		virtual ~Body() = default;
 

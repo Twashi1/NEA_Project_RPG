@@ -35,7 +35,7 @@ namespace Vivium {
 		};
 
 		// Create buffer for vertex coords and tex coords
-		vb = MakeRef(VertexBuffer, vertex_data, 16, *layout);
+		vb = std::make_shared<VertexBuffer>(vertex_data, 16, *layout);
 	}
 
 	void Quad::m_Init()
@@ -147,7 +147,31 @@ namespace Vivium {
 		m_Construct();
 	}
 
-	const Ref(VertexBuffer) Quad::GetVertexBuffer() const
+	Quad& Quad::operator=(const Quad& other) {
+		x = other.x;
+		y = other.y;
+		width = other.width;
+		height = other.height;
+		angle = other.angle;
+
+		vb = other.vb;
+
+		return *this;
+	}
+
+	Quad& Quad::operator=(Quad&& other) noexcept {
+		x = std::move(other.x);
+		y = std::move(other.y);
+		width = std::move(other.width);
+		height = std::move(other.height);
+		angle = std::move(other.angle);
+
+		vb = std::move(other.vb);
+
+		return *this;
+	}
+
+	const std::shared_ptr<VertexBuffer> Quad::GetVertexBuffer() const
 	{
 		return vb;
 	}
@@ -220,6 +244,16 @@ namespace Vivium {
 		x = other.x; y = other.y;
 		width = other.width; height = other.height;
 		angle = other.angle;
+	}
+
+	Quad::Quad(Quad&& other) noexcept
+		: vb(std::move(other.vb))
+	{
+		x = std::move(other.x);
+		y = std::move(other.y);
+		width = std::move(other.width);
+		height = std::move(other.height);
+		angle = std::move(other.angle);
 	}
 
 	Quad::~Quad()

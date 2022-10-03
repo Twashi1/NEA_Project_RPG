@@ -33,8 +33,8 @@ namespace Vivium {
 
 	public:
 		struct VIVIUM_API BatchData {
-			Ref(VertexBuffer)	vertex_buffer;
-			Ref(IndexBuffer)	index_buffer;
+			std::shared_ptr<VertexBuffer> vertex_buffer;
+			std::shared_ptr<IndexBuffer>  index_buffer;
 			std::size_t			count;
 
 			BatchData();

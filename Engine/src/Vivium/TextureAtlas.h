@@ -9,7 +9,7 @@ namespace Vivium {
 	// Top left corner is (0,0), increasing as you go down and to the right
 	class VIVIUM_API TextureAtlas {
 	private:
-		Ref(Texture) m_Atlas;
+		std::shared_ptr<Texture> m_Atlas;
 		Vector2<int> m_SpriteSize;		 // Size in px of each sprite
 		Vector2<int> m_AtlasDimRelative; // Size of atlas in terms of the amount of sprites on x and y
 
@@ -23,14 +23,14 @@ namespace Vivium {
 		std::array<float, 8> GetCoordsArray(const Vector2<int>& index) const;
 		std::array<float, 8> GetCoordsArray(const Vector2<int>& top_left, const Vector2<int>& bottom_right) const;
 
-		const Ref(Texture) GetAtlas() const;
+		const std::shared_ptr<Texture> GetAtlas() const;
 		Vector2<int> GetSpriteSize() const;
 
 		void Set(Quad* quad, int index) const;
 		void Set(Quad* quad, const Vector2<int>& index) const;
 		void Set(Quad* quad, const Vector2<int>& top_left, const Vector2<int>& bottom_right) const;
 
-		TextureAtlas(Ref(Texture) atlas, const Vector2<int>& sprite_size);
+		TextureAtlas(std::shared_ptr<Texture> atlas, const Vector2<int>& sprite_size);
 		TextureAtlas(const Texture& atlas, const Vector2<int>& sprite_size);
 		TextureAtlas(const std::string& atlas_path, const Vector2<int>& sprite_size);
 	};

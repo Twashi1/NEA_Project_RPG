@@ -1,22 +1,22 @@
 #include "Text.h"
 
 namespace Vivium {
-    Ref(Shader) Text::m_DefaultShader = nullptr;
-    Ref(Font) Text::m_DefaultFont = nullptr;
+    std::shared_ptr<Shader> Text::m_DefaultShader = nullptr;
+    std::shared_ptr<Font> Text::m_DefaultFont = nullptr;
 
     void Text::m_Construct(const std::string& input_str)
     {
         // Splitting string by newlines, since they will need to be rendered on different y
         strings = Utils::SplitString(input_str, "\n");
 
-        m_FontTexture = MakeRef(Vivium::Texture, m_DefaultFont.get());
-        m_FontTextureAtlas = MakeRef(Vivium::TextureAtlas, m_FontTexture, Vector2<int>{64, 64});
+        m_FontTexture = std::make_shared<Vivium::Texture>(m_DefaultFont.get());
+        m_FontTextureAtlas = std::make_shared<Vivium::TextureAtlas>(m_FontTexture, Vector2<int>{64, 64});
     }
 
     void Text::m_Init()
     {
-        m_DefaultShader = MakeRef(Shader, "text_vertex", "text_frag");
-        m_DefaultFont = MakeRef(Font, "consola.ttf");
+        m_DefaultShader = std::make_shared<Shader>("text_vertex", "text_frag");
+        m_DefaultFont = std::make_shared<Font>("consola.ttf");
     }
 
     float Text::m_GetWidth(const std::string& str) const
@@ -34,7 +34,7 @@ namespace Vivium {
         return width;
     }
 
-    Ref(Font) Text::GetDefaultFont()
+    std::shared_ptr<Font> Text::GetDefaultFont()
     {
         if (m_DefaultFont == nullptr) {
             LogWarn("Default font not initialised yet");
@@ -120,8 +120,8 @@ namespace Vivium {
         return end_str;
     }
 
-    const Ref(TextureAtlas) Text::GetAtlas() const { return m_FontTextureAtlas; }
-    const Ref(Texture) Text::GetTexture() const { return m_FontTexture; }
+    const std::shared_ptr<TextureAtlas> Text::GetAtlas() const { return m_FontTextureAtlas; }
+    const std::shared_ptr<Texture> Text::GetTexture() const { return m_FontTexture; }
 
     void Text::SetText(const std::string& str)
     {
@@ -207,25 +207,25 @@ namespace Vivium {
     }
 
     Text::Text(const std::string& text, const Vector2<float>& pos, const Alignment& alignment, float scale)
-        : pos(MakeRef(Vector2<float>, pos)), font(m_DefaultFont), shader(m_DefaultShader), scale(scale), alignment(alignment)
+        : pos(std::make_shared<Vector2<float>>(pos)), font(m_DefaultFont), shader(m_DefaultShader), scale(scale), alignment(alignment)
     {
         m_Construct(text);
     }
 
-    Text::Text(const std::string& text, const Vector2<float>& pos, Ref(Font) font, const Alignment& alignment, float scale)
-        : pos(MakeRef(Vector2<float>, pos)), font(font), shader(m_DefaultShader), scale(scale), alignment(alignment)
+    Text::Text(const std::string& text, const Vector2<float>& pos, std::shared_ptr<Font> font, const Alignment& alignment, float scale)
+        : pos(std::make_shared<Vector2<float>>(pos)), font(font), shader(m_DefaultShader), scale(scale), alignment(alignment)
     {
         m_Construct(text);
     }
 
-    Text::Text(const std::string& text, const Vector2<float>& pos, Ref(Shader) shader, const Alignment& alignment, float scale)
-        : pos(MakeRef(Vector2<float>, pos)), font(m_DefaultFont), shader(shader), scale(scale), alignment(alignment)
+    Text::Text(const std::string& text, const Vector2<float>& pos, std::shared_ptr<Shader> shader, const Alignment& alignment, float scale)
+        : pos(std::make_shared<Vector2<float>>(pos)), font(m_DefaultFont), shader(shader), scale(scale), alignment(alignment)
     {
         m_Construct(text);
     }
 
-    Text::Text(const std::string& text, const Vector2<float>& pos, Ref(Font) font, Ref(Shader) shader, const Alignment& alignment, float scale)
-        : pos(MakeRef(Vector2<float>, pos)), font(font), shader(shader), scale(scale), alignment(alignment)
+    Text::Text(const std::string& text, const Vector2<float>& pos, std::shared_ptr<Font> font, std::shared_ptr<Shader> shader, const Alignment& alignment, float scale)
+        : pos(std::make_shared<Vector2<float>>(pos)), font(font), shader(shader), scale(scale), alignment(alignment)
     {
         m_Construct(text);
     }

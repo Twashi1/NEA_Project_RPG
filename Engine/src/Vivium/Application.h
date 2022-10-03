@@ -48,7 +48,7 @@ namespace Vivium {
         static unsigned int m_FramesProcessed; // Tracks amount of frames that have been processed since the last poll
         static double m_ProcessingTime; // Tracks time spent processing since the last poll
 
-        static std::unordered_map<STATS_INDEX, Ref(Text)> m_StatsTextMap;
+        static std::unordered_map<STATS_INDEX, std::shared_ptr<Text>> m_StatsTextMap;
 
         static VersionNumber m_VersionNumber; // Application version number (basically unused)
 
@@ -58,7 +58,7 @@ namespace Vivium {
         static std::unordered_map<CURSOR_TYPE, GLFWcursor*> m_CursorMap;
 
     public:
-        static Ref(TextureAtlas) engine_icons; // Texture for engine icons
+        static std::shared_ptr<TextureAtlas> engine_icons; // Texture for engine icons
 
         static GLFWwindow* window;  // Pointer to GLFW window
         static int width;           // Width of window
@@ -68,7 +68,7 @@ namespace Vivium {
 
         static std::string resources_path; // Path to resources file
 
-        static Ref(Panel) window_panel;  // For attaching things to the window
+        static std::shared_ptr<Panel> window_panel;  // For attaching things to the window
 
         // Set clear screen/background color
         static void SetBGColor(const RGBColor& color);

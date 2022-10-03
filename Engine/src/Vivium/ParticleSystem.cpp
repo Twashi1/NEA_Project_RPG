@@ -137,7 +137,7 @@ namespace Vivium {
 		m_RenderBatch(&batch);
 	}
 
-	ParticleSystem::ParticleSystem(const std::size_t& max_size, Ref(Shader) shader, const Vector2<float>& acceleration)
+	ParticleSystem::ParticleSystem(const std::size_t& max_size, std::shared_ptr<Shader> shader, const Vector2<float>& acceleration)
 		: m_MaxSize(max_size), m_Shader(shader), m_Acceleration(acceleration)
 	{
 		m_Particles = new Particle*[max_size];

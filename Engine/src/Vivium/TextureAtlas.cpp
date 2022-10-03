@@ -254,7 +254,7 @@ namespace Vivium {
 		return tex_coords;
 	}
 
-	const Ref(Texture) TextureAtlas::GetAtlas() const
+	const std::shared_ptr<Texture> TextureAtlas::GetAtlas() const
 	{
 		return m_Atlas;
 	}
@@ -264,19 +264,19 @@ namespace Vivium {
 		return m_SpriteSize;
 	}
 
-	TextureAtlas::TextureAtlas(Ref(Texture) atlas, const Vector2<int>& sprite_size)
+	TextureAtlas::TextureAtlas(std::shared_ptr<Texture> atlas, const Vector2<int>& sprite_size)
 		: m_Atlas(atlas), m_SpriteSize(sprite_size)
 	{
 		m_Construct();
 	}
 
 	TextureAtlas::TextureAtlas(const Texture& atlas, const Vector2<int>& sprite_size)
-		: m_Atlas(MakeRef(Texture, atlas)), m_SpriteSize(sprite_size)
+		: m_Atlas(std::make_shared<Texture>(atlas)), m_SpriteSize(sprite_size)
 	{
 		m_Construct();
 	}
 	TextureAtlas::TextureAtlas(const std::string& atlas_path, const Vector2<int>& sprite_size)
-		: m_Atlas(MakeRef(Texture, atlas_path)), m_SpriteSize(sprite_size)
+		: m_Atlas(std::make_shared<Texture>(atlas_path)), m_SpriteSize(sprite_size)
 	{
 		m_Construct();
 	}

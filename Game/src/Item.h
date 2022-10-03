@@ -121,7 +121,7 @@ namespace Game {
 	class FloorItem : Vivium::Streamable {
 	private:
 		Item m_ItemData;
-		Ref(Vivium::Quad) m_Quad;
+		std::shared_ptr<Vivium::Quad> m_Quad;
 		Vivium::Vector2<float> velocity;
 		Vivium::Vector2<float> acceleration;
 
@@ -140,7 +140,7 @@ namespace Game {
 		static void Terminate();
 
 		const Item& GetItemData() const;
-		const Ref(Vivium::Quad) GetQuad() const;
+		const std::shared_ptr<Vivium::Quad> GetQuad() const;
 
 		void Update();
 		

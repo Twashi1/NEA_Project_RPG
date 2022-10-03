@@ -37,7 +37,7 @@ namespace Vivium {
 		return pos;
 	}
 
-	Panel::Data::Data(ANCHOR x, ANCHOR y, Ref(Quad) quad, const Vector2<float>& offset)
+	Panel::Data::Data(ANCHOR x, ANCHOR y, std::shared_ptr<Quad> quad, const Vector2<float>& offset)
 		: x_anchor(x), y_anchor(y), quad(quad), m_Type(Type::QUAD), offset(offset)
 	{
 		if (offset.x == FLT_MAX) {
@@ -51,7 +51,7 @@ namespace Vivium {
 		last_pos = this->offset;
 	}
 
-	Panel::Data::Data(ANCHOR x, ANCHOR y, Ref(Vector2<float>) point, const Vector2<float>& offset)
+	Panel::Data::Data(ANCHOR x, ANCHOR y, std::shared_ptr<Vector2<float>> point, const Vector2<float>& offset)
 		: x_anchor(x), y_anchor(y), point(point), m_Type(Type::POINT), offset(offset)
 	{
 		if (offset.x == FLT_MAX) {
@@ -65,7 +65,7 @@ namespace Vivium {
 		last_pos = this->offset;
 	}
 
-	Panel::Data::Data(ANCHOR x, ANCHOR y, Ref(Panel) panel, const Vector2<float>& offset)
+	Panel::Data::Data(ANCHOR x, ANCHOR y, std::shared_ptr<Panel> panel, const Vector2<float>& offset)
 		: x_anchor(x), y_anchor(y), panel(panel), m_Type(Type::PANEL), offset(offset)
 	{
 		if (offset.x == FLT_MAX) {
@@ -126,7 +126,7 @@ namespace Vivium {
 		}
 	}
 
-	const Ref(Quad) Panel::GetQuad() const { return m_Quad; }
+	const std::shared_ptr<Quad> Panel::GetQuad() const { return m_Quad; }
 
 	bool Panel::m_VerifyObject(Data& panel_object)
 	{
@@ -173,12 +173,12 @@ namespace Vivium {
 		}
 	}
 
-	Panel::Panel(Ref(Quad) quad, int scroll_max, int scroll_min)
+	Panel::Panel(std::shared_ptr<Quad> quad, int scroll_max, int scroll_min)
 		: m_Quad(quad), m_OldPos(quad->GetCenter()), m_OldDim(quad->GetDim()), m_ScrollYMax(scroll_max), m_ScrollYMin(scroll_min)
 	{}
 
 	Panel::Panel(const Quad& quad, int scroll_max, int scroll_min)
-		: m_Quad(MakeRef(Quad, quad)), m_OldPos(quad.GetCenter()), m_OldDim(quad.GetDim()), m_ScrollYMax(scroll_max), m_ScrollYMin(scroll_min)
+		: m_Quad(std::make_shared<Quad>(quad)), m_OldPos(quad.GetCenter()), m_OldDim(quad.GetDim()), m_ScrollYMax(scroll_max), m_ScrollYMin(scroll_min)
 	{}
 
 	Panel::~Panel()
@@ -229,51 +229,51 @@ namespace Vivium {
 		m_OldPos = new_rect.center;
 	}
 
-	void Panel::Anchor(ANCHOR x, ANCHOR y, Ref(Quad) quad)
+	void Panel::Anchor(ANCHOR x, ANCHOR y, std::shared_ptr<Quad> quad)
 	{
 		Data* new_data = new Data(x, y, quad);
 		m_Update(*new_data, m_Quad->GetRect());
 		m_PanelObjects.push_back(new_data);
 	}
 
-	void Panel::Anchor(ANCHOR x, ANCHOR y, Ref(Vector2<float>) point)
+	void Panel::Anchor(ANCHOR x, ANCHOR y, std::shared_ptr<Vector2<float>> point)
 	{
 		Data* new_data = new Data(x, y, point);
 		m_Update(*new_data, m_Quad->GetRect());
 		m_PanelObjects.push_back(new_data);
 	}
 
-	void Panel::Anchor(ANCHOR x, ANCHOR y, Ref(Panel) panel)
+	void Panel::Anchor(ANCHOR x, ANCHOR y, std::shared_ptr<Panel> panel)
 	{
 		Data* new_data = new Data(x, y, panel);
 		m_Update(*new_data, m_Quad->GetRect());
 		m_PanelObjects.push_back(new_data);
 	}
 
-	void Panel::Anchor(ANCHOR x, ANCHOR y, Ref(Button) button)
+	void Panel::Anchor(ANCHOR x, ANCHOR y, std::shared_ptr<Button> button)
 	{
 		Anchor(x, y, button->quad);
 		Anchor(x, y, button->text);
 	}
 
-	void Panel::Anchor(ANCHOR x, ANCHOR y, Ref(Slider) slider)
+	void Panel::Anchor(ANCHOR x, ANCHOR y, std::shared_ptr<Slider> slider)
 	{
 		Anchor(x, y, slider->m_BarQuad);
 		Anchor(x, y, slider->m_SliderQuad);
 	}
 
-	void Panel::Anchor(ANCHOR x, ANCHOR y, Ref(Text) text)
+	void Panel::Anchor(ANCHOR x, ANCHOR y, std::shared_ptr<Text> text)
 	{
 		Anchor(x, y, text->pos);
 	}
 
-	void Panel::Anchor(ANCHOR x, ANCHOR y, Ref(TextInput) text_input)
+	void Panel::Anchor(ANCHOR x, ANCHOR y, std::shared_ptr<TextInput> text_input)
 	{
 		Anchor(x, y, text_input->m_Text);
 		Anchor(x, y, text_input->quad);
 	}
 
-	void Panel::Anchor(ANCHOR x, ANCHOR y, Ref(Sprite) sprite)
+	void Panel::Anchor(ANCHOR x, ANCHOR y, std::shared_ptr<Sprite> sprite)
 	{
 		Anchor(x, y, sprite->quad);
 	}

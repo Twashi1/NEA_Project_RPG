@@ -15,7 +15,7 @@
 
 namespace Vivium {
 	std::vector<uint8_t> Renderer::m_AvailableSlots = std::vector<uint8_t>({ 0, 1, 2, 3, 4, 5, 6, 7, 8, 9, 10, 11, 12, 13, 14, 15 });
-	Ref(Camera) Renderer::camera = nullptr;
+	std::shared_ptr<Camera> Renderer::camera = nullptr;
 
 	std::map<int, Framebuffer*> Renderer::m_Framebuffers = {};
 	Shader* Renderer::m_FramebufferShader = nullptr;
@@ -39,7 +39,7 @@ namespace Vivium {
 
 	void Renderer::m_Init()
 	{
-		camera = MakeRef(Camera, 0.0f, (float)Application::width, 0.0f, (float)Application::height);
+		camera = std::make_shared<Camera>(0.0f, (float)Application::width, 0.0f, (float)Application::height);
 
 		m_FramebufferShader = new Shader("static_texture_vertex", "texture_frag");
 		m_CircleShader = new Shader("texture_vertex", "circle_frag");

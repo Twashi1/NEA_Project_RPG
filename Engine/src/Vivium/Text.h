@@ -9,8 +9,8 @@
 namespace Vivium {
 	class VIVIUM_API Text : IBatchable {
 	private:
-		static Ref(Shader) m_DefaultShader;
-		static Ref(Font) m_DefaultFont;
+		static std::shared_ptr<Shader> m_DefaultShader;
+		static std::shared_ptr<Font> m_DefaultFont;
 
 		void m_Construct(const std::string& input_str);
 
@@ -18,8 +18,8 @@ namespace Vivium {
 
 		float m_GetWidth(const std::string& str) const;
 
-		Ref(Texture) m_FontTexture;
-		Ref(TextureAtlas) m_FontTextureAtlas;
+		std::shared_ptr<Texture> m_FontTexture;
+		std::shared_ptr<TextureAtlas> m_FontTextureAtlas;
 
 	public:
 		enum class Alignment : uint8_t {
@@ -31,12 +31,12 @@ namespace Vivium {
 
 		Alignment alignment;
 		std::vector<std::string> strings;				// Strings to render, split by new lines
-		Ref(Vector2<float>) pos;						// Position to render text
-		Ref(Font) font;									// Pointer to font
-		Ref(Shader) shader;								// Shader for text
+		std::shared_ptr<Vector2<float>> pos;						// Position to render text
+		std::shared_ptr<Font> font;									// Pointer to font
+		std::shared_ptr<Shader> shader;								// Shader for text
 		float scale;									// Scale for text
 
-		static Ref(Font) GetDefaultFont();
+		static std::shared_ptr<Font> GetDefaultFont();
 
 		// TODO might need fixes
 		void SetPos(const Vector2<float>& pos);
@@ -50,8 +50,8 @@ namespace Vivium {
 		std::string GetText() const;
 		void SetText(const std::string& str);
 
-		const Ref(TextureAtlas) GetAtlas() const;
-		const Ref(Texture) GetTexture() const;
+		const std::shared_ptr<TextureAtlas> GetAtlas() const;
+		const std::shared_ptr<Texture> GetTexture() const;
 
 		void Render() const;
 		void Submit(Batch* batch) const override;
@@ -59,9 +59,9 @@ namespace Vivium {
 		Text();
 		Text(const Text& other);
 		Text(const std::string& text, const Vector2<float>& pos, const Alignment& alignment = Alignment::LEFT, float scale = 1.0f);
-		Text(const std::string& text, const Vector2<float>& pos, Ref(Font) font, const Alignment& alignment = Alignment::LEFT, float scale = 1.0f);
-		Text(const std::string& text, const Vector2<float>& pos, Ref(Shader) shader, const Alignment& alignment = Alignment::LEFT, float scale = 1.0f);
-		Text(const std::string& text, const Vector2<float>& pos, Ref(Font) font, Ref(Shader) shader, const Alignment& alignment = Alignment::LEFT, float scale = 1.0f);
+		Text(const std::string& text, const Vector2<float>& pos, std::shared_ptr<Font> font, const Alignment& alignment = Alignment::LEFT, float scale = 1.0f);
+		Text(const std::string& text, const Vector2<float>& pos, std::shared_ptr<Shader> shader, const Alignment& alignment = Alignment::LEFT, float scale = 1.0f);
+		Text(const std::string& text, const Vector2<float>& pos, std::shared_ptr<Font> font, std::shared_ptr<Shader> shader, const Alignment& alignment = Alignment::LEFT, float scale = 1.0f);
 
 		~Text();
 

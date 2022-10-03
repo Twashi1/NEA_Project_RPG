@@ -31,33 +31,13 @@ namespace Game {
     {
         s.Write(tiles);
         s.Write(biomes);
-        
-        // Write npcs
-        s.Write(npcs.size());
-
-        for (Ref(NPC) npc : npcs) {
-            // TODO: this would write a NPC type object, not whatever the derived class is
-            //s.Write(*npc);
-        }
+        s.Write(npcs);
     }
 
     void Region::Read(Vivium::Serialiser& s)
     {
         s.Read(&tiles);
         s.Read(&biomes);
-
-        // Read npcs
-        std::size_t size;
-
-        s.Read(&size);
-        npcs.reserve(size);
-
-        for (std::size_t i = 0; i < size; i++) {
-            // TODO: need to allocate memory for a class we don't know the type of, need to store type of derived as well?
-            //Ref(NPC) new_npc = MakeRef(NPC);
-            //s.Read(new_npc.get());
-
-            //npcs.push_back(new_npc);
-        }
+        s.Read(&npcs);
     }
 }

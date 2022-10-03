@@ -9,7 +9,7 @@ namespace Vivium {
 		}
 	}
 
-	Body::Body(Ref(Quad) quad, bool isImmovable, float restitution, float mass, bool isPhysical, CallbackFunc_t callback, void* user_params)
+	Body::Body(std::shared_ptr<Quad> quad, bool isImmovable, float restitution, float mass, bool isPhysical, CallbackFunc_t callback, void* user_params)
 		: quad(quad),
 		isImmovable(isImmovable),
 		vel(), acc(),
@@ -33,6 +33,54 @@ namespace Vivium {
 		isPhysical(other.isPhysical)
 	{
 		m_Timer.Start();
+	}
+
+	Body::Body(Body&& other) noexcept
+		: quad(std::move(other.quad)),
+		collision_callback(std::move(other.collision_callback)), user_params(std::move(other.user_params)),
+		isImmovable(std::move(other.isImmovable)), isPhysical(std::move(other.isPhysical)),
+		restitution(std::move(other.restitution)), mass(std::move(other.mass)), imass(std::move(other.imass)),
+		vel(std::move(other.vel)), acc(std::move(other.acc)), angular_vel(std::move(other.angular_vel)), angular_acc(std::move(other.angular_acc))
+	{}
+
+	Body& Body::operator=(const Body& other)
+	{
+		quad = other.quad;
+		collision_callback = other.collision_callback;
+		user_params = other.user_params;
+
+		isImmovable = other.isImmovable;
+		restitution = other.restitution;
+		mass = other.mass;
+		imass = other.imass;
+
+		vel = other.vel;
+		acc = other.acc;
+
+		angular_vel = other.angular_vel;
+		angular_acc = other.angular_acc;
+
+		isPhysical = other.isPhysical;
+
+		return *this;
+	}
+
+	Body& Body::operator=(Body&& other) noexcept
+	{
+		quad = std::move(other.quad);
+		collision_callback = std::move(other.collision_callback);
+		user_params = std::move(other.user_params);
+		isImmovable = std::move(other.isImmovable);
+		isPhysical = std::move(other.isPhysical);
+		restitution = std::move(other.restitution);
+		mass = std::move(other.mass);
+		imass = std::move(other.imass);
+		vel = std::move(other.vel);
+		acc = std::move(other.acc);
+		angular_vel = std::move(other.angular_vel);
+		angular_acc = std::move(other.angular_acc);
+
+		return *this;
 	}
 
 	void Body::Update()
@@ -127,7 +175,7 @@ namespace Vivium {
 	void Body::Read(Serialiser& s)
 	{
 		if (quad == nullptr) {
-			quad = MakeRef(Quad);
+			quad = std::make_shared<Quad>();
 		}
 
 		s.Read(quad.get());

@@ -114,11 +114,24 @@ namespace Game {
 		float noise = m_AnimalNoise.Get(x, y);
 
 		if (noise > 0.9f) {
-			Ref(NPC) new_animal = dynamic_pointer_cast<NPC>(MakeRef(Pig, Vivium::Vector2<float>(x, y) * World::PIXEL_SCALE));
-
-			region.npcs.push_back(new_animal);
-
-			// world->m_LoadedNPCs.emplace_back(new_animal);
+			// What a disgustingly long constructor
+#define GENERATE_NPC
+#ifdef GENERATE_NPC
+			region.npcs.emplace_back(
+				Pathfinding::NPC::ID::PIG,
+				// TEMP values
+				std::make_shared<Vivium::Body>(
+					std::make_shared<Vivium::Quad>(Vivium::Vector2<float>(x, y) * World::PIXEL_SCALE, Vivium::Vector2<float>(World::PIXEL_SCALE)),
+					true,
+					1.0f,
+					1.0f
+					),
+				Pathfinding::NPC::BehaviourDataMap{
+					{Pathfinding::Behaviour::ID::WANDER,	std::make_shared<Pathfinding::Wandering::Client>(Vivium::Vector2<int>(x, y))},
+					{Pathfinding::Behaviour::ID::IDLE,		std::make_shared<Pathfinding::Idle::Client>()},
+				}
+			);
+#endif
 		}
 	}
 
@@ -229,14 +242,24 @@ namespace Game {
 		float noise = m_AnimalNoise.Get(x, y);
 
 		if (noise > 0.9f) {
-			Ref(NPC) new_animal = dynamic_pointer_cast<NPC>(MakeRef(Cow, Vivium::Vector2<float>(x, y) * World::PIXEL_SCALE));
-
-			region.npcs.push_back(new_animal);
-
-			// world->m_LoadedNPCs.emplace_back(new_animal);
+#ifdef GENERATE_NPC
+			// What a disgustingly long constructor
+			region.npcs.emplace_back(
+				Pathfinding::NPC::ID::COW,
+				// TEMP values
+				std::make_shared<Vivium::Body>(
+					std::make_shared<Vivium::Quad>(Vivium::Vector2<float>(x, y) * World::PIXEL_SCALE, Vivium::Vector2<float>(World::PIXEL_SCALE)),
+					true,
+					1.0f,
+					1.0f
+				),
+				Pathfinding::NPC::BehaviourDataMap {
+					{Pathfinding::Behaviour::ID::WANDER,	std::make_shared<Pathfinding::Wandering::Client>(Vivium::Vector2<int>(x, y))},
+					{Pathfinding::Behaviour::ID::IDLE,		std::make_shared<Pathfinding::Idle::Client>()},
+				}
+			);
+#endif
 		}
-
-		region.npcs;
 	}
 
 	void Biome::DesertBiome::GenerateAt(int x, int y, Tile& tile, World* world, std::unordered_map<Vivium::Vector2<int>, Structure::ID>& structures) const
@@ -283,7 +306,7 @@ namespace Game {
 	{
 		if (world->GetIsObstacle({ x, y })) return;
 
-		// TODO
+		// TODO: slimes coming from the river seems like it makes sense?
 	}
 
 	void Biome::RiverBiome::GenerateAt(int x, int y, Tile& tile, World* world, std::unordered_map<Vivium::Vector2<int>, Structure::ID>& structures) const

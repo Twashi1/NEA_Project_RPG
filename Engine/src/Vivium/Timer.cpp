@@ -4,6 +4,16 @@ namespace Vivium {
 	const long double Timer::m_NsToS = pow(10, -9);
 	const std::chrono::system_clock::time_point Timer::compile_time = std::chrono::system_clock::now();
 
+	double Timer::GetInternalTime() const
+	{
+		return m_Time;
+	}
+
+	void Timer::SetTime(double new_time)
+	{
+		m_Time = new_time;
+	}
+
 	double Timer::GetTime()
 	{
 		return std::chrono::duration_cast<std::chrono::nanoseconds>(std::chrono::system_clock::now() - compile_time).count() * m_NsToS;

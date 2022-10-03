@@ -16,11 +16,13 @@ namespace Vivium {
 	private:
 		std::vector<float> m_TexCoords; // TODO: probably not working
 
+		// TODO: names
 		static IndexBuffer* ib;
 		static BufferLayout* layout; // For vec2 vertices
 
 		// Buffers
-		Ref(VertexBuffer) vb;
+		// TODO: name, unique?
+		std::shared_ptr<VertexBuffer> vb;
 
 		// Update vertex buffer
 		void m_Update();
@@ -45,7 +47,7 @@ namespace Vivium {
 		using Rect::Bottom;
 		using Rect::Top;
 
-		const Ref(VertexBuffer) GetVertexBuffer() const;
+		const std::shared_ptr<VertexBuffer> GetVertexBuffer() const;
 		static const IndexBuffer* GetIndexBuffer();
 
 		Quad();
@@ -55,7 +57,11 @@ namespace Vivium {
 		Quad(const Vector2<float>& center, const Vector2<float>& dim, const std::vector<float>& tex_coords, float angle = 0.0f);
 		Quad(const Rect& rect);
 		Quad(const Quad& other);
+		Quad(Quad&& other) noexcept;
 		~Quad();
+
+		Quad& operator=(const Quad& other);
+		Quad& operator=(Quad&& other) noexcept;
 
 		Vector2<float> GetCenter() const;
 		Vector2<float> GetDim() const;

@@ -1,9 +1,9 @@
 #include "Events.h"
 
 namespace Vivium {
-	std::vector<Ref(EventHandler)> EventSystem::m_EventHandlers;
+	std::vector<std::shared_ptr<EventHandler>> EventSystem::m_EventHandlers;
 
-	void EventHandler::m_AddEvent(Ref(Event) event)
+	void EventHandler::m_AddEvent(std::shared_ptr<Event> event)
 	{
 		event->m_InvokeTimer.Start();
 		m_Events.push(event);
@@ -32,7 +32,7 @@ namespace Vivium {
 		}
 	}
 
-	void EventSystem::AddEvent(Ref(Event) event)
+	void EventSystem::AddEvent(std::shared_ptr<Event> event)
 	{
 		if (!m_EventHandlers.empty()) {
 			for (auto& handler : m_EventHandlers) {
@@ -43,12 +43,12 @@ namespace Vivium {
 		}
 	}
 
-	void EventSystem::RegisterHandler(Ref(EventHandler) handler)
+	void EventSystem::RegisterHandler(std::shared_ptr<EventHandler> handler)
 	{
 		m_EventHandlers.push_back(handler);
 	}
 
-	const std::vector<Ref(EventHandler)> EventSystem::GetHandlers()
+	const std::vector<std::shared_ptr<EventHandler>> EventSystem::GetHandlers()
 	{
 		return m_EventHandlers;
 	}

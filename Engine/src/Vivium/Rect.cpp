@@ -106,6 +106,10 @@ namespace Vivium {
 		: x(other.x), y(other.y), width(other.width), height(other.height), angle(other.angle)
 	{}
 
+	Rect::Rect(Rect&& other) noexcept
+		: x(std::move(other.x)), y(std::move(other.y)), width(std::move(other.width)), height(std::move(other.height)), angle(std::move(other.angle))
+	{}
+
 	void Rect::Write(Serialiser& s) const
 	{
 		s.Write(x);

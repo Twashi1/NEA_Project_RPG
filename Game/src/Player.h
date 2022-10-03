@@ -30,13 +30,13 @@ namespace Game {
         Inventory::Slot m_SelectedSlot = Inventory::Slot::INVALID;
         Item m_SelectedItem = Item(Item::ID::VOID, 0);
 
-        Ref(HandEquipable) m_HandEquipable = nullptr;
+        std::shared_ptr<HandEquipable> m_HandEquipable = nullptr;
 
         bool m_isMainInventoryOpened = false;
 
     public:
         std::shared_ptr<Vivium::Body> body; // Describes physical properties of player and how it should interact with other objects
-        Ref(Vivium::Quad) quad;             // Holds vertex buffer and index buffer of player
+        std::shared_ptr<Vivium::Quad> quad;             // Holds vertex buffer and index buffer of player
         Vivium::Shader* shader;             // Pointer to player shader
 
         Vivium::Vector2<int> selected_tile_pos; // World position of hovered tile

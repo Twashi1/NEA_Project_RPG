@@ -21,6 +21,9 @@ namespace Vivium {
 		Timer& operator=(const Timer& other);
 		Timer& operator=(Timer&& other) noexcept;
 
+		double GetInternalTime() const;
+		void SetTime(double new_time);
+
 		double GetElapsedNoReset();
 		// Gets time since last GetElapsed or Start call
 		double GetElapsed();

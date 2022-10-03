@@ -146,7 +146,7 @@ namespace Game {
 		static void Init();
 		static void Terminate();
 
-		Ref(Vivium::Vector2<float>) inventory_pos;
+		std::shared_ptr<Vivium::Vector2<float>> inventory_pos;
 
 		bool IsFull() const;
 

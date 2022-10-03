@@ -24,7 +24,7 @@ namespace Vivium {
 	private:
 		Animation::Data m_AnimationData;
 
-		Ref(TextureAtlas) m_Atlas; // The texture atlas we got the sprites from
+		std::shared_ptr<TextureAtlas> m_Atlas; // The texture atlas we got the sprites from
 
 		Timer m_Timer;				// Timer to track elapsed time between updates
 		float m_FrameTime = 0.0;	// Time spent displaying the current frame
@@ -33,13 +33,13 @@ namespace Vivium {
 	public:
 		static std::string FILE_EXTENSION;
 
-		Ref(Quad) quad;
-		Ref(Shader) shader;
+		std::shared_ptr<Quad> quad;
+		std::shared_ptr<Shader> shader;
 
-		const Ref(Texture) GetAtlas() const;
+		const std::shared_ptr<Texture> GetAtlas() const;
 
 		// NOTE: data_filename refers to the filename of the .animation data file for the texture atlas
-		Animation(Ref(Quad) quad, Ref(Shader) shader, Ref(TextureAtlas) atlas, const Animation::Data& animation_data);
+		Animation(std::shared_ptr<Quad> quad, std::shared_ptr<Shader> shader, std::shared_ptr<TextureAtlas> atlas, const Animation::Data& animation_data);
 		~Animation();
 
 		// Updates the animation, takes current time
