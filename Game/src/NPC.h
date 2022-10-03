@@ -1,12 +1,11 @@
 #pragma once
 
-#include "Core.h"
+#include "Equipable.h"
 
 namespace Game {
 	class World;
 
 	namespace Pathfinding {
-		// TODO: Streamable for NPC
 		class NPC;
 
 		class Behaviour : public Vivium::Streamable {
@@ -148,6 +147,8 @@ namespace Game {
 			// TODO: Pretty ugly function, bad name and should be somewhere else
 			// Adds rendering information to vertices, assuming layout: position, texcoords
 			void AddVertices(std::vector<float>& vertices);
+
+			void CheckProjectileCollision(Weapon::Projectile** projectiles, std::size_t size);
 
 			virtual void Write(Vivium::Serialiser& s) const override;
 			virtual void Read(Vivium::Serialiser& s) override;

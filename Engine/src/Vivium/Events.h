@@ -53,6 +53,8 @@ namespace Vivium {
 		static void RegisterHandler(std::shared_ptr<EventHandler> handler);
 		static const std::vector<std::shared_ptr<EventHandler>> GetHandlers();
 
+		static void ForceUpdate();
+
 		friend Application;
 	};
 }

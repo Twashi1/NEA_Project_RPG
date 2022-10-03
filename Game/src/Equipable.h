@@ -1,7 +1,6 @@
 #pragma once
 
 #include "Item.h"
-#include "NPC.h"
 
 // TODO: split up this file
 
@@ -10,6 +9,10 @@ namespace Game {
 	class Player;
 	class World;
 	class ProjectileSystem;
+
+	namespace Pathfinding {
+		class NPC;
+	}
 
 	class HandEquipable : public Item {
 	protected:
@@ -47,15 +50,16 @@ namespace Game {
 	class Weapon : public HandEquipable {
 	protected:
 		static std::shared_ptr<Vivium::Shader> m_ShaderDefault;
+		static ProjectileSystem* m_ProjectileSystem;
 
 		std::shared_ptr<Vivium::Shader> m_Shader;
-		ProjectileSystem* m_ProjectileSystem;
 		Vivium::Timer m_AttackTimer;
 
 		using Item::id;
 
 	public:
 		static void Init();
+		static void Terminate();
 
 		struct Properties;
 
@@ -118,11 +122,15 @@ namespace Game {
 
 			Projectile(const ID& id, float damage, float knockback);
 			Projectile(const Properties& props);
+			
+			float GetDamage() const;
+			float GetKnockback() const;
 
 			static void SetWorld(World* world);
 
 			friend ProjectileSystem;
 			friend Projectile;
+			friend World;
 		};
 
 		// TODO: maybe projectile system stored here? need an init function then but still
@@ -136,15 +144,21 @@ namespace Game {
 
 			Properties(const std::string& name, float damage, float knockback, float attack_frequency, const Projectile::ID& projectile_id);
 		};
-		
-		static const std::unordered_map<Item::ID, Properties> m_Properties;
-		static std::shared_ptr<Projectile::HitHandler> m_HitHandler;
 
 		Weapon(const Item::ID& id);
-		~Weapon();
+		~Weapon() = default;
+
+		static Projectile** GetProjectiles(std::size_t& size);
+		static void ForceUpdateEventHandler();
 
 		virtual void Render() override;
 		virtual void Update(World* world, Player* player) override;
+
+		friend ProjectileSystem;
+
+	protected:
+		static const std::unordered_map<Item::ID, Properties> m_Properties;
+		static std::shared_ptr<Projectile::HitHandler> m_HitHandler;
 	};
 
 	// TODO: generalise a particle system with textured particles?

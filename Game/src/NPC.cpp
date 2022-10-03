@@ -109,6 +109,34 @@ namespace Game {
 			vertices.emplace_back(tex_coords[7]);
 		}
 
+		void NPC::CheckProjectileCollision(Weapon::Projectile** projectiles, std::size_t size)
+		{
+			// TODO: move these consts
+			static constexpr float MAX_DIST = 100.0f;
+			static constexpr float MAX_DIST_SQR = MAX_DIST * MAX_DIST;
+
+			Vivium::Vector2<float> my_pos = body->quad->GetCenter();
+
+			for (std::size_t i = 0; i < size; i++) {
+				Weapon::Projectile* proj = projectiles[i];
+
+				// Here, there is a guarantee the proj is not out of scope/reallocated
+				if (proj->IsAlive()) {
+					float dist = Vivium::Vector2<float>::SqrDistance(my_pos, proj->position);
+					
+					// They have collided (or are close enough to consider that they have)
+					if (dist < MAX_DIST_SQR) {
+						std::shared_ptr<Weapon::Projectile::Hit> hit = std::make_shared<Weapon::Projectile::Hit>(proj->GetDamage(), proj->GetKnockback(), this, proj);
+						Vivium::EventSystem::AddEvent(hit);
+						
+						// TODO: normally projectile would be killed here, but should be killed in the handler instead
+						// Projectile is deleted upon contact (if piercing projectiles ever made, this should be disabled)
+						// proj->Kill();
+					}
+				}
+			}
+		}
+
 		void NPC::Write(Vivium::Serialiser& s) const
 		{
 			s.Write(id);

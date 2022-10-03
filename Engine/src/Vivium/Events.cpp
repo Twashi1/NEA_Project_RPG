@@ -52,4 +52,9 @@ namespace Vivium {
 	{
 		return m_EventHandlers;
 	}
+
+	void EventSystem::ForceUpdate()
+	{
+		m_Update();
+	}
 }

@@ -156,6 +156,16 @@ namespace Vivium {
 		delete[] m_Particles;
 	}
 
+	Particle** ParticleSystem::GetParticles()
+	{
+		return m_Particles;
+	}
+
+	std::size_t ParticleSystem::GetMaxSize() const
+	{
+		return m_MaxSize;
+	}
+
 	void ParticleSystem::m_RenderBatch(Batch* batch)
 	{
 		auto result = batch->End();

@@ -75,6 +75,7 @@ int game(void)
 
     LogInfo("Window closed");
 
+    Weapon::Terminate();
     CraftingInventory::Terminate();
     Biome::Terminate();
     Inventory::Terminate();

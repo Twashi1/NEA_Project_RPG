@@ -58,6 +58,9 @@ namespace Vivium {
 		ParticleSystem(const std::size_t& max_size, std::shared_ptr<Shader> shader, const Vector2<float>& acceleration = 0.0f);
 		virtual ~ParticleSystem();
 
+		Particle** GetParticles();
+		std::size_t GetMaxSize() const;
+
 		// TODO: Emit specification might be useful
 		// TODO: Maybe emit just returns the particle* instead? and user assigns values (impossible because inside emit can't allocate?)
 		// TODO: Maybe user gives particle* to emit? but then how does emit allocate the ptr? user shouldn't control lifespan

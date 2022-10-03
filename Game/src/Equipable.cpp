@@ -1,6 +1,7 @@
 #include "Equipable.h"
 #include "Player.h"
 #include "World.h"
+#include "NPC.h"
 
 namespace Game {
 #define __GAME_EQUIPABLE_CONSTRUCT_ID(id) case id: \
@@ -50,9 +51,10 @@ namespace Game {
 		m_UpdateQuad(world, player->quad->GetCenter());
 	}
 
-	std::shared_ptr<Vivium::Shader> Weapon::m_ShaderDefault;
-	std::shared_ptr<Weapon::Projectile::HitHandler> Weapon::m_HitHandler;
+	std::shared_ptr<Vivium::Shader> Weapon::m_ShaderDefault = nullptr;
+	std::shared_ptr<Weapon::Projectile::HitHandler> Weapon::m_HitHandler = nullptr;
 	World* Weapon::Projectile::m_World = nullptr;
+	ProjectileSystem* Weapon::m_ProjectileSystem = nullptr;
 
 	void Weapon::Projectile::SetWorld(World* world)
 	{
@@ -63,9 +65,18 @@ namespace Game {
 	{
 		m_ShaderDefault = std::make_shared<Vivium::Shader>("texture_vertex", "texture_frag");
 		
+		m_HitHandler = std::make_shared<Weapon::Projectile::HitHandler>();
+
 		Vivium::EventSystem::RegisterHandler(
-			dynamic_pointer_cast<Vivium::EventHandler>(std::make_shared<Weapon::Projectile::HitHandler>())
+			dynamic_pointer_cast<Vivium::EventHandler>(m_HitHandler)
 		);
+
+		m_ProjectileSystem = new ProjectileSystem(100);
+	}
+
+	void Weapon::Terminate()
+	{
+		delete m_ProjectileSystem;
 	}
 
 	Weapon::Projectile::Hit::Hit(float damage, float knockback, Pathfinding::NPC* npc, Projectile* projectile)
@@ -77,10 +88,13 @@ namespace Game {
 
 	void Weapon::Projectile::HitHandler::m_HandleEvent(std::shared_ptr<Vivium::Event> event)
 	{
+		// TODO: No clear indication that neither projectile ptr nor npc ptr have expired
 		std::shared_ptr<Weapon::Projectile::Hit> hit_event = dynamic_pointer_cast<Weapon::Projectile::Hit>(event);
 		LogTrace("Hit event was detected, damage: {}!", hit_event->damage);
 
-		// TODO: do stuff
+		// TODO: take into account iframes, subtract health, provide impulse based on knockback
+		// If projectile is piercing, this would not be here
+		hit_event->projectile->Kill();
 	}
 
 	Weapon::Projectile::Projectile(const ID& id, float damage, float knockback)
@@ -89,41 +103,50 @@ namespace Game {
 	Weapon::Projectile::Projectile(const Weapon::Properties& properties)
 		: m_ID(properties.projectile_id), m_Damage(properties.damage), m_Knockback(properties.knockback) {}
 
+	float Weapon::Projectile::GetDamage() const
+	{
+		return m_Damage;
+	}
+
+	float Weapon::Projectile::GetKnockback() const
+	{
+		return m_Knockback;
+	}
+
 	void Weapon::Projectile::m_Update(const Vivium::Vector2<float>& accel)
 	{
-#ifdef OLD_NPC_CODE
-		std::vector<WeakRef(NPC)>* npcs = m_World->GetLoadedNPCs();
-	
-		if (npcs->empty()) return;
-
-		for (WeakRef(NPC)& npc : *npcs) {
-			if (npc.expired()) continue;
-
-			Ref(NPC) current_npc = npc.lock();
-
-			Vivium::Vector2<float> npc_pos = current_npc->GetPos();
-
-			// If close enough
-			// TODO: also detect some iframes maybe? or do that later, acc now is better because less processing
-			if (Vivium::Vector2<float>::Distance(npc_pos, position) < s_RANGE) {
-				// Create hit event
-				Vivium::EventSystem::AddEvent(
-					dynamic_pointer_cast<Vivium::Event>(
-						std::make_shared<Weapon::Projectile::Hit>(m_Damage, m_Knockback, current_npc, this)
-					)
-				);
-			}
-		}
-#endif
+		// TODO: remove
 	}
 
 	Weapon::Weapon(const Item::ID& id)
-		: HandEquipable(id), m_Shader(m_ShaderDefault), m_ProjectileSystem(new ProjectileSystem(10))
+		: HandEquipable(id), m_Shader(m_ShaderDefault)
 	{}
 
-	Weapon::~Weapon()
+	Weapon::Projectile** Weapon::GetProjectiles(std::size_t& size)
 	{
-		delete m_ProjectileSystem;
+		size = 0;
+
+		Vivium::Particle** particle_array = m_ProjectileSystem->GetParticles();
+
+		Weapon::Projectile** projectile_array = new Weapon::Projectile*[m_ProjectileSystem->GetMaxSize()];
+
+		for (std::size_t i = 0; i < m_ProjectileSystem->GetMaxSize(); i++) {
+			Vivium::Particle* particle = particle_array[i];
+
+			if (particle == nullptr) continue;
+
+			if (particle->IsAlive()) {
+				// Add to particle array
+				projectile_array[size++] = dynamic_cast<Weapon::Projectile*>(particle);
+			}
+		}
+
+		return projectile_array;
+	}
+
+	void Weapon::ForceUpdateEventHandler()
+	{
+		m_HitHandler->Update();
 	}
 
 	void Weapon::Render() {

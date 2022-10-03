@@ -716,6 +716,9 @@ namespace Game {
 			Vivium::GLSLDataType::VEC2  // tex coords
 		};
 
+		std::size_t projectile_count = 0;
+		Weapon::Projectile** proj_array = Weapon::GetProjectiles(projectile_count);
+
 		std::vector<float> vertices;
 		std::vector<unsigned short> indices;
 		std::size_t shape_count = 0; // Amount of npcs
@@ -740,6 +743,7 @@ namespace Game {
 				for (Pathfinding::NPC& npc : region.npcs) {
 					// Weird location, but only place we can really update the npc
 					npc.Update();
+					npc.CheckProjectileCollision(proj_array, projectile_count);
 
 					npc.AddVertices(vertices);
 					
@@ -755,6 +759,9 @@ namespace Game {
 				}
 			}
 		}
+
+		// Update event handler for projectile hits, to ensure neither npc nor projectile ptr has gone out of scope/reallocated/whatever
+		Weapon::ForceUpdateEventHandler();
 
 		if (shape_count > 0) {
 			Vivium::VertexBuffer vb(vertices, layout);
