@@ -122,6 +122,8 @@ namespace Game {
 	private:
 		Item m_ItemData;
 		std::shared_ptr<Vivium::Quad> m_Quad;
+		// TODO: naming conventions
+		// TODO: use body
 		Vivium::Vector2<float> velocity;
 		Vivium::Vector2<float> acceleration;
 
