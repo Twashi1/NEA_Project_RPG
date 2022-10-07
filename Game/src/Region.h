@@ -7,6 +7,7 @@
 namespace Game {
 	struct Region : Vivium::Streamable {
 		static constexpr std::size_t LENGTH = 64;
+		static constexpr float LENGTH_F = LENGTH;
 		static constexpr std::size_t SIZE = LENGTH * LENGTH;
 		static constexpr std::size_t TILES_MEM_SIZE = SIZE * sizeof(Tile);
 		static constexpr std::size_t BIOMES_MEM_SIZE = SIZE * sizeof(Biome::ID);

@@ -13,10 +13,9 @@ namespace Game {
 	class Player;
 	class Inventory;
 
+	// TODO: God class
 	class World {
 	private:
-		Vivium::Noise::Interpolated m_NoiseTerrain;
-		Vivium::Noise::White m_NoiseTrees;
 		Vivium::Serialiser* m_Serialiser; // TODO unique ptr
 		unsigned int m_Seed;
 

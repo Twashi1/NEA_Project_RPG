@@ -19,6 +19,8 @@ namespace Game {
 			})  // PIGS ^^^ (TODO: LOTS OF DUPLICATION)
 		};
 
+#undef NEW_BEHAVIOUR_PTR
+
 		void NPC::m_UpdatePathing()
 		{
 			// If we're moving somewhere
@@ -350,5 +352,42 @@ namespace Game {
 		{
 			s.Read(&home_tile);
 		}
-}
+
+		void SlimeAttack::Global::Write(Vivium::Serialiser& s) const
+		{
+			// TODO
+			s.Write(speed);
+			s.Write(anim_data);
+		}
+
+		void SlimeAttack::Global::Read(Vivium::Serialiser& s)
+		{
+			// TODO
+			s.Read(&speed);
+			s.Read(&anim_data);
+		}
+
+		Behaviour::ID SlimeAttack::GetID() const { return Behaviour::ID::SLIME_ATTACK; }
+
+		void SlimeAttack::Begin(NPC* npc, std::shared_ptr<Behaviour::Client> client) const
+		{
+			// TODO
+		}
+
+		void SlimeAttack::ExecuteOn(NPC* npc) const
+		{
+			// TODO
+		}
+
+		void SlimeAttack::Update(NPC* npc, std::shared_ptr<Behaviour::Client> client) const
+		{
+			// TODO
+		}
+
+		bool SlimeAttack::IsOver(NPC* npc, std::shared_ptr<Behaviour::Client> client) const
+		{
+			// TODO
+			return true;
+		}
+	}
 }

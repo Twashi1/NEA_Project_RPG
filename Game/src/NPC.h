@@ -13,6 +13,8 @@ namespace Game {
 			enum class ID : uint8_t {
 				IDLE,
 				WANDER,
+				HUNTING,
+				SLIME_ATTACK,
 				MAX
 			};
 
@@ -64,6 +66,47 @@ namespace Game {
 			virtual void ExecuteOn(NPC* npc) const override;
 			virtual void Update(NPC* npc, std::shared_ptr<Behaviour::Client> client) const override;
 			virtual bool IsOver(NPC* npc, std::shared_ptr<Behaviour::Client> client) const override;
+		};
+
+		class Hunting : virtual public Behaviour, public Vivium::Streamable {
+		public:
+			struct Global : public Vivium::Streamable {
+				float notice_range;
+				float leash_range;
+				float speed;
+			};
+		};
+
+		class SlimeAttack : virtual public Behaviour, public Vivium::Streamable {
+		public:
+			struct Global : public Vivium::Streamable {
+				float speed;
+				float attack_range;
+				float damage;
+				float knockback;
+				float attack_speed;
+				Vivium::Animation::Data anim_data;
+
+				void Write(Vivium::Serialiser& s) const override;
+				void Read(Vivium::Serialiser& s) override;
+			};
+
+			struct Client : virtual public Behaviour::Client, public Vivium::Streamable {
+				std::shared_ptr<Vivium::Animation> animation_handler;
+			};
+
+			Global global;
+
+			SlimeAttack(const Global& global);
+
+			void Write(Vivium::Serialiser& s) const override;
+			void Read(Vivium::Serialiser& s) override;
+
+			Behaviour::ID GetID() const override;
+			void Begin(NPC* npc, std::shared_ptr<Behaviour::Client> client) const override;
+			void ExecuteOn(NPC* npc) const override;
+			void Update(NPC* npc, std::shared_ptr<Behaviour::Client> client) const override;
+			bool IsOver(NPC* npc, std::shared_ptr<Behaviour::Client> client) const override;
 		};
 
 		class Wandering : virtual public Behaviour, public Vivium::Streamable {

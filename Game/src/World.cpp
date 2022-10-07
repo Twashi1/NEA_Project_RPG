@@ -4,10 +4,11 @@
 
 namespace Game {
 	// TODO: path is complicated
-
+	// TODO: dont think this is being used anymore
 	std::string World::PATH = "../Resources/saves/";
 	std::string World::FILE_EXTENSION = ".txt";
 	std::string World::GENERAL_FILE = "general";
+
 	Vivium::Shader* World::texture_shader = nullptr;
 
 	Vivium::Vector2<int> World::GetWorldPos(const Vivium::Vector2<float>& pos) const
@@ -139,16 +140,16 @@ namespace Game {
 	Vivium::Vector2<int> World::GetRegionIndex(const Vivium::Vector2<int>& pos)
 	{
 		return Vivium::Vector2<int>(
-			std::floor((double)pos.x / (double)Region::LENGTH),
-			std::floor((double)pos.y / (double)Region::LENGTH)
+			std::floor(pos.x / Region::LENGTH_F),
+			std::floor(pos.y / Region::LENGTH_F)
 			);
 	}
 
 	Vivium::Vector2<int> World::GetRegionIndex(int x, int y)
 	{
 		return Vivium::Vector2<int>(
-			std::floor((double)x / (double)Region::LENGTH),
-			std::floor((double)y / (double)Region::LENGTH)
+			std::floor(x / Region::LENGTH_F),
+			std::floor(y / Region::LENGTH_F)
 			);
 	}
 
@@ -517,14 +518,12 @@ namespace Game {
 
 		Vivium::Vector2<int> frame = Vivium::Application::GetScreenDim() / (PIXEL_SCALE * 2.0f);
 
-		float reg_scale = Region::LENGTH;
-
 		// Add some extra tiles to make sure we don't get ugly black borders
 		constexpr int padding = 3;
-		int left	= pos.x - frame.x - padding;	int reg_left	= std::floor(left / reg_scale);
-		int right	= pos.x + frame.x + padding;	int reg_right	= std::floor(right / reg_scale);
-		int bottom	= pos.y - frame.y - padding;	int reg_bottom	= std::floor(bottom / reg_scale);
-		int top		= pos.y + frame.y + padding;	int reg_top		= std::floor(top / reg_scale);
+		int left	= pos.x - frame.x - padding;	int reg_left	= std::floor(left / Region::LENGTH_F);
+		int right	= pos.x + frame.x + padding;	int reg_right	= std::floor(right / Region::LENGTH_F);
+		int bottom	= pos.y - frame.y - padding;	int reg_bottom	= std::floor(bottom / Region::LENGTH_F);
+		int top		= pos.y + frame.y + padding;	int reg_top		= std::floor(top / Region::LENGTH_F);
 
 		// Stores the current amount of tiles we have rendered
 		// std::size_t count = 0;
@@ -801,13 +800,12 @@ namespace Game {
 		// TODO: Really need a function/shorthand/preprocessor for this
 		Vivium::Vector2<int> frame = Vivium::Application::GetScreenDim() / (PIXEL_SCALE * 2.0f);
 
-		float reg_scale = Region::LENGTH;
 		int padding = OBSTACLE_MAP_REGION_PADDING * Region::LENGTH;
 
-		int left = player_tile.x - frame.x - padding;	int reg_left = std::floor(left / reg_scale);
-		int right = player_tile.x + frame.x + padding;	int reg_right = std::floor(right / reg_scale);
-		int bottom = player_tile.y - frame.y - padding;	int reg_bottom = std::floor(bottom / reg_scale);
-		int top = player_tile.y + frame.y + padding;	int reg_top = std::floor(top / reg_scale);
+		int left	= player_tile.x - frame.x - padding;	int reg_left	= std::floor(left / Region::LENGTH_F);
+		int right	= player_tile.x + frame.x + padding;	int reg_right	= std::floor(right / Region::LENGTH_F);
+		int bottom	= player_tile.y - frame.y - padding;	int reg_bottom	= std::floor(bottom / Region::LENGTH_F);
+		int top		= player_tile.y + frame.y + padding;	int reg_top		= std::floor(top / Region::LENGTH_F);
 
 		Vivium::Vector2<int> dim(right - left, top - bottom);
 
@@ -847,6 +845,8 @@ namespace Game {
 
 								// If either foreground or background are physical: true, else false
 								// TODO: needs to be easier to make obstacle map
+								// TODO: significant performance loss here! seems like indexing the tile properties each frame many times is causing some performance 
+								// TODO: maybe only update the obstacle map every 5 frames? or multithread it per region?
 								obstacle_data.get()[obs_x + obs_y * dim.x] = Tile::GetIsPhysical(tile.foreground) || Tile::GetIsPhysical(tile.background);
 							}
 						}

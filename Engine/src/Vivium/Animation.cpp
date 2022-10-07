@@ -19,6 +19,10 @@ namespace Vivium {
 		}
 	}
 
+	Animation::Data::Data(const std::vector<float>& frame_timings, const std::vector<int>& frame_indices)
+		: frame_timings(frame_timings), frame_indices(frame_indices), frame_count(frame_indices.size())
+	{}
+
 	Animation::Data::Data(const std::string& animation_data_file, const Vector2<int>& atlas_dim)
 	{
 		// Load text
@@ -98,6 +102,20 @@ namespace Vivium {
 		}
 
 		delete filetext;
+	}
+
+	void Animation::Data::Write(Vivium::Serialiser& s) const
+	{
+		s.Write(frame_timings);
+		s.Write(frame_indices);
+		s.Write(frame_count);
+	}
+
+	void Animation::Data::Read(Vivium::Serialiser& s)
+	{
+		s.Read(&frame_timings);
+		s.Read(&frame_indices);
+		s.Read(&frame_count);
 	}
 
 	const std::shared_ptr<Texture> Animation::GetAtlas() const

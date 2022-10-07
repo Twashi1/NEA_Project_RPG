@@ -89,6 +89,7 @@ namespace Vivium {
         static void SetVolume(float volume);
 
         // TODO: pretty specific, only for games with players
+        // TODO: should be moved to client/game side
         static void UpdateStats(const Body& player_body);
 
         static void EnableWireframe();

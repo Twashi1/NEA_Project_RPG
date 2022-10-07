@@ -2,11 +2,14 @@
 ## General
 - [x] Event handler https://stackoverflow.com/questions/9711414/what-is-the-proper-way-of-doing-event-handling-in-c
     - [ ] Prefer event handler to callback functions
+    - [ ] Use integer ID to differentiate between events
 - [ ] Update and Render methods could have a virtual behind them, also splitting them is inconvenient for a lot of classes 
 - [ ] Vivium Printable? would make some things bigger though
+- Consistent style when overriding function
 
 ## Application
 - [x] Initialisation functions for various classes should be private, and instead should make Application their friend
+- [ ] Make stats information available through struct
 
 ## Renderer
 - [ ] Look into vertex arrays
@@ -20,14 +23,8 @@
 - [x] Batch rendering API
     - [ ] API for batching raw vertices without indices
 - [ ] Compute shader API
-- [ ] Scene API
-    - [ ] Load scene/Unload scene
-    - [ ] Scenes are stored as text-serialised files which contain quads, shaders, textures, etc.
-    - [ ] Each of these components is linked to an entity, also defined in the scene file
 - [x] Camera
 - [x] Color type
-- [ ] Rendering API for entities
-    - [ ] Add a tag to an entity, and given the entity has the requires components for the tag, it will render that entity on the next Renderer::Update() call
 - [ ] Default shaders accessible through an enum or something similar
 
 ## GUI
@@ -38,7 +35,7 @@
 - [x] Sliders
     - [ ] Add feature to make slider snap to intervals
 - [x] Input boxes
-    - [ ] Typing bar still using magic numbers
+    - [ ] Typing bar using magic numbers
 - [x] Panels
     - [x] Add other GUI objects to Anchor overload
     - [ ] Add resizing
@@ -66,7 +63,7 @@
 ## General
 - ~~Switch to 16x16~~
 - [ ] Tileset https://www.gamedev.net/tutorials/_/technical/game-programming/tilemap-based-game-techniques-handling-terrai-r934/
-- [ ] Some way to escape game and go back to main menu
+- [ ] Some way to escape game and go back to main menu/access settings/etc
 
 ## World
 - ~~Remove bot/mid/top for tiles, just foreground/background~~
@@ -117,8 +114,7 @@
 - [ ] Spell system? Buff system? maybe this is useless but i really wanna use those magic circle sprites
 
 ## NPCs
-- [x] Thinking time between wanders
-- [ ] Home/tether range for passive entities
+- [ ] Random spawning even after world load 
 
 ## Enemies
 - [ ] Enemy AI
@@ -127,6 +123,7 @@
 ## GUI
 - [x] Title screen
     - [x] Navigate to options, create new world, load world
+    - [ ] Show environment in background, with some blur and movement
 - [ ] Keybinds config
 - [x] Options menu
 
@@ -143,9 +140,10 @@
 - docs docs docs docs docs docs docs docs
 - INL file for Vector2
 - ~~Match colour of the amethyst wand, ball, and sword to amethyst crystal/sword, or other way round~~
-- Fix NPC spawning
+- 
 
 # Bugs
+- Loading a world doesn't load NPCs/kills NPCs?
 - Tall cacti not spawning in desert biome
 - ~~Topaz wand not working~~
 - ~~Rare bug where a Vector2 which is an index for a loaded region is unallocated and checked for equivelance~~

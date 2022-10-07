@@ -24,13 +24,10 @@ namespace Vivium {
             glGetShaderInfoLog(id, length, &length, message);
 
             // Check on which shader the error occured
-            // TODO: use Log
             const char* shader_type;
             shader_type = (type == GL_VERTEX_SHADER) ? "Vertex" : "Fragment";
-            std::cout
-                << shader_type
-                << "Shader compilation failed: "
-                << message << std::endl;
+
+            LogError("{} shader compilation failed: {}", shader_type, message);
 
             delete[] message;
 
@@ -44,8 +41,9 @@ namespace Vivium {
     }
 
     GLuint Shader::m_CreateShader(const char* vertex_name, const char* frag_name) {
-        // TODO not good
+        // TODO: use application path
         const std::string PATH = "../Resources/shaders/";
+        // TODO: this extension has caused 1000 bugs just remove it
         const std::string EXT = ".glsl";
 
         if (Vivium::Flag::Test(VIVIUM_FLAG_PRINT_SHADER_COMPILATION)) {
@@ -147,6 +145,12 @@ namespace Vivium {
     {
         GLuint location = glGetUniformLocation(m_ID, name);
         glUniform4f(location, x, y, z, w);
+    }
+
+    void Shader::SetUniform4f(const char* name, const RGBColor& color, float a)
+    {
+        GLuint location = glGetUniformLocation(m_ID, name);
+        glUniform4f(location, color.r, color.g, color.b, a);
     }
 
     void Shader::SetUniformMat4fv(const char* name, const glm::mat4& mat)
