@@ -142,8 +142,16 @@ namespace Game {
 	StartScene::StartScene(MainMenu* menu)
 		: m_Manager(menu)
 	{
-		m_TitleSprite = std::make_shared<Vivium::Sprite>(Vivium::Vector2<float>(0.0f, 100.0f), Vivium::Vector2<float>(256.0f, 256.0f), "title.png", true);
-		
+		Vivium::Vector2<float> bg_sprite_dim = { 1024.0f, 576.0f };
+		// Scale it so y fits
+		float scale = Vivium::Application::GetScreenDim().y / bg_sprite_dim.y;
+		bg_sprite_dim *= scale;
+
+		m_TitleSprite = std::make_shared<Vivium::Sprite>(Vivium::Vector2<float>(0.0f, 100.0f), Vivium::Vector2<float>(512.0f, 192.0f), "new_title.png", true);
+		m_BackgroundQuad = std::make_shared<Vivium::Quad>(Vivium::Vector2<float>(0.0f, 0.0f), bg_sprite_dim);
+		m_BackgroundTexture = std::make_shared<Vivium::Texture>("background.png");
+		m_BackgroundShader = std::make_shared<Vivium::Shader>("static_blur_vertex", "blur_frag");
+
 		m_CreateWorldButton = std::make_shared<Vivium::Button>(
 			Vivium::Quad(0.0f, -50.0f, 400.0f, 100.0f),
 			&MainMenu::s_CreateWorldCallback,
@@ -166,6 +174,7 @@ namespace Game {
 		);
 
 		Vivium::Application::window_panel->Anchor(Vivium::Panel::ANCHOR::CENTER, Vivium::Panel::ANCHOR::CENTER, m_TitleSprite);
+		Vivium::Application::window_panel->Anchor(Vivium::Panel::ANCHOR::CENTER, Vivium::Panel::ANCHOR::CENTER, m_BackgroundQuad);
 		Vivium::Application::window_panel->Anchor(Vivium::Panel::ANCHOR::CENTER, Vivium::Panel::ANCHOR::CENTER, m_CreateWorldButton);
 		Vivium::Application::window_panel->Anchor(Vivium::Panel::ANCHOR::CENTER, Vivium::Panel::ANCHOR::CENTER, m_LoadWorldButton);
 		Vivium::Application::window_panel->Anchor(Vivium::Panel::ANCHOR::CENTER, Vivium::Panel::ANCHOR::CENTER, m_OptionsButton);
@@ -177,6 +186,7 @@ namespace Game {
 
 	void StartScene::Render()
 	{
+		Vivium::Renderer::Submit(m_BackgroundQuad.get(), m_BackgroundShader.get(), m_BackgroundTexture.get());
 		Vivium::Renderer::Submit(m_TitleSprite.get());
 		Vivium::Renderer::Submit(m_CreateWorldButton.get());
 		Vivium::Renderer::Submit(m_LoadWorldButton.get());
@@ -185,6 +195,17 @@ namespace Game {
 
 	void StartScene::Update()
 	{
+		Vivium::Vector2<float> bg_sprite_dim = { 1024.0f, 576.0f };
+		// Scale it so y fits
+		float scale = Vivium::Application::GetScreenDim().y / bg_sprite_dim.y;
+		bg_sprite_dim *= scale;
+
+		m_BackgroundQuad->SetDim(bg_sprite_dim);
+
+		m_BackgroundShader->Bind();
+		m_BackgroundShader->SetUniform2f("u_TexSize", bg_sprite_dim);
+		m_BackgroundShader->SetUniform1f("u_Radius", 4.0f);
+
 		m_CreateWorldButton->Update();
 		m_LoadWorldButton->Update();
 		m_OptionsButton->Update();

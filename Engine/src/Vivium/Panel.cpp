@@ -108,6 +108,8 @@ namespace Vivium {
 
 	void Panel::Update()
 	{
+		VIVIUM_SCOPE;
+
 		float scroll = Input::GetYScroll();
 		if (scroll == 0.0f) return;
 		Vector2<float> cursor = Input::GetCursorPos();
@@ -130,6 +132,8 @@ namespace Vivium {
 
 	bool Panel::m_VerifyObject(Data& panel_object)
 	{
+		VIVIUM_SCOPE;
+
 		switch (panel_object.m_Type) {
 		case Data::Type::PANEL: return !panel_object.panel.expired();
 		case Data::Type::QUAD: return !panel_object.quad.expired();
@@ -141,6 +145,8 @@ namespace Vivium {
 
 	void Panel::m_Update(Data& panel_object, const Rect& new_rect)
 	{
+		VIVIUM_SCOPE;
+
 		if (m_VerifyObject(panel_object)) {
 			// Find difference between current and last position to find change in offset, then add to old offset to get new offset
 			Vector2<float> current_offset = panel_object.GetPos() - panel_object.last_pos + panel_object.offset;
@@ -197,6 +203,8 @@ namespace Vivium {
 
 	void Panel::SetPos(const Vector2<float>& new_pos)
 	{
+		VIVIUM_SCOPE;
+
 		m_Quad->SetCenter(new_pos);
 
 		for (Data* panel_object : m_PanelObjects) {
@@ -208,6 +216,8 @@ namespace Vivium {
 
 	void Panel::SetDim(const Vector2<float>& new_dim)
 	{
+		VIVIUM_SCOPE;
+
 		m_Quad->SetDim(new_dim);
 
 		for (Data* panel_object : m_PanelObjects) {
@@ -219,6 +229,8 @@ namespace Vivium {
 
 	void Panel::SetRect(const Rect& new_rect)
 	{
+		VIVIUM_SCOPE;
+
 		m_Quad->SetRect(new_rect);
 
 		for (Data* panel_object : m_PanelObjects) {

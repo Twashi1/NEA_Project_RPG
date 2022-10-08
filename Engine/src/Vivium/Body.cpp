@@ -85,6 +85,8 @@ namespace Vivium {
 
 	void Body::Update()
 	{
+		VIVIUM_SCOPE;
+
 		float elapsed = m_Timer.GetElapsed();
 
 		// Update velocity and position
@@ -98,6 +100,8 @@ namespace Vivium {
 
 	Quad Body::Peek(float dt)
 	{
+		VIVIUM_SCOPE;
+
 		// Calculate future velocity
 		Vector2<float> next_vel = vel + (acc * dt);
 		// Calculate future position
@@ -116,6 +120,8 @@ namespace Vivium {
 
 	Rect Body::PeekRect(float dt)
 	{
+		VIVIUM_SCOPE;
+
 		// Calculate future velocity
 		Vector2<float> next_vel = vel + (acc * dt);
 		// Calculate future position
@@ -133,6 +139,8 @@ namespace Vivium {
 
 	Math::AABB Body::PeekAABB(float dt)
 	{
+		VIVIUM_SCOPE;
+
 		// TODO: Make dimensions the max size the quad could take
 		
 		// Calculate future velocity
@@ -151,6 +159,8 @@ namespace Vivium {
 
 	Vector2<float> Body::PeekPos(float dt)
 	{
+		VIVIUM_SCOPE;
+
 		// Calculate future velocity
 		Vector2<float> next_vel = vel + (acc * dt);
 		// Calculate future position and return
@@ -174,6 +184,8 @@ namespace Vivium {
 
 	void Body::Read(Serialiser& s)
 	{
+		VIVIUM_SCOPE;
+
 		if (quad == nullptr) {
 			quad = std::make_shared<Quad>();
 		}

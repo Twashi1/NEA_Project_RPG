@@ -31,9 +31,11 @@ namespace Vivium {
 	VertexBuffer::VertexBuffer(const std::vector<float>& data, const BufferLayout& layout)
 		: m_ID(0), m_Layout(layout)
 	{
+		VIVIUM_SCOPE;
+		
 		glGenBuffers(1, &m_ID);
 		glBindBuffer(GL_ARRAY_BUFFER, m_ID);
-		glBufferData(GL_ARRAY_BUFFER, data.size() * sizeof(float), &data[0], GL_DYNAMIC_DRAW);
+		glBufferData(GL_ARRAY_BUFFER, data.size() * sizeof(float), &data[0], GL_STATIC_DRAW);
 
 		const std::vector<BufferElement>& elements = m_Layout.GetElements();
 

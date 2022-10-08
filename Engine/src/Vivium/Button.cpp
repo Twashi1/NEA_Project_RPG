@@ -14,6 +14,8 @@ namespace Vivium {
 
 	void Button::m_Init()
 	{
+		VIVIUM_SCOPE;
+
 		// Check if class has been initialised already (the standard shaders are default until initialised)
 		if (m_DefaultIdleShader != nullptr) {
 			LogWarn("Attempting to reinitialise Button class");
@@ -21,10 +23,10 @@ namespace Vivium {
 
 		// Construct default shaders
 		m_DefaultIdleShader = std::make_shared<Shader>("static_vertex", "transparency_frag");
-		m_DefaultIdleShader->SetUniform4f("u_Color", 0.3, 0.3, 0.3, Button::m_DefaultScale);
+		m_DefaultIdleShader->SetUniform4f("u_Color", 0.3, 0.3, 0.3, Button::m_DefaultAlpha);
 
 		m_DefaultPressedShader = std::make_shared<Shader>("static_vertex", "transparency_frag");
-		m_DefaultPressedShader->SetUniform4f("u_Color", 0.2, 0.2, 0.2, Button::m_DefaultScale);
+		m_DefaultPressedShader->SetUniform4f("u_Color", 0.2, 0.2, 0.2, Button::m_DefaultAlpha);
 
 		// Construct default font
 		m_DefaultFont = Text::GetDefaultFont();
@@ -94,6 +96,8 @@ namespace Vivium {
 
 	void Button::Update()
 	{
+		VIVIUM_SCOPE;
+
 		Vector2<float> cursor_pos = Input::GetCursorPos();
 		Input::State lmb_state = Input::GetMouseState(GLFW_MOUSE_BUTTON_1);
 
@@ -108,6 +112,8 @@ namespace Vivium {
 
 	void Button::CheckClicked(const Vector2<float>& cursor_pos)
 	{
+		VIVIUM_SCOPE;
+
 		// Reset back to default state, regardless if we specifically were the button pressed
 		// This is so if you pressed on a button, then move your cursor away and release, the button
 		// will still reset back to its default state (but doesn't register as us being clicked)
@@ -130,6 +136,8 @@ namespace Vivium {
 
 	void Button::CheckPressed(const Vector2<float>& cursor_pos)
 	{
+		VIVIUM_SCOPE;
+
 		// If the cursor is within the bounds of the button
 		if (quad->Contains(cursor_pos)) {
 			// We're being pressed
@@ -151,6 +159,11 @@ namespace Vivium {
 	std::shared_ptr<Texture> Button::CurrentTexture()
 	{
 		return isPressed ? pressed_texture : idle_texture;
+	}
+
+	float Button::GetAlpha() const
+	{
+		return m_DefaultAlpha;
 	}
 
 	const std::string& Button::CurrentText() const

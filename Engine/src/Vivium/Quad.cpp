@@ -6,36 +6,54 @@
 namespace Vivium {
 	IndexBuffer* Quad::ib = nullptr;
 	BufferLayout* Quad::layout = nullptr;
+	bool Quad::s_shouldCreateVB = true;
 
 	void Quad::m_Update()
 	{
-		std::array<Vector2<float>, 4> vertices = GetVertices();
+		VIVIUM_SCOPE;
 
-		// NOTE: assuming sizeof(Vector2<float>) = sizeof(float) * 2
-		// Set vertex buffer vertices
-		vb->Set(0, &vertices[0], sizeof(Vector2<float>) * 4);
+		if (s_shouldCreateVB && vb != nullptr) {
+			std::array<Vector2<float>, 4> vertices = GetVertices();
+
+			float vertex_data[16] = {
+				vertices[Rect::BOTTOMLEFT].x,  vertices[Rect::BOTTOMLEFT].y,  m_TexCoords[0], m_TexCoords[1],
+				vertices[Rect::BOTTOMRIGHT].x, vertices[Rect::BOTTOMRIGHT].y, m_TexCoords[2], m_TexCoords[3],
+				vertices[Rect::TOPRIGHT].x,    vertices[Rect::TOPRIGHT].y,    m_TexCoords[4], m_TexCoords[5],
+				vertices[Rect::TOPLEFT].x,     vertices[Rect::TOPLEFT].y,     m_TexCoords[6], m_TexCoords[7]
+			};
+
+			vb->Set(&vertex_data[0], 16 * sizeof(float));
+		}
 	}
 
 	void Quad::m_Construct()
 	{
-		std::array<Vector2<float>, 4> vertices = GetVertices();
+		VIVIUM_SCOPE;
 
 		m_TexCoords = {
-				0.0f, 0.0f,
-				1.0f, 0.0f,
-				1.0f, 1.0f,
-				0.0f, 1.0f
+			0.0f, 0.0f,
+			1.0f, 0.0f,
+			1.0f, 1.0f,
+			0.0f, 1.0f
 		};
 
-		float vertex_data[16] = {
-			vertices[Rect::BOTTOMLEFT].x,  vertices[Rect::BOTTOMLEFT].y,  m_TexCoords[0], m_TexCoords[1],
-			vertices[Rect::BOTTOMRIGHT].x, vertices[Rect::BOTTOMRIGHT].y, m_TexCoords[2], m_TexCoords[3],
-			vertices[Rect::TOPRIGHT].x,    vertices[Rect::TOPRIGHT].y,    m_TexCoords[4], m_TexCoords[5],
-			vertices[Rect::TOPLEFT].x,     vertices[Rect::TOPLEFT].y,     m_TexCoords[6], m_TexCoords[7]
-		};
 
-		// Create buffer for vertex coords and tex coords
-		vb = std::make_shared<VertexBuffer>(vertex_data, 16, *layout);
+		if (s_shouldCreateVB) {
+			std::array<Vector2<float>, 4> vertices = GetVertices();
+
+			float vertex_data[16] = {
+				vertices[Rect::BOTTOMLEFT].x,  vertices[Rect::BOTTOMLEFT].y,  m_TexCoords[0], m_TexCoords[1],
+				vertices[Rect::BOTTOMRIGHT].x, vertices[Rect::BOTTOMRIGHT].y, m_TexCoords[2], m_TexCoords[3],
+				vertices[Rect::TOPRIGHT].x,    vertices[Rect::TOPRIGHT].y,    m_TexCoords[4], m_TexCoords[5],
+				vertices[Rect::TOPLEFT].x,     vertices[Rect::TOPLEFT].y,     m_TexCoords[6], m_TexCoords[7]
+			};
+
+			// Create buffer for vertex coords and tex coords
+			vb = std::make_shared<VertexBuffer>(vertex_data, 16, *layout);
+		}
+		else {
+			vb = nullptr;
+		}
 	}
 
 	void Quad::m_Init()
@@ -117,6 +135,11 @@ namespace Vivium {
 		m_Update();
 	}
 
+	std::vector<float>* Quad::GetTexCoords()
+	{
+		return &m_TexCoords;
+	}
+
 	bool Quad::ContainsAnyOf(const Quad& quad) const
 	{
 		return ContainsAnyOf(quad.GetVertices());
@@ -179,6 +202,11 @@ namespace Vivium {
 	const IndexBuffer* Quad::GetIndexBuffer()
 	{
 		return ib;
+	}
+
+	void Quad::SetVBCreation(bool value)
+	{
+		s_shouldCreateVB = value;
 	}
 
 	Quad::Quad()

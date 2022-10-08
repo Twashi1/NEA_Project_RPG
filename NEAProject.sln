@@ -24,9 +24,6 @@ EndProject
 Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "shaders", "shaders", "{AD78A436-E971-44E3-A8A6-A5287D198026}"
 EndProject
 Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "saves", "saves", "{E42AB3D6-99D8-4BBF-86EA-8511129968F3}"
-	ProjectSection(SolutionItems) = preProject
-		Resources\saves\general.txt = Resources\saves\general.txt
-	EndProjectSection
 EndProject
 Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "sprites", "sprites", "{09A99787-00EB-4920-AA8F-67E5B1B52DFA}"
 	ProjectSection(SolutionItems) = preProject
@@ -45,6 +42,7 @@ Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "_animationfiles", "_animati
 EndProject
 Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "_frag", "_frag", "{E8A12835-60D9-4A96-B9BD-D867803098B4}"
 	ProjectSection(SolutionItems) = preProject
+		Resources\shaders\blur_frag.glsl = Resources\shaders\blur_frag.glsl
 		Resources\shaders\circle_frag.glsl = Resources\shaders\circle_frag.glsl
 		Resources\shaders\color_frag.glsl = Resources\shaders\color_frag.glsl
 		Resources\shaders\crafting_slot_frag.glsl = Resources\shaders\crafting_slot_frag.glsl
@@ -68,6 +66,7 @@ Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "_vertex", "_vertex", "{7BBE
 		Resources\shaders\floor_item_vertex.glsl = Resources\shaders\floor_item_vertex.glsl
 		Resources\shaders\number_vertex.glsl = Resources\shaders\number_vertex.glsl
 		Resources\shaders\particle_vertex.glsl = Resources\shaders\particle_vertex.glsl
+		Resources\shaders\static_blur_vertex.glsl = Resources\shaders\static_blur_vertex.glsl
 		Resources\shaders\static_texture_vertex.glsl = Resources\shaders\static_texture_vertex.glsl
 		Resources\shaders\static_vertex.glsl = Resources\shaders\static_vertex.glsl
 		Resources\shaders\texture_vertex.glsl = Resources\shaders\texture_vertex.glsl

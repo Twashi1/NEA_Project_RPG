@@ -47,6 +47,8 @@ namespace Vivium {
 
 	void Renderer::m_ResizeFramebuffers(int width, int height)
 	{
+		VIVIUM_SCOPE;
+
 		for (auto& it : m_Framebuffers) {
 			it.second->Resize(width, height);
 		}
@@ -54,6 +56,8 @@ namespace Vivium {
 
 	void Renderer::m_BeginScene(int id)
 	{
+		VIVIUM_SCOPE;
+
 		auto it = m_Framebuffers.find(id);
 
 		// If framebuffer already exists
@@ -71,6 +75,8 @@ namespace Vivium {
 
 	void Renderer::BeginScene(int id)
 	{
+		VIVIUM_SCOPE;
+
 		// Using a reserved id
 		auto id_it = std::find(RESERVED_SCENE_IDS.begin(), RESERVED_SCENE_IDS.end(), id);
 
@@ -91,6 +97,8 @@ namespace Vivium {
 
 	void Renderer::DrawScenes()
 	{
+		VIVIUM_SCOPE;
+
 		Vector2<float> screen_dim = (Vector2<float>)Application::GetScreenDim();
 
 		Quad screen_quad(screen_dim * 0.5f, screen_dim); // TODO: could be static
@@ -104,6 +112,8 @@ namespace Vivium {
 
 	void Renderer::DrawScene(int id)
 	{
+		VIVIUM_SCOPE;
+
 		auto it = m_Framebuffers.find(id);
 
 		if (it != m_Framebuffers.end()) {
@@ -122,6 +132,8 @@ namespace Vivium {
 	
 	uint8_t Renderer::GetTextureSlot()
 	{
+		VIVIUM_SCOPE;
+
 		if (m_AvailableSlots.size() > 1) {
 			// Get front of queue and store it
 			uint8_t id = m_AvailableSlots.back();
@@ -144,6 +156,8 @@ namespace Vivium {
 
 	void Renderer::Submit(const VertexBuffer* vb, const IndexBuffer* ib, Shader* shader, const Texture* texture, uint8_t slot)
 	{
+		VIVIUM_SCOPE;
+
 		vb->Bind(); ib->Bind(); shader->Bind(); texture->Bind(slot);
 		shader->SetUniformMat4fv("u_ProjMat", camera->GetProjMat());
 		shader->SetUniformMat4fv("u_ViewMat", camera->GetViewMat());
@@ -155,6 +169,8 @@ namespace Vivium {
 
 	void Renderer::Submit(const VertexBuffer* vb, Shader* shader, const std::size_t& count)
 	{
+		VIVIUM_SCOPE;
+
 		vb->Bind(); shader->Bind();
 
 		glDrawArrays(GL_TRIANGLES, 0, count);
@@ -162,6 +178,8 @@ namespace Vivium {
 
 	void Renderer::Submit(const VertexBuffer* vb, Shader* shader, const Texture* texture, const std::size_t& count)
 	{
+		VIVIUM_SCOPE;
+
 		uint8_t slot = GetTextureSlot();
 		vb->Bind(); shader->Bind(); texture->Bind(slot);
 		shader->SetUniform1i("u_Texture", slot);
@@ -173,6 +191,8 @@ namespace Vivium {
 
 	void Renderer::Submit(const VertexBuffer* vb, const IndexBuffer* ib, Shader* shader)
 	{
+		VIVIUM_SCOPE;
+
 		vb->Bind(); ib->Bind(); shader->Bind();
 		shader->SetUniformMat4fv("u_ProjMat", camera->GetProjMat());
 		shader->SetUniformMat4fv("u_ViewMat", camera->GetViewMat());
@@ -183,6 +203,8 @@ namespace Vivium {
 
 	void Renderer::Submit(const VertexBuffer* vb, const IndexBuffer* ib, Shader* shader, const Framebuffer* fb, uint8_t slot)
 	{
+		VIVIUM_SCOPE;
+
 		vb->Bind(); ib->Bind(); shader->Bind(); fb->SetSlot(slot);
 		shader->SetUniformMat4fv("u_ProjMat", camera->GetProjMat());
 		shader->SetUniformMat4fv("u_ViewMat", camera->GetViewMat());
@@ -196,6 +218,8 @@ namespace Vivium {
 
 	void Renderer::Submit(const Quad* quad, Shader* shader, const Framebuffer* fb, uint8_t slot)
 	{
+		VIVIUM_SCOPE;
+
 		quad->GetVertexBuffer()->Bind();
 		const IndexBuffer* ib = Quad::GetIndexBuffer(); ib->Bind();
 		shader->Bind(); fb->SetSlot(slot);
@@ -212,6 +236,8 @@ namespace Vivium {
 
 	void Renderer::Submit(const Quad* quad, Shader* shader)
 	{
+		VIVIUM_SCOPE;
+
 		quad->GetVertexBuffer()->Bind();
 		const IndexBuffer* ib = Quad::GetIndexBuffer(); ib->Bind();
 		shader->Bind();
@@ -224,6 +250,8 @@ namespace Vivium {
 
 	void Renderer::Submit(const Quad* quad, Shader* shader, const Texture* texture)
 	{
+		VIVIUM_SCOPE;
+
 		quad->GetVertexBuffer()->Bind();
 		const IndexBuffer* ib = Quad::GetIndexBuffer(); ib->Bind();
 
@@ -247,6 +275,8 @@ namespace Vivium {
 
 	void Renderer::Submit(const Quad* quad, Shader* shader, const Texture* texture, uint8_t slot)
 	{
+		VIVIUM_SCOPE;
+
 		quad->GetVertexBuffer()->Bind();
 		const IndexBuffer* ib = Quad::GetIndexBuffer(); ib->Bind();
 
@@ -265,20 +295,26 @@ namespace Vivium {
 
 	void Renderer::Submit(const Text* text)
 	{
+		VIVIUM_SCOPE;
+
 		text->Render();
 	}
 
 	void Renderer::Submit(Button* btn)
 	{
+		VIVIUM_SCOPE;
+
 		// Get texture currently being used (if there is a texture)
 		const Texture* current_texture = btn->CurrentTexture().get();
+		Shader* current_shader = btn->CurrentShader().get();
+
 		if (current_texture != nullptr) {
 			// Render with texture
-			Renderer::Submit(btn->quad.get(), btn->CurrentShader().get(), current_texture);
+			Renderer::Submit(btn->quad.get(), current_shader, current_texture);
 		}
 		else {
 			// Render without texture
-			Renderer::Submit(btn->quad.get(), btn->CurrentShader().get());
+			Renderer::Submit(btn->quad.get(), current_shader);
 		}
 
 		// Render text of button
@@ -287,11 +323,15 @@ namespace Vivium {
 
 	void Renderer::Submit(Animation* animation)
 	{
+		VIVIUM_SCOPE;
+
 		Renderer::Submit(animation->quad.get(), animation->shader.get(), animation->GetAtlas().get());
 	}
 
 	void Renderer::Submit(TextInput* text_input)
 	{
+		VIVIUM_SCOPE;
+
 		if (text_input->bg_texture != nullptr) {
 			Renderer::Submit(text_input->quad.get(), text_input->bg_shader.get(), text_input->bg_texture.get());
 		}
@@ -309,6 +349,8 @@ namespace Vivium {
 
 	void Renderer::Submit(Slider* slider)
 	{
+		VIVIUM_SCOPE;
+
 		slider->bar_shader->Bind();
 		slider->bar_shader->SetUniform1f("u_Value", slider->GetValue());
 
@@ -329,11 +371,15 @@ namespace Vivium {
 
 	void Renderer::Submit(Sprite* sprite)
 	{
+		VIVIUM_SCOPE;
+
 		Renderer::Submit(sprite->quad.get(), sprite->shader.get(), sprite->texture.get());
 	}
 
 	void Renderer::DrawCircle(const Vector2<float>& center, float radius, const RGBColor& color)
 	{
+		VIVIUM_SCOPE;
+
 		m_CircleShader->Bind();
 		m_CircleShader->SetUniform3f("u_Color", color);
 		m_CircleShader->SetUniformMat4fv("u_ProjMat", camera->GetProjMat());

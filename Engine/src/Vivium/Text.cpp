@@ -147,7 +147,9 @@ namespace Vivium {
 
         Batch::BatchData data = batch.End();
 
-        Renderer::Submit(data.vertex_buffer.get(), data.index_buffer.get(), shader.get(), m_FontTexture.get());
+        if (data.count > 0) {
+            Renderer::Submit(data.vertex_buffer.get(), data.index_buffer.get(), shader.get(), m_FontTexture.get());
+        }
     }
 
     void Text::Submit(Batch* batch) const

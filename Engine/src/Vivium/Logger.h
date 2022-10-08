@@ -17,11 +17,36 @@
 	#define LogWarn(msg, ...)	Vivium::__LogBase(std::format(msg, __VA_ARGS__), __LINE__, __FUNCSIG__, "Warn",  VIVIUM_WARN)
 	#define LogInfo(msg, ...)	Vivium::__LogBase(std::format(msg, __VA_ARGS__), __LINE__, __FUNCSIG__, "Info",  VIVIUM_INFO)
 	#define LogTrace(msg, ...)	Vivium::__LogBase(std::format(msg, __VA_ARGS__), __LINE__, __FUNCSIG__, "Trace", VIVIUM_TRACE)
+
+	#ifdef __VIVIUM_SCOPE_ALL
+		#define VIVIUM_SCOPE Vivium::__AddScope(__FILE__, __FUNCSIG__); Vivium::__ScopeTracker()
+	#else
+		#define VIVIUM_SCOPE
+	#endif
+
+	#define DISPLAY_CALL_STACK_ON_ERROR
 #endif
-// TODO: change log sensitivity
 
 namespace Vivium {
 #ifdef VIVIUM_EXPOSE_CORE
+	struct VIVIUM_API __Scope {
+		const char* file;
+		const char* func_sig;
+
+		__Scope(const char* file, const char* func_sig);
+	};
+
+	static std::stack<__Scope> call_stack;
+
+	struct VIVIUM_API __ScopeTracker {
+		__ScopeTracker() = default;
+		~__ScopeTracker();
+	};
+
+	void VIVIUM_API __AddScope(const char* file, const char* func_sig);
+
+	void DisplayCallStack();
+
 	std::string VIVIUM_API __SignatureToString(const std::string& msg, int line, const char* func_sig);
 	void VIVIUM_API __LogBase(const std::string& msg, int line, const char* func_sig, const char* error_severity_message, int severity);
 	void GLAPIENTRY __GLLogCallback(GLenum source, GLenum type, GLuint id, GLenum severity, GLsizei length, const GLchar* message, const void* userParam);

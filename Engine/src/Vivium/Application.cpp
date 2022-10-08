@@ -36,6 +36,8 @@ namespace Vivium {
 
     void Application::m_WindowResizeCallback(GLFWwindow* window, int nwidth, int nheight)
     {
+        VIVIUM_SCOPE;
+
         // Update window dimensions
         width = nwidth; height = nheight;
 
@@ -55,6 +57,8 @@ namespace Vivium {
 
     void Application::BeginFrame()
     {
+        VIVIUM_SCOPE;
+
         // Record time of frame beginning
         m_Timer.Start();
 
@@ -81,6 +85,8 @@ namespace Vivium {
 
     void Application::EndFrame()
     {
+        VIVIUM_SCOPE;
+
         if (Flag::Test(VIVIUM_FLAG_DRAW_PHYSICS_CIRCLES)) {
             Renderer::DrawScene(Renderer::PHYSICS_DEBUG_SCENE);
         }
@@ -149,6 +155,8 @@ namespace Vivium {
 
     void Application::Init(int nwidth, int nheight, int nfps, const char* nresources_path)
     {
+        VIVIUM_SCOPE;
+
         Application::width = nwidth;
         Application::height = nheight;
         Application::m_FPS = nfps; Application::m_TimePerFrame = 1.0 / (double)m_FPS;
@@ -280,6 +288,8 @@ namespace Vivium {
 
     void Application::Terminate()
     {
+        VIVIUM_SCOPE;
+
         LogInfo("Application shutting down");
 
         Quad::m_Terminate();
@@ -292,6 +302,8 @@ namespace Vivium {
 
     void Application::m_CalculatePerformance(double dt)
     {
+        VIVIUM_SCOPE;
+
         // Update performance tracking variables
         m_FramesProcessed++;
         m_ProcessingTime += dt;
@@ -313,6 +325,8 @@ namespace Vivium {
 
     void Application::UpdateStats(const Body& player_body)
     {
+        VIVIUM_SCOPE;
+
         {
             double avg_tpf = (m_ProcessingTime / m_FramesProcessed);
             double avg_tpf_ms = Math::Round(avg_tpf * 1000.0, 3);

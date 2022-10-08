@@ -226,6 +226,8 @@ namespace Game {
 
 		std::vector<std::thread> loading_threads;
 
+		Vivium::Quad::SetVBCreation(false);
+
 		if (!regions_map_empty && regions_to_load.size() > 0) {
 			loading_threads.reserve(regions_to_load.size());
 
@@ -237,6 +239,8 @@ namespace Game {
 		for (std::thread& thread : loading_threads) {
 			thread.join();
 		}
+
+		Vivium::Quad::SetVBCreation(true);
 	}
 
 	Region& World::m_LoadRegion(const Vivium::Vector2<int>& index)
@@ -580,6 +584,8 @@ namespace Game {
 
 									/* TODO: UpdatePhysics */
 									// TODO: bad
+									Vivium::Quad::SetVBCreation(false);
+
 									if (Tile::GetIsPhysical(id)) {
 										std::shared_ptr<Vivium::Quad> quad = std::make_shared<Vivium::Quad>(Vivium::Vector2<float>(dx, dy), Vivium::Vector2<float>(halfscale));
 										// TODO: fix later
@@ -588,6 +594,8 @@ namespace Game {
 										m_TileBodies.push_back(body);
 										m_TileLayer->bodies.push_back(body);
 									}
+
+									Vivium::Quad::SetVBCreation(true);
 
 									const Vivium::Vector2<int>& index = Tile::GetAtlasIndex(id);
 									std::array<float, 8> tex_coords = TextureManager::game_atlas->GetCoordsArray(index);
@@ -603,7 +611,9 @@ namespace Game {
 
 		Vivium::Batch::BatchData data = batch.End();
 
-		Vivium::Renderer::Submit(data.vertex_buffer.get(), data.index_buffer.get(), texture_shader, TextureManager::game_atlas->GetAtlas().get());
+		if (data.count > 0) {
+			Vivium::Renderer::Submit(data.vertex_buffer.get(), data.index_buffer.get(), texture_shader, TextureManager::game_atlas->GetAtlas().get());
+		}
 	}
 
 	void World::m_RenderFloorItems(const Vivium::Vector2<int>& pos)
@@ -710,6 +720,8 @@ namespace Game {
 
 	void World::m_RenderNPCs(const Vivium::Vector2<int>& pos)
 	{
+		VIVIUM_SCOPE;
+
 		static const Vivium::BufferLayout layout = {
 			Vivium::GLSLDataType::VEC2, // position
 			Vivium::GLSLDataType::VEC2  // tex coords
@@ -870,22 +882,29 @@ namespace Game {
 		}
 
 		// Drawing onto daylight framebuffer
+//#define DRAW_ON_BUFFER
+
+#ifdef DRAW_ON_BUFFER
 		m_DaylightFramebuffer->Bind();
+#endif
 		m_RenderTiles(pos);
 		m_RenderFloorItems(pos);
 		m_RenderNPCs(pos);
 		m_LeafBlockBreaking.Render();
 		m_LeafWind.Render();
-
+#ifdef DRAW_ON_BUFFER
 		m_DaylightFramebuffer->Unbind();
 
 		// Drawing from daylight framebuffer onto screen
 		Vivium::Quad screen_quad((Vivium::Vector2<float>)screen_dim * 0.5f, (Vivium::Vector2<float>)screen_dim); // TODO: could be static
 		Vivium::Renderer::Submit(&screen_quad, m_DaylightShader, m_DaylightFramebuffer, 0);
+#endif
 
 		m_WorldMap->Render(screen_dim - Vivium::Vector2<int>(100, 100));
 
+#ifdef DRAW_ON_BUFFER
 		m_DaylightFramebuffer->Clear();
+#endif
 	}
 
 	void World::Update()

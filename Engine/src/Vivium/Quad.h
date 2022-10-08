@@ -18,7 +18,8 @@ namespace Vivium {
 
 		// TODO: names
 		static IndexBuffer* ib;
-		static BufferLayout* layout; // For vec2 vertices
+		static BufferLayout* layout;
+		static bool s_shouldCreateVB;
 
 		// Buffers
 		// TODO: name, unique?
@@ -49,6 +50,8 @@ namespace Vivium {
 
 		const std::shared_ptr<VertexBuffer> GetVertexBuffer() const;
 		static const IndexBuffer* GetIndexBuffer();
+
+		static void SetVBCreation(bool value);
 
 		Quad();
 		Quad(float x, float y, float width, float height, float angle = 0.0f);
@@ -86,6 +89,8 @@ namespace Vivium {
 		void SetAngle(float nangle);
 
 		void SetRect(const Rect& nrect);
+
+		std::vector<float>* GetTexCoords();
 
 		bool ContainsAnyOf(const Quad& quad) const;
 		bool IsIntersecting(const Quad& quad) const;

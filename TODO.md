@@ -139,6 +139,7 @@
 - Inconsistent data layout between GUI objects
 - docs docs docs docs docs docs docs docs
 - INL file for Vector2
+- Finish scoping everything
 - ~~Match colour of the amethyst wand, ball, and sword to amethyst crystal/sword, or other way round~~
 - 
 

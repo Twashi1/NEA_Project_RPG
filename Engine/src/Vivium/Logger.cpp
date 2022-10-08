@@ -65,6 +65,10 @@ namespace Vivium {
 				__GLDebugSourceToString(source),
 				message
 			) << std::endl;
+
+#if defined(DISPLAY_CALL_STACK_ON_ERROR) && defined(__VIVIUM_SCOPE_ALL)
+			DisplayCallStack();
+#endif
 		}
 	}
 
@@ -105,6 +109,26 @@ namespace Vivium {
 		default:								return "InvalidSource";
 		}
 	}
+
+	__ScopeTracker::~__ScopeTracker()
+	{
+		call_stack.pop();
+	}
+
+	void __AddScope(const char* file, const char* func_sig)
+	{
+		call_stack.push(__Scope(file, func_sig));
+	}
+
+	void DisplayCallStack()
+	{
+		std::cout << "Printing stack: \n";
+		for (const __Scope& scope : call_stack._Get_container()) {
+			std::cout << std::format("{{{}: {}}}", scope.file, scope.func_sig) << std::endl;
+		}
+	}
+
+// TODO: should endif be later?
 #endif
 
 	int Logger::s_LogLevel = VIVIUM_TRACE;
@@ -134,4 +158,8 @@ namespace Vivium {
 		default: return -1;
 		}
 	}
+
+	__Scope::__Scope(const char* file, const char* func_sig)
+		: file(file), func_sig(func_sig)
+	{}
 }

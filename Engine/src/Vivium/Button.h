@@ -66,6 +66,7 @@ namespace Vivium {
 
 		std::shared_ptr<Shader> CurrentShader();
 		std::shared_ptr<Texture> CurrentTexture();
+		float GetAlpha() const;
 		const std::string& CurrentText() const;
 
 		friend Application;

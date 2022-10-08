@@ -66,6 +66,8 @@ namespace Vivium {
 
 	void Framebuffer::Resize(int width, int height)
 	{
+		VIVIUM_SCOPE;
+
 		this->m_Width = width;
 		this->m_Height = height;
 

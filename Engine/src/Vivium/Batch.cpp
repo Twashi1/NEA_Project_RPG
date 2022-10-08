@@ -11,6 +11,8 @@ namespace Vivium {
 
 	void Batch::Submit(const Vector2<float>& pos, const Vector2<float>& size)
 	{
+		VIVIUM_SCOPE;
+
 		float halfwidth = size.x * 0.5f;
 		float halfheight = size.y * 0.5f;
 
@@ -46,6 +48,8 @@ namespace Vivium {
 
 	void Batch::Submit(const Vector2<float>& pos, const Vector2<float>& size, const float tex_coords[8])
 	{
+		VIVIUM_SCOPE;
+
 		float halfwidth = size.x * 0.5f;
 		float halfheight = size.y * 0.5f;
 
@@ -89,6 +93,8 @@ namespace Vivium {
 
 	void Batch::Submit(const Vector2<float>& pos, const Vector2<float>& size, float tex_left, float tex_right, float tex_bottom, float tex_top)
 	{
+		VIVIUM_SCOPE;
+
 		float halfwidth = size.x * 0.5f;
 		float halfheight = size.y * 0.5f;
 
@@ -132,6 +138,8 @@ namespace Vivium {
 
 	void Batch::Submit(float left, float right, float bottom, float top, float tex_left, float tex_right, float tex_bottom, float tex_top)
 	{
+		VIVIUM_SCOPE;
+
 		// Bottom left
 		m_Vertices[m_VerticesIndex++] = left;
 		m_Vertices[m_VerticesIndex++] = bottom;
@@ -167,6 +175,8 @@ namespace Vivium {
 
 	void Batch::Submit(float* data, std::size_t count)
 	{
+		VIVIUM_SCOPE;
+
 		std::memcpy(m_Vertices + m_VerticesIndex * sizeof(float), data, count * sizeof(float));
 
 		m_VerticesIndex += count;
@@ -184,6 +194,8 @@ namespace Vivium {
 
 	void Batch::Submit(const Vector2<float>& pos, const Vector2<float>& size, float tex_left, float tex_right, float tex_bottom, float tex_top, float* vertex_data, unsigned int vertex_data_count)
 	{
+		VIVIUM_SCOPE;
+
 		float halfwidth = size.x * 0.5f;
 		float halfheight = size.y * 0.5f;
 
@@ -247,10 +259,19 @@ namespace Vivium {
 
 	Batch::BatchData Batch::End() const
 	{
+		VIVIUM_SCOPE;
+
 		BatchData data;
-		// TODO: if count is 0, set these both to nullptr?
-		data.vertex_buffer = std::make_shared<VertexBuffer>(m_Vertices, m_VerticesIndex + 1, *m_Layout);
-		data.index_buffer = std::make_shared<IndexBuffer>(m_Indices, m_IndicesIndex + 1);
+
+		if (m_Count != 0) {
+			data.vertex_buffer = std::make_shared<VertexBuffer>(m_Vertices, m_VerticesIndex + 1, *m_Layout);
+			data.index_buffer = std::make_shared<IndexBuffer>(m_Indices, m_IndicesIndex + 1);
+		}
+		else {
+			data.vertex_buffer = nullptr;
+			data.index_buffer = nullptr;
+		}
+
 		data.count = m_Count;
 
 		return data;

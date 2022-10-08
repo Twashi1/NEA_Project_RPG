@@ -11,6 +11,8 @@ namespace Vivium {
 
 	void EventHandler::Update()
 	{
+		VIVIUM_SCOPE;
+
 		while (!m_Events.empty()) {
 			// Handle first event
 			m_HandleEvent(m_Events.front());
@@ -25,6 +27,8 @@ namespace Vivium {
 
 	void EventSystem::m_Update()
 	{
+		VIVIUM_SCOPE;
+
 		if (!m_EventHandlers.empty()) {
 			for (auto event_handler : m_EventHandlers) {
 				event_handler->Update();
@@ -34,6 +38,8 @@ namespace Vivium {
 
 	void EventSystem::AddEvent(std::shared_ptr<Event> event)
 	{
+		VIVIUM_SCOPE;
+
 		if (!m_EventHandlers.empty()) {
 			for (auto& handler : m_EventHandlers) {
 				if (handler->m_HandlingType == event->type) {

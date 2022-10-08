@@ -26,6 +26,7 @@
 #include <ranges>
 #include <regex>
 #include <set>
+#include <stack>
 #include <string>
 #include <thread>
 #include <type_traits>
@@ -53,6 +54,7 @@
 	#define VIVIUM_API __declspec(dllimport)
 #endif
 
+#define __VIVIUM_SCOPE_ALL
 #ifdef VIVIUM_EXPOSE_CORE
 // Nothing left here lol
 #endif

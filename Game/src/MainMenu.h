@@ -21,6 +21,10 @@ namespace Game {
 		std::shared_ptr<Vivium::Button> m_LoadWorldButton;
 		std::shared_ptr<Vivium::Button> m_OptionsButton;
 
+		std::shared_ptr<Vivium::Texture> m_BackgroundTexture;
+		std::shared_ptr<Vivium::Quad>	 m_BackgroundQuad;
+		std::shared_ptr<Vivium::Shader>  m_BackgroundShader;
+
 	public:
 		StartScene(MainMenu* menu);
 		virtual ~StartScene();

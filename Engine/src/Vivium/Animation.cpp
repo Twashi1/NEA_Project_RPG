@@ -4,6 +4,8 @@ namespace Vivium {
 
 	Animation::Data::Data(const std::vector<float>& frame_timings)
 	{
+		VIVIUM_SCOPE;
+
 		int sprite_index = 0;
 
 		// Iterate timing data passed
@@ -25,6 +27,8 @@ namespace Vivium {
 
 	Animation::Data::Data(const std::string& animation_data_file, const Vector2<int>& atlas_dim)
 	{
+		VIVIUM_SCOPE;
+
 		// Load text
 		std::string* filetext = Utils::ReadFile(Texture::PATH + animation_data_file + Animation::FILE_EXTENSION);
 
@@ -131,6 +135,8 @@ namespace Vivium {
 
 	void Animation::Update()
 	{
+		VIVIUM_SCOPE;
+
 		// Get elapsed time
 		float elapsed = m_Timer.GetElapsed();
 

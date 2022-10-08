@@ -3,6 +3,8 @@
 namespace Vivium {
     GLuint Shader::m_CompileShader(const std::string& source, unsigned int type)
     {
+        VIVIUM_SCOPE;
+
         // Create shader
         GLuint id = glCreateShader(type);
         // Pass text into shader
@@ -40,7 +42,10 @@ namespace Vivium {
         return id;
     }
 
-    GLuint Shader::m_CreateShader(const char* vertex_name, const char* frag_name) {
+    GLuint Shader::m_CreateShader(const char* vertex_name, const char* frag_name)
+    {
+        VIVIUM_SCOPE;
+
         // TODO: use application path
         const std::string PATH = "../Resources/shaders/";
         // TODO: this extension has caused 1000 bugs just remove it
