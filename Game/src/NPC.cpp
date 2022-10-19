@@ -367,6 +367,19 @@ namespace Game {
 			s.Read(&anim_data);
 		}
 
+		SlimeAttack::SlimeAttack(const Global& global) : global(global) {}
+
+		void SlimeAttack::Write(Vivium::Serialiser& s) const
+		{
+			global.Write(s);
+		}
+
+		void SlimeAttack::Read(Vivium::Serialiser& s)
+		{
+			Global global;
+			global.Read(s);
+		}
+
 		Behaviour::ID SlimeAttack::GetID() const { return Behaviour::ID::SLIME_ATTACK; }
 
 		void SlimeAttack::Begin(NPC* npc, std::shared_ptr<Behaviour::Client> client) const
@@ -376,7 +389,7 @@ namespace Game {
 
 		void SlimeAttack::ExecuteOn(NPC* npc) const
 		{
-			// TODO
+			
 		}
 
 		void SlimeAttack::Update(NPC* npc, std::shared_ptr<Behaviour::Client> client) const
@@ -389,5 +402,64 @@ namespace Game {
 			// TODO
 			return true;
 		}
+
+		void Hunting::Global::Write(Vivium::Serialiser& s) const
+		{
+			// TODO
+		}
+		
+		void Hunting::Global::Read(Vivium::Serialiser& s)
+		{
+			// TODO
+		}
+
+		Hunting::Hunting(const Global& global)
+			: global(global) {}
+
+		Behaviour::ID Hunting::GetID() const
+		{
+			return Behaviour::ID::HUNTING;
+		}
+
+		void Hunting::Begin(NPC* npc, std::shared_ptr<Behaviour::Client> client) const
+		{
+			// TODO
+		}
+
+		void Hunting::ExecuteOn(NPC* npc) const
+		{
+			// TODO
+		}
+
+		void Hunting::Update(NPC* npc, std::shared_ptr<Behaviour::Client> client) const
+		{
+			// TODO
+		}
+
+		bool Hunting::IsOver(NPC* npc, std::shared_ptr<Behaviour::Client> client) const
+		{
+			// TODO
+			return true;
+		}
+	}
+
+	void Health::Damage(float amount)
+	{
+		value = std::max(0.0f, value - amount * (1.0f - resistance));
+	}
+
+	void Health::Heal(float amount)
+	{
+		value = std::min(max, value + amount);
+	}
+
+	void Health::Update()
+	{
+		Heal(regen_rate * timer.GetElapsed());
+	}
+
+	float Health::GetNormalised()
+	{
+		return value / max;
 	}
 }

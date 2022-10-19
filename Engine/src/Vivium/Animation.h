@@ -18,6 +18,7 @@ namespace Vivium {
 			std::vector<int> frame_indices;   // Indices of sprites in texture atlas
 			std::size_t frame_count = 0;
 			
+			Data() = default;
 			Data(const std::vector<float>& frame_timings);
 			Data(const std::vector<float>& frame_timings, const std::vector<int>& frame_indices);
 			Data(const std::string& animation_data_file, const Vector2<int>& atlas_dim = NULL);

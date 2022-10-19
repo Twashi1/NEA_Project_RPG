@@ -13,7 +13,8 @@ namespace Game {
 
 	Vivium::Vector2<int> World::GetWorldPos(const Vivium::Vector2<float>& pos) const
 	{
-		// Convert to tile-scale, add 0.5, 0.5 to move to center of screen, floor to get clostest tile
+		// Convert to tile-scale, add 0.5, 0.5 to move to center of screen, floor to get closest tile
+		// TODO: check 0.5f offset
 		return (Vivium::Renderer::camera->Untransform(pos) / World::PIXEL_SCALE + Vivium::Vector2<float>(0.5f, 0.5f)).floor();
 	}
 

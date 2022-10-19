@@ -293,11 +293,15 @@ namespace Game {
 			(void*)this
 		);
 
+		m_NameInputBox->empty_text = "Enter world name...";
+
 		m_SeedInputBox = std::make_shared<Vivium::TextInput>(
 			Vivium::Quad(0.0f, 150.0f, 300.0f, 100.0f),
 			nullptr,
 			(void*)this
 		);
+
+		m_SeedInputBox->empty_text = "Enter seed... (or leave empty)";
 
 		m_ConfirmButton = std::make_shared<Vivium::Button>(
 			Vivium::Quad(0.0f, 0.0f, 300.0f, 100.0f),

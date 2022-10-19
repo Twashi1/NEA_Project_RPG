@@ -8,6 +8,7 @@
 #include "Application.h"
 
 namespace Vivium {
+	// TODO: rename "empty_text" to "hint_text"
 	class VIVIUM_API TextInput {
 	public:
 		typedef void (*CallbackFunc_t)(TextInput*, void*); // Shorthand for a callback function pointer (takes the text input that was entered as a paramater)

@@ -5,6 +5,24 @@
 namespace Game {
 	class World;
 
+	struct Health {
+		Vivium::Timer timer;
+
+		float max = 100.0f;
+		float value = 100.0f;
+		float resistance = 0.0f;
+		float regen_rate = 2.0f;
+
+		Health() = default;
+		
+		void Damage(float amount);
+		void Heal(float amount);
+		void Update();
+
+		// Get current health as value from 0 to 1
+		float GetNormalised();
+	};
+
 	namespace Pathfinding {
 		class NPC;
 
@@ -68,47 +86,6 @@ namespace Game {
 			virtual bool IsOver(NPC* npc, std::shared_ptr<Behaviour::Client> client) const override;
 		};
 
-		class Hunting : virtual public Behaviour, public Vivium::Streamable {
-		public:
-			struct Global : public Vivium::Streamable {
-				float notice_range;
-				float leash_range;
-				float speed;
-			};
-		};
-
-		class SlimeAttack : virtual public Behaviour, public Vivium::Streamable {
-		public:
-			struct Global : public Vivium::Streamable {
-				float speed;
-				float attack_range;
-				float damage;
-				float knockback;
-				float attack_speed;
-				Vivium::Animation::Data anim_data;
-
-				void Write(Vivium::Serialiser& s) const override;
-				void Read(Vivium::Serialiser& s) override;
-			};
-
-			struct Client : virtual public Behaviour::Client, public Vivium::Streamable {
-				std::shared_ptr<Vivium::Animation> animation_handler;
-			};
-
-			Global global;
-
-			SlimeAttack(const Global& global);
-
-			void Write(Vivium::Serialiser& s) const override;
-			void Read(Vivium::Serialiser& s) override;
-
-			Behaviour::ID GetID() const override;
-			void Begin(NPC* npc, std::shared_ptr<Behaviour::Client> client) const override;
-			void ExecuteOn(NPC* npc) const override;
-			void Update(NPC* npc, std::shared_ptr<Behaviour::Client> client) const override;
-			bool IsOver(NPC* npc, std::shared_ptr<Behaviour::Client> client) const override;
-		};
-
 		class Wandering : virtual public Behaviour, public Vivium::Streamable {
 		public:
 			struct Global : public Vivium::StreamablePOD {
@@ -145,6 +122,66 @@ namespace Game {
 			virtual bool IsOver(NPC* npc, std::shared_ptr<Behaviour::Client> client) const override;
 		};
 
+		class Hunting : virtual public Behaviour, public Vivium::Streamable {
+		public:
+			struct Global : public Vivium::Streamable {
+				float notice_range;
+				float leash_range;
+				
+				Wandering::Global wandering;
+
+				Global() = default;
+				// TODO: constructor with params
+
+				virtual void Write(Vivium::Serialiser& s) const override;
+				virtual void Read(Vivium::Serialiser& s) override;
+			};
+
+			Global global;
+
+			Hunting(const Global& global);
+
+			Behaviour::ID GetID() const override;
+			void Begin(NPC* npc, std::shared_ptr<Behaviour::Client> client) const override;
+			void ExecuteOn(NPC* npc) const override;
+			void Update(NPC* npc, std::shared_ptr<Behaviour::Client> client) const override;
+			bool IsOver(NPC* npc, std::shared_ptr<Behaviour::Client> client) const override;
+		};
+
+		class SlimeAttack : virtual public Behaviour, public Vivium::Streamable {
+		public:
+			struct Global : public Vivium::Streamable {
+				float speed;
+				float attack_range;
+				float damage;
+				float knockback;
+				float attack_speed;
+				Vivium::Animation::Data anim_data;
+
+				Global() = default;
+
+				void Write(Vivium::Serialiser& s) const override;
+				void Read(Vivium::Serialiser& s) override;
+			};
+
+			struct Client : virtual public Behaviour::Client, public Vivium::Streamable {
+				std::shared_ptr<Vivium::Animation> animation_handler;
+			};
+
+			Global global;
+
+			SlimeAttack(const Global& global);
+
+			void Write(Vivium::Serialiser& s) const override;
+			void Read(Vivium::Serialiser& s) override;
+
+			Behaviour::ID GetID() const override;
+			void Begin(NPC* npc, std::shared_ptr<Behaviour::Client> client) const override;
+			void ExecuteOn(NPC* npc) const override;
+			void Update(NPC* npc, std::shared_ptr<Behaviour::Client> client) const override;
+			bool IsOver(NPC* npc, std::shared_ptr<Behaviour::Client> client) const override;
+		};
+
 		class NPC : public Vivium::Streamable {
 		private:
 			static constexpr float PATHFINDING_EPSILON = 1.0f / 10.0f; // 1/10th of a tile
@@ -175,6 +212,7 @@ namespace Game {
 			NPC::ID id;
 			std::shared_ptr<Vivium::Body> body;
 			std::queue<Vivium::Vector2<float>> path_destinations;
+			Health health;
 
 			typedef std::unordered_map<Behaviour::ID, std::shared_ptr<Behaviour::Client>> BehaviourDataMap;
 
