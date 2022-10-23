@@ -3,6 +3,28 @@
 
 namespace Vivium {
 	namespace Math {
+		Vector2<float> Rotate(const Vector2<float>& point, float angle)
+		{
+			// Calculate trig values
+			float cos_angle = cos(angle);
+			float sin_angle = sin(angle);
+
+			// Multiply by rotation matrix
+			float rotated_x = (point.x * cos_angle) - (point.y * sin_angle);
+			float rotated_y = (point.x * sin_angle) + (point.y * cos_angle);
+
+			return Vector2<float>(rotated_x, rotated_y);
+		}
+
+		Vector2<float> Rotate(const Vector2<float>& point, float cos_angle, float sin_angle)
+		{
+			// Multiply by rotation matrix
+			float rotated_x = (point.x * cos_angle) - (point.y * sin_angle);
+			float rotated_y = (point.x * sin_angle) + (point.y * cos_angle);
+
+			return Vector2<float>(rotated_x, rotated_y);
+		}
+
 		Vector2<float> Rotate(const Vector2<float>& point, float angle, const Vector2<float>& pivot)
 		{
 			Vector2<float> centered = point - pivot;

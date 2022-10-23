@@ -54,7 +54,7 @@
 	#define VIVIUM_API __declspec(dllimport)
 #endif
 
-#define __VIVIUM_SCOPE_ALL
+//#define __VIVIUM_SCOPE_ALL
 #ifdef VIVIUM_EXPOSE_CORE
 // Nothing left here lol
 #endif
@@ -71,15 +71,8 @@ namespace Vivium {
 		static bool Test(flag_t flag);
 	};
 
-	static entt::registry Registry;
-
 	template <typename T> concept Arithmetic = std::is_arithmetic_v<T>;
 	template <typename T> concept Signed = std::is_signed_v<T>;
 	template <typename T> concept Integral = std::is_integral_v<T>;
 	template <typename T> concept FloatingPoint = std::is_floating_point_v<T>;
-
-	// TODO: move somewhere appropriate (needs vector, but should be in maths? maybe new maths namespace, maybe .inl for vector2)
-	// Quake fast inverse square root
-	// https://en.wikipedia.org/wiki/Fast_inverse_square_root
-	VIVIUM_API float InverseSquareRoot(float number);
 }

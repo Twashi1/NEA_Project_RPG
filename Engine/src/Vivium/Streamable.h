@@ -27,13 +27,14 @@ namespace Vivium {
 	template <typename T> concept IsBaseStreamable = __BaseStreamableTypes<T>;
 	template <typename T> concept IsStreamable = std::is_base_of_v<Streamable, T>
 	|| __BaseStreamableTypes<T>
-		|| std::is_same_v<T, Vector2<int8_t>>
-		|| std::is_same_v<T, Vector2<uint8_t>>
-		|| std::is_same_v<T, Vector2<int16_t>>
-		|| std::is_same_v<T, Vector2<uint16_t>>
-		|| std::is_same_v<T, Vector2<int32_t>>
-		|| std::is_same_v<T, Vector2<uint32_t>>
-		|| std::is_same_v<T, Vector2<long>>
-		|| std::is_same_v<T, Vector2<float>>
-		|| std::is_same_v<T, Vector2<double>>;
+	|| std::is_same_v<T, Vector2<int8_t>>
+	|| std::is_same_v<T, Vector2<uint8_t>>
+	|| std::is_same_v<T, Vector2<int16_t>>
+	|| std::is_same_v<T, Vector2<uint16_t>>
+	|| std::is_same_v<T, Vector2<int32_t>>
+	|| std::is_same_v<T, Vector2<uint32_t>>
+	|| std::is_same_v<T, Vector2<long>>
+	|| std::is_same_v<T, Vector2<float>>
+	|| std::is_same_v<T, Vector2<double>>
+	|| IsBaseStreamable<typename std::underlying_type<T>::type>;
 }

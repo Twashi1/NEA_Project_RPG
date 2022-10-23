@@ -1,15 +1,19 @@
 #pragma once
 
 #include "Core.h"
-#include "Vector2.h"
 
 namespace Vivium {
+	template <typename T> requires Arithmetic<T>
+	struct Vector2;
+
 	namespace Math {
 		const float PI = 3.14159265f;
 		const float ROOT2 = 1.41421356f;
 
-		VIVIUM_API Vector2<float> Rotate(const Vector2<float>& point, float angle, const Vector2<float>& pivot = NULL);
-		VIVIUM_API Vector2<float> Rotate(const Vector2<float>& point, float cos_angle, float sin_angle, const Vector2<float>& pivot = NULL);
+		VIVIUM_API Vector2<float> Rotate(const Vector2<float>& point, float angle);
+		VIVIUM_API Vector2<float> Rotate(const Vector2<float>& point, float cos_angle, float sin_angle);
+		VIVIUM_API Vector2<float> Rotate(const Vector2<float>& point, float angle, const Vector2<float>& pivot);
+		VIVIUM_API Vector2<float> Rotate(const Vector2<float>& point, float cos_angle, float sin_angle, const Vector2<float>& pivot);
 
 		VIVIUM_API unsigned int Factorial(unsigned int n);
 

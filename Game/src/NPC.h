@@ -131,7 +131,7 @@ namespace Game {
 				Wandering::Global wandering;
 
 				Global() = default;
-				// TODO: constructor with params
+				Global(const Wandering::Global& wandering, float notice_range, float leash_range);
 
 				virtual void Write(Vivium::Serialiser& s) const override;
 				virtual void Read(Vivium::Serialiser& s) override;
@@ -166,6 +166,11 @@ namespace Game {
 
 			struct Client : virtual public Behaviour::Client, public Vivium::Streamable {
 				std::shared_ptr<Vivium::Animation> animation_handler;
+
+				Client() = default;
+
+				void Write(Vivium::Serialiser& s) const override;
+				void Read(Vivium::Serialiser& s) override;
 			};
 
 			Global global;
@@ -202,6 +207,7 @@ namespace Game {
 			enum class ID : uint8_t {
 				COW,
 				PIG,
+				SLIME,
 				MAX
 			};
 
@@ -212,6 +218,7 @@ namespace Game {
 			NPC::ID id;
 			std::shared_ptr<Vivium::Body> body;
 			std::queue<Vivium::Vector2<float>> path_destinations;
+			Vivium::Vector2<int> current_texture_index;
 			Health health;
 
 			typedef std::unordered_map<Behaviour::ID, std::shared_ptr<Behaviour::Client>> BehaviourDataMap;
@@ -221,7 +228,7 @@ namespace Game {
 			NPC() = default;
 			NPC(const NPC::ID& id, std::shared_ptr<Vivium::Body> body, const BehaviourDataMap& data);
 			NPC(const NPC& other) = default;
-			NPC(NPC&& other) noexcept = default;
+			NPC(NPC&& other) noexcept;
 			~NPC() = default;
 
 			void Update();

@@ -310,8 +310,7 @@ namespace Game {
 		Region* region = regions.at(index);
 
 		m_Serialiser->BeginRead(filename.c_str());
-		m_Serialiser->Read((char*)&region->tiles[0], Region::TILES_MEM_SIZE);
-		m_Serialiser->Read((char*)&region->biomes[0], Region::BIOMES_MEM_SIZE);
+		region->Read(*m_Serialiser);
 
 		std::vector<FloorItem> region_floor_items;
 		m_Serialiser->Read(&region_floor_items);
@@ -342,10 +341,8 @@ namespace Game {
 
 		std::lock_guard<std::mutex> guard(regions_mutex);
 
-		// Write tiles of region
-		m_Serialiser->Write((char*)&region->tiles[0], Region::TILES_MEM_SIZE);
-		// Write biome map for region
-		m_Serialiser->Write((char*)&region->biomes[0], Region::BIOMES_MEM_SIZE);
+		// Write region data
+		region->Write(*m_Serialiser);
 
 		// Get the floor items for the region
 		std::vector<FloorItem>* region_floor_items = GetFloorItems(index);
@@ -810,7 +807,7 @@ namespace Game {
 	{
 		Vivium::Vector2<int> player_tile = m_Player->quad->GetCenter() / World::PIXEL_SCALE;
 
-		// TODO: Really need a function/shorthand/preprocessor for this
+		// TODO: Really need a function/shorthand/macro for this
 		Vivium::Vector2<int> frame = Vivium::Application::GetScreenDim() / (PIXEL_SCALE * 2.0f);
 
 		int padding = OBSTACLE_MAP_REGION_PADDING * Region::LENGTH;

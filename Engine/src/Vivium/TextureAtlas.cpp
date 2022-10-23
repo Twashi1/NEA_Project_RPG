@@ -254,6 +254,15 @@ namespace Vivium {
 		return tex_coords;
 	}
 
+	Vector2<int> TextureAtlas::GetVectorIndex(int index) const
+	{
+		int y_index = index / m_AtlasDimRelative.x;
+		int x_index = index - y_index * m_AtlasDimRelative.x;
+		y_index = m_AtlasDimRelative.y - 1 - y_index; // Flip vertically TODO: variable for this
+
+		return Vector2<int>(x_index, y_index);
+	}
+
 	const std::shared_ptr<Texture> TextureAtlas::GetAtlas() const
 	{
 		return m_Atlas;

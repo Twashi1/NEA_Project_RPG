@@ -6,8 +6,6 @@ namespace Vivium {
 	template <typename T> requires Arithmetic<T>
 	struct VIVIUM_API Vector2 {
 	public:
-		using value_type = T; // Unused
-
 		T x, y;
 
 		Vector2() : x(T()), y(T()) {};
@@ -55,7 +53,7 @@ namespace Vivium {
 
 		Vector2 floor() const requires FloatingPoint<T> { return Vector2(std::floor(x), std::floor(y)); }
 		Vector2 ceil() const requires FloatingPoint<T> { return Vector2(std::ceil(x), std::ceil(y)); }
-		Vector2 normalise() const requires FloatingPoint<T> { return *this * InverseSquareRoot(x * x + y * y); }
+		Vector2 normalise() const requires FloatingPoint<T> { return *this / std::sqrt(x * x + y * y); }
 		Vector2 fract() const requires FloatingPoint<T>
 		{
 			float int_part;
@@ -109,7 +107,7 @@ namespace Vivium {
 			return Vector2<float>(fx, fy);
 		}
 		static Vector2 Normalise(const Vector2& v) requires FloatingPoint<T> {
-			return v * InverseSquareRoot(v.x * v.x + v.y * v.y);
+			return v / std::sqrt(v.x * v.x + v.y * v.y);
 		}
 		static Vector2 Floor(const Vector2& v) requires FloatingPoint<T> {
 			return Vector2<T>(std::floor(v.x), std::floor(v.y));

@@ -3,7 +3,9 @@
 namespace Game {
     Region::Region(Region&& other) noexcept
         : tiles(std::move(other.tiles)), biomes(std::move(other.biomes)), npcs(std::move(other.npcs))
-    {}
+    {
+        LogTrace("Region moved!");
+    }
 
     Tile& Region::Index(int x, int y)
     {

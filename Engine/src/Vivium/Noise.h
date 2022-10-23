@@ -8,7 +8,6 @@
 
 namespace Vivium {
     namespace Noise {
-        // TODO: all these functions should probably be under Utitilies.h as Random namespace or something
         // Hash integer into integer
         int VIVIUM_API Hash(unsigned int seed, int x);
         // Hash integer into float

@@ -163,6 +163,8 @@ namespace Vivium {
 
 	Rect::Manifold Rect::GetIntersection(float width1, float height1, float width2, float height2, const std::array<Vector2<float>, 4>& my_vertices, const std::array<Vector2<float>, 4>& their_vertices)
 	{
+		// TODO: feels like something could be simplified
+
 		for (int i = 0; i < 4; i++) {
 			if (Rect::Contains(width1, height1, my_vertices, their_vertices[i])) {
 				Manifold manifold;

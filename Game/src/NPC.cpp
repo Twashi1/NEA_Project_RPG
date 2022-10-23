@@ -16,7 +16,11 @@ namespace Game {
 			Properties({4, 4}, {
 				NEW_BEHAVIOUR_PTR(Wandering, 800.0f, {0.5f, 1.0f}, 300.0f, 1000.0f),
 				NEW_BEHAVIOUR_PTR(Idle, 3.0f)
-			})  // PIGS ^^^ (TODO: LOTS OF DUPLICATION)
+			}),  // PIGS ^^^ SLIMES VVV
+			Properties({0, 5}, {
+				// TODO
+				NEW_BEHAVIOUR_PTR(Idle, 0.0f)
+			})
 		};
 
 #undef NEW_BEHAVIOUR_PTR
@@ -44,7 +48,14 @@ namespace Game {
 		}
 
 		NPC::NPC(const NPC::ID& id, std::shared_ptr<Vivium::Body> body, const BehaviourDataMap& data)
-			: id(id), body(body), behaviour_data(data) {}
+			: id(id), body(body), behaviour_data(data)
+		{
+			current_texture_index = NPC::GetAtlasIndex(id);
+		}
+
+		NPC::NPC(NPC&& other) noexcept
+			: id(std::move(other.id)), body(other.body), path_destinations(std::move(other.path_destinations)), health(std::move(other.health)), behaviour_data(std::move(other.behaviour_data)), current_texture_index(std::move(other.current_texture_index))
+		{}
 
 		void NPC::Update()
 		{
@@ -76,9 +87,8 @@ namespace Game {
 
 		void NPC::AddVertices(std::vector<float>& vertices)
 		{
-			const Vivium::Vector2<int>& atlas_index = NPC::GetAtlasIndex(id);
 			// TODO: precompute tex coords
-			std::array<float, 8> tex_coords = TextureManager::game_atlas->GetCoordsArray(atlas_index);
+			std::array<float, 8> tex_coords = TextureManager::game_atlas->GetCoordsArray(current_texture_index);
 
 			Vivium::Vector2<float> center = body->quad->GetCenter();
 			Vivium::Vector2<float> halfdim = body->quad->GetDim() * 0.5f;
@@ -122,7 +132,7 @@ namespace Game {
 			for (std::size_t i = 0; i < size; i++) {
 				Weapon::Projectile* proj = projectiles[i];
 
-				// Here, there is a guarantee the proj is not out of scope/reallocated
+				// Here, there is a guarantee the proj is not out of scope/reallocated, since this is between the projectile system updates
 				if (proj->IsAlive()) {
 					float dist = Vivium::Vector2<float>::SqrDistance(my_pos, proj->position);
 					
@@ -141,22 +151,26 @@ namespace Game {
 
 		void NPC::Write(Vivium::Serialiser& s) const
 		{
-			s.Write(id);
-			s.Write(body->quad->GetCenter());
+			s.Write((std::underlying_type<NPC::ID>::type)id);
+
+			if (body == nullptr) {
+				s.Write(Vivium::Vector2<int>(INT_MAX));
+			}
+			else {
+				s.Write(body->quad->GetCenter());
+			}
 			
-			// TODO: test
 			s.Write(behaviour_data.size());
 
 			for (auto& [id, client] : behaviour_data) {
-				s.Write(id);
-				// TODO: possible this doesn't write correct thing?
+				s.Write((std::underlying_type<Behaviour::ID>::type)id);
 				client->Write(s);
 			}
 		}
 
 		void NPC::Read(Vivium::Serialiser& s)
 		{
-			s.Read(&id);
+			s.Read((std::underlying_type<NPC::ID>::type*)&id);
 
 			Vivium::Vector2<float> pos;
 			s.Read(&pos);
@@ -166,24 +180,37 @@ namespace Game {
 
 			for (std::size_t i = 0; i < size; i++) {
 				Behaviour::ID id;
-				s.Read(&id);
+				s.Read((std::underlying_type<Behaviour::ID>::type*)&id);
 
 				std::shared_ptr<Behaviour::Client> new_data_ptr = nullptr;
+
+#define DEFINE_READ_FOR(T) \
+std::shared_ptr<T> data_ptr = std::make_shared<T>(); \
+data_ptr->Read(s); \
+new_data_ptr = dynamic_pointer_cast<Behaviour::Client>(data_ptr);
 
 				switch (id) {
 				case Behaviour::ID::IDLE:
 				{
-					auto data_ptr = std::make_shared<Idle::Client>();
-					data_ptr->Read(s);
-					new_data_ptr = dynamic_pointer_cast<Behaviour::Client>(data_ptr);
+					DEFINE_READ_FOR(Idle::Client)
 				} break;
 
 				case Behaviour::ID::WANDER:
 				{
-					auto data_ptr = std::make_shared<Wandering::Client>();
-					data_ptr->Read(s);
-					new_data_ptr = dynamic_pointer_cast<Behaviour::Client>(data_ptr);
+					DEFINE_READ_FOR(Wandering::Client)
 				} break;
+
+				case Behaviour::ID::HUNTING:
+				{
+					DEFINE_READ_FOR(Hunting::Client)
+				} break;
+
+				case Behaviour::ID::SLIME_ATTACK:
+				{
+					DEFINE_READ_FOR(SlimeAttack::Client)
+				} break;
+
+#undef DEFINE_READ_FOR
 
 				default:
 					LogError("Unrecognised behaviour id: {}", (uint8_t)id); break;
@@ -333,7 +360,7 @@ namespace Game {
 
 		void Idle::Client::Write(Vivium::Serialiser& s) const
 		{
-			s.Write(thinking_timer.GetInternalTime());
+			s.Write<float>(thinking_timer.GetInternalTime());
 		}
 
 		void Idle::Client::Read(Vivium::Serialiser& s)
@@ -369,6 +396,16 @@ namespace Game {
 
 		SlimeAttack::SlimeAttack(const Global& global) : global(global) {}
 
+		void SlimeAttack::Client::Write(Vivium::Serialiser& s) const
+		{
+			s.Write(*animation_handler);
+		}
+
+		void SlimeAttack::Client::Read(Vivium::Serialiser& s)
+		{
+			// TODO
+		}
+
 		void SlimeAttack::Write(Vivium::Serialiser& s) const
 		{
 			global.Write(s);
@@ -389,7 +426,7 @@ namespace Game {
 
 		void SlimeAttack::ExecuteOn(NPC* npc) const
 		{
-			
+			// TODO	
 		}
 
 		void SlimeAttack::Update(NPC* npc, std::shared_ptr<Behaviour::Client> client) const
@@ -402,6 +439,10 @@ namespace Game {
 			// TODO
 			return true;
 		}
+
+		Hunting::Global::Global(const Wandering::Global& wandering, float notice_range, float leash_range)
+			: wandering(wandering), notice_range(notice_range), leash_range(leash_range)
+		{}
 
 		void Hunting::Global::Write(Vivium::Serialiser& s) const
 		{
