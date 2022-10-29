@@ -12,6 +12,13 @@ namespace Game {
         Vivium::Timer m_Timer; // Stores last time object was updated
         double m_Time = 0.0;
 
+        static const Vivium::Vector2<int> s_HEAD_WALK_0;
+        static const Vivium::Vector2<int> s_FEET_WALK_0;
+
+        std::unique_ptr<Vivium::Shader> m_PlayerShader;
+        std::array<float, 8> m_WALK_0_TEXCOORDS;
+
+        void m_RenderPlayer();
         void m_RenderSelectedTile();
         void m_RenderInventory();
 
@@ -36,8 +43,7 @@ namespace Game {
 
     public:
         std::shared_ptr<Vivium::Body> body; // Describes physical properties of player and how it should interact with other objects
-        std::shared_ptr<Vivium::Quad> quad;             // Holds vertex buffer and index buffer of player
-        Vivium::Shader* shader;             // Pointer to player shader
+        std::shared_ptr<Vivium::Quad> quad; // Holds vertex buffer and index buffer of player
 
         Vivium::Vector2<int> selected_tile_pos; // World position of hovered tile
         Tile selected_tile;

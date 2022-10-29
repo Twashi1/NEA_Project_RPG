@@ -11,8 +11,10 @@ namespace Vivium {
 		virtual void Write(Serialiser& s) const = 0;
 		virtual void Read(Serialiser& s) = 0;
 
-		Streamable() = default;
 		virtual ~Streamable() = default;
+	
+	protected:
+		Streamable() = default;
 	};
 
 	// For streaming types which only need their raw memory to be serialised/deserialised to be valid

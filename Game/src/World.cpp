@@ -934,6 +934,11 @@ namespace Game {
 		m_UpdateObstacleMap();
 	}
 
+	const Player* World::GetPlayer() const
+	{
+		return m_Player;
+	}
+
 	std::string World::GetName() const
 	{
 		return m_WorldName;

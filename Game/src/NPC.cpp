@@ -1,5 +1,6 @@
 #include "NPC.h"
 #include "World.h"
+#include "Player.h"
 
 namespace Game {
 	namespace Pathfinding {
@@ -440,18 +441,20 @@ new_data_ptr = dynamic_pointer_cast<Behaviour::Client>(data_ptr);
 			return true;
 		}
 
-		Hunting::Global::Global(const Wandering::Global& wandering, float notice_range, float leash_range)
-			: wandering(wandering), notice_range(notice_range), leash_range(leash_range)
+		Hunting::Global::Global(float notice_range, float leash_range, const Wandering::Global& wandering)
+			: notice_range(notice_range), leash_range(leash_range), wandering(wandering)
 		{}
 
 		void Hunting::Global::Write(Vivium::Serialiser& s) const
 		{
-			// TODO
+			s.Write(notice_range);
+			s.Write(leash_range);
 		}
 		
 		void Hunting::Global::Read(Vivium::Serialiser& s)
 		{
-			// TODO
+			s.Read(&notice_range);
+			s.Read(&leash_range);
 		}
 
 		Hunting::Hunting(const Global& global)
@@ -469,7 +472,66 @@ new_data_ptr = dynamic_pointer_cast<Behaviour::Client>(data_ptr);
 
 		void Hunting::ExecuteOn(NPC* npc) const
 		{
-			// TODO
+			// Get player location
+			const Player* player = NPC::world->GetPlayer();
+			Vivium::Vector2<int> position = player->body->quad->GetCenter() / World::PIXEL_SCALE;
+
+			// If player is too far from NPC, wander randomly
+			// If the difference between the player location is too different to the final destination of the npc, recalculate the path
+			Vivium::Vector2<int> npc_dest = npc->path_destinations.back();
+			// NOTE: Using manhattan distance
+			int dist = std::abs(position.x - npc_dest.x) + std::abs(position.y - npc_dest.y);
+
+			// Wander randomly
+			if (dist > global.notice_range) {
+				// TODO: basically a copy of the wandering algorithm, but I can't inherit due to some specific differences in client
+				if (!npc->path_destinations.empty()) return;
+				
+				std::shared_ptr<Hunting::Client> my_client = dynamic_pointer_cast<Hunting::Client>(npc->behaviour_data.at(Behaviour::ID::HUNTING));
+
+				// Select direction to move in
+				Vivium::Vector2<float> move_vector = Vivium::Random::GetVector2f(
+					global.wandering.wander_range * Vivium::Random::GetFloat(global.wandering.wander_range_variation.x, global.wandering.wander_range_variation.y)
+				);
+
+				// Select a tile in that direction
+				Vivium::Vector2<float> pos = npc->body->quad->GetCenter();
+				Vivium::Vector2<float> dest = pos + move_vector;
+				Vivium::Vector2<int> dest_tile = dest / World::PIXEL_SCALE;
+
+				// Attempt to move to valid tile
+				// TODO: check tile as well
+				if (!NPC::world->GetIsObstacle(dest_tile)) {
+					Vivium::Vector2<int> rel_dest = NPC::world->GetObstacleMapIndex(dest_tile);
+					Vivium::Vector2<int> rel_start = NPC::world->GetObstacleMapIndex(pos / World::PIXEL_SCALE);
+
+					Vivium::Pathfinding::Path path = Vivium::Pathfinding::Calculate(rel_start, rel_dest, *NPC::world->GetObstacleMap());
+
+					// Iterate nodes and push destinations to our npc
+					for (auto& node : path.GetNodes()) {
+						npc->path_destinations.push(NPC::world->ObstacleMapToWorld(node.pos));
+					}
+				}
+			}
+			// Recalculate path to player
+			else if (dist > 2) {
+				// Clear path destinations
+				// NOTE: slightly disgusting hack, based off of https://stackoverflow.com/questions/709146/how-do-i-clear-the-stdqueue-efficiently
+				decltype(npc->path_destinations)().swap(npc->path_destinations);
+
+				// Player position is our destination
+				if (!NPC::world->GetIsObstacle(position)) {
+					Vivium::Vector2<int> npc_tile_pos = npc->body->quad->GetCenter() / World::PIXEL_SCALE;
+					Vivium::Vector2<int> rel_start = NPC::world->GetObstacleMapIndex(npc_tile_pos);
+					Vivium::Vector2<int> rel_dest = NPC::world->GetObstacleMapIndex(position);
+				
+					Vivium::Pathfinding::Path path = Vivium::Pathfinding::Calculate(rel_start, rel_dest, *NPC::world->GetObstacleMap());
+
+					for (auto& node : path.GetNodes()) {
+						npc->path_destinations.push(NPC::world->ObstacleMapToWorld(node.pos));
+					}
+				}
+			}
 		}
 
 		void Hunting::Update(NPC* npc, std::shared_ptr<Behaviour::Client> client) const
@@ -482,11 +544,26 @@ new_data_ptr = dynamic_pointer_cast<Behaviour::Client>(data_ptr);
 			// TODO
 			return true;
 		}
+
+		void Hunting::Client::Write(Vivium::Serialiser& s) const
+		{
+			// TODO
+		}
+
+		void Hunting::Client::Read(Vivium::Serialiser& s)
+		{
+			// TODO
+		}
 	}
 
 	void Health::Damage(float amount)
 	{
-		value = std::max(0.0f, value - amount * (1.0f - resistance));
+		if (invincibilty_time <= 0.0f) {
+			value = std::max(0.0f, value - amount * (1.0f - resistance));
+		}
+
+		// Half second of invincibility
+		invincibilty_time = INVINCIBILITY_TIME;
 	}
 
 	void Health::Heal(float amount)
@@ -496,7 +573,13 @@ new_data_ptr = dynamic_pointer_cast<Behaviour::Client>(data_ptr);
 
 	void Health::Update()
 	{
-		Heal(regen_rate * timer.GetElapsed());
+		float elapsed = timer.GetElapsed();
+
+		Heal(regen_rate * elapsed);
+
+		if (invincibilty_time > 0.0f) {
+			invincibilty_time -= elapsed;
+		}
 	}
 
 	float Health::GetNormalised()

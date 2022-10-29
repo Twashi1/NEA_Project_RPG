@@ -1,6 +1,5 @@
 #pragma once
 
-// TODO Vivium particle system
 #include "Core.h"
 #include "TextureManager.h"
 

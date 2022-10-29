@@ -14,6 +14,7 @@ namespace Game {
 	class Inventory;
 
 	// TODO: God class
+	// TODO: make singleton?
 	class World {
 	private:
 		Vivium::Serialiser* m_Serialiser; // TODO unique ptr
@@ -115,6 +116,8 @@ namespace Game {
 		
 		void Render(const Vivium::Vector2<int>& pos);
 		void Update();
+
+		const Player* GetPlayer() const;
 
 		std::string GetName() const;
 

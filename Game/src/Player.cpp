@@ -1,6 +1,14 @@
 #include "Player.h"
 
 namespace Game {
+    const Vivium::Vector2<int> Player::s_HEAD_WALK_0 = {0, 12};
+    const Vivium::Vector2<int> Player::s_FEET_WALK_0 = {0, 13};
+
+    void Player::m_RenderPlayer()
+    {
+        Vivium::Renderer::Submit(quad.get(), m_PlayerShader.get(), TextureManager::game_atlas->GetAtlas().get());
+    }
+
     void Player::m_RenderSelectedTile()
     {
         if (selected_tile.background != Tile::ID::VOID) {
@@ -125,7 +133,7 @@ namespace Game {
     void Player::Render()
     {
         m_RenderSelectedTile();
-        Vivium::Renderer::Submit(quad.get(), shader);
+        m_RenderPlayer();
         m_RenderInventory();
 
         if (m_HandEquipable != nullptr) {
@@ -179,13 +187,11 @@ namespace Game {
         : m_MainInventory(Inventory::ID::SMALL_WITH_HOTBAR), m_CraftingInventory()
     {
         // Setup player quad and body
-        quad = std::make_shared<Vivium::Quad>(0.0f, 0.0f, 50.0f, 50.0f);
-        // TODO: fix later
+        quad = std::make_shared<Vivium::Quad>(0.0f, 0.0f, 64.0f, 128.0f);
+        // TODO: set appropriate values later
         body = std::make_shared<Vivium::Body>(quad, true, 0.0f, 1.0f);
 
-        // Setup shader and uniforms
-        shader = new Vivium::Shader("world_vertex", "color_frag");
-        shader->SetUniform3f("u_Color", 1.0, 1.0, 0.0);
+        m_PlayerShader = std::make_unique<Vivium::Shader>("texture_vertex", "texture_frag");
 
         m_SelectedTileQuad = new Vivium::Quad(0.0f, 0.0f, World::PIXEL_SCALE, World::PIXEL_SCALE);
         m_SelectedTileShader = new Vivium::Shader("texture_vertex", "texture_frag");
@@ -194,12 +200,13 @@ namespace Game {
 
         *m_CraftingInventory.inventory_pos = { 50.0f, 200.0f }; // TODO: fix to panel
 
+        TextureManager::game_atlas->Set(quad.get(), s_HEAD_WALK_0, s_FEET_WALK_0);
+
         m_Time = Vivium::Timer::GetTime();
     }
 
     Player::~Player()
     {
-        delete shader;
         delete m_SelectedTileQuad;
         delete m_SelectedTileShader;
     }

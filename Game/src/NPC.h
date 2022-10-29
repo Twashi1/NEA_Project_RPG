@@ -6,12 +6,14 @@ namespace Game {
 	class World;
 
 	struct Health {
+		static constexpr float INVINCIBILITY_TIME = 0.5f;
 		Vivium::Timer timer;
 
 		float max = 100.0f;
 		float value = 100.0f;
 		float resistance = 0.0f;
 		float regen_rate = 2.0f;
+		float invincibilty_time = 0.0f;
 
 		Health() = default;
 		
@@ -127,14 +129,23 @@ namespace Game {
 			struct Global : public Vivium::Streamable {
 				float notice_range;
 				float leash_range;
-				
+
 				Wandering::Global wandering;
 
 				Global() = default;
-				Global(const Wandering::Global& wandering, float notice_range, float leash_range);
+				Global(float notice_range, float leash_range, const Wandering::Global& wandering);
 
 				virtual void Write(Vivium::Serialiser& s) const override;
 				virtual void Read(Vivium::Serialiser& s) override;
+			};
+
+			struct Client : virtual public Behaviour::Client, public Vivium::Streamable {
+				Wandering::Client wandering;
+
+				Client() = default;
+
+				void Write(Vivium::Serialiser& s) const override;
+				void Read(Vivium::Serialiser& s) override;
 			};
 
 			Global global;
