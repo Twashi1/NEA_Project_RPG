@@ -64,6 +64,7 @@
 - ~~Switch to 16x16~~
 - [ ] Tileset https://www.gamedev.net/tutorials/_/technical/game-programming/tilemap-based-game-techniques-handling-terrai-r934/
 - [ ] Some way to escape game and go back to main menu/access settings/etc
+- [ ] Remove pathfinding namespace from NPCs
 
 ## World
 - ~~Remove bot/mid/top for tiles, just foreground/background~~
@@ -138,13 +139,13 @@
 - Default statics are ugly
 - Inconsistent data layout between GUI objects
 - docs docs docs docs docs docs docs docs
-- INL file for Vector2
+- ~~INL file for Vector2~~
 - Finish scoping everything
 - ~~Match colour of the amethyst wand, ball, and sword to amethyst crystal/sword, or other way round~~
 - 
 
 # Bugs
-- Loading a world doesn't load NPCs/kills NPCs?
+- ~~Loading a world doesn't load NPCs/kills NPCs?~~
 - Tall cacti not spawning in desert biome
 - ~~Topaz wand not working~~
 - ~~Rare bug where a Vector2 which is an index for a loaded region is unallocated and checked for equivelance~~

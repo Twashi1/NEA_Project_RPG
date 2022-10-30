@@ -143,6 +143,7 @@ namespace Game {
 				Wandering::Client wandering;
 
 				Client() = default;
+				Client(const Wandering::Client& wandering);
 
 				void Write(Vivium::Serialiser& s) const override;
 				void Read(Vivium::Serialiser& s) override;
@@ -151,6 +152,9 @@ namespace Game {
 			Global global;
 
 			Hunting(const Global& global);
+
+			void Write(Vivium::Serialiser& s) const override;
+			void Read(Vivium::Serialiser& s) override;
 
 			Behaviour::ID GetID() const override;
 			void Begin(NPC* npc, std::shared_ptr<Behaviour::Client> client) const override;

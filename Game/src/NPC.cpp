@@ -19,7 +19,8 @@ namespace Game {
 				NEW_BEHAVIOUR_PTR(Idle, 3.0f)
 			}),  // PIGS ^^^ SLIMES VVV
 			Properties({0, 5}, {
-				// TODO
+				// TODO: SlimeAttack
+				NEW_BEHAVIOUR_PTR(Hunting, 500.0f, 1000.0f, Wandering::Global(800.0f, {0.5f, 1.0f}, 300.0f, 1000.0f)),
 				NEW_BEHAVIOUR_PTR(Idle, 0.0f)
 			})
 		};
@@ -175,6 +176,14 @@ namespace Game {
 
 			Vivium::Vector2<float> pos;
 			s.Read(&pos);
+
+			body = std::make_shared<Vivium::Body>(
+				std::make_shared<Vivium::Quad>(
+					pos, World::PIXEL_SCALE
+				), false, 1.0f, 1.0f, false
+			);
+
+			current_texture_index = GetProperties(id).atlas_index;
 
 			std::size_t size;
 			s.Read(&size);
@@ -460,15 +469,22 @@ new_data_ptr = dynamic_pointer_cast<Behaviour::Client>(data_ptr);
 		Hunting::Hunting(const Global& global)
 			: global(global) {}
 
+		void Hunting::Write(Vivium::Serialiser& s) const
+		{
+			s.Write(global);
+		}
+
+		void Hunting::Read(Vivium::Serialiser& s)
+		{
+			s.Read(&global);
+		}
+
 		Behaviour::ID Hunting::GetID() const
 		{
 			return Behaviour::ID::HUNTING;
 		}
 
-		void Hunting::Begin(NPC* npc, std::shared_ptr<Behaviour::Client> client) const
-		{
-			// TODO
-		}
+		void Hunting::Begin(NPC* npc, std::shared_ptr<Behaviour::Client> client) const {}
 
 		void Hunting::ExecuteOn(NPC* npc) const
 		{
@@ -478,15 +494,22 @@ new_data_ptr = dynamic_pointer_cast<Behaviour::Client>(data_ptr);
 
 			// If player is too far from NPC, wander randomly
 			// If the difference between the player location is too different to the final destination of the npc, recalculate the path
-			Vivium::Vector2<int> npc_dest = npc->path_destinations.back();
-			// NOTE: Using manhattan distance
-			int dist = std::abs(position.x - npc_dest.x) + std::abs(position.y - npc_dest.y);
+			Vivium::Vector2<int> npc_pos = npc->body->quad->GetCenter() / World::PIXEL_SCALE;
 
-			// Wander randomly
-			if (dist > global.notice_range) {
+			Vivium::Vector2<int> npc_dest = npc_pos;
+			int dist = INT_MAX;
+
+			// If we are pathing somewhere, we'll want to check distance from our destination to the player
+			if (!npc->path_destinations.empty()) {
+				npc_dest = npc->path_destinations.back();
+				// NOTE: Using manhattan distance
+				// Calculating distance from npc's final destination to player's current position
+				dist = std::abs(position.x - npc_dest.x) + std::abs(position.y - npc_dest.y);
+			}
+
+			// Wander randomly since our current position is outside the notice range, and we have nowhere to path to
+			if (dist > global.notice_range && npc->path_destinations.empty()) {
 				// TODO: basically a copy of the wandering algorithm, but I can't inherit due to some specific differences in client
-				if (!npc->path_destinations.empty()) return;
-				
 				std::shared_ptr<Hunting::Client> my_client = dynamic_pointer_cast<Hunting::Client>(npc->behaviour_data.at(Behaviour::ID::HUNTING));
 
 				// Select direction to move in
@@ -513,7 +536,7 @@ new_data_ptr = dynamic_pointer_cast<Behaviour::Client>(data_ptr);
 					}
 				}
 			}
-			// Recalculate path to player
+			// Recalculate path to player since our destination is too far
 			else if (dist > 2) {
 				// Clear path destinations
 				// NOTE: slightly disgusting hack, based off of https://stackoverflow.com/questions/709146/how-do-i-clear-the-stdqueue-efficiently
@@ -534,25 +557,34 @@ new_data_ptr = dynamic_pointer_cast<Behaviour::Client>(data_ptr);
 			}
 		}
 
+		Hunting::Client::Client(const Wandering::Client& wandering)
+			: wandering(wandering) {}
+
 		void Hunting::Update(NPC* npc, std::shared_ptr<Behaviour::Client> client) const
 		{
-			// TODO
+			// Update direction
+			if (!npc->path_destinations.empty()) {
+				Vivium::Vector2<float> dest = npc->path_destinations.front();
+				Vivium::Vector2<float> current = npc->body->quad->GetCenter() / World::PIXEL_SCALE;
+				Vivium::Vector2<float> direction = Vivium::Vector2<float>::Normalise(dest - current);
+
+				npc->body->vel = direction * global.wandering.wander_speed;
+			}
 		}
 
 		bool Hunting::IsOver(NPC* npc, std::shared_ptr<Behaviour::Client> client) const
 		{
-			// TODO
-			return true;
+			return npc->path_destinations.empty();
 		}
 
 		void Hunting::Client::Write(Vivium::Serialiser& s) const
 		{
-			// TODO
+			wandering.Write(s);
 		}
 
 		void Hunting::Client::Read(Vivium::Serialiser& s)
 		{
-			// TODO
+			s.Read(&wandering);
 		}
 	}
 

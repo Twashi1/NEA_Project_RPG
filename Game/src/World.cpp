@@ -931,6 +931,32 @@ namespace Game {
 
 		m_WorldMap->GenerateFullMap(m_Player->quad->GetCenter(), *this);
 
+		// DEBUG!
+#define SPAWN_SLIME_DEBUG
+#ifdef SPAWN_SLIME_DEBUG
+		Vivium::Input::State DEBUG = Vivium::Input::GetKeyState(GLFW_KEY_K);
+
+		if (Vivium::Input::IsKeyDown(DEBUG)) {
+			// Spawn a slime in region player is currently in
+			Region* player_region = regions.at(GetRegionIndex(m_Player->quad->GetCenter() / World::PIXEL_SCALE));
+			
+			player_region->npcs.emplace_back(
+				Pathfinding::NPC::ID::SLIME,
+				// TEMP values
+				std::make_shared<Vivium::Body>(
+					std::make_shared<Vivium::Quad>(m_Player->quad->GetCenter(), Vivium::Vector2<float>(World::PIXEL_SCALE)),
+					true,
+					1.0f,
+					1.0f
+					),
+				Pathfinding::NPC::BehaviourDataMap{
+					{Pathfinding::Behaviour::ID::HUNTING,	std::make_shared<Pathfinding::Hunting::Client>(Vivium::Vector2<int>(m_Player->quad->GetCenter() / World::PIXEL_SCALE))},
+					{Pathfinding::Behaviour::ID::IDLE,		std::make_shared<Pathfinding::Idle::Client>()},
+				}
+			);
+		}
+#endif
+
 		m_UpdateObstacleMap();
 	}
 

@@ -28,6 +28,9 @@ int sandbox(void)
 
 int game(void)
 {
+    // TODO: use application path
+    std::filesystem::create_directory("../Resources/saves/");
+
     Vivium::Flag::Set(VIVIUM_FLAG_FUNCTION_SIGNATURE_LOGGING, 1);
     // Construct engine instance
     Application::Init(WIDTH, HEIGHT, FPS);
@@ -72,6 +75,8 @@ int game(void)
 
         Application::EndFrame();
     }
+
+    
 
     LogInfo("Window closed");
 
