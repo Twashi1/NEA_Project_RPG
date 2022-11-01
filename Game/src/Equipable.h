@@ -10,9 +10,7 @@ namespace Game {
 	class World;
 	class ProjectileSystem;
 
-	namespace Pathfinding {
-		class NPC;
-	}
+	class NPC;
 
 	class HandEquipable : public Item {
 	protected:
@@ -100,10 +98,10 @@ namespace Game {
 
 				float damage;
 				float knockback; // Measured as an impulse
-				Pathfinding::NPC* npc;
+				NPC* npc;
 				Projectile* projectile; // no guarantee on lifetime
 
-				Hit(float damage, float knockback, Pathfinding::NPC* npc, Projectile* projectile);
+				Hit(float damage, float knockback, NPC* npc, Projectile* projectile);
 			};
 
 			class HitHandler : public virtual Vivium::EventHandler {

@@ -79,7 +79,7 @@ namespace Game {
 		delete m_ProjectileSystem;
 	}
 
-	Weapon::Projectile::Hit::Hit(float damage, float knockback, Pathfinding::NPC* npc, Projectile* projectile)
+	Weapon::Projectile::Hit::Hit(float damage, float knockback, NPC* npc, Projectile* projectile)
 		: Vivium::Event(s_TYPE), damage(damage), knockback(knockback), npc(npc), projectile(projectile) {}
 
 	Weapon::Projectile::HitHandler::HitHandler()
@@ -92,7 +92,8 @@ namespace Game {
 		std::shared_ptr<Weapon::Projectile::Hit> hit_event = dynamic_pointer_cast<Weapon::Projectile::Hit>(event);
 		LogTrace("Hit event was detected, damage: {}!", hit_event->damage);
 
-		// TODO: take into account iframes, subtract health, provide impulse based on knockback
+		// TODO: provide impulse based on knockback
+		hit_event->npc->health.Damage(hit_event->projectile->GetDamage());
 		// If projectile is piercing, this would not be here
 		hit_event->projectile->Kill();
 	}

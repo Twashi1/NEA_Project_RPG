@@ -73,7 +73,7 @@ namespace Game {
 		// TODO: non static acceleration for leaf wind
 		: m_WorldName(world_name), m_Seed(seed), m_Player(player), m_LeafBlockBreaking(100, {0.0f, -400.0f}), m_LeafWind(50, {0.0f, 0.0f})
 	{
-		Pathfinding::NPC::world = this;
+		NPC::world = this;
 
 		std::string fullpath = PATH + world_name + "/";
 
@@ -749,7 +749,7 @@ namespace Game {
 				vertices.reserve(vertices.size() + (4 * 4 * region.npcs.size())); // 4 floats per vertex, 4 vertices
 				indices.reserve(indices.size() + (6 * region.npcs.size()));
 
-				for (Pathfinding::NPC& npc : region.npcs) {
+				for (NPC& npc : region.npcs) {
 					// Weird location, but only place we can really update the npc
 					npc.Update();
 					npc.CheckProjectileCollision(proj_array, projectile_count);
@@ -776,7 +776,7 @@ namespace Game {
 			Vivium::VertexBuffer vb(vertices, layout);
 			Vivium::IndexBuffer ib(indices);
 
-			Vivium::Renderer::Submit(&vb, &ib, Pathfinding::NPC::m_Shader.get(), TextureManager::game_atlas->GetAtlas().get());
+			Vivium::Renderer::Submit(&vb, &ib, NPC::m_Shader.get(), TextureManager::game_atlas->GetAtlas().get());
 		}
 	}
 
@@ -941,7 +941,7 @@ namespace Game {
 			Region* player_region = regions.at(GetRegionIndex(m_Player->quad->GetCenter() / World::PIXEL_SCALE));
 			
 			player_region->npcs.emplace_back(
-				Pathfinding::NPC::ID::SLIME,
+				NPC::ID::SLIME,
 				// TEMP values
 				std::make_shared<Vivium::Body>(
 					std::make_shared<Vivium::Quad>(m_Player->quad->GetCenter(), Vivium::Vector2<float>(World::PIXEL_SCALE)),
@@ -949,9 +949,9 @@ namespace Game {
 					1.0f,
 					1.0f
 					),
-				Pathfinding::NPC::BehaviourDataMap{
-					{Pathfinding::Behaviour::ID::HUNTING,	std::make_shared<Pathfinding::Hunting::Client>(Vivium::Vector2<int>(m_Player->quad->GetCenter() / World::PIXEL_SCALE))},
-					{Pathfinding::Behaviour::ID::IDLE,		std::make_shared<Pathfinding::Idle::Client>()},
+				NPC::BehaviourDataMap{
+					{Behaviours::Behaviour::ID::HUNTING,	std::make_shared<Behaviours::Hunting::Client>(Vivium::Vector2<int>(m_Player->quad->GetCenter() / World::PIXEL_SCALE))},
+					{Behaviours::Behaviour::ID::IDLE,		std::make_shared<Behaviours::Idle::Client>()},
 				}
 			);
 		}

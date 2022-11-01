@@ -118,7 +118,7 @@ namespace Game {
 #define GENERATE_NPC
 #ifdef GENERATE_NPC
 			region.npcs.emplace_back(
-				Pathfinding::NPC::ID::PIG,
+				NPC::ID::PIG,
 				// TEMP values
 				std::make_shared<Vivium::Body>(
 					std::make_shared<Vivium::Quad>(Vivium::Vector2<float>(x, y) * World::PIXEL_SCALE, Vivium::Vector2<float>(World::PIXEL_SCALE)),
@@ -126,9 +126,9 @@ namespace Game {
 					1.0f,
 					1.0f
 					),
-				Pathfinding::NPC::BehaviourDataMap{
-					{Pathfinding::Behaviour::ID::WANDER,	std::make_shared<Pathfinding::Wandering::Client>(Vivium::Vector2<int>(x, y))},
-					{Pathfinding::Behaviour::ID::IDLE,		std::make_shared<Pathfinding::Idle::Client>()},
+				NPC::BehaviourDataMap{
+					{Behaviours::Behaviour::ID::WANDER,	std::make_shared<Behaviours::Wandering::Client>(Vivium::Vector2<int>(x, y))},
+					{Behaviours::Behaviour::ID::IDLE,		std::make_shared<Behaviours::Idle::Client>()},
 				}
 			);
 #endif
@@ -245,7 +245,7 @@ namespace Game {
 #ifdef GENERATE_NPC
 			// What a disgustingly long constructor
 			region.npcs.emplace_back(
-				Pathfinding::NPC::ID::COW,
+				NPC::ID::COW,
 				// TEMP values
 				std::make_shared<Vivium::Body>(
 					std::make_shared<Vivium::Quad>(Vivium::Vector2<float>(x, y) * World::PIXEL_SCALE, Vivium::Vector2<float>(World::PIXEL_SCALE)),
@@ -253,9 +253,9 @@ namespace Game {
 					1.0f,
 					1.0f
 				),
-				Pathfinding::NPC::BehaviourDataMap {
-					{Pathfinding::Behaviour::ID::WANDER,	std::make_shared<Pathfinding::Wandering::Client>(Vivium::Vector2<int>(x, y))},
-					{Pathfinding::Behaviour::ID::IDLE,		std::make_shared<Pathfinding::Idle::Client>()},
+				NPC::BehaviourDataMap {
+					{Behaviours::Behaviour::ID::WANDER,	std::make_shared<Behaviours::Wandering::Client>(Vivium::Vector2<int>(x, y))},
+					{Behaviours::Behaviour::ID::IDLE,		std::make_shared<Behaviours::Idle::Client>()},
 				}
 			);
 #endif

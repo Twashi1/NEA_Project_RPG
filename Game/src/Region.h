@@ -16,7 +16,7 @@ namespace Game {
 		std::array<Biome::ID, SIZE> biomes; // 1D array of the biome each tile is in
 
 		// NPCs stored in the region they were spawned in, since their wander area is bounded by their home, this should be fine?
-		std::vector<Pathfinding::NPC> npcs;
+		std::vector<NPC> npcs;
 
 		Region() = default;
 		Region(const Region& other) = delete; // NOTE: could be available now

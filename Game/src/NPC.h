@@ -25,9 +25,9 @@ namespace Game {
 		float GetNormalised();
 	};
 
-	namespace Pathfinding {
-		class NPC;
+	class NPC;
 
+	namespace Behaviours {
 		class Behaviour : public Vivium::Streamable {
 		public:
 			enum class ID : uint8_t {
@@ -128,7 +128,8 @@ namespace Game {
 		public:
 			struct Global : public Vivium::Streamable {
 				float notice_range;
-				float leash_range;
+				float leash_range; // TODO: unused
+				int recalc_dist = 2;
 
 				Wandering::Global wandering;
 
@@ -201,75 +202,75 @@ namespace Game {
 			void Update(NPC* npc, std::shared_ptr<Behaviour::Client> client) const override;
 			bool IsOver(NPC* npc, std::shared_ptr<Behaviour::Client> client) const override;
 		};
-
-		class NPC : public Vivium::Streamable {
-		private:
-			static constexpr float PATHFINDING_EPSILON = 1.0f / 10.0f; // 1/10th of a tile
-			static constexpr float PATHFINDING_EPSILON_SQR = PATHFINDING_EPSILON * PATHFINDING_EPSILON;
-
-			Behaviour::ID m_CurrentBehaviourID = Behaviour::ID::IDLE;
-			std::size_t m_CurrentBehaviourIndex = 0;
-
-			// Whether we should call Behaviour::Begin on the next update call
-			bool m_BeginBehaviour = false;
-
-			// TODO: unique?
-			static std::shared_ptr<Vivium::Shader> m_Shader;
-
-			void m_UpdatePathing();
-
-		public:
-			enum class ID : uint8_t {
-				COW,
-				PIG,
-				SLIME,
-				MAX
-			};
-
-			static World* world;
-
-			static void Init();
-
-			NPC::ID id;
-			std::shared_ptr<Vivium::Body> body;
-			std::queue<Vivium::Vector2<float>> path_destinations;
-			Vivium::Vector2<int> current_texture_index;
-			Health health;
-
-			typedef std::unordered_map<Behaviour::ID, std::shared_ptr<Behaviour::Client>> BehaviourDataMap;
-
-			BehaviourDataMap behaviour_data;
-
-			NPC() = default;
-			NPC(const NPC::ID& id, std::shared_ptr<Vivium::Body> body, const BehaviourDataMap& data);
-			NPC(const NPC& other) = default;
-			NPC(NPC&& other) noexcept;
-			~NPC() = default;
-
-			void Update();
-			// TODO: Pretty ugly function, bad name and should be somewhere else
-			// Adds rendering information to vertices, assuming layout: position, texcoords
-			void AddVertices(std::vector<float>& vertices);
-
-			void CheckProjectileCollision(Weapon::Projectile** projectiles, std::size_t size);
-
-			virtual void Write(Vivium::Serialiser& s) const override;
-			virtual void Read(Vivium::Serialiser& s) override;
-
-			struct Properties {
-				Vivium::Vector2<int> atlas_index;
-				std::vector<std::shared_ptr<Behaviour>> behaviours;
-
-				Properties(const Vivium::Vector2<int>& atlas_index, const std::initializer_list<std::shared_ptr<Behaviour>>& behaviours);
-			};
-
-			static std::array<Properties, (uint8_t)ID::MAX> m_Properties;
-
-			static const Properties& GetProperties(const ID& id);
-			static const std::vector<std::shared_ptr<Behaviour>>& GetBehaviours(const ID& id);
-			static const Vivium::Vector2<int>& GetAtlasIndex(const ID& id);
-
-			friend World;
-		};
 	}
+
+	class NPC : public Vivium::Streamable {
+	private:
+		static constexpr float PATHFINDING_EPSILON = 1.0f / 10.0f; // 1/10th of a tile
+		static constexpr float PATHFINDING_EPSILON_SQR = PATHFINDING_EPSILON * PATHFINDING_EPSILON;
+
+		Behaviours::Behaviour::ID m_CurrentBehaviourID = Behaviours::Behaviour::ID::IDLE;
+		std::size_t m_CurrentBehaviourIndex = 0;
+
+		// Whether we should call Behaviour::Begin on the next update call
+		bool m_BeginBehaviour = false;
+
+		// TODO: unique?
+		static std::shared_ptr<Vivium::Shader> m_Shader;
+
+		void m_UpdatePathing();
+
+	public:
+		enum class ID : uint8_t {
+			COW,
+			PIG,
+			SLIME,
+			MAX
+		};
+
+		static World* world;
+
+		static void Init();
+
+		NPC::ID id;
+		std::shared_ptr<Vivium::Body> body;
+		std::queue<Vivium::Vector2<float>> path_destinations;
+		Vivium::Vector2<int> current_texture_index;
+		Health health;
+
+		typedef std::unordered_map<Behaviours::Behaviour::ID, std::shared_ptr<Behaviours::Behaviour::Client>> BehaviourDataMap;
+
+		BehaviourDataMap behaviour_data;
+
+		NPC() = default;
+		NPC(const NPC::ID& id, std::shared_ptr<Vivium::Body> body, const BehaviourDataMap& data);
+		NPC(const NPC& other) = default;
+		NPC(NPC&& other) noexcept;
+		~NPC() = default;
+
+		void Update();
+		// TODO: Pretty ugly function, bad name and should be somewhere else
+		// Adds rendering information to vertices, assuming layout: position, texcoords
+		void AddVertices(std::vector<float>& vertices);
+
+		void CheckProjectileCollision(Weapon::Projectile** projectiles, std::size_t size);
+
+		virtual void Write(Vivium::Serialiser& s) const override;
+		virtual void Read(Vivium::Serialiser& s) override;
+
+		struct Properties {
+			Vivium::Vector2<int> atlas_index;
+			std::vector<std::shared_ptr<Behaviours::Behaviour>> behaviours;
+
+			Properties(const Vivium::Vector2<int>& atlas_index, const std::initializer_list<std::shared_ptr<Behaviours::Behaviour>>& behaviours);
+		};
+
+		static std::array<Properties, (uint8_t)ID::MAX> m_Properties;
+
+		static const Properties& GetProperties(const ID& id);
+		static const std::vector<std::shared_ptr<Behaviours::Behaviour>>& GetBehaviours(const ID& id);
+		static const Vivium::Vector2<int>& GetAtlasIndex(const ID& id);
+
+		friend World;
+	};
 }

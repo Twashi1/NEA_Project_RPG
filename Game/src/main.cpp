@@ -53,7 +53,7 @@ int game(void)
     LeavesParticleSystem::Init();
     Weapon::Init();
     ProjectileSystem::Init();
-    Game::Pathfinding::NPC::Init();
+    Game::NPC::Init();
 
     Application::SetBGColor(RGBColor::BLACK);
 
