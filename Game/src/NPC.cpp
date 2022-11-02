@@ -408,12 +408,12 @@ new_data_ptr = dynamic_pointer_cast<Behaviours::Behaviour::Client>(data_ptr);
 
 		void SlimeAttack::Client::Write(Vivium::Serialiser& s) const
 		{
-			s.Write(*animation_handler);
+			s.Write(animation_handler);
 		}
 
 		void SlimeAttack::Client::Read(Vivium::Serialiser& s)
 		{
-			// TODO
+			s.Read(&animation_handler);
 		}
 
 		void SlimeAttack::Write(Vivium::Serialiser& s) const
@@ -436,7 +436,7 @@ new_data_ptr = dynamic_pointer_cast<Behaviours::Behaviour::Client>(data_ptr);
 
 		void SlimeAttack::ExecuteOn(NPC* npc) const
 		{
-			// TODO	
+			// TODO
 		}
 
 		void SlimeAttack::Update(NPC* npc, std::shared_ptr<Behaviour::Client> client) const

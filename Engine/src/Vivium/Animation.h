@@ -36,7 +36,7 @@ namespace Vivium {
 		int m_FrameIndex = 0;		// Index of frame of the animation we're currently displaying
 
 	public:
-		static std::string FILE_EXTENSION;
+		static std::string FILE_EXTENSION; // TODO: should deprecate this
 
 		std::shared_ptr<Quad> quad;
 		std::shared_ptr<Shader> shader;
@@ -44,10 +44,66 @@ namespace Vivium {
 		const std::shared_ptr<Texture> GetAtlas() const;
 
 		// NOTE: data_filename refers to the filename of the .animation data file for the texture atlas
+		Animation() = default;
 		Animation(std::shared_ptr<Quad> quad, std::shared_ptr<Shader> shader, std::shared_ptr<TextureAtlas> atlas, const Animation::Data& animation_data);
 		~Animation();
 
 		// Updates the animation, takes current time
 		void Update();
+	};
+
+	// TODO: prefer this to deprecated Animation and Animation::Data
+	// TODO: make animator streamable
+	class VIVIUM_API Animator : Streamable {
+	public:
+		struct VIVIUM_API Data : Streamable {
+		public:
+			typedef std::pair<float, int> Keyframe_t;
+			typedef std::vector<Keyframe_t> KeyframeData_t;
+
+			KeyframeData_t keyframes = {};
+			std::shared_ptr<TextureAtlas> atlas = nullptr;
+
+			bool IsValid();
+
+			Data() = default;
+			Data(const std::vector<Keyframe_t>& keyframes, const std::shared_ptr<TextureAtlas>& atlas);
+			Data(const std::initializer_list<Keyframe_t>& keyframes, const std::shared_ptr<TextureAtlas>& atlas);
+
+			Data(const Data& other) = default;
+
+			void Write(Serialiser& s) const override;
+			void Read(Serialiser& s) override;
+		};
+
+	private:
+		Data m_Data;
+		Timer m_Timer;
+
+		float m_CurrentKeyframeElapsed = 0.0f; // Time spent displaying current frame
+		int m_KeyframeIndex = 0; // Index of keyframe currently being displayed
+		bool m_ShouldLoop = false;
+		bool m_IsPaused = false;
+
+	public:
+		void SetShouldLoop(bool should_loop);
+		void SetPaused(bool is_paused);
+
+		void Start(int start_frame = 0);
+		int Pause(); // Returns frame paused on
+		void Resume();
+
+		void Switch(const Data& data);
+		void Switch(Data&& data);
+
+		int GetCurrentTextureIndex();
+
+		void Write(Vivium::Serialiser& s) const override;
+		void Read(Vivium::Serialiser& s) override;
+
+		// Updates animator
+		void Update();
+
+		Animator(const Data& data, bool should_loop = false);
 	};
 }

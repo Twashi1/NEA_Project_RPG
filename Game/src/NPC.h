@@ -181,9 +181,11 @@ namespace Game {
 			};
 
 			struct Client : virtual public Behaviour::Client, public Vivium::Streamable {
-				std::shared_ptr<Vivium::Animation> animation_handler;
+				Vivium::Animator animation_handler;
+				// TODO: original position should be stored here?
 
 				Client() = default;
+				Client(const Vivium::Animator& animation_handler);
 
 				void Write(Vivium::Serialiser& s) const override;
 				void Read(Vivium::Serialiser& s) override;

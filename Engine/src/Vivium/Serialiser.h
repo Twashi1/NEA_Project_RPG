@@ -8,6 +8,8 @@
 TODO: add functionality for pointers?
 TODO: text serialisation
 TODO: cleanup
+TODO: possible issues with 0 size vectors?
+TODO: add some extra information to error messages for invalid types serialising
 */
 
 namespace Vivium {
@@ -250,6 +252,17 @@ namespace Vivium {
 			}
 		}
 
+		template <typename First_t, typename Second_t>
+		void Write(const std::pair<First_t, Second_t>& object) {
+			if constexpr (!IsStreamable<First_t> || !IsStreamable<Second_t>) {
+				LogError("Object {} contains type that is not streamable", typeid(std::pair<First_t, Second_t>).name());
+			}
+			else {
+				Write<First_t>(object.first);
+				Write<Second_t>(object.second);
+			}
+		}
+
 		template <typename T>
 		void Write(const T* object_array, std::size_t length) {
 			if constexpr (!IsStreamable<T>) {
@@ -376,6 +389,17 @@ namespace Vivium {
 					// Requires copy constructor?
 					memory->insert({ key, value });
 				}
+			}
+		}
+
+		template <typename First_t, typename Second_t>
+		void Read(std::pair<First_t, Second_t>* memory) {
+			if constexpr (!IsStreamable<First_t> || !IsStreamable<Second_t>) {
+				LogError("Object contains type that is not Streamable");
+			}
+			else {
+				Read<First_t>(&(memory->first));
+				Read<Second_t>(&(memory->second));
 			}
 		}
 

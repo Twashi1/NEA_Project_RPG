@@ -10,6 +10,8 @@
 #define VIVIUM_ERROR 3
 #define VIVIUM_FATAL 4
 
+// TODO: remove all this VIVIUM_SCOPE stuff, unused
+
 // Only define the following if we're within the Vivium engine
 #ifdef VIVIUM_EXPOSE_CORE
 	#define LogFatal(msg, ...)	Vivium::__LogBase(std::format(msg, __VA_ARGS__), __LINE__, __FUNCSIG__, "Fatal", VIVIUM_FATAL)

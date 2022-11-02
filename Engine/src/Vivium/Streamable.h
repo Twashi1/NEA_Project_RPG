@@ -24,19 +24,28 @@ namespace Vivium {
 		virtual ~StreamablePOD() = default;
 	};
 
-	// TODO still ugly
-	template <typename T> inline constexpr bool __BaseStreamableTypes = std::is_arithmetic_v<T> || std::is_same_v<T, std::string> || std::is_same_v<T, bool> || std::is_base_of_v<StreamablePOD, T>;
+	template <typename> struct __vector2_checker : std::false_type {};
+	// NOTE: only serialisable types can be passed to a vector anyway
+	template <typename value_t> struct __vector2_checker<Vector2<value_t>> : std::true_type {};
+
+	template <typename T> inline constexpr bool __BaseStreamableTypes =
+	   std::is_arithmetic_v<T>
+	|| std::is_same_v<T, std::string>
+	|| std::is_same_v<T, bool>
+	|| std::is_base_of_v<StreamablePOD, T>
+	|| __vector2_checker<T>::value;
+
 	template <typename T> concept IsBaseStreamable = __BaseStreamableTypes<T>;
-	template <typename T> concept IsStreamable = std::is_base_of_v<Streamable, T>
+
+	template <typename first_t, typename second_t=void> struct __pair_checker { static constexpr bool value = false; };
+
+	template <typename first_t, typename second_t> struct __pair_checker<std::pair<first_t, second_t>> {
+		static constexpr bool value = IsStreamable<first_t> && IsStreamable<second_t>; 
+	};
+
+	template <typename T> concept IsStreamable =
+	   std::is_base_of_v<Streamable, T>
 	|| __BaseStreamableTypes<T>
-	|| std::is_same_v<T, Vector2<int8_t>>
-	|| std::is_same_v<T, Vector2<uint8_t>>
-	|| std::is_same_v<T, Vector2<int16_t>>
-	|| std::is_same_v<T, Vector2<uint16_t>>
-	|| std::is_same_v<T, Vector2<int32_t>>
-	|| std::is_same_v<T, Vector2<uint32_t>>
-	|| std::is_same_v<T, Vector2<long>>
-	|| std::is_same_v<T, Vector2<float>>
-	|| std::is_same_v<T, Vector2<double>>
-	|| IsBaseStreamable<typename std::underlying_type<T>::type>;
+	|| IsBaseStreamable<typename std::underlying_type<T>::type>
+	|| __pair_checker<T>::value;
 }

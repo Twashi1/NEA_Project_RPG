@@ -10,16 +10,36 @@ const int FPS = 144;
 using namespace Vivium;
 using namespace Game;
 
+struct abc : Vivium::Streamable {
+    int x = 0;
+
+    abc() = default;
+    abc(int x) : x(x) {}
+
+    void Write(Vivium::Serialiser&) const override { LogTrace("ABC written"); }
+    void Read(Vivium::Serialiser&) override {}
+};
+
+struct inv { int y = 3; inv(int y) : y(y) {} };
+
 int sandbox(void)
 {
     Application::Init(WIDTH, HEIGHT, FPS);
 
     Application::SetBGColor(RGBColor::BLUE);
 
-    while (Application::IsRunning()) {
-        Application::BeginFrame();
-        Application::EndFrame();
-    }
+    Vivium::Serialiser s(Vivium::Stream::Flags::BINARY);
+    std::pair<int, float> example = {0, 1.0f};
+    std::pair<Vector2<int>, Vector2<float>> example_2 = {0, 0.0f};
+    std::pair<int, abc> example_3 = { 1, 0 };
+    std::vector<std::pair<int, abc>> example_4 = {};
+
+    s.BeginWrite("../Resources/new.txt");
+    s.Write(example);
+    s.Write(example_2);
+    s.Write(example_3);
+    s.Write(example_4);
+    s.EndWrite();
 
     Application::Terminate();
 
@@ -95,7 +115,7 @@ int game(void)
 }
 
 int main(int argc, char** argv) {
-    game();
+    sandbox();
 
     LogTrace("Game finished");
 }

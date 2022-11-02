@@ -157,4 +157,178 @@ namespace Vivium {
 			m_Atlas->Set(quad.get(), m_AnimationData.frame_indices[m_FrameIndex]);
 		}
 	}
+
+	bool Animator::Data::IsValid()
+	{
+		if (keyframes.size() == 0) {
+			LogWarn("0 frame animation found!");
+
+			return false;
+		}
+		else {
+			bool found_real_keyframe = false;
+
+			for (const Keyframe_t& keyframe : keyframes) {
+				if (keyframe.first != 0.0f) {
+					found_real_keyframe = true;
+					
+					break;
+				}
+			}
+
+			if (!found_real_keyframe) {
+				LogWarn("No keyframe with non-zero timing found in animation!");
+
+				return false;
+			}
+		}
+
+		return true;
+	}
+
+	Animator::Data::Data(const std::vector<Keyframe_t>& keyframes, const std::shared_ptr<TextureAtlas>& atlas)
+		: keyframes(keyframes), atlas(atlas)
+	{}
+
+	Animator::Data::Data(const std::initializer_list<Keyframe_t>& keyframes, const std::shared_ptr<TextureAtlas>& atlas)
+		: keyframes(keyframes), atlas(atlas)
+	{}
+
+	void Animator::Data::Write(Serialiser& s) const
+	{
+		s.Write(keyframes);
+	}
+	
+	void Animator::Data::Read(Serialiser& s)
+	{
+		s.Read(&keyframes);
+	}
+
+	void Animator::SetShouldLoop(bool should_loop) 
+	{
+		m_ShouldLoop = should_loop;
+	}
+
+	void Animator::SetPaused(bool is_paused) 
+	{
+		m_IsPaused = is_paused;
+	}
+
+	void Animator::Start(int start_frame)
+	{
+		m_KeyframeIndex = start_frame;
+		m_CurrentKeyframeElapsed = 0.0f;
+	}
+
+	int Animator::Pause()
+	{
+		m_IsPaused = true;
+
+		return m_KeyframeIndex;
+	}
+
+	void Animator::Resume()
+	{
+		m_IsPaused = false;
+	}
+
+	void Animator::Switch(const Data& data) 
+	{
+		m_Data = data;
+		m_KeyframeIndex = 0;
+		m_CurrentKeyframeElapsed = 0.0f;
+
+		if (!m_Data.IsValid()) {
+			LogFatal("Invalid animation data passed to animator!");
+		}
+	}
+
+	void Animator::Switch(Data&& data)
+	{
+		m_Data = std::move(data);
+		m_KeyframeIndex = 0;
+		m_CurrentKeyframeElapsed = 0.0f;
+
+		if (!m_Data.IsValid()) {
+			LogFatal("Invalid animation data passed to animator!");
+		}
+	}
+
+	int Animator::GetCurrentTextureIndex()
+	{
+		return m_Data.keyframes[m_KeyframeIndex].second;
+	}
+
+	void Animator::Write(Vivium::Serialiser& s) const {
+		s.Write(m_Data);
+		s.Write(m_Timer);
+		s.Write(m_CurrentKeyframeElapsed);
+		s.Write(m_KeyframeIndex);
+		s.Write(m_ShouldLoop);
+		s.Write(m_IsPaused);
+	}
+
+	void Animator::Read(Vivium::Serialiser& s) {
+		s.Read(&m_Data);
+		s.Read(&m_Timer);
+		s.Read(&m_CurrentKeyframeElapsed);
+		s.Read(&m_KeyframeIndex);
+		s.Read(&m_ShouldLoop);
+		s.Read(&m_IsPaused);
+	}
+
+	void Animator::Update()
+	{
+		if (m_IsPaused) {
+			m_Timer.Reset(); // TODO: ideally you could pause a timer?
+			
+			return;
+		}
+
+		// Get elapsed time
+		float elapsed = m_Timer.GetElapsed();
+
+		// Add delta time to time spent on current frame
+		m_CurrentKeyframeElapsed += elapsed;
+
+		// Get current keyframe
+		Data::Keyframe_t& this_keyframe = m_Data.keyframes[m_KeyframeIndex];
+
+		// If we have spent enough time on this frame
+		while (m_CurrentKeyframeElapsed > this_keyframe.first) {
+			// If we're on the last frame
+			if (m_KeyframeIndex == m_Data.keyframes.size() - 1) {
+				// If we're looping and on the last frame, reset
+				if (m_ShouldLoop) {
+					++m_KeyframeIndex %= m_Data.keyframes.size();
+				}
+				// Otherwise, stay on this frame (the last frame)
+				// Also break this loop, as since we're on the last frame and not looping
+				//	we don't need to do anything, just exit
+				else {
+					// Technically, an unlooped animation at the end is "paused", setting m_IsPaused to true here 
+					// could speed up performance, since we won't have to grab elapsed time, the keyframe, or do
+					// any of these checks, but issues could arise with the SetShouldLoop subroutine since it would
+					// also have to unpause the animation? I'll leave this as a super-long comment for now
+					// m_IsPaused = true;
+
+					break;
+				}
+			}
+
+			// Turn back elapsed time
+			m_CurrentKeyframeElapsed -= this_keyframe.first;
+
+			// So we can skip multiple frames in one update
+			this_keyframe = m_Data.keyframes[m_KeyframeIndex];
+		}
+	}
+
+	Animator::Animator(const Data& data, bool should_loop)
+		: m_Data(data), m_ShouldLoop(should_loop)
+	{
+		if (!m_Data.IsValid()) {
+			LogFatal("Invalid animation data passed to animator!");
+		}
+	}
 }

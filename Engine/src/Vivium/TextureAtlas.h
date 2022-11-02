@@ -6,7 +6,7 @@
 
 namespace Vivium {
 	// Allows easy access to texture coordinates of a specific texture, or textures in an atlas
-	// Top left corner is (0,0), increasing as you go down and to the right
+	// Top left corner is (0, 0); increasing as you go down and to the right
 	class VIVIUM_API TextureAtlas {
 	private:
 		std::shared_ptr<Texture> m_Atlas;
@@ -16,6 +16,11 @@ namespace Vivium {
 		void m_Construct();
 
 	public:
+		// TODO: Create
+		struct VIVIUM_API Index {
+
+		};
+
 		std::vector<float> GetCoords(int index) const;
 		std::vector<float> GetCoords(const Vector2<int>& index) const;
 		std::vector<float> GetCoords(const Vector2<int>& top_left, const Vector2<int>& bottom_right) const;

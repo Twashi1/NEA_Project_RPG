@@ -45,7 +45,7 @@ namespace Vivium {
 			) << std::endl;
 		}
 
-		if (error_severity_text == "Fatal") { exit(EXIT_FAILURE); }
+		if (severity == VIVIUM_FATAL) { exit(EXIT_FAILURE); }
 	}
 	void GLAPIENTRY __GLLogCallback(GLenum source, GLenum type, GLuint id, GLenum severity, GLsizei length, const GLchar* message, const void* userParam)
 	{
@@ -55,6 +55,7 @@ namespace Vivium {
 			return;
 		}
 
+		// TODO: think this has been done by code above ^^^ but test before removing these TODOs
 		// TODO set a flag to set notification level
 		if (severity > GL_DEBUG_SEVERITY_NOTIFICATION) {
 			std::cout << std::format("[{}] ({}) ({}:{}) from {}; {}",
