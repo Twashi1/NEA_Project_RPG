@@ -172,9 +172,10 @@ namespace Game {
 				float damage;
 				float knockback;
 				float attack_speed;
-				Vivium::Animation::Data anim_data;
+				Vivium::Animator::Data anim_data;
 
 				Global() = default;
+				Global(float speed, float attack_range, float damage, float knockback, float attack_speed, const Vivium::Animator::Data& anim_data);
 
 				void Write(Vivium::Serialiser& s) const override;
 				void Read(Vivium::Serialiser& s) override;
@@ -182,7 +183,6 @@ namespace Game {
 
 			struct Client : virtual public Behaviour::Client, public Vivium::Streamable {
 				Vivium::Animator animation_handler;
-				// TODO: original position should be stored here?
 
 				Client() = default;
 				Client(const Vivium::Animator& animation_handler);

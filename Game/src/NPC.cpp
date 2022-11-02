@@ -73,6 +73,7 @@ namespace Game {
 		}
 
 		// TODO: Update and IsOver may cause two dynamic casts, might be pretty slow
+		// TODO: no clear distinction between update and execute on? maybe call both Update, just different parameters
 		m_CurrentBehaviour->Update(this, current_behaviour_data);
 		m_CurrentBehaviour->ExecuteOn(this);
 
@@ -390,17 +391,27 @@ new_data_ptr = dynamic_pointer_cast<Behaviours::Behaviour::Client>(data_ptr);
 			s.Read(&home_tile);
 		}
 
+		SlimeAttack::Global::Global(float speed, float attack_range, float damage, float knockback, float attack_speed, const Vivium::Animator::Data& anim_data)
+			: speed(speed), attack_range(attack_range), damage(damage), knockback(knockback), attack_speed(attack_speed), anim_data(anim_data)
+		{}
+
 		void SlimeAttack::Global::Write(Vivium::Serialiser& s) const
 		{
-			// TODO
 			s.Write(speed);
+			s.Write(attack_range);
+			s.Write(damage);
+			s.Write(knockback);
+			s.Write(attack_speed);
 			s.Write(anim_data);
 		}
 
 		void SlimeAttack::Global::Read(Vivium::Serialiser& s)
 		{
-			// TODO
 			s.Read(&speed);
+			s.Read(&attack_range);
+			s.Read(&damage);
+			s.Read(&knockback);
+			s.Read(&attack_speed);
 			s.Read(&anim_data);
 		}
 
@@ -431,23 +442,30 @@ new_data_ptr = dynamic_pointer_cast<Behaviours::Behaviour::Client>(data_ptr);
 
 		void SlimeAttack::Begin(NPC* npc, std::shared_ptr<Behaviour::Client> client) const
 		{
-			// TODO
+			std::shared_ptr<SlimeAttack::Client> my_client = dynamic_pointer_cast<SlimeAttack::Client>(client);
+
+			my_client->animation_handler.Start();
 		}
 
 		void SlimeAttack::ExecuteOn(NPC* npc) const
 		{
-			// TODO
+			// TODO: nothing?
 		}
 
 		void SlimeAttack::Update(NPC* npc, std::shared_ptr<Behaviour::Client> client) const
 		{
-			// TODO
+			std::shared_ptr<SlimeAttack::Client> my_client = dynamic_pointer_cast<SlimeAttack::Client>(client);
+
+			npc->current_texture_index = my_client->animation_handler.GetCurrentTextureIndex();
+
+			// TODO: move onto player
+			// TODO: when close enough, deal damage
 		}
 
 		bool SlimeAttack::IsOver(NPC* npc, std::shared_ptr<Behaviour::Client> client) const
 		{
-			// TODO
-			return true;
+			std::shared_ptr<SlimeAttack::Client> my_client = dynamic_pointer_cast<SlimeAttack::Client>(client);
+			return my_client->animation_handler.HasEnded();
 		}
 
 		Hunting::Global::Global(float notice_range, float leash_range, const Wandering::Global& wandering)
@@ -539,6 +557,7 @@ new_data_ptr = dynamic_pointer_cast<Behaviours::Behaviour::Client>(data_ptr);
 			// Recalculate path to player since our destination is too far
 			else if (dist > global.recalc_dist) {
 				// Clear path destinations
+				// TODO: feel like this needs testing, is there really no memory leak happening here?
 				// NOTE: slightly disgusting hack, based off of https://stackoverflow.com/questions/709146/how-do-i-clear-the-stdqueue-efficiently
 				decltype(npc->path_destinations)().swap(npc->path_destinations);
 

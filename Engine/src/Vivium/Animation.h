@@ -93,6 +93,8 @@ namespace Vivium {
 		int Pause(); // Returns frame paused on
 		void Resume();
 
+		bool HasEnded() const;
+
 		void Switch(const Data& data);
 		void Switch(Data&& data);
 

@@ -232,6 +232,10 @@ namespace Vivium {
 		m_IsPaused = false;
 	}
 
+	bool Animator::HasEnded() const {
+		return m_KeyframeIndex == m_Data.keyframes.size() - 1;
+	}
+
 	void Animator::Switch(const Data& data) 
 	{
 		m_Data = data;
