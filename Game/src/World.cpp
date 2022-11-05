@@ -936,7 +936,7 @@ namespace Game {
 #ifdef SPAWN_SLIME_DEBUG
 		Vivium::Input::State DEBUG = Vivium::Input::GetKeyState(GLFW_KEY_K);
 
-		if (Vivium::Input::IsKeyDown(DEBUG)) {
+		if (Vivium::Input::State::RELEASE == DEBUG) {
 			// Spawn a slime in region player is currently in
 			Region* player_region = regions.at(GetRegionIndex(m_Player->quad->GetCenter() / World::PIXEL_SCALE));
 			
@@ -950,8 +950,9 @@ namespace Game {
 					1.0f
 					),
 				NPC::BehaviourDataMap{
-					{Behaviours::Behaviour::ID::HUNTING,	std::make_shared<Behaviours::Hunting::Client>(Vivium::Vector2<int>(m_Player->quad->GetCenter() / World::PIXEL_SCALE))},
-					{Behaviours::Behaviour::ID::IDLE,		std::make_shared<Behaviours::Idle::Client>()},
+					{Behaviours::Behaviour::ID::SLIME_ATTACK,	std::make_shared<Behaviours::SlimeAttack::Client>()},
+					{Behaviours::Behaviour::ID::HUNTING,		std::make_shared<Behaviours::Hunting::Client>(Vivium::Vector2<int>(m_Player->quad->GetCenter() / World::PIXEL_SCALE))},
+					{Behaviours::Behaviour::ID::IDLE,			std::make_shared<Behaviours::Idle::Client>()},
 				}
 			);
 		}
@@ -960,7 +961,7 @@ namespace Game {
 		m_UpdateObstacleMap();
 	}
 
-	const Player* World::GetPlayer() const
+	Player* World::GetPlayer()
 	{
 		return m_Player;
 	}

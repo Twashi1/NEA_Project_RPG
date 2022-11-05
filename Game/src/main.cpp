@@ -75,6 +75,21 @@ int game(void)
     ProjectileSystem::Init();
     Game::NPC::Init();
 
+    Vivium::Animator::Data slime_data = Vivium::Animator::Data(
+        {
+            {0.5f, {0, 5}},
+            {0.5f, {1, 5}},
+            {0.5f, {2, 5}},
+            {0.5f, {3, 5}},
+            {0.8f, {4, 5}},
+            {0.5f, {5, 5}},
+            {0.5f, {6, 5}}
+        }, TextureManager::game_atlas
+    );
+
+    // TODO: really need something better than this
+    dynamic_pointer_cast<Game::Behaviours::SlimeAttack>(Game::NPC::m_Properties.at((uint8_t)Game::NPC::ID::SLIME).behaviours.at(0))->global.anim_data = slime_data;
+
     Application::SetBGColor(RGBColor::BLACK);
 
     MainMenu main_menu{};
@@ -115,7 +130,7 @@ int game(void)
 }
 
 int main(int argc, char** argv) {
-    sandbox();
+    game();
 
     LogTrace("Game finished");
 }

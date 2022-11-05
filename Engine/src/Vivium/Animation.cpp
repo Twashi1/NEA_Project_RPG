@@ -194,6 +194,16 @@ namespace Vivium {
 		: keyframes(keyframes), atlas(atlas)
 	{}
 
+	Animator::Data::Data(const std::initializer_list<std::pair<float, Vector2<int>>>& _keyframes, const std::shared_ptr<TextureAtlas>& atlas)
+		: atlas(atlas)
+	{
+		keyframes.reserve(_keyframes.size());
+
+		for (auto& pair : _keyframes) {
+			keyframes.emplace_back(pair.first, atlas->GetIndex(pair.second));
+		}
+	}
+
 	void Animator::Data::Write(Serialiser& s) const
 	{
 		s.Write(keyframes);
@@ -260,6 +270,10 @@ namespace Vivium {
 
 	int Animator::GetCurrentTextureIndex()
 	{
+		if (m_Data.keyframes.size() == 0) {
+			return -1;
+		}
+
 		return m_Data.keyframes[m_KeyframeIndex].second;
 	}
 
@@ -283,7 +297,7 @@ namespace Vivium {
 
 	void Animator::Update()
 	{
-		if (m_IsPaused) {
+		if (m_IsPaused || m_Data.keyframes.size() == 0) {
 			m_Timer.Reset(); // TODO: ideally you could pause a timer?
 			
 			return;

@@ -117,7 +117,7 @@ namespace Game {
 		void Render(const Vivium::Vector2<int>& pos);
 		void Update();
 
-		const Player* GetPlayer() const;
+		Player* GetPlayer();
 
 		std::string GetName() const;
 

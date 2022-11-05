@@ -69,6 +69,7 @@ namespace Vivium {
 			Data() = default;
 			Data(const std::vector<Keyframe_t>& keyframes, const std::shared_ptr<TextureAtlas>& atlas);
 			Data(const std::initializer_list<Keyframe_t>& keyframes, const std::shared_ptr<TextureAtlas>& atlas);
+			Data(const std::initializer_list<std::pair<float, Vector2<int>>>& keyframes, const std::shared_ptr<TextureAtlas>& atlas);
 
 			Data(const Data& other) = default;
 
@@ -107,5 +108,6 @@ namespace Vivium {
 		void Update();
 
 		Animator(const Data& data, bool should_loop = false);
+		Animator() = default;
 	};
 }

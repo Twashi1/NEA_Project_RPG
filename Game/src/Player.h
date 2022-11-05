@@ -48,6 +48,8 @@ namespace Game {
         Vivium::Vector2<int> selected_tile_pos; // World position of hovered tile
         Tile selected_tile;
 
+        Health health;
+
         // Miscellaneous constants for player movement
         static constexpr float FRICTION = 20.0f;
         static constexpr float MAXACCEL = 15000.0f;

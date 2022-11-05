@@ -29,6 +29,7 @@ namespace Vivium {
 		std::array<float, 8> GetCoordsArray(const Vector2<int>& top_left, const Vector2<int>& bottom_right) const;
 
 		Vector2<int> GetVectorIndex(int index) const;
+		int GetIndex(const Vector2<int>& vec) const;
 
 		const std::shared_ptr<Texture> GetAtlas() const;
 		Vector2<int> GetSpriteSize() const;

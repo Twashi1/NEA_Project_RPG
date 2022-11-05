@@ -263,6 +263,11 @@ namespace Vivium {
 		return Vector2<int>(x_index, y_index);
 	}
 
+	int TextureAtlas::GetIndex(const Vector2<int>& vec) const
+	{
+		return vec.x + (m_AtlasDimRelative.y - 1 - vec.y) * m_AtlasDimRelative.x;
+	}
+
 	const std::shared_ptr<Texture> TextureAtlas::GetAtlas() const
 	{
 		return m_Atlas;

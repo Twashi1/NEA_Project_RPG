@@ -18,7 +18,7 @@ namespace Game {
 			NEW_BEHAVIOUR_PTR(Behaviours::Idle, 3.0f)
 		}),  // PIGS ^^^ SLIMES VVV
 		Properties({0, 5}, {
-			// TODO: SlimeAttack
+			NEW_BEHAVIOUR_PTR(Behaviours::SlimeAttack, 800.0f, 200.0f, 10.0f, 0.0f, 10.0f, nullptr),
 			NEW_BEHAVIOUR_PTR(Behaviours::Hunting, 500.0f, 1000.0f, Behaviours::Wandering::Global(800.0f, {0.5f, 1.0f}, 300.0f, 1000.0f)),
 			NEW_BEHAVIOUR_PTR(Behaviours::Idle, 0.0f)
 		})
@@ -80,6 +80,7 @@ namespace Game {
 		m_UpdatePathing();
 
 		body->Update();
+		animator.Update();
 
 		if (m_CurrentBehaviour->IsOver(this, current_behaviour_data)) {
 			m_CurrentBehaviourIndex = (m_CurrentBehaviourIndex + 1) % behaviours.size();
@@ -391,9 +392,13 @@ new_data_ptr = dynamic_pointer_cast<Behaviours::Behaviour::Client>(data_ptr);
 			s.Read(&home_tile);
 		}
 
-		SlimeAttack::Global::Global(float speed, float attack_range, float damage, float knockback, float attack_speed, const Vivium::Animator::Data& anim_data)
-			: speed(speed), attack_range(attack_range), damage(damage), knockback(knockback), attack_speed(attack_speed), anim_data(anim_data)
-		{}
+		SlimeAttack::Global::Global(float speed, float attack_range, float damage, float knockback, float attack_speed, Vivium::Animator::Data* _anim_data)
+			: speed(speed), attack_range(attack_range), damage(damage), knockback(knockback), attack_speed(attack_speed)
+		{
+			if (_anim_data != nullptr) {
+				this->anim_data = *_anim_data;
+			}
+		}
 
 		void SlimeAttack::Global::Write(Vivium::Serialiser& s) const
 		{
@@ -417,15 +422,9 @@ new_data_ptr = dynamic_pointer_cast<Behaviours::Behaviour::Client>(data_ptr);
 
 		SlimeAttack::SlimeAttack(const Global& global) : global(global) {}
 
-		void SlimeAttack::Client::Write(Vivium::Serialiser& s) const
-		{
-			s.Write(animation_handler);
-		}
+		void SlimeAttack::Client::Write(Vivium::Serialiser& s) const {}
 
-		void SlimeAttack::Client::Read(Vivium::Serialiser& s)
-		{
-			s.Read(&animation_handler);
-		}
+		void SlimeAttack::Client::Read(Vivium::Serialiser& s) {}
 
 		void SlimeAttack::Write(Vivium::Serialiser& s) const
 		{
@@ -444,7 +443,28 @@ new_data_ptr = dynamic_pointer_cast<Behaviours::Behaviour::Client>(data_ptr);
 		{
 			std::shared_ptr<SlimeAttack::Client> my_client = dynamic_pointer_cast<SlimeAttack::Client>(client);
 
-			my_client->animation_handler.Start();
+			npc->animator.Switch(global.anim_data);
+			npc->animator.Pause();
+
+			// If we're too far from player, we shouldn't attack
+			Vivium::Vector2<float> player_pos = NPC::world->GetPlayer()->body->quad->GetCenter();
+			Vivium::Vector2<float> npc_pos = npc->body->quad->GetCenter();
+			Vivium::Vector2<int> player_tile = player_pos / World::PIXEL_SCALE;
+			Vivium::Vector2<int> npc_tile = npc_pos / World::PIXEL_SCALE;
+			// NOTE: manhattan distance
+			int dist = std::abs(player_tile.x - npc_tile.x) + std::abs(player_tile.y - npc_tile.y);
+			
+			// TODO: use constant here
+			if (dist <= 3) {
+				// Set velocity towards player
+				// TODO: Speed constant
+				npc->body->vel = Vivium::Vector2<float>::Normalise(player_pos - npc_pos) * 800.0f;
+				// Ignore collision
+				npc->body->isPhysical = false;
+			
+				npc->animator.Start();
+				npc->animator.Resume();
+			}
 		}
 
 		void SlimeAttack::ExecuteOn(NPC* npc) const
@@ -456,16 +476,44 @@ new_data_ptr = dynamic_pointer_cast<Behaviours::Behaviour::Client>(data_ptr);
 		{
 			std::shared_ptr<SlimeAttack::Client> my_client = dynamic_pointer_cast<SlimeAttack::Client>(client);
 
-			npc->current_texture_index = my_client->animation_handler.GetCurrentTextureIndex();
+			LogTrace("Current position: {}", npc->body->quad->GetCenter());
 
-			// TODO: move onto player
-			// TODO: when close enough, deal damage
+			// TODO: this should be moved inside NPC update method
+			int r = npc->animator.GetCurrentTextureIndex();
+
+			if (r != -1) npc->current_texture_index = r;
+
+			// If on last frame of animation, deal damage to player
+			// TODO: change from current implementation which just checks distance
+			if (npc->animator.HasEnded() || Vivium::Vector2<float>::Distance(npc->body->quad->GetCenter(), NPC::world->GetPlayer()->quad->GetCenter()) < 200.0f) {
+				// TODO: damage numbers should be in slime attack globals
+				NPC::world->GetPlayer()->health.Damage(10.0f);
+
+				LogTrace("Dealt damage to player, health is now: {}%", NPC::world->GetPlayer()->health.GetNormalised() * 100.0f);
+			}
 		}
 
 		bool SlimeAttack::IsOver(NPC* npc, std::shared_ptr<Behaviour::Client> client) const
 		{
 			std::shared_ptr<SlimeAttack::Client> my_client = dynamic_pointer_cast<SlimeAttack::Client>(client);
-			return my_client->animation_handler.HasEnded();
+
+			bool animation_ended = npc->animator.HasEnded();
+			
+			// If we're too far from player, we shouldn't attack
+			Vivium::Vector2<int> player_tile = NPC::world->GetPlayer()->body->quad->GetCenter() / World::PIXEL_SCALE;
+			Vivium::Vector2<int> npc_tile = npc->body->quad->GetCenter() / World::PIXEL_SCALE;
+			// NOTE: manhattan distance
+			int dist = std::abs(player_tile.x - npc_tile.x) + std::abs(player_tile.y - npc_tile.y);
+
+			// TODO: instead of 3, get some constant from somewhere
+			bool isOver = animation_ended || dist > 3;
+
+			if (isOver) {
+				// TODO: not sure how this will work in future
+				// npc->body->isPhysical = true;
+			}
+
+			return isOver;
 		}
 
 		Hunting::Global::Global(float notice_range, float leash_range, const Wandering::Global& wandering)
