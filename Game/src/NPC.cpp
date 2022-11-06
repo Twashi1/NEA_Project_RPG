@@ -464,8 +464,6 @@ new_data_ptr = dynamic_pointer_cast<Behaviours::Behaviour::Client>(data_ptr);
 			
 				npc->animator.Start();
 				npc->animator.Resume();
-
-				LogTrace("Animation begun!");
 			}
 		}
 
