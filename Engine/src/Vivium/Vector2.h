@@ -53,7 +53,8 @@ namespace Vivium {
 
 		Vector2 floor() const requires FloatingPoint<T> { return Vector2(std::floor(x), std::floor(y)); }
 		Vector2 ceil() const requires FloatingPoint<T> { return Vector2(std::ceil(x), std::ceil(y)); }
-		Vector2 normalise() const requires FloatingPoint<T> { return *this / std::sqrt(x * x + y * y); }
+		// TODO: edit this as well
+		Vector2 normalise() const requires FloatingPoint<T> { return Normalise(*this); }
 		Vector2 fract() const requires FloatingPoint<T>
 		{
 			float int_part;
@@ -107,7 +108,10 @@ namespace Vivium {
 			return Vector2<float>(fx, fy);
 		}
 		static Vector2 Normalise(const Vector2& v) requires FloatingPoint<T> {
-			return v / std::sqrt(v.x * v.x + v.y * v.y);
+			float magnitude = Magnitude(v);
+
+			if (magnitude == 0.0f) { return 0.0f; }
+			else { return v / magnitude; }
 		}
 		static Vector2 Floor(const Vector2& v) requires FloatingPoint<T> {
 			return Vector2<T>(std::floor(v.x), std::floor(v.y));

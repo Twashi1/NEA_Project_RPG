@@ -6,6 +6,7 @@
 - [ ] Update and Render methods could have a virtual behind them, also splitting them is inconvenient for a lot of classes 
 - [ ] Vivium Printable? would make some things bigger though
 - Consistent style when overriding function
+- Prefer animator to animation
 
 ## Application
 - [x] Initialisation functions for various classes should be private, and instead should make Application their friend
@@ -44,7 +45,7 @@
 
 ## General
 - [x] Pathfinding
-- [ ] Ambient particles/Particle system
+- [x] Ambient particles/Particle system
 - [ ] Sound API
     - [x] Sound library
 - [ ] Physics system
@@ -64,7 +65,7 @@
 - ~~Switch to 16x16~~
 - [ ] Tileset https://www.gamedev.net/tutorials/_/technical/game-programming/tilemap-based-game-techniques-handling-terrai-r934/
 - [ ] Some way to escape game and go back to main menu/access settings/etc
-- [ ] Remove pathfinding namespace from NPCs
+- ~~Remove pathfinding namespace from NPCs~~
 
 ## World
 - ~~Remove bot/mid/top for tiles, just foreground/background~~
@@ -97,6 +98,7 @@
 
 ## Gameplay
 - [ ] Play block breaking sound in sync with block breaking "animation"
+- [ ] Visual display for health
 - [x] Crafting
     - [x] Recipes system
         - [x] Speed up by precomputing some values in Inventory (item counts)
@@ -118,13 +120,16 @@
 - [ ] Random spawning even after world load 
 
 ## Enemies
-- [ ] Enemy AI
+- [x] Enemy AI
+    - [ ] Generalised attacks
 - [ ] Enemy sprites/animation
+    - [ ] Make it easier to submit animation data
+    - [x] Slime animation
 
 ## GUI
 - [x] Title screen
     - [x] Navigate to options, create new world, load world
-    - [ ] Show environment in background, with some blur and movement
+    - [ ] Show environment in background, with some blur
 - [ ] Keybinds config
 - [x] Options menu
 
@@ -137,16 +142,16 @@
 - Better link to Resources folder/re-do file paths and file extension statics
 - Input box typing bar size is using magic numbers
 - Default statics are ugly
-- Inconsistent data layout between GUI objects
+- Inconsistent data layout between GUI objects, some own too much as well
 - docs docs docs docs docs docs docs docs
 - ~~INL file for Vector2~~
-- Finish scoping everything
 - ~~Match colour of the amethyst wand, ball, and sword to amethyst crystal/sword, or other way round~~
-- 
 
 # Bugs
 - ~~Loading a world doesn't load NPCs/kills NPCs?~~
 - Tall cacti not spawning in desert biome
+- Slimes sometimes just move back and forth in front of player
+- Can spawn on top of a physical block
 - ~~Topaz wand not working~~
 - ~~Rare bug where a Vector2 which is an index for a loaded region is unallocated and checked for equivelance~~
 - ~~Going fullscreen crashes game~~

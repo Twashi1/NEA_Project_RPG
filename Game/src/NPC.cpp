@@ -72,15 +72,15 @@ namespace Game {
 			m_BeginBehaviour = false;
 		}
 
-		// TODO: Update and IsOver may cause two dynamic casts, might be pretty slow
-		// TODO: no clear distinction between update and execute on? maybe call both Update, just different parameters
-		m_CurrentBehaviour->Update(this, current_behaviour_data);
-		m_CurrentBehaviour->ExecuteOn(this);
-
 		m_UpdatePathing();
 
 		body->Update();
 		animator.Update();
+
+		// TODO: Update and IsOver may cause two dynamic casts, might be pretty slow
+		// TODO: no clear distinction between update and execute on? maybe call both Update, just different parameters
+		m_CurrentBehaviour->Update(this, current_behaviour_data);
+		m_CurrentBehaviour->ExecuteOn(this);
 
 		if (m_CurrentBehaviour->IsOver(this, current_behaviour_data)) {
 			m_CurrentBehaviourIndex = (m_CurrentBehaviourIndex + 1) % behaviours.size();
@@ -454,16 +454,18 @@ new_data_ptr = dynamic_pointer_cast<Behaviours::Behaviour::Client>(data_ptr);
 			// NOTE: manhattan distance
 			int dist = std::abs(player_tile.x - npc_tile.x) + std::abs(player_tile.y - npc_tile.y);
 			
-			// TODO: use constant here
-			if (dist <= 3) {
+			// TODO: some sort of distance check to ensure we're not jumping onto an enemy from a mile away
+			if (true) {
 				// Set velocity towards player
 				// TODO: Speed constant
-				npc->body->vel = Vivium::Vector2<float>::Normalise(player_pos - npc_pos) * 800.0f;
+				npc->body->vel = Vivium::Vector2<float>::Normalise(player_pos - npc_pos) * 200.0f;
 				// Ignore collision
 				npc->body->isPhysical = false;
 			
 				npc->animator.Start();
 				npc->animator.Resume();
+
+				LogTrace("Animation begun!");
 			}
 		}
 
@@ -476,18 +478,22 @@ new_data_ptr = dynamic_pointer_cast<Behaviours::Behaviour::Client>(data_ptr);
 		{
 			std::shared_ptr<SlimeAttack::Client> my_client = dynamic_pointer_cast<SlimeAttack::Client>(client);
 
-			LogTrace("Current position: {}", npc->body->quad->GetCenter());
-
 			// TODO: this should be moved inside NPC update method
 			int r = npc->animator.GetCurrentTextureIndex();
 
-			if (r != -1) npc->current_texture_index = r;
+			if (r != -1) npc->current_texture_index = TextureManager::game_atlas->GetVectorIndex(r);
+
+			// Set velocity towards player
+			// TODO: Speed constant
+			Vivium::Vector2<float> player_pos = NPC::world->GetPlayer()->body->quad->GetCenter();
+			Vivium::Vector2<float> npc_pos = npc->body->quad->GetCenter();
+			npc->body->vel = Vivium::Vector2<float>::Normalise(player_pos - npc_pos) * 200.0f;
 
 			// If on last frame of animation, deal damage to player
 			// TODO: change from current implementation which just checks distance
-			if (npc->animator.HasEnded() || Vivium::Vector2<float>::Distance(npc->body->quad->GetCenter(), NPC::world->GetPlayer()->quad->GetCenter()) < 200.0f) {
+			if (npc->animator.HasEnded()) {
 				// TODO: damage numbers should be in slime attack globals
-				NPC::world->GetPlayer()->health.Damage(10.0f);
+				NPC::world->GetPlayer()->health.Damage(0.5f);
 
 				LogTrace("Dealt damage to player, health is now: {}%", NPC::world->GetPlayer()->health.GetNormalised() * 100.0f);
 			}
@@ -506,11 +512,12 @@ new_data_ptr = dynamic_pointer_cast<Behaviours::Behaviour::Client>(data_ptr);
 			int dist = std::abs(player_tile.x - npc_tile.x) + std::abs(player_tile.y - npc_tile.y);
 
 			// TODO: instead of 3, get some constant from somewhere
-			bool isOver = animation_ended || dist > 3;
+			bool isOver = animation_ended;
 
-			if (isOver) {
+			if (isOver || dist > 3) {
 				// TODO: not sure how this will work in future
 				// npc->body->isPhysical = true;
+				npc->current_texture_index = NPC::GetAtlasIndex(npc->id);
 			}
 
 			return isOver;
@@ -641,6 +648,7 @@ new_data_ptr = dynamic_pointer_cast<Behaviours::Behaviour::Client>(data_ptr);
 
 		bool Hunting::IsOver(NPC* npc, std::shared_ptr<Behaviour::Client> client) const
 		{
+			// TODO: or close enough
 			return npc->path_destinations.empty();
 		}
 

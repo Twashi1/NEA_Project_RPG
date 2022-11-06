@@ -85,6 +85,7 @@ namespace Vivium {
 		int m_KeyframeIndex = 0; // Index of keyframe currently being displayed
 		bool m_ShouldLoop = false;
 		bool m_IsPaused = false;
+		bool m_HasEnded = false;
 
 	public:
 		void SetShouldLoop(bool should_loop);
@@ -100,6 +101,9 @@ namespace Vivium {
 		void Switch(Data&& data);
 
 		int GetCurrentTextureIndex();
+
+		// TODO: DEBUG ONLY
+		inline int DEBUG_GET_KEYFRAMES_SIZE() { return m_Data.keyframes.size(); }
 
 		void Write(Vivium::Serialiser& s) const override;
 		void Read(Vivium::Serialiser& s) override;

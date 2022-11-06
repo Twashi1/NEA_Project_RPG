@@ -12,7 +12,7 @@ namespace Game {
 		float max = 100.0f;
 		float value = 100.0f;
 		float resistance = 0.0f;
-		float regen_rate = 2.0f;
+		float regen_rate = 0.1f;
 		float invincibilty_time = 0.0f;
 
 		Health() = default;
@@ -213,7 +213,7 @@ namespace Game {
 		std::size_t m_CurrentBehaviourIndex = 0;
 
 		// Whether we should call Behaviour::Begin on the next update call
-		bool m_BeginBehaviour = false;
+		bool m_BeginBehaviour = true;
 
 		// TODO: unique?
 		static std::shared_ptr<Vivium::Shader> m_Shader;

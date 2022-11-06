@@ -217,6 +217,7 @@ namespace Vivium {
 	void Animator::SetShouldLoop(bool should_loop) 
 	{
 		m_ShouldLoop = should_loop;
+		m_HasEnded = false;
 	}
 
 	void Animator::SetPaused(bool is_paused) 
@@ -228,6 +229,7 @@ namespace Vivium {
 	{
 		m_KeyframeIndex = start_frame;
 		m_CurrentKeyframeElapsed = 0.0f;
+		m_HasEnded = false;
 	}
 
 	int Animator::Pause()
@@ -243,13 +245,14 @@ namespace Vivium {
 	}
 
 	bool Animator::HasEnded() const {
-		return m_KeyframeIndex == m_Data.keyframes.size() - 1;
+		return m_HasEnded;
 	}
 
 	void Animator::Switch(const Data& data) 
 	{
 		m_Data = data;
 		m_KeyframeIndex = 0;
+		m_HasEnded = false;
 		m_CurrentKeyframeElapsed = 0.0f;
 
 		if (!m_Data.IsValid()) {
@@ -261,6 +264,7 @@ namespace Vivium {
 	{
 		m_Data = std::move(data);
 		m_KeyframeIndex = 0;
+		m_HasEnded = false;
 		m_CurrentKeyframeElapsed = 0.0f;
 
 		if (!m_Data.IsValid()) {
@@ -297,7 +301,12 @@ namespace Vivium {
 
 	void Animator::Update()
 	{
-		if (m_IsPaused || m_Data.keyframes.size() == 0) {
+		// If we have some invalid data
+		if (m_Data.keyframes.size() == 0 || m_HasEnded) {
+			return;
+		}
+
+		if (m_IsPaused) {
 			m_Timer.Reset(); // TODO: ideally you could pause a timer?
 			
 			return;
@@ -316,22 +325,20 @@ namespace Vivium {
 		while (m_CurrentKeyframeElapsed > this_keyframe.first) {
 			// If we're on the last frame
 			if (m_KeyframeIndex == m_Data.keyframes.size() - 1) {
-				// If we're looping and on the last frame, reset
+				// If we're looping and on the last frame, reset to first frame
 				if (m_ShouldLoop) {
-					++m_KeyframeIndex %= m_Data.keyframes.size();
+					m_KeyframeIndex = 0;
 				}
-				// Otherwise, stay on this frame (the last frame)
-				// Also break this loop, as since we're on the last frame and not looping
-				//	we don't need to do anything, just exit
+				// Otherwise, stay on this frame since the animation has ended
 				else {
-					// Technically, an unlooped animation at the end is "paused", setting m_IsPaused to true here 
-					// could speed up performance, since we won't have to grab elapsed time, the keyframe, or do
-					// any of these checks, but issues could arise with the SetShouldLoop subroutine since it would
-					// also have to unpause the animation? I'll leave this as a super-long comment for now
-					// m_IsPaused = true;
+					m_HasEnded = true;
 
+					// Also break the loop since nothing else needs to be done
 					break;
 				}
+			}
+			else {
+				++m_KeyframeIndex;
 			}
 
 			// Turn back elapsed time
