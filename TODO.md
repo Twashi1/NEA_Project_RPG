@@ -125,6 +125,7 @@
 - [ ] Enemy sprites/animation
     - [ ] Make it easier to submit animation data
     - [x] Slime animation
+        - Shadows are cut off and super ugly
 
 ## GUI
 - [x] Title screen
