@@ -294,4 +294,25 @@ namespace Vivium {
 	{
 		m_Construct();
 	}
+
+	TextureAtlas::Index::Index(int index, TextureAtlas* atlas)
+		: val(index)
+	{
+		vec = atlas->GetVectorIndex(val);
+	}
+
+	TextureAtlas::Index::Index(const Vector2<int>& index, TextureAtlas* atlas)
+	{
+		val = atlas->GetIndex(index);
+	}
+
+	Vector2<int> TextureAtlas::Index::GetVector() const
+	{
+		return vec;
+	}
+
+	int TextureAtlas::Index::GetIndex() const
+	{
+		return val;
+	}
 }
