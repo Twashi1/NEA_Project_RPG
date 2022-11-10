@@ -18,7 +18,22 @@ namespace Vivium {
 	public:
 		// TODO: Create
 		struct VIVIUM_API Index {
+		private:
+			// TODO: top left, bottom right
+			Vector2<int> vec;
+			int val;
 
+		public:
+			Index(int index, TextureAtlas* atlas);
+			Index(const Vector2<int>& index, TextureAtlas* atlas);
+
+			operator int() const { return val; }
+			operator Vector2<int>() const { return vec; }
+
+			Vector2<int> GetVector() const;
+			int GetIndex() const;
+
+			friend TextureAtlas;
 		};
 
 		std::vector<float> GetCoords(int index) const;
