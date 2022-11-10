@@ -95,6 +95,11 @@ namespace Vivium {
 		Framebuffer::Unbind();
 	}
 
+	Framebuffer* Renderer::GetScene(int id)
+	{
+		return m_Framebuffers.at(id);
+	}
+
 	void Renderer::DrawScenes()
 	{
 		VIVIUM_SCOPE;

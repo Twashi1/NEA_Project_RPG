@@ -10,36 +10,25 @@ const int FPS = 144;
 using namespace Vivium;
 using namespace Game;
 
-struct abc : Vivium::Streamable {
-    int x = 0;
-
-    abc() = default;
-    abc(int x) : x(x) {}
-
-    void Write(Vivium::Serialiser&) const override { LogTrace("ABC written"); }
-    void Read(Vivium::Serialiser&) override {}
-};
-
-struct inv { int y = 3; inv(int y) : y(y) {} };
-
 int sandbox(void)
 {
     Application::Init(WIDTH, HEIGHT, FPS);
 
     Application::SetBGColor(RGBColor::BLUE);
 
-    Vivium::Serialiser s(Vivium::Stream::Flags::BINARY);
-    std::pair<int, float> example = {0, 1.0f};
-    std::pair<Vector2<int>, Vector2<float>> example_2 = {0, 0.0f};
-    std::pair<int, abc> example_3 = { 1, 0 };
-    std::vector<std::pair<int, abc>> example_4 = {};
+    Shader water_shader("static_texture_vertex", "healthbar_frag");
 
-    s.BeginWrite("../Resources/new.txt");
-    s.Write(example);
-    s.Write(example_2);
-    s.Write(example_3);
-    s.Write(example_4);
-    s.EndWrite();
+    Quad quad(150.0f, 50.0f, 300.0f, 100.0f);
+    TextureManager::Init();
+
+    while (Application::IsRunning())
+    {
+        Application::BeginFrame();
+
+        Vivium::Renderer::Submit(&quad, &water_shader);
+
+        Application::EndFrame();
+    }
 
     Application::Terminate();
 
@@ -99,13 +88,7 @@ int game(void)
     {
         Application::BeginFrame();
 
-        // Update GUI objects
-        // ...
-
-        // Update title screen
         main_menu.Update();
-
-        // Draw calls
         main_menu.Render();
 
         Application::EndFrame();
@@ -130,7 +113,7 @@ int game(void)
 }
 
 int main(int argc, char** argv) {
-    game();
+    sandbox();
 
     LogTrace("Game finished");
 }

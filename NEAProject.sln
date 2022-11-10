@@ -1,7 +1,7 @@
 ﻿
 Microsoft Visual Studio Solution File, Format Version 12.00
-# Visual Studio Version 16
-VisualStudioVersion = 16.0.31624.102
+# Visual Studio Version 17
+VisualStudioVersion = 17.3.32922.545
 MinimumVisualStudioVersion = 10.0.40219.1
 Project("{8BC9CEB8-8B4A-11D0-8D11-00A0C91BC942}") = "Vivium", "Engine\NEAProject.vcxproj", "{2E05089D-8F1B-4F1F-9B82-E37B1E84C4F2}"
 EndProject
@@ -49,15 +49,16 @@ Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "_frag", "_frag", "{E8A12835
 		Resources\shaders\daylight_frag.glsl = Resources\shaders\daylight_frag.glsl
 		Resources\shaders\floor_item_frag.glsl = Resources\shaders\floor_item_frag.glsl
 		Resources\shaders\grayscale_frag.glsl = Resources\shaders\grayscale_frag.glsl
-		Resources\shaders\ground_frag.glsl = Resources\shaders\ground_frag.glsl
+		Resources\shaders\healthbar_frag.glsl = Resources\shaders\healthbar_frag.glsl
 		Resources\shaders\npc_frag.glsl = Resources\shaders\npc_frag.glsl
 		Resources\shaders\number_frag.glsl = Resources\shaders\number_frag.glsl
 		Resources\shaders\particle_frag.glsl = Resources\shaders\particle_frag.glsl
 		Resources\shaders\slider_frag.glsl = Resources\shaders\slider_frag.glsl
-		Resources\shaders\text_frag.glsl = Resources\shaders\text_frag.glsl
 		Resources\shaders\texture_frag.glsl = Resources\shaders\texture_frag.glsl
+		Resources\shaders\text_frag.glsl = Resources\shaders\text_frag.glsl
 		Resources\shaders\transparency_frag.glsl = Resources\shaders\transparency_frag.glsl
 		Resources\shaders\uv_frag.glsl = Resources\shaders\uv_frag.glsl
+		Resources\shaders\water_frag.glsl = Resources\shaders\water_frag.glsl
 	EndProjectSection
 EndProject
 Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "_vertex", "_vertex", "{7BBE11D5-A004-4A3D-AAFD-8FD8CD485B32}"
@@ -65,13 +66,14 @@ Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "_vertex", "_vertex", "{7BBE
 		Resources\shaders\crafting_slot_vertex.glsl = Resources\shaders\crafting_slot_vertex.glsl
 		Resources\shaders\daylight_vertex.glsl = Resources\shaders\daylight_vertex.glsl
 		Resources\shaders\floor_item_vertex.glsl = Resources\shaders\floor_item_vertex.glsl
+		Resources\shaders\healthbar_vertex.glsl = Resources\shaders\healthbar_vertex.glsl
 		Resources\shaders\number_vertex.glsl = Resources\shaders\number_vertex.glsl
 		Resources\shaders\particle_vertex.glsl = Resources\shaders\particle_vertex.glsl
 		Resources\shaders\static_blur_vertex.glsl = Resources\shaders\static_blur_vertex.glsl
 		Resources\shaders\static_texture_vertex.glsl = Resources\shaders\static_texture_vertex.glsl
 		Resources\shaders\static_vertex.glsl = Resources\shaders\static_vertex.glsl
-		Resources\shaders\text_vertex.glsl = Resources\shaders\text_vertex.glsl
 		Resources\shaders\texture_vertex.glsl = Resources\shaders\texture_vertex.glsl
+		Resources\shaders\text_vertex.glsl = Resources\shaders\text_vertex.glsl
 		Resources\shaders\world_vertex.glsl = Resources\shaders\world_vertex.glsl
 	EndProjectSection
 EndProject

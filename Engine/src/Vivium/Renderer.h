@@ -53,6 +53,7 @@ namespace Vivium {
 
 		static void BeginScene(int id = 0);
 		static void EndScene();
+		static Framebuffer* GetScene(int id = 0);
 
 		// Draws scenes in order of increasing id
 		static void DrawScenes();
