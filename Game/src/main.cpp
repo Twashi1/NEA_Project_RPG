@@ -16,16 +16,57 @@ int sandbox(void)
 
     Application::SetBGColor(RGBColor::BLUE);
 
-    Shader water_shader("static_texture_vertex", "healthbar_frag");
+    Shader water_shader("healthbar_vertex", "healthbar_frag");
 
-    Quad quad(150.0f, 50.0f, 300.0f, 100.0f);
+    Quad quad(200.0f, 100.0f, 300.0f, 100.0f);
     TextureManager::Init();
+    auto healthbar = TextureManager::game_atlas->GetCoordsArray({ 7, 9 }, { 9, 9 });
+    auto mask = TextureManager::game_atlas->GetCoordsArray({ 7, 8 }, { 9, 8 });
+
+    BufferLayout layout = {
+        GLSLDataType::VEC2, // pos
+        GLSLDataType::VEC2, // tex coord
+        GLSLDataType::VEC2, // healthbar
+        GLSLDataType::VEC2  // mask
+    };
+
+    auto quad_tex = *quad.GetTexCoords();
+
+    float* vertex_data = new float[32];
+
+    auto vertices = quad.GetVertices();
+
+    // bl, br, tr, tl
+
+    int cindex = 0;
+    for (int i = 0; i < 4; i++) {
+        vertex_data[cindex++] = vertices[i].x;
+        vertex_data[cindex++] = vertices[i].y;
+
+        vertex_data[cindex++] = (quad_tex)[i * 2];
+        vertex_data[cindex++] = (quad_tex)[i * 2 + 1];
+
+        vertex_data[cindex++] = healthbar[i * 2];
+        vertex_data[cindex++] = healthbar[i * 2 + 1];
+
+        vertex_data[cindex++] = mask[i * 2];
+        vertex_data[cindex++] = mask[i * 2 + 1];
+    }
+
+    for (int i = 0; i < 32; i++) {
+        LogTrace("Val {}: {}", i, vertex_data[i]);
+    }
+
+    VertexBuffer vb(vertex_data, 32, layout);
+
+    delete[] vertex_data;
 
     while (Application::IsRunning())
     {
         Application::BeginFrame();
 
-        Vivium::Renderer::Submit(&quad, &water_shader);
+        //Vivium::Renderer::Submit(&quad, &water_shader, TextureManager::game_atlas->GetAtlas().get());
+        Vivium::Renderer::Submit(&vb, Quad::GetIndexBuffer(), &water_shader, TextureManager::game_atlas->GetAtlas().get());
 
         Application::EndFrame();
     }
@@ -113,7 +154,7 @@ int game(void)
 }
 
 int main(int argc, char** argv) {
-    sandbox();
+    game();
 
     LogTrace("Game finished");
 }

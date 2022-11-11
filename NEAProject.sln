@@ -29,15 +29,12 @@ Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "sprites", "sprites", "{09A9
 	ProjectSection(SolutionItems) = preProject
 		Resources\sprites\engine_icons.png = Resources\sprites\engine_icons.png
 		Resources\sprites\game_atlas.png = Resources\sprites\game_atlas.png
-		Resources\sprites\inventory.png = Resources\sprites\inventory.png
 		Resources\sprites\title.png = Resources\sprites\title.png
 	EndProjectSection
 EndProject
 Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "_animationfiles", "_animationfiles", "{590723D0-7424-4DAF-8286-94C13FC15F88}"
 	ProjectSection(SolutionItems) = preProject
-		Resources\sprites\data.animation = Resources\sprites\data.animation
 		Resources\sprites\engine_icons.animation = Resources\sprites\engine_icons.animation
-		Resources\sprites\items_atlas.ase = Resources\sprites\items_atlas.ase
 	EndProjectSection
 EndProject
 Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "_frag", "_frag", "{E8A12835-60D9-4A96-B9BD-D867803098B4}"

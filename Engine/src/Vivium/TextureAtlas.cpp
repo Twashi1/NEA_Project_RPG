@@ -238,9 +238,9 @@ namespace Vivium {
 
 		// Calculate faces
 		float left = top_left.x * inv_width * m_SpriteSize.x;
-		float right = bottom_right.x * inv_width * m_SpriteSize.x;
+		float right = (bottom_right.x + 1) * inv_width * m_SpriteSize.x;
 		float bottom = bot_index * inv_height * m_SpriteSize.y;
-		float top = top_index * inv_height * m_SpriteSize.y;
+		float top = (top_index + 1) * inv_height * m_SpriteSize.y;
 
 		// Create tex coords list
 		std::array<float, 8> tex_coords = {

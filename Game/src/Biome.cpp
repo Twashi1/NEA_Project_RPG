@@ -2,7 +2,7 @@
 #include "World.h"
 
 namespace Game {
-	std::array<Biome::IBiome*, (uint8_t)Biome::ID::MAX> Biome::m_Biomes = {
+	std::array<Biome::BiomeGen*, (uint8_t)Biome::ID::MAX> Biome::m_Biomes = {
 		nullptr,	// VOID
 		nullptr,	// PLAIN
 		nullptr,	// FOREST
@@ -28,7 +28,7 @@ namespace Game {
 		{1.0f,		Tile::ID::GRASS}
 	};
 
-	Vivium::Noise::Interpolated Biome::IBiome::m_HeightNoise;
+	Vivium::Noise::Interpolated Biome::BiomeGen::m_HeightNoise;
 
 	Vivium::Noise::White Biome::ForestBiome::m_TreeNoise;
 	Vivium::Noise::White Biome::ForestBiome::m_VegitationNoise; // TODO: Switch to worley noise
@@ -97,7 +97,7 @@ namespace Game {
 
 
 	Biome::ForestBiome::ForestBiome(unsigned int seed)
-		: IBiome::IBiome(seed)
+		: BiomeGen::BiomeGen(seed)
 	{
 		m_HeightNoise.m_Seed = seed;
 		m_TreeNoise.m_Seed = seed;
@@ -175,12 +175,12 @@ namespace Game {
 	const char* Biome::m_GetBiomeName(const Biome::ID& id)
 	{
 		switch (id) {
-		case ID::VOID: return "Void";
-		case ID::PLAIN: return "Plains";
-		case ID::FOREST: return "Forest";
-		case ID::DESERT: return "Desert";
-		case ID::RIVER: return "River";
-		default: return "InvalidBiome";
+		case ID::VOID:		return "Void";
+		case ID::PLAIN:		return "Plains";
+		case ID::FOREST:	return "Forest";
+		case ID::DESERT:	return "Desert";
+		case ID::RIVER:		return "River";
+		default:			return "InvalidBiome";
 		}
 	}
 
@@ -199,10 +199,10 @@ namespace Game {
 	{
 		m_Biomes = {
 			nullptr,										// VOID
-			(Biome::IBiome*)new Biome::ForestBiome(seed),	// PLAIN
-			(Biome::IBiome*)new Biome::ForestBiome(seed),	// FOREST
-			(Biome::IBiome*)new Biome::DesertBiome(seed),	// DESERT
-			(Biome::IBiome*)new Biome::RiverBiome(seed)		// RIVER
+			(Biome::BiomeGen*)new Biome::ForestBiome(seed),	// PLAIN
+			(Biome::BiomeGen*)new Biome::ForestBiome(seed),	// FOREST
+			(Biome::BiomeGen*)new Biome::DesertBiome(seed),	// DESERT
+			(Biome::BiomeGen*)new Biome::RiverBiome(seed)		// RIVER
 		};
 	}
 
@@ -219,13 +219,13 @@ namespace Game {
 		// DELETE_BIOME_PTR(Biome::ID::MAX);
 	}
 
-	const Biome::IBiome* Biome::GetBiome(const ID& id)
+	const Biome::BiomeGen* Biome::GetBiome(const ID& id)
 	{
 		return m_Biomes[(uint8_t)id];
 	}
 
 	Biome::DesertBiome::DesertBiome(unsigned int seed)
-		: IBiome::IBiome(seed)
+		: BiomeGen::BiomeGen(seed)
 	{
 		m_HeightNoise.m_Seed = seed;
 		m_CactusNoise.m_Seed = seed;
@@ -244,6 +244,7 @@ namespace Game {
 		if (noise > 0.9f) {
 #ifdef GENERATE_NPC
 			// What a disgustingly long constructor
+			// TODO: factory?
 			region.npcs.emplace_back(
 				NPC::ID::COW,
 				// TEMP values
@@ -296,7 +297,7 @@ namespace Game {
 	}
 
 	Biome::RiverBiome::RiverBiome(unsigned int seed)
-		: IBiome::IBiome(seed)
+		: BiomeGen::BiomeGen(seed)
 	{
 		m_HeightNoise.m_Seed = seed;
 		m_HeightNoise.wavelength = 4;
@@ -314,7 +315,7 @@ namespace Game {
 		tile.background = m_GetTileFromHeightMap(m_HeightToTileMap, m_HeightNoise.Get(x, y));
 	}
 
-	Biome::IBiome::IBiome(unsigned int seed)
+	Biome::BiomeGen::BiomeGen(unsigned int seed)
 		: m_Seed(seed)
 	{}
 }

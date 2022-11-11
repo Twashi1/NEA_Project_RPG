@@ -4,6 +4,9 @@
 
 namespace Game {
 	class Item : Vivium::StreamablePOD {
+	/// <summary>
+	/// Data representation for an item, stores an ID and a count
+	/// </summary>
 	public:
 		enum class ID : uint16_t {
 			VOID,
@@ -37,22 +40,28 @@ namespace Game {
 			MAX
 		};
 
-		// Global properties per item
 		struct Properties : Vivium::Streamable {
+		/// <summary>
+		/// Properties for each item id
+		/// </summary>
 		public:
-			std::string name;
-			bool isStackable;
-			bool displayMultiple;
-			bool isHandEquipable;
-			Vivium::Vector2<int> atlas_index;
+			std::string name;					// Pretty name
+			bool isStackable;					// Should an item stack 999, or 1 per slot
+			bool displayMultiple;				// Should an item display multiple copies of itself if there are >1 of it
+			bool isHandEquipable;				// Is an item equipable in the player's hand
+			Vivium::Vector2<int> atlas_index;   // Atlas index for the item's sprite
 
 			Properties(std::string name, bool isStackable, bool displayMultiple, bool isHandEquipable, Vivium::Vector2<int> atlas_index);
 
+			// Serialiser methods
 			void Write(Vivium::Serialiser& s) const override;
 			void Read(Vivium::Serialiser& s) override;
 		};
 
 		struct DropData : Vivium::Streamable {
+		/// <summary>
+		/// Drop data for a given item - for block breaking
+		/// </summary>
 		public:
 			Item::ID id;
 			uint16_t min_count;
@@ -65,8 +74,11 @@ namespace Game {
 			void Read(Vivium::Serialiser& s) override;
 		};
 
-		// Stored per tile, maps weights to list of potential drops
+		// TODO: should be other way round, list of drop data to weight
 		struct DropTable : Vivium::Streamable {
+		/// <summary>
+		/// Potential drops for each tile, mapping a weight to each of the potential drops
+		/// </summary>
 		private:
 			unsigned int m_Sum = 0;
 
@@ -78,12 +90,14 @@ namespace Game {
 			DropTable();
 			DropTable(const DropTableMap_t& drop_table);
 
+			// Get a random drop (or list of drops) from this drop table
 			std::vector<Item> GetRandomDrop();
 
 			void Write(Vivium::Serialiser& s) const override;
 			void Read(Vivium::Serialiser& s) override;
 		};
 
+		// Get for properties
 		static Properties GetProperties(const Item::ID& id);
 		static std::string GetName(const Item::ID& id);
 		static bool GetIsStackable(const Item::ID& id);
@@ -113,12 +127,16 @@ namespace Game {
 		}
 
 	private:
+		// Stores properties for each item id
 		static std::array<Properties, (uint16_t)ID::MAX> m_Properties;
 	};
 
 	class Inventory;
 
 	class FloorItem : Vivium::Streamable {
+	/// <summary>
+	/// Represents an item that is inside the game world, resting on the ground, waiting to be picked up
+	/// </summary>
 	private:
 		Item m_ItemData;
 		std::shared_ptr<Vivium::Quad> m_Quad;
@@ -138,23 +156,39 @@ namespace Game {
 		static constexpr float MAGNET_SPEED = 50000.0f;
 		static Vivium::Shader* floor_shader;
 
+		/// <summary>
+		/// Create floor shader
+		/// </summary>
 		static void Init();
+		/// <summary>
+		/// Delete floor shader
+		/// </summary>
 		static void Terminate();
 
+		/// <summary>
+		/// Get the pure data representation of the item (just id and count)
+		/// </summary>
+		/// <returns></returns>
 		const Item& GetItemData() const;
 		const std::shared_ptr<Vivium::Quad> GetQuad() const;
 
+		/// <summary>
+		/// Update motion of item
+		/// </summary>
 		void Update();
 		
 		FloorItem();
 		FloorItem(const FloorItem& other);
 		FloorItem(const Item& item_data, const Vivium::Vector2<float>& pos, const Vivium::Vector2<float> dim);
 
+		// TODO: implement
 		bool CheckDespawned();
 
+		// Serialiser method
 		void Write(Vivium::Serialiser& s) const override;
 		void Read(Vivium::Serialiser& s) override;
 
+		// TODO: unused? preferring formatter now
 		friend std::ostream& operator<<(std::ostream& os, const FloorItem& object) {
 			os << "{" << object.m_ItemData << ", at " << object.m_Quad->GetCenter() << "}";
 
@@ -166,6 +200,7 @@ namespace Game {
 }
 
 namespace std {
+	// For printing
 	template <>
 	struct formatter<Game::Item::ID> : formatter<string> {
 		auto format(Game::Item::ID id, format_context& ctx) {

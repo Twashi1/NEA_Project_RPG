@@ -5,11 +5,18 @@
 
 namespace Game {
 	class CraftingInventory : Inventory {
+	/// <summary>
+	/// Specialisation of Inventory for displaying possible crafting recipes, and allowing user
+	/// to select from, and craft these recipes
+	/// </summary>
 	private:
 		// TODO: some sort of transition when switching slots
 		static constexpr float s_YSpacing = 56.0f;
+		// Size of slot in pixels
 		static constexpr float s_SlotSize = 48.0f;
+		// Size of the selected slot in pixels
 		static constexpr float s_SelectedSlotSize = 54.0f;
+		// Scale for item shown in crafting inventory
 		static constexpr float s_ItemScale = 0.7f;
 
 		// TODO: implement
@@ -26,6 +33,7 @@ namespace Game {
 		using Inventory::m_InventoryData;
 		using Inventory::m_InventoryID;
 
+		// List of recipes we can craft with the items in the inventory
 		std::vector<Recipe::ID> m_Craftables;
 		int m_SelectedItemSlot = NULL;
 		float m_TransitionTimeRemaining = 0.0f;
@@ -44,10 +52,23 @@ namespace Game {
 		using Inventory::GetItems;
 		using Inventory::SetItems;
 
+		/// <summary>
+		/// Init crafting shader
+		/// </summary>
 		static void Init();
+		/// <summary>
+		/// Deallocate crafting shader
+		/// </summary>
 		static void Terminate();
 
+		/// <summary>
+		/// Update available recipes to craft and the selected item
+		/// </summary>
+		/// <param name="player_inv"></param>
 		void Update(Inventory* player_inv);
+		/// <summary>
+		/// Render crafting recipe selection GUI
+		/// </summary>
 		void Render();
 
 		CraftingInventory();

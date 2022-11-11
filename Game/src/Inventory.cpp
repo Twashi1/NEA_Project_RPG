@@ -344,7 +344,8 @@ namespace Game {
 			}
 
 			// Spreading items if holding down rmb
-			/*
+//#define EXPERIMENTAL_ITEM_SPREAD
+#ifdef EXPERIMENTAL_ITEM_SPREAD
 			if (rmb_state == Vivium::Input::State::PRESS || rmb_state == Vivium::Input::State::HOLD) {
 				// Get cursor item
 				Item& cursor_item = m_InventoryData.at((uint8_t)Slot::CURSOR_0);
@@ -366,7 +367,7 @@ namespace Game {
 					}
 				}
 			}
-			*/
+#endif
 		}
 	}
 
