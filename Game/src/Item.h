@@ -97,7 +97,7 @@ namespace Game {
 			void Read(Vivium::Serialiser& s) override;
 		};
 
-		// Get for properties
+		// Getters for properties
 		static Properties GetProperties(const Item::ID& id);
 		static std::string GetName(const Item::ID& id);
 		static bool GetIsStackable(const Item::ID& id);
@@ -114,8 +114,11 @@ namespace Game {
 		Item(const Item& other);
 		Item(const Item::ID& id, const uint16_t& count);
 
+		// TODO: default this
 		Item& operator=(const Item& other);
 
+		// TODO: unused, prefer formatter
+		// Output stream overloads
 		friend std::ostream& operator<<(std::ostream& os, const Item::ID& id) {
 			os << Item::GetName(id);
 			return os;

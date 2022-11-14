@@ -13,14 +13,21 @@ namespace Game {
 	// TODO better sharing of data between scenes
 
 	class StartScene : public Vivium::IScene {
+	/// <summary>
+	/// The title screen displaying a background and the buttons for creating world,
+	/// loading world, and changing options
+	/// </summary>
 	private:
 		MainMenu* m_Manager = nullptr;
 
+		// Sprite for the title
 		std::shared_ptr<Vivium::Sprite> m_TitleSprite;
+		// Buttons
 		std::shared_ptr<Vivium::Button> m_CreateWorldButton;
 		std::shared_ptr<Vivium::Button> m_LoadWorldButton;
 		std::shared_ptr<Vivium::Button> m_OptionsButton;
 
+		// Background texture, quad, and shader
 		std::shared_ptr<Vivium::Texture> m_BackgroundTexture;
 		std::shared_ptr<Vivium::Quad>	 m_BackgroundQuad;
 		std::shared_ptr<Vivium::Shader>  m_BackgroundShader;
@@ -34,23 +41,35 @@ namespace Game {
 	};
 
 	class CreateWorldScene : public Vivium::IScene {
+	/// <summary>
+	/// Creating world screen, displaying boxes to enter information about the world,
+	/// error text if the user typed a world that already exists, and a confirmation box
+	/// </summary>
 	private:
+		// Entry boxes for name and seed
 		std::shared_ptr<Vivium::TextInput> m_NameInputBox;
 		std::shared_ptr<Vivium::TextInput> m_SeedInputBox;
+		// Confirmation button to start game
 		std::shared_ptr<Vivium::Button> m_ConfirmButton;
+		// Text and shader for displaying visual feedback that world exists/doesn't
 		std::shared_ptr<Vivium::Text> m_WorldAlreadyExistsText;
 		std::shared_ptr<Vivium::Shader> m_WorldAlreadyExistsShader;
+		// How long the error text has been displayed for
 		float m_WorldAlreadyExistsLifespan = 0.0f;
 		Vivium::Timer m_WorldAlreadyExistsTimer;
 
+		// World already exists display text lasts for 3 seconds, and starts fading out after 2.5s
 		static constexpr float s_WorldAlreadyExistsMaxLifespan = 3.0f;
 		static constexpr float s_WorldAlreadyExistsFadeout = 0.5f; // Begin fading out 0.5 seconds before the end
 		
 		std::shared_ptr<Vivium::Button> m_BackButton; // Takes back to start screen
 
+		// TODO: what is this
 		void* params;
 
+		// World seed
 		uint32_t m_Seed;
+		// World name
 		std::string m_Name;
 
 		static void s_ConfirmCallback(Vivium::Button* button, void* user_params);
@@ -66,6 +85,9 @@ namespace Game {
 	};
 
 	class OptionsScene : public Vivium::IScene {
+	/// <summary>
+	/// Displays various options the player can change before getting into game
+	/// </summary>
 	private:
 		MainMenu* m_Manager;
 
@@ -75,14 +97,18 @@ namespace Game {
 		static constexpr int FPS_MIN = 60;
 		static constexpr int FPS_MAX = 240;
 
+		// Options panel
 		std::shared_ptr<Vivium::Panel> m_OptionsPanel;
 
+		// GUI items for controlling framerate
 		std::shared_ptr<Vivium::Slider> m_FPSSlider;
 		std::shared_ptr<Vivium::Text> m_FPSText;
 
+		// GUI items for controlling sound volume
 		std::shared_ptr<Vivium::Slider> m_VolumeSlider;
 		std::shared_ptr<Vivium::Text> m_VolumeText;
 
+		// Back to start screen
 		std::shared_ptr<Vivium::Button> m_BackButton;
 
 	public:
@@ -94,6 +120,9 @@ namespace Game {
 	};
 
 	class LoadWorldScene : public Vivium::IScene {
+	/// <summary>
+	/// Displays list of existing worlds to select from
+	/// </summary>
 	private:
 		// user_params: LoadWorldScene*, VisualWorldSelectable*
 		static void s_SelectedWorldCallback(Vivium::Button* button, void* user_params);
@@ -107,10 +136,11 @@ namespace Game {
 		};
 
 		// For the load world scene, it should display all the worlds you have available as small rectangles with the world name, maybe file size, date of creation, etc.
+		// TODO: size, and creation data
 		struct VisualWorldSelectable {
 			// TODO: unique?
 			std::shared_ptr<Vivium::Button> select_button;
-			std::string			world_name;
+			std::string	world_name;
 
 			__CallbackData* params;
 
@@ -121,6 +151,7 @@ namespace Game {
 
 		MainMenu* m_Manager = nullptr;
 
+		// List of possible worlds to select from
 		std::vector<VisualWorldSelectable> m_Worlds;
 		
 		std::shared_ptr<Vivium::Panel> m_WorldsPanel; // Panel for the possible worlds to select
@@ -135,6 +166,9 @@ namespace Game {
 	};
 
 	class GameScene : public Vivium::IScene {
+	/// <summary>
+	/// The actual game itself, with the player, world, etc.
+	/// </summary>
 	private:
 		World* m_World = nullptr;
 		Player* m_Player = nullptr;
@@ -148,6 +182,9 @@ namespace Game {
 	};
 
 	class MainMenu {
+	/// <summary>
+	/// Managing the scene that should be displayed, also storing the scene
+	/// </summary>
 	public:
 		enum class SceneID : int {
 			START =			0x0062BF01,
@@ -203,6 +240,7 @@ namespace Game {
 }
 
 namespace std {
+	// Formatter debug
 	template <>
 	struct formatter<Game::MainMenu::SceneID> : formatter<string> {
 		auto format(Game::MainMenu::SceneID id, format_context& ctx) {
