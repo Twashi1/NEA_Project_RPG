@@ -22,7 +22,7 @@ namespace Game {
 		void Update();
 
 		// Get current health as value from 0 to 1
-		float GetNormalised();
+		float GetNormalised() const;
 	};
 
 	class NPC;
@@ -217,6 +217,7 @@ namespace Game {
 
 		// TODO: unique?
 		static std::shared_ptr<Vivium::Shader> m_Shader;
+		static std::unique_ptr<Vivium::Shader> m_HealthbarShader; 
 
 		void m_UpdatePathing();
 
@@ -253,6 +254,8 @@ namespace Game {
 		// TODO: Pretty ugly function, bad name and should be somewhere else
 		// Adds rendering information to vertices, assuming layout: position, texcoords
 		void AddVertices(std::vector<float>& vertices);
+
+		void Submit(Vivium::Batch* npc_batch, Vivium::Batch* healthbar_batch) const;
 
 		void CheckProjectileCollision(Weapon::Projectile** projectiles, std::size_t size);
 

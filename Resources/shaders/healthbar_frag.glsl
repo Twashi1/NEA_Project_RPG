@@ -37,6 +37,7 @@ uniform sampler2D u_Texture;
 in vec2 v_texCoord;
 in vec2 v_healthbarTexCoord;
 in vec2 v_maskTexCoord;
+in float v_healthValue;
 
 vec2 random2(vec2 p) {
     return fract(sin(vec2(dot(p,vec2(127.1 + float(u_Seed),311.7)),dot(p,vec2(269.5,183.3))))*43758.5453);
@@ -77,7 +78,7 @@ vec4 get_fluid_texture() {
         // TODO: better name
         // NOTE: multiply by -1 to get it on the left side
         // Value will be negative to the right of the wave, and positive to the left
-        float cutoff = (noise_value + wobble) - less_pixelated_uv.x + u_WaveOffset;
+        float cutoff = (noise_value + wobble) - less_pixelated_uv.x + u_WaveOffset + v_healthValue;
         
         // Don't bother calculating anything else if we're on the right of the wave
         // Otherwise we let the alpha value default to 1

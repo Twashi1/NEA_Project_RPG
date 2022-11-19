@@ -35,7 +35,7 @@ namespace Vivium {
 		Particle& operator=(Particle&& other) noexcept;
 	};
 
-	// TODO: IRenderable, IBatchable ideal as well
+	// TODO: IRenderable, Batchable ideal as well
 	class VIVIUM_API ParticleSystem {
 	protected:
 		static const BufferLayout m_Layout;

@@ -32,7 +32,7 @@ namespace Game {
 	{
 		Biome::ID id = m_GetBiomeID(x, y);
 
-		const Biome::BiomeGen* ibiome_ptr = Biome::GetBiome(id);
+		const Biome::Generator* ibiome_ptr = Biome::GetBiome(id);
 		
 		switch (id) {
 		case Biome::ID::FOREST:

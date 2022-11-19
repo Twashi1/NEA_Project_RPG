@@ -227,7 +227,7 @@ namespace Game {
 
 		std::vector<std::thread> loading_threads;
 
-		Vivium::Quad::SetVBCreation(false);
+		Vivium::Quad::SetVBSuppression(false);
 
 		if (!regions_map_empty && regions_to_load.size() > 0) {
 			loading_threads.reserve(regions_to_load.size());
@@ -241,7 +241,7 @@ namespace Game {
 			thread.join();
 		}
 
-		Vivium::Quad::SetVBCreation(true);
+		Vivium::Quad::SetVBSuppression(true);
 	}
 
 	Region& World::m_LoadRegion(const Vivium::Vector2<int>& index)
@@ -582,7 +582,7 @@ namespace Game {
 
 									/* TODO: UpdatePhysics */
 									// TODO: bad
-									Vivium::Quad::SetVBCreation(false);
+									Vivium::Quad::SetVBSuppression(false);
 
 									if (Tile::GetIsPhysical(id)) {
 										std::shared_ptr<Vivium::Quad> quad = std::make_shared<Vivium::Quad>(Vivium::Vector2<float>(dx, dy), Vivium::Vector2<float>(halfscale));
@@ -593,7 +593,7 @@ namespace Game {
 										m_TileLayer->bodies.push_back(body);
 									}
 
-									Vivium::Quad::SetVBCreation(true);
+									Vivium::Quad::SetVBSuppression(true);
 
 									const Vivium::Vector2<int>& index = Tile::GetAtlasIndex(id);
 									std::array<float, 8> tex_coords = TextureManager::game_atlas->GetCoordsArray(index);
@@ -607,7 +607,7 @@ namespace Game {
 			}
 		}
 
-		Vivium::Batch::BatchData data = batch.End();
+		Vivium::Batch::RenderData data = batch.End();
 
 		if (data.count > 0) {
 			Vivium::Renderer::Submit(data.vertex_buffer.get(), data.index_buffer.get(), texture_shader, TextureManager::game_atlas->GetAtlas().get());
@@ -718,53 +718,54 @@ namespace Game {
 
 	void World::m_RenderNPCs(const Vivium::Vector2<int>& pos)
 	{
-		VIVIUM_SCOPE;
-
-		static const Vivium::BufferLayout layout = {
+		// TODO: new layout
+		static const Vivium::BufferLayout npc_layout = {
 			Vivium::GLSLDataType::VEC2, // position
 			Vivium::GLSLDataType::VEC2  // tex coords
+		};
+
+		static const Vivium::BufferLayout healthbar_layout = {
+			Vivium::GLSLDataType::VEC2,
+			Vivium::GLSLDataType::VEC2,
+			Vivium::GLSLDataType::VEC2,
+			Vivium::GLSLDataType::VEC2,
+			Vivium::GLSLDataType::FLOAT
 		};
 
 		std::size_t projectile_count = 0;
 		Weapon::Projectile** proj_array = Weapon::GetProjectiles(projectile_count);
 
-		std::vector<float> vertices;
-		std::vector<unsigned short> indices;
-		std::size_t shape_count = 0; // Amount of npcs
+		std::size_t npc_count = 0;
 
 		// Calculate bounds of tiles we need to render
 		Vivium::Vector2<int> frame = Vivium::Application::GetScreenDim() / World::PIXEL_SCALE + Vivium::Vector2<int>(1, 1);
 		Vivium::Vector2<int> bottom_left = GetRegionIndex(pos - frame);
 		Vivium::Vector2<int> top_right = GetRegionIndex(pos + frame);
 
+		// Count NPCs first
 		for (int y = bottom_left.y; y <= top_right.y; y++) {
 			for (int x = bottom_left.x; x <= top_right.x; x++) {
-				// Load region and get npcs for given region
-				// TODO: loading region twice! since rendering floor items does this as well
+				Region& region = m_LoadRegion({ x, y });
+
+				npc_count += region.npcs.size();
+			}
+		}
+
+		// TODO: layouts
+		Vivium::Batch npc_batch(npc_count, &npc_layout);
+		Vivium::Batch healthbar_batch(npc_count, &healthbar_layout);
+
+		for (int y = bottom_left.y; y <= top_right.y; y++) {
+			for (int x = bottom_left.x; x <= top_right.x; x++) {
 				Region& region = m_LoadRegion({ x, y });
 
 				if (region.npcs.empty()) continue;
 
-				// Reserve space
-				vertices.reserve(vertices.size() + (4 * 4 * region.npcs.size())); // 4 floats per vertex, 4 vertices
-				indices.reserve(indices.size() + (6 * region.npcs.size()));
-
 				for (NPC& npc : region.npcs) {
-					// Weird location, but only place we can really update the npc
 					npc.Update();
 					npc.CheckProjectileCollision(proj_array, projectile_count);
 
-					npc.AddVertices(vertices);
-					
-					int stride = shape_count * 4;
-					indices.emplace_back(0 + stride);
-					indices.emplace_back(1 + stride);
-					indices.emplace_back(2 + stride);
-					indices.emplace_back(2 + stride);
-					indices.emplace_back(3 + stride);
-					indices.emplace_back(0 + stride);
-
-					++shape_count;
+					npc.Submit(&npc_batch, &healthbar_batch);
 				}
 			}
 		}
@@ -772,11 +773,25 @@ namespace Game {
 		// Update event handler for projectile hits, to ensure neither npc nor projectile ptr has gone out of scope/reallocated/whatever
 		Weapon::ForceUpdateEventHandler();
 
-		if (shape_count > 0) {
-			Vivium::VertexBuffer vb(vertices, layout);
-			Vivium::IndexBuffer ib(indices);
+		Vivium::Batch::RenderData npc_data = npc_batch.End();
+		Vivium::Batch::RenderData healthbar_data = healthbar_batch.End();
 
-			Vivium::Renderer::Submit(&vb, &ib, NPC::m_Shader.get(), TextureManager::game_atlas->GetAtlas().get());
+		if (npc_data) {
+			Vivium::Renderer::Submit(
+				npc_data.vertex_buffer.get(),
+				npc_data.index_buffer.get(),
+				NPC::m_Shader.get(),
+				TextureManager::game_atlas->GetAtlas().get()
+			);
+		}
+
+		if (healthbar_data) {
+			Vivium::Renderer::Submit(
+				healthbar_data.vertex_buffer.get(),
+				healthbar_data.index_buffer.get(), 
+				NPC::m_HealthbarShader.get(), 
+				TextureManager::game_atlas->GetAtlas().get()
+			);
 		}
 	}
 
@@ -919,7 +934,7 @@ namespace Game {
 		// Rendering leaf particles
 		// TODO: needs work
 		if (m_CurrentBiome == Biome::ID::FOREST) {
-			if (m_TimeAlive > m_LastParticleEmitTime + Biome::ForestBiome::LEAF_PARTICLE_FREQUENCY) {
+			if (m_TimeAlive > m_LastParticleEmitTime + Biome::Forest::LEAF_PARTICLE_FREQUENCY) {
 				m_LastParticleEmitTime = m_TimeAlive;
 
 				Vivium::Vector2<float> top_left = m_Player->quad->GetX() - (Vivium::Application::width * 0.5f);

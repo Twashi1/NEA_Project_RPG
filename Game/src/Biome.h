@@ -10,10 +10,10 @@ namespace Game {
 
 	// TODO: rename river biome to lake?
 	// TODO: better blending between biomes
-	class Biome {
 	/// <summary>
-	/// Static class to store BiomeGen instances
+	/// Static class to store Generator instances
 	/// </summary>
+	class Biome {
 	public:
 		enum class ID : uint8_t {
 			VOID,	// Invalid
@@ -33,17 +33,17 @@ namespace Game {
 		static const char* m_GetBiomeName(const Biome::ID& id);
 
 	public:
-		class BiomeGen {
 		/// <summary>
 		/// Abstract class for biome generators
 		/// </summary>
+		class Generator {
 		protected:
 			// Interpolated 2D noise - used to determine the tile for background (e.g. higher tiles grass, then lower tiles dirt)
 			static Vivium::Noise::Interpolated m_HeightNoise;
 			unsigned int m_Seed; // TODO: don't need to store seed?
 
 		public:
-			BiomeGen(unsigned int seed);
+			Generator(unsigned int seed);
 
 			// For a given x, y coordinate, generate a tile, and possible generate a structure
 			virtual void GenerateAt(int x, int y, Tile& tile, World* world, std::unordered_map<Vivium::Vector2<int>, Structure::ID>& structures) const = 0;
@@ -51,13 +51,16 @@ namespace Game {
 			virtual void SpawnNPCs(int x, int y, Region& region, World* world) const = 0;
 		};
 
-		class ForestBiome : BiomeGen {
+		/// <summary>
+		/// Biome generator for forests: biomes with grass and high density of trees
+		/// </summary>
+		class Forest : Generator {
 		private:
-			using BiomeGen::m_HeightNoise;
+			using Generator::m_HeightNoise;
 
 			static Vivium::Noise::White m_TreeNoise;
-			static Vivium::Noise::White m_VegitationNoise; // TODO: Switch to worley noise
-			static Vivium::Noise::White m_OreNoise;		// TODO: Switch to worley noise
+			static Vivium::Noise::White m_VegitationNoise;	// TODO: Switch to worley noise
+			static Vivium::Noise::White m_OreNoise;			// TODO: Switch to worley noise
 			static Vivium::Noise::White m_DebrisNoise;
 			static Vivium::Noise::Cellular m_AnimalNoise;
 
@@ -75,15 +78,18 @@ namespace Game {
 			// TODO: handled by world rn, but maybe biomes should deal with this
 			static constexpr float LEAF_PARTICLE_FREQUENCY = 0.3f; // Every second, release a particle
 
-			ForestBiome(unsigned int seed);
+			Forest(unsigned int seed);
 			
 			void GenerateAt(int x, int y, Tile& tile, World* world, std::unordered_map<Vivium::Vector2<int>, Structure::ID>& structures) const override;
 			void SpawnNPCs(int x, int y, Region& region, World* world) const override;
 		};
 
-		class DesertBiome : BiomeGen {
+		/// <summary>
+		/// Biome with sand, cacti, and high density of ores
+		/// </summary>
+		class Desert : Generator {
 		private:
-			using BiomeGen::m_HeightNoise;
+			using Generator::m_HeightNoise;
 
 			static Vivium::Noise::White m_CactusNoise;
 			static Vivium::Noise::White m_VegitationNoise;
@@ -99,19 +105,22 @@ namespace Game {
 			static const std::unordered_map<float, Tile::ID> m_DebrisWeights;
 
 		public:
-			DesertBiome(unsigned int seed);
+			Desert(unsigned int seed);
 
 			void GenerateAt(int x, int y, Tile& tile, World* world, std::unordered_map<Vivium::Vector2<int>, Structure::ID>& structures) const override;
 			void SpawnNPCs(int x, int y, Region& region, World* world) const override;
 		};
 
-		class RiverBiome : BiomeGen {
-			using BiomeGen::m_HeightNoise;
+		/// <summary>
+		/// Biome of mostly water
+		/// </summary>
+		class Lake : Generator {
+			using Generator::m_HeightNoise;
 
 			static const std::map<float, Tile::ID> m_HeightToTileMap;
 
 		public:
-			RiverBiome(unsigned int seed);
+			Lake(unsigned int seed);
 			
 			void GenerateAt(int x, int y, Tile& tile, World* world, std::unordered_map<Vivium::Vector2<int>, Structure::ID>& structures) const override;
 			void SpawnNPCs(int x, int y, Region& region, World* world) const override;
@@ -155,7 +164,7 @@ namespace Game {
 		/// Stores pointers to biome generates (allocated on heap)
 		/// Indexed by casting ID enum to integral type
 		/// </summary>
-		static std::array<BiomeGen*, (uint8_t)ID::MAX> m_Biomes;
+		static std::array<Generator*, (uint8_t)ID::MAX> m_Biomes;
 
 	public:
 		/// <summary>
@@ -173,23 +182,22 @@ namespace Game {
 		/// </summary>
 		/// <param name="id"></param>
 		/// <returns></returns>
-		static const BiomeGen* GetBiome(const ID& id);
+		static const Generator* GetBiome(const ID& id);
 	
 		/// <summary>
 		/// Helper to get type of biome by id (although its run-time only)
 		/// </summary>
 		/// <typeparam name="id"></typeparam>
 		template <ID id>
-		struct BiomeType { using type = BiomeGen; };
+		struct BiomeType { using type = Generator; };
 
-		template<> struct BiomeType<ID::PLAIN>	{ using type = ForestBiome; };
-		template<> struct BiomeType<ID::FOREST> { using type = ForestBiome; };
-		template<> struct BiomeType<ID::DESERT> { using type = DesertBiome; };
-		template<> struct BiomeType<ID::RIVER>	{ using type = RiverBiome;	};
+		template<> struct BiomeType<ID::PLAIN>	{ using type = Forest; };
+		template<> struct BiomeType<ID::FOREST> { using type = Forest; };
+		template<> struct BiomeType<ID::DESERT> { using type = Desert; };
+		template<> struct BiomeType<ID::RIVER>	{ using type = Lake;	};
 		
 		friend World;
 	};
 }
 
-// TODO: unused?
 #define BIOME_CAST_TO(id, ptr) ((Biome::BiomeType<id>::type*)ptr)

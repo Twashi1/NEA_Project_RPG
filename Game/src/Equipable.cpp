@@ -4,21 +4,21 @@
 #include "NPC.h"
 
 namespace Game {
-#define __GAME_EQUIPABLE_CONSTRUCT_ID(id) case id: \
+#define CONSTRUCT_EQUIPABLE_FROM_ID(id) case id: \
 	return dynamic_pointer_cast<HandEquipable>(std::make_shared<GetEquipType<id>::type>(id))
 
 	std::shared_ptr<HandEquipable> HandEquipable::CreateInstance(const Item::ID& id) {
 		switch (id) {
-			__GAME_EQUIPABLE_CONSTRUCT_ID(Item::ID::AMETHYST_SWORD);
-			__GAME_EQUIPABLE_CONSTRUCT_ID(Item::ID::EMERALD_SWORD);
-			__GAME_EQUIPABLE_CONSTRUCT_ID(Item::ID::RUBY_SWORD);
-			__GAME_EQUIPABLE_CONSTRUCT_ID(Item::ID::SAPPHIRE_SWORD);
-			__GAME_EQUIPABLE_CONSTRUCT_ID(Item::ID::TOPAZ_SWORD);
-			__GAME_EQUIPABLE_CONSTRUCT_ID(Item::ID::AMETHYST_WAND);
-			__GAME_EQUIPABLE_CONSTRUCT_ID(Item::ID::EMERALD_WAND);
-			__GAME_EQUIPABLE_CONSTRUCT_ID(Item::ID::RUBY_WAND);
-			__GAME_EQUIPABLE_CONSTRUCT_ID(Item::ID::SAPPHIRE_WAND);
-			__GAME_EQUIPABLE_CONSTRUCT_ID(Item::ID::TOPAZ_WAND);
+			CONSTRUCT_EQUIPABLE_FROM_ID(Item::ID::AMETHYST_SWORD);
+			CONSTRUCT_EQUIPABLE_FROM_ID(Item::ID::EMERALD_SWORD);
+			CONSTRUCT_EQUIPABLE_FROM_ID(Item::ID::RUBY_SWORD);
+			CONSTRUCT_EQUIPABLE_FROM_ID(Item::ID::SAPPHIRE_SWORD);
+			CONSTRUCT_EQUIPABLE_FROM_ID(Item::ID::TOPAZ_SWORD);
+			CONSTRUCT_EQUIPABLE_FROM_ID(Item::ID::AMETHYST_WAND);
+			CONSTRUCT_EQUIPABLE_FROM_ID(Item::ID::EMERALD_WAND);
+			CONSTRUCT_EQUIPABLE_FROM_ID(Item::ID::RUBY_WAND);
+			CONSTRUCT_EQUIPABLE_FROM_ID(Item::ID::SAPPHIRE_WAND);
+			CONSTRUCT_EQUIPABLE_FROM_ID(Item::ID::TOPAZ_WAND);
 		default:
 			return nullptr;
 		}
@@ -34,10 +34,15 @@ namespace Game {
 		// Subtracting 45 degrees because all our weapons/tools point towards the top right
 		float angle = std::atan2(cursor_to_player.y, cursor_to_player.x + FLT_EPSILON) - (0.25f * Vivium::Math::PI);
 
+		// Render position should be slightly forward in direction of equipable from player center (about 3/4 of a tile)
 		Vivium::Vector2<float> render_pos = player_pos + (cursor_to_player.normalise() * World::PIXEL_SCALE * 0.75f);
 
 		// So we only get one update to vb
-		m_Quad->SetRect(Vivium::Rect(render_pos, m_Quad->GetDim(), angle));
+		// Update center and angle of equipable
+		Vivium::Quad::SetVBSuppression(false);
+		m_Quad->SetCenter(render_pos);
+		Vivium::Quad::SetVBSuppression(true);
+		m_Quad->SetAngle(angle);
 	}
 
 	HandEquipable::HandEquipable(const Item::ID& id)
@@ -93,8 +98,10 @@ namespace Game {
 		LogTrace("Hit event was detected, damage: {}!", hit_event->damage);
 
 		// TODO: provide impulse based on knockback
+		// Damage npc by amount of damage projectile should do
 		hit_event->npc->health.Damage(hit_event->projectile->GetDamage());
-		// If projectile is piercing, this would not be here
+		// NOTE: If projectile is piercing, this should be omitted
+		// Delete projectile
 		hit_event->projectile->Kill();
 	}
 
@@ -125,19 +132,25 @@ namespace Game {
 
 	Weapon::Projectile** Weapon::GetProjectiles(std::size_t& size)
 	{
+		// Going to use this as a counter, so start at 0
 		size = 0;
 
+		// Get particle array
 		Vivium::Particle** particle_array = m_ProjectileSystem->GetParticles();
 
+		// Allocate memory for projectiles
 		Weapon::Projectile** projectile_array = new Weapon::Projectile*[m_ProjectileSystem->GetMaxSize()];
 
 		for (std::size_t i = 0; i < m_ProjectileSystem->GetMaxSize(); i++) {
+			// Get particle in particle array
 			Vivium::Particle* particle = particle_array[i];
 
+			// If particle uninitialised, don't add to our projectiles
 			if (particle == nullptr) continue;
 
+			// If particle dead, also don't add to our projectiles
 			if (particle->IsAlive()) {
-				// Add to particle array
+				// Cast to projectile and add to projectile array (SLOW)
 				projectile_array[size++] = dynamic_cast<Weapon::Projectile*>(particle);
 			}
 		}
@@ -161,22 +174,29 @@ namespace Game {
 		// TODO: move this
 		static constexpr float PARTICLE_SPEED = 800.0f;
 
+		// Update equipable position
 		HandEquipable::Update(world, player);
 
+		// If holding LMB
 		if (Vivium::Input::IsKeyDown(Vivium::Input::GetMouseState(GLFW_MOUSE_BUTTON_1))) {
+			// If enough time elapsed, fire an attack (convert frequency to period)
 			if (m_AttackTimer.GetElapsedNoReset() > 1.0f / Weapon::m_Properties.at(id).attack_frequency) {
+				// Get cursor position in world
 				Vivium::Vector2<float> cursor = Vivium::Renderer::camera->Untransform(Vivium::Input::GetCursorPos());
+				// Get player position
 				Vivium::Vector2<float> player_pos = player->quad->GetCenter();
+				// Calculate direction from player to cursor (and normalise)
 				Vivium::Vector2<float> direction = Vivium::Vector2<float>::Normalise(cursor - player_pos);
 
-				// TODO: some recalculation of angle here, afaik, atan2 is kinda costly so we should compute this once
-				// Subtracting half pi to get correct angle
-				// TODO: this might mess up the balls a little?
+				// All sprites are at a 45 degree angle, so we remove pi/2 (radians) to correct angle of equipable
+				// NOTE: I know pi/2 = 90 degrees, so pi/4 makes more sense, but this is what works so
 				float angle = std::atan2(direction.y, direction.x + FLT_EPSILON) - (0.5f * Vivium::Math::PI);
 
-				// TODO: instead of player pos, tip of weapon
+				// TODO: instead of player pos, fire from roughly tip of weapon
+				// Emit the projectile
 				m_ProjectileSystem->Emit(1, id, 0.5f, player_pos, direction * PARTICLE_SPEED, 0.0f, angle, 0.0f, 0.0f);
 
+				// Reset elapsed time since we have just fired an attack
 				m_AttackTimer.Reset();
 			}
 		}
@@ -184,6 +204,7 @@ namespace Game {
 		m_Quad->SetDim(World::PIXEL_SCALE * 1.0f);
 	}
 
+	// Properties for each weapon
 	const std::unordered_map<Item::ID, Weapon::Properties> Weapon::m_Properties = {
 		{Item::ID::AMETHYST_SWORD,	Weapon::Properties("Amethyst Sword",	10.0f, 10.0f, 1.0f, Weapon::Projectile::ID::AMETHYST_SWING)},
 		{Item::ID::EMERALD_SWORD,	Weapon::Properties("Emerald Sword",		10.0f, 10.0f, 1.0f, Weapon::Projectile::ID::EMERALD_SWING)},
@@ -201,6 +222,7 @@ namespace Game {
 		: name(name), damage(damage), knockback(knockback), attack_frequency(attack_frequency), projectile_id(projectile_id)
 	{}
 
+	// Atlas indices for each weapon's projectile (really should be stored in weapon properties? or projectile properties)
 	Vivium::Vector2<int> ProjectileSystem::m_AtlasIndices[10] = {
 		{8,  6},
 		{9,  6},
@@ -214,8 +236,10 @@ namespace Game {
 		{12, 5}
 	};
 
+	// 8 values for texture coordinates for each sprite
 	float ProjectileSystem::m_TextureCoords[10][8];
 
+	// Layout for the projectile
 	const Vivium::BufferLayout ProjectileSystem::m_Layout = {
 			Vivium::GLSLDataType::VEC2,	  // Position
 			Vivium::GLSLDataType::VEC2,   // Tex coords
@@ -226,15 +250,19 @@ namespace Game {
 
 	void ProjectileSystem::Init()
 	{
+		// Precompute texture coordinates
 		m_LoadTextureCoords();
 	}
 
 	void ProjectileSystem::m_LoadTextureCoords()
 	{
+		// Iterate all indices in the atlas indices
 		int i = 0;
 		for (const auto& index : m_AtlasIndices) {
+			// Get coordinates
 			std::array<float, 8> coords = TextureManager::game_atlas->GetCoordsArray(index);
 
+			// Copy into texture coordinates 2D array
 			std::memcpy(m_TextureCoords[i], &coords[0], sizeof(float) * 8);
 
 			++i;
@@ -249,75 +277,96 @@ namespace Game {
 
 	void ProjectileSystem::Emit(std::size_t count, const Weapon::ID& id, float lifespan, const Vivium::Vector2<float>& pos, const Vivium::Vector2<float>& vel, const Vivium::Vector2<float>& var, float angle, float angular_vel, float angular_var)
 	{
+		// Iterate amount of particles to generate
 		for (std::size_t i = 0; i < count; i++) {
+			// Emit the particle
 			m_EmitParticle(lifespan, id, pos, vel, var, angle, angular_vel, angular_var);
+			// Increment index we're adding new particle to
 			++m_Index;
 
+			// Roll over index if we exceed max size
 			if (m_Index >= m_MaxSize) { m_Index -= m_MaxSize; }
 		}
 	}
 
 	void ProjectileSystem::Render() {
+		// Create batch to hold rendering data
 		Vivium::Batch batch(m_MaxSize, &m_Layout);
 
+		// Iterate particles
 		for (std::size_t i = 0; i < m_MaxSize; i++) {
 			Vivium::Particle* particle = m_Particles[i];
 
+			// If particle uninitialised
 			if (particle == nullptr) { continue; }
 
+			// If particle alive
 			if (particle->IsAlive()) {
 				m_UpdateParticle(particle);
 				m_RenderParticle(&batch, particle);
 			}
 		}
 
+		// Submit batch to renderer
 		m_RenderBatch(&batch);
 	}
 
 	void ProjectileSystem::m_EmitParticle(float lifespan, const Weapon::ID& id, const Vivium::Vector2<float>& pos, const Vivium::Vector2<float>& vel, const Vivium::Vector2<float>& var, float angle, float angular_vel, float angular_var)
 	{
+		// Construct projectile for weapon
 		Weapon::Projectile* my_particle = new Weapon::Projectile(Weapon::m_Properties.at((Item::ID)id));
 
 		my_particle->position = pos;
+		// Velocity with some random variation
 		my_particle->velocity = vel + Vivium::Vector2<float>(
 			Vivium::Random::GetFloat(-var.x, var.x),
 			Vivium::Random::GetFloat(-var.y, var.y)
 			);
+		// Angular velocity with random variation
 		my_particle->angular_velocity = angular_vel + Vivium::Random::GetFloat(-angular_var, angular_var);
 		my_particle->angle = angle;
 
-		// TODO: lifespan variation
+		// TODO: better lifespan variation
 		my_particle->lifespan = lifespan * Vivium::Random::GetFloat(0.8f, 1.2f);
 
+		// get particle that will be replaced by this one
 		Vivium::Particle* replacement = m_Particles[m_Index];
 
+		// If the replacement is allocated somewhere
 		if (replacement != nullptr) {
+			// Clear memory to prevent leaks
 			delete replacement;
 		}
 
+		// Assign now empty location to our particle
 		m_Particles[m_Index] = dynamic_cast<Vivium::Particle*>(my_particle);
 	}
 
 	void ProjectileSystem::m_RenderParticle(Vivium::Batch* batch, const Vivium::Particle* particle)
 	{
+		// Cast particle to a projectile
 		const Weapon::Projectile* projectile = dynamic_cast<const Weapon::Projectile*>(particle);
 
 		if (projectile->IsAlive()) {
+			// Get texture coordinates
 			float* coords = m_TextureCoords[(uint8_t)projectile->m_ID];
 
+			// Get alpha
 			float alpha = std::min((1.0f - projectile->time_alive / projectile->lifespan) / s_FadeoutStartPercent, 1.0f);
 
+			// Create extra vertex data for particle
 			float per_vertex_data[4] = { alpha, projectile->angle, projectile->position.x, projectile->position.y };
 
+			// Submit to batch
 			batch->Submit(projectile->position, s_ParticleSize, coords[0], coords[2], coords[1], coords[5], per_vertex_data, 4);
 		}
 	}
 
 	void ProjectileSystem::m_RenderBatch(Vivium::Batch* batch)
 	{
-		auto result = batch->End();
+		Vivium::Batch::RenderData result = batch->End();
 
-		if (result.count > 0) {
+		if (result) {
 			Vivium::Renderer::Submit(result.vertex_buffer.get(), result.index_buffer.get(), m_Shader.get(), TextureManager::game_atlas->GetAtlas().get());
 		}
 	}

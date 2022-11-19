@@ -11,12 +11,12 @@
 namespace Vivium {
 	class Batch;
 
-	class IBatchable {
+	class Batchable {
 	public:
 		virtual void Submit(Batch* batch) const = 0;
 	};
 
-	template <typename T> concept IsBatchable = std::is_base_of_v<IBatchable, T>;
+	template <typename T> concept IsBatchable = std::is_base_of_v<Batchable, T>;
 
 	class VIVIUM_API Batch {
 	private:
@@ -32,15 +32,19 @@ namespace Vivium {
 		const BufferLayout* m_Layout;
 
 	public:
-		struct VIVIUM_API BatchData {
+		struct VIVIUM_API RenderData {
+			// TODO: Isn't necessary for shared ptr?
 			std::shared_ptr<VertexBuffer> vertex_buffer;
 			std::shared_ptr<IndexBuffer>  index_buffer;
 			std::size_t count;
 
-			BatchData();
+			RenderData();
 
-			BatchData(const BatchData& other);
-			BatchData(BatchData&& other) noexcept;
+			RenderData(const RenderData& other);
+			RenderData(RenderData&& other) noexcept;
+
+			inline bool IsValid()  { return count > 0; }
+			inline operator bool() { return IsValid(); }
 		};
 
 		Batch(const std::size_t& max_count, const BufferLayout* layout);
@@ -58,10 +62,10 @@ namespace Vivium {
 			batchable_object->Submit(this);
 		}
 
-		BatchData End() const;
+		RenderData End() const;
 
 		~Batch();
 
-		friend IBatchable;
+		friend Batchable;
 	};
 }

@@ -7,7 +7,7 @@
 #include "Batch.h"
 
 namespace Vivium {
-	class VIVIUM_API Text : IBatchable {
+	class VIVIUM_API Text : Batchable {
 	private:
 		static std::shared_ptr<Shader> m_DefaultShader;
 		static std::shared_ptr<Font> m_DefaultFont;
@@ -31,14 +31,14 @@ namespace Vivium {
 
 		Alignment alignment;
 		std::vector<std::string> strings;				// Strings to render, split by new lines
-		std::shared_ptr<Vector2<float>> pos;						// Position to render text
-		std::shared_ptr<Font> font;									// Pointer to font
-		std::shared_ptr<Shader> shader;								// Shader for text
+		std::shared_ptr<Vector2<float>> pos;			// Position to render text
+		std::shared_ptr<Font> font;						// Pointer to font
+		std::shared_ptr<Shader> shader;					// Shader for text
 		float scale;									// Scale for text
 
 		static std::shared_ptr<Font> GetDefaultFont();
 
-		// TODO might need fixes
+		// TODO: might need fixes
 		void SetPos(const Vector2<float>& pos);
 		Vector2<float> GetPos() const;
 

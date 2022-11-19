@@ -4,11 +4,11 @@
 #include "Recipe.h"
 
 namespace Game {
-	class CraftingInventory : Inventory {
 	/// <summary>
 	/// Specialisation of Inventory for displaying possible crafting recipes, and allowing user
 	/// to select from, and craft these recipes
 	/// </summary>
+	class CraftingInventory : Inventory {
 	private:
 		// TODO: some sort of transition when switching slots
 		static constexpr float s_YSpacing = 56.0f;
@@ -35,7 +35,9 @@ namespace Game {
 
 		// List of recipes we can craft with the items in the inventory
 		std::vector<Recipe::ID> m_Craftables;
+		// The current selected recipe index
 		int m_SelectedItemSlot = NULL;
+		// Transition time between moving crafting recipe (NOT IMPLEMENTED)
 		float m_TransitionTimeRemaining = 0.0f;
 		int m_TransitionDelta = 0;
 

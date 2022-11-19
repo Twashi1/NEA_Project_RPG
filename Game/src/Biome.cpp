@@ -2,7 +2,7 @@
 #include "World.h"
 
 namespace Game {
-	std::array<Biome::BiomeGen*, (uint8_t)Biome::ID::MAX> Biome::m_Biomes = {
+	std::array<Biome::Generator*, (uint8_t)Biome::ID::MAX> Biome::m_Biomes = {
 		nullptr,	// VOID
 		nullptr,	// PLAIN
 		nullptr,	// FOREST
@@ -10,51 +10,51 @@ namespace Game {
 		nullptr		// RIVER
 	};
 
-	const std::map<float, Tile::ID> Biome::ForestBiome::m_HeightToTileMap = {
+	const std::map<float, Tile::ID> Biome::Forest::m_HeightToTileMap = {
 		{0.1f,		Tile::ID::WATER},	// below 0.1 is water
 		{0.2f,		Tile::ID::SAND},	// 0.2 to 0.1 is sand
 		{0.3f,		Tile::ID::GROUND},	// 0.3 to 0.2 is ground
 		{1.0f,		Tile::ID::GRASS}	// 1.0 to 0.3 is grass
 	};
 
-	const std::map<float, Tile::ID> Biome::DesertBiome::m_HeightToTileMap = {
+	const std::map<float, Tile::ID> Biome::Desert::m_HeightToTileMap = {
 		{1.0f,		Tile::ID::SAND}
 	};
 
-	const std::map<float, Tile::ID> Biome::RiverBiome::m_HeightToTileMap = {
+	const std::map<float, Tile::ID> Biome::Lake::m_HeightToTileMap = {
 		{0.7f,		Tile::ID::WATER},
 		{0.8f,		Tile::ID::SAND},
 		{0.9f,		Tile::ID::GROUND},
 		{1.0f,		Tile::ID::GRASS}
 	};
 
-	Vivium::Noise::Interpolated Biome::BiomeGen::m_HeightNoise;
+	Vivium::Noise::Interpolated Biome::Generator::m_HeightNoise;
 
-	Vivium::Noise::White Biome::ForestBiome::m_TreeNoise;
-	Vivium::Noise::White Biome::ForestBiome::m_VegitationNoise; // TODO: Switch to worley noise
-	Vivium::Noise::White Biome::ForestBiome::m_OreNoise;
-	Vivium::Noise::White Biome::ForestBiome::m_DebrisNoise;
-	Vivium::Noise::Cellular Biome::ForestBiome::m_AnimalNoise;
+	Vivium::Noise::White Biome::Forest::m_TreeNoise;
+	Vivium::Noise::White Biome::Forest::m_VegitationNoise; // TODO: Switch to worley noise
+	Vivium::Noise::White Biome::Forest::m_OreNoise;
+	Vivium::Noise::White Biome::Forest::m_DebrisNoise;
+	Vivium::Noise::Cellular Biome::Forest::m_AnimalNoise;
 
-	Vivium::Noise::White Biome::DesertBiome::m_CactusNoise;
-	Vivium::Noise::White Biome::DesertBiome::m_VegitationNoise; // TODO: Switch to worley noise
-	Vivium::Noise::White Biome::DesertBiome::m_OreNoise;
-	Vivium::Noise::White Biome::DesertBiome::m_DebrisNoise;
-	Vivium::Noise::Cellular Biome::DesertBiome::m_AnimalNoise;
+	Vivium::Noise::White Biome::Desert::m_CactusNoise;
+	Vivium::Noise::White Biome::Desert::m_VegitationNoise; // TODO: Switch to worley noise
+	Vivium::Noise::White Biome::Desert::m_OreNoise;
+	Vivium::Noise::White Biome::Desert::m_DebrisNoise;
+	Vivium::Noise::Cellular Biome::Desert::m_AnimalNoise;
 
 	// TODO: if they have the same key they will replace each other!
-	const std::unordered_map<float, Structure::ID> Biome::ForestBiome::m_TreeWeights = {
+	const std::unordered_map<float, Structure::ID> Biome::Forest::m_TreeWeights = {
 		{100.0f,	Structure::ID::VOID},
 		{10.0f,		Structure::ID::TREE}
 	};
 
-	const std::unordered_map<float, Tile::ID> Biome::ForestBiome::m_VegitationWeights = {
+	const std::unordered_map<float, Tile::ID> Biome::Forest::m_VegitationWeights = {
 		{100.0f,	Tile::ID::VOID},
 		{5.0f,		Tile::ID::BUSH},
 		{3.0f,		Tile::ID::BUSH_FRUIT}
 	};
 
-	const std::unordered_map<float, Tile::ID> Biome::ForestBiome::m_OreWeights = {
+	const std::unordered_map<float, Tile::ID> Biome::Forest::m_OreWeights = {
 		{100.0f,	Tile::ID::VOID},
 		{1.01f,		Tile::ID::AMETHYST_NODE},
 		{1.02f,		Tile::ID::EMERALD_NODE},
@@ -63,25 +63,25 @@ namespace Game {
 		{1.05f,		Tile::ID::TOPAZ_NODE},
 	};
 
-	const std::unordered_map<float, Tile::ID> Biome::ForestBiome::m_DebrisWeights = {
+	const std::unordered_map<float, Tile::ID> Biome::Forest::m_DebrisWeights = {
 		{100.0f,	Tile::ID::VOID},
 		{5.0f,		Tile::ID::MOSSY_DEBRIS},
 		{3.0f,		Tile::ID::ROCKY_DEBRIS}
 	};
 
 	// TODO: if they have the same key they will replace each other!
-	const std::unordered_map<float, Structure::ID> Biome::DesertBiome::m_CactusWeights = {
+	const std::unordered_map<float, Structure::ID> Biome::Desert::m_CactusWeights = {
 		{100.0f,	Structure::ID::VOID},
 		{10.0f,		Structure::ID::CACTUS_TALL}
 	};
 
-	const std::unordered_map<float, Tile::ID> Biome::DesertBiome::m_VegitationWeights = {
+	const std::unordered_map<float, Tile::ID> Biome::Desert::m_VegitationWeights = {
 		{10.0f,		Tile::ID::VOID},
 		{1.0f,		Tile::ID::CACTUS_FRUIT},
 		{2.0f,		Tile::ID::CACTUS_SMALL}
 	};
 
-	const std::unordered_map<float, Tile::ID> Biome::DesertBiome::m_OreWeights = {
+	const std::unordered_map<float, Tile::ID> Biome::Desert::m_OreWeights = {
 		{100.0f,	Tile::ID::VOID},
 		{3.01f,		Tile::ID::AMETHYST_NODE},
 		{3.02f,		Tile::ID::EMERALD_NODE},
@@ -90,14 +90,14 @@ namespace Game {
 		{3.05f,		Tile::ID::TOPAZ_NODE},
 	};
 
-	const std::unordered_map<float, Tile::ID> Biome::DesertBiome::m_DebrisWeights = {
+	const std::unordered_map<float, Tile::ID> Biome::Desert::m_DebrisWeights = {
 		{100.0f,	Tile::ID::VOID},
 		{5.0f,		Tile::ID::ROCKY_DEBRIS}
 	};
 
 
-	Biome::ForestBiome::ForestBiome(unsigned int seed)
-		: BiomeGen::BiomeGen(seed)
+	Biome::Forest::Forest(unsigned int seed)
+		: Generator::Generator(seed)
 	{
 		m_HeightNoise.m_Seed = seed;
 		m_TreeNoise.m_Seed = seed;
@@ -108,7 +108,7 @@ namespace Game {
 		m_HeightNoise.wavelength = 6;
 	}
 
-	void Biome::ForestBiome::SpawnNPCs(int x, int y, Region& region, World* world) const
+	void Biome::Forest::SpawnNPCs(int x, int y, Region& region, World* world) const
 	{
 		// Spawning animals
 		float noise = m_AnimalNoise.Get(x, y);
@@ -135,7 +135,7 @@ namespace Game {
 		}
 	}
 
-	void Biome::ForestBiome::GenerateAt(int x, int y, Tile& tile, World* world, std::unordered_map<Vivium::Vector2<int>, Structure::ID>& structures) const
+	void Biome::Forest::GenerateAt(int x, int y, Tile& tile, World* world, std::unordered_map<Vivium::Vector2<int>, Structure::ID>& structures) const
 	{
 		float noise = m_HeightNoise.Get(x, y);
 		tile.background = m_GetTileFromHeightMap(m_HeightToTileMap, noise);
@@ -198,11 +198,11 @@ namespace Game {
 	void Biome::Init(unsigned int seed)
 	{
 		m_Biomes = {
-			nullptr,										// VOID
-			(Biome::BiomeGen*)new Biome::ForestBiome(seed),	// PLAIN
-			(Biome::BiomeGen*)new Biome::ForestBiome(seed),	// FOREST
-			(Biome::BiomeGen*)new Biome::DesertBiome(seed),	// DESERT
-			(Biome::BiomeGen*)new Biome::RiverBiome(seed)		// RIVER
+			nullptr,							// VOID
+			(Generator*)new Forest(seed),	// PLAIN TODO: plains biome
+			(Generator*)new Forest(seed),	// FOREST
+			(Generator*)new Desert(seed),	// DESERT
+			(Generator*)new Lake(seed)		// RIVER
 		};
 	}
 
@@ -210,22 +210,22 @@ namespace Game {
 
 	void Biome::Terminate()
 	{
-		// TODO: don't need to do a dynamic cast here?
-		// DELETE_BIOME_PTR(Biome::ID::VOID);
-		DELETE_BIOME_PTR(Biome::ID::PLAIN);
-		DELETE_BIOME_PTR(Biome::ID::FOREST);
-		DELETE_BIOME_PTR(Biome::ID::DESERT);
-		DELETE_BIOME_PTR(Biome::ID::RIVER);
-		// DELETE_BIOME_PTR(Biome::ID::MAX);
+		for (int i = 1; i < (int)Biome::ID::MAX; i++) {
+			Generator* biome_gen = m_Biomes[i];
+
+			if (biome_gen != nullptr) {
+				delete biome_gen;
+			}
+		}
 	}
 
-	const Biome::BiomeGen* Biome::GetBiome(const ID& id)
+	const Biome::Generator* Biome::GetBiome(const ID& id)
 	{
 		return m_Biomes[(uint8_t)id];
 	}
 
-	Biome::DesertBiome::DesertBiome(unsigned int seed)
-		: BiomeGen::BiomeGen(seed)
+	Biome::Desert::Desert(unsigned int seed)
+		: Generator::Generator(seed)
 	{
 		m_HeightNoise.m_Seed = seed;
 		m_CactusNoise.m_Seed = seed;
@@ -236,7 +236,7 @@ namespace Game {
 		m_HeightNoise.wavelength = 4;
 	}
 
-	void Biome::DesertBiome::SpawnNPCs(int x, int y, Region& region, World* world) const
+	void Biome::Desert::SpawnNPCs(int x, int y, Region& region, World* world) const
 	{
 		// Spawning animals
 		float noise = m_AnimalNoise.Get(x, y);
@@ -263,7 +263,7 @@ namespace Game {
 		}
 	}
 
-	void Biome::DesertBiome::GenerateAt(int x, int y, Tile& tile, World* world, std::unordered_map<Vivium::Vector2<int>, Structure::ID>& structures) const
+	void Biome::Desert::GenerateAt(int x, int y, Tile& tile, World* world, std::unordered_map<Vivium::Vector2<int>, Structure::ID>& structures) const
 	{
 		tile.background = m_GetTileFromHeightMap(m_HeightToTileMap, m_HeightNoise.Get(x, y));
 
@@ -296,26 +296,26 @@ namespace Game {
 		}
 	}
 
-	Biome::RiverBiome::RiverBiome(unsigned int seed)
-		: BiomeGen::BiomeGen(seed)
+	Biome::Lake::Lake(unsigned int seed)
+		: Generator::Generator(seed)
 	{
 		m_HeightNoise.m_Seed = seed;
 		m_HeightNoise.wavelength = 4;
 	}
 
-	void Biome::RiverBiome::SpawnNPCs(int x, int y, Region& region, World* world) const
+	void Biome::Lake::SpawnNPCs(int x, int y, Region& region, World* world) const
 	{
 		if (world->GetIsObstacle({ x, y })) return;
 
 		// TODO: slimes coming from the river seems like it makes sense?
 	}
 
-	void Biome::RiverBiome::GenerateAt(int x, int y, Tile& tile, World* world, std::unordered_map<Vivium::Vector2<int>, Structure::ID>& structures) const
+	void Biome::Lake::GenerateAt(int x, int y, Tile& tile, World* world, std::unordered_map<Vivium::Vector2<int>, Structure::ID>& structures) const
 	{
 		tile.background = m_GetTileFromHeightMap(m_HeightToTileMap, m_HeightNoise.Get(x, y));
 	}
 
-	Biome::BiomeGen::BiomeGen(unsigned int seed)
+	Biome::Generator::Generator(unsigned int seed)
 		: m_Seed(seed)
 	{}
 }

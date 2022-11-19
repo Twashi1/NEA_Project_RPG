@@ -257,11 +257,11 @@ namespace Vivium {
 		++m_Count;
 	}
 
-	Batch::BatchData Batch::End() const
+	Batch::RenderData Batch::End() const
 	{
 		VIVIUM_SCOPE;
 
-		BatchData data;
+		RenderData data;
 
 		if (m_Count != 0) {
 			data.vertex_buffer = std::make_shared<VertexBuffer>(m_Vertices, m_VerticesIndex + 1, *m_Layout);
@@ -283,15 +283,15 @@ namespace Vivium {
 		delete[] m_Indices;
 	}
 
-	Batch::BatchData::BatchData()
+	Batch::RenderData::RenderData()
 		: vertex_buffer(nullptr), index_buffer(nullptr), count(0)
 	{}
 
-	Batch::BatchData::BatchData(const BatchData& other)
+	Batch::RenderData::RenderData(const RenderData& other)
 		: vertex_buffer(other.vertex_buffer), index_buffer(other.index_buffer), count(other.count)
 	{}
 
-	Batch::BatchData::BatchData(BatchData&& other) noexcept
+	Batch::RenderData::RenderData(RenderData&& other) noexcept
 		: vertex_buffer(std::move(other.vertex_buffer)), index_buffer(std::move(other.index_buffer)), count(std::move(other.count))
 	{}
 }

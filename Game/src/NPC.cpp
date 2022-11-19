@@ -5,10 +5,12 @@
 namespace Game {
 	World* NPC::world = nullptr;
 	std::shared_ptr<Vivium::Shader> NPC::m_Shader = nullptr;
+	std::unique_ptr<Vivium::Shader> NPC::m_HealthbarShader = nullptr;
 
 #define NEW_BEHAVIOUR_PTR(T, ...) std::make_shared<T>(T::Global(__VA_ARGS__))
 
 	std::array<NPC::Properties, (uint8_t)NPC::ID::MAX> NPC::m_Properties = {
+		// COWS VVV
 		Properties({0, 4}, {
 			NEW_BEHAVIOUR_PTR(Behaviours::Wandering, 800.0f, {0.5f, 1.0f}, 300.0f, 1000.0f),
 			NEW_BEHAVIOUR_PTR(Behaviours::Idle, 3.0f)
@@ -21,7 +23,7 @@ namespace Game {
 			NEW_BEHAVIOUR_PTR(Behaviours::SlimeAttack, 800.0f, 200.0f, 10.0f, 0.0f, 10.0f, nullptr),
 			NEW_BEHAVIOUR_PTR(Behaviours::Hunting, 500.0f, 1000.0f, Behaviours::Wandering::Global(800.0f, {0.5f, 1.0f}, 300.0f, 1000.0f)),
 			NEW_BEHAVIOUR_PTR(Behaviours::Idle, 0.0f)
-		})
+		}) // SLIMES ^^^
 	};
 
 #undef NEW_BEHAVIOUR_PTR
@@ -46,6 +48,7 @@ namespace Game {
 	void NPC::Init()
 	{
 		m_Shader = std::make_shared<Vivium::Shader>("texture_vertex", "npc_frag");
+		m_HealthbarShader = std::make_unique<Vivium::Shader>("healthbar_vertex", "healthbar_frag");
 	}
 
 	NPC::NPC(const NPC::ID& id, std::shared_ptr<Vivium::Body> body, const BehaviourDataMap& data)
@@ -85,6 +88,21 @@ namespace Game {
 		if (m_CurrentBehaviour->IsOver(this, current_behaviour_data)) {
 			m_CurrentBehaviourIndex = (m_CurrentBehaviourIndex + 1) % behaviours.size();
 			m_BeginBehaviour = true;
+		}
+	}
+
+	void NPC::Submit(Vivium::Batch* npc_batch, Vivium::Batch* healthbar_batch) const
+	{
+		// TODO: precompute tex coords
+		std::array<float, 8> npc_tex = TextureManager::game_atlas->GetCoordsArray(current_texture_index);
+
+		// Submit npc vertices and texture coords
+		npc_batch->Submit(body->quad->GetCenter(), body->quad->GetDim(), &npc_tex[0]);
+
+		// Submit npc healthbar
+		// If we're not at 100% health
+		if (health.GetNormalised() == 1.0f) {
+			// TODO
 		}
 	}
 
@@ -687,7 +705,7 @@ new_data_ptr = dynamic_pointer_cast<Behaviours::Behaviour::Client>(data_ptr);
 		}
 	}
 
-	float Health::GetNormalised()
+	float Health::GetNormalised() const
 	{
 		return value / max;
 	}

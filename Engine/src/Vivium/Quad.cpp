@@ -6,13 +6,13 @@
 namespace Vivium {
 	IndexBuffer* Quad::ib = nullptr;
 	BufferLayout* Quad::layout = nullptr;
-	bool Quad::s_shouldCreateVB = true;
+	bool Quad::s_ShouldSuppressVB = true;
 
 	void Quad::m_Update()
 	{
 		VIVIUM_SCOPE;
 
-		if (s_shouldCreateVB && vb != nullptr) {
+		if (s_ShouldSuppressVB && vb != nullptr) {
 			std::array<Vector2<float>, 4> vertices = GetVertices();
 
 			float vertex_data[16] = {
@@ -38,7 +38,7 @@ namespace Vivium {
 		};
 
 
-		if (s_shouldCreateVB) {
+		if (s_ShouldSuppressVB) {
 			std::array<Vector2<float>, 4> vertices = GetVertices();
 
 			float vertex_data[16] = {
@@ -204,9 +204,9 @@ namespace Vivium {
 		return ib;
 	}
 
-	void Quad::SetVBCreation(bool value)
+	void Quad::SetVBSuppression(bool value)
 	{
-		s_shouldCreateVB = value;
+		s_ShouldSuppressVB = value;
 	}
 
 	Quad::Quad()

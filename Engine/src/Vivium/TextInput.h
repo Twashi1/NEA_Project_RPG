@@ -8,7 +8,7 @@
 #include "Application.h"
 
 namespace Vivium {
-	// TODO: rename "empty_text" to "hint_text"
+	// TODO: rename "m_HintText" to "m_HintText"
 	class VIVIUM_API TextInput {
 	public:
 		typedef void (*CallbackFunc_t)(TextInput*, void*); // Shorthand for a callback function pointer (takes the text input that was entered as a paramater)
@@ -16,7 +16,7 @@ namespace Vivium {
 		static std::shared_ptr<Animation> m_TypingBar; // Animation for the bar that shows where your cursor currently is
 		static RGBColor m_DefaultEmptyColor; // Default color for text that displays when input is empty
 		static RGBColor m_DefaultTypedColor; // Default color for text that user has typed in
-		static std::string m_DefaultEmptyText; // Default text that displays when box is empty
+		static std::string m_DefaultHintText; // Default text that displays when box is empty
 		static std::shared_ptr<Font> m_DefaultFont;
 		static std::shared_ptr<Shader> m_DefaultBgShader;
 		static std::shared_ptr<Shader> m_TextShader;
@@ -35,18 +35,18 @@ namespace Vivium {
 		float m_StallTime = 0.0; // After typing a letter, the typing bar stays visible for a small amount of time extra, this tracks how long it has to stall for
 		Timer m_Timer;
 
-		bool isTyping = false;
+		bool m_IsTyping = false;
 		int m_TypingIndex = 0; // Current index of where we're typing in the string
 
 		std::size_t m_CharLimit = 20;
 
-		RGBColor m_EmptyColor; // Color for "empty_text"
+		RGBColor m_HintColor; // Color for "m_HintText"
 		RGBColor m_TypedColor; // Color for text user typed in
 
 		std::shared_ptr<Text> m_Text = nullptr;
 
 		// TODO: ALLOW USER TO SET THIS
-		std::string empty_text;	// Text that displays when textinput is empty
+		std::string m_HintText;	// Text that displays when textinput is empty
 
 		// Updates the text based on user input
 		void m_UpdateText();
@@ -76,6 +76,7 @@ namespace Vivium {
 		std::shared_ptr<Text> GetText();
 
 		void SetUserParams(void* userParams);
+		void SetHintText(const std::string& text);
 
 		void SetCharLimit(const std::size_t& char_limit);
 

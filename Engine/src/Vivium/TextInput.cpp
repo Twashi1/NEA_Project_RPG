@@ -4,7 +4,7 @@ namespace Vivium {
 	std::shared_ptr<Animation> TextInput::m_TypingBar = nullptr;
 	RGBColor TextInput::m_DefaultEmptyColor = RGBColor(0.0f, 0.0f, 0.0f);
 	RGBColor TextInput::m_DefaultTypedColor = RGBColor(0.0f, 0.0f, 0.0f);
-	std::string TextInput::m_DefaultEmptyText = "";
+	std::string TextInput::m_DefaultHintText = "";
 	std::shared_ptr<Font> TextInput::m_DefaultFont = nullptr;
 	std::shared_ptr<Shader> TextInput::m_DefaultBgShader = nullptr;
 	std::shared_ptr<Shader> TextInput::m_TextShader = nullptr;
@@ -25,7 +25,7 @@ namespace Vivium {
 
 		m_DefaultEmptyColor = { 0.3f, 0.3f, 0.3f };
 		m_DefaultTypedColor = { 0.0f, 0.0f, 0.0f };
-		m_DefaultEmptyText = "Type here...";
+		m_DefaultHintText = "Type here...";
 		m_DefaultFont = Text::GetDefaultFont();
 
 		m_DefaultBgShader = std::make_shared<Shader>("static_vertex", "transparency_frag");
@@ -42,6 +42,8 @@ namespace Vivium {
 
 	void TextInput::SetUserParams(void* userParams) { m_UserParams = userParams; }
 
+	void TextInput::SetHintText(const std::string& new_text) { m_HintText = new_text; }
+
 	void TextInput::SetCharLimit(const std::size_t& char_limit)
 	{
 		m_CharLimit = char_limit;
@@ -55,7 +57,7 @@ namespace Vivium {
 	{
 		bool withinQuad = quad->Contains(cursor_pos);
 
-		if (withinQuad || isTyping) {
+		if (withinQuad || m_IsTyping) {
 			m_TypingOnAnyInput = true;
 			Application::SetCursor(Application::CURSOR_TYPE::TYPING);
 		}
@@ -66,11 +68,11 @@ namespace Vivium {
 		if (lmb_state == Input::State::RELEASE) {
 			// They clicked on us
 			if (withinQuad) {
-				isTyping = true;
+				m_IsTyping = true;
 			}
 			// They clicked somewhere not on us
 			else {
-				isTyping = false;
+				m_IsTyping = false;
 			}
 		}
 	}
@@ -79,7 +81,7 @@ namespace Vivium {
 	{
 		Vector2<float> pos = quad->GetCenter();
 		pos.x -= (quad->GetWidth() / 2.0f) - m_Offset;
-		m_Text = std::make_shared<Text>(empty_text, pos, m_TextShader, Text::Alignment::LEFT, m_DefaultScale);
+		m_Text = std::make_shared<Text>(m_HintText, pos, m_TextShader, Text::Alignment::LEFT, m_DefaultScale);
 	}
 
 	void TextInput::m_UpdateText()
@@ -162,7 +164,7 @@ namespace Vivium {
 				// Submit the text
 				callback(this, m_UserParams);
 				// No longer typing (make subroutine probably so other events that need to happen, happen
-				isTyping = false;
+				m_IsTyping = false;
 				// TODO: move to next text input box
 				// Stop parsing any other characters inputted
 				break;
@@ -177,7 +179,7 @@ namespace Vivium {
 		float elapsed = m_Timer.GetElapsed();
 
 		// If we're currently typing
-		if (isTyping) {
+		if (m_IsTyping) {
 			m_UpdateText();
 			m_Text->SetText(typed_text);
 			m_Text->FixToWidth(quad->GetWidth());
@@ -186,9 +188,9 @@ namespace Vivium {
 		else {
 			// Not typing and no text typed currently
 			if (typed_text == "") {
-				m_Text->SetText(empty_text);
+				m_Text->SetText(m_HintText);
 				m_Text->FixToWidth(quad->GetWidth());
-				m_Text->shader->Bind(); m_Text->shader->SetUniform3f("u_TextColor", m_EmptyColor.r, m_EmptyColor.g, m_EmptyColor.b);
+				m_Text->shader->Bind(); m_Text->shader->SetUniform3f("u_TextColor", m_HintColor.r, m_HintColor.g, m_HintColor.b);
 			}
 		}
 
@@ -196,43 +198,43 @@ namespace Vivium {
 	}
 
 	TextInput::TextInput(const Quad& quad, CallbackFunc_t callback, void* userParams, int offset)
-		: quad(std::make_shared<Quad>(quad)), callback(callback), bg_shader(m_DefaultBgShader), bg_texture(nullptr), empty_text(m_DefaultEmptyText),
-		m_EmptyColor(m_DefaultEmptyColor), m_TypedColor(m_DefaultTypedColor), m_Offset(offset), m_UserParams(userParams)
+		: quad(std::make_shared<Quad>(quad)), callback(callback), bg_shader(m_DefaultBgShader), bg_texture(nullptr), m_HintText(m_DefaultHintText),
+		m_HintColor(m_DefaultEmptyColor), m_TypedColor(m_DefaultTypedColor), m_Offset(offset), m_UserParams(userParams)
 	{
 		m_Construct();
 	}
 
 	TextInput::TextInput(const Quad& quad, CallbackFunc_t callback, std::shared_ptr<Shader> bg_shader, void* userParams, int offset)
-		: quad(std::make_shared<Quad>(quad)), callback(callback), bg_shader(bg_shader), bg_texture(nullptr), empty_text(m_DefaultEmptyText),
-		m_EmptyColor(m_DefaultEmptyColor), m_TypedColor(m_DefaultTypedColor), m_Offset(offset), m_UserParams(userParams)
+		: quad(std::make_shared<Quad>(quad)), callback(callback), bg_shader(bg_shader), bg_texture(nullptr), m_HintText(m_DefaultHintText),
+		m_HintColor(m_DefaultEmptyColor), m_TypedColor(m_DefaultTypedColor), m_Offset(offset), m_UserParams(userParams)
 	{
 		m_Construct();
 	}
 
 	TextInput::TextInput(const Quad& quad, CallbackFunc_t callback, std::shared_ptr<Shader> bg_shader, std::shared_ptr<Texture> bg_texture, void* userParams, int offset)
-		: quad(std::make_shared<Quad>(quad)), callback(callback), bg_shader(bg_shader), bg_texture(bg_texture), empty_text(m_DefaultEmptyText),
-		m_EmptyColor(m_DefaultEmptyColor), m_TypedColor(m_DefaultTypedColor), m_Offset(offset), m_UserParams(userParams)
+		: quad(std::make_shared<Quad>(quad)), callback(callback), bg_shader(bg_shader), bg_texture(bg_texture), m_HintText(m_DefaultHintText),
+		m_HintColor(m_DefaultEmptyColor), m_TypedColor(m_DefaultTypedColor), m_Offset(offset), m_UserParams(userParams)
 	{
 		m_Construct();
 	}
 
 	TextInput::TextInput(const Quad& quad, CallbackFunc_t callback, const RGBColor& typed_color, const RGBColor& empty_color, void* userParams, int offset)
-		: quad(std::make_shared<Quad>(quad)), callback(callback), bg_shader(m_DefaultBgShader), bg_texture(nullptr), empty_text(m_DefaultEmptyText),
-		m_EmptyColor(empty_color), m_TypedColor(typed_color), m_Offset(offset), m_UserParams(userParams)
+		: quad(std::make_shared<Quad>(quad)), callback(callback), bg_shader(m_DefaultBgShader), bg_texture(nullptr), m_HintText(m_DefaultHintText),
+		m_HintColor(empty_color), m_TypedColor(typed_color), m_Offset(offset), m_UserParams(userParams)
 	{
 		m_Construct();
 	}
 
 	TextInput::TextInput(const Quad& quad, CallbackFunc_t callback, const RGBColor& typed_color, const RGBColor& empty_color, std::shared_ptr<Shader> bg_shader, void* userParams, int offset)
-		: quad(std::make_shared<Quad>(quad)), callback(callback), bg_shader(bg_shader), bg_texture(nullptr), empty_text(m_DefaultEmptyText),
-		m_EmptyColor(empty_color), m_TypedColor(typed_color), m_Offset(offset), m_UserParams(userParams)
+		: quad(std::make_shared<Quad>(quad)), callback(callback), bg_shader(bg_shader), bg_texture(nullptr), m_HintText(m_DefaultHintText),
+		m_HintColor(empty_color), m_TypedColor(typed_color), m_Offset(offset), m_UserParams(userParams)
 	{
 		m_Construct();
 	}
 
 	TextInput::TextInput(const Quad& quad, CallbackFunc_t callback, const RGBColor& typed_color, const RGBColor& empty_color, std::shared_ptr<Shader> bg_shader, std::shared_ptr<Texture> bg_texture, void* userParams, int offset)
-		: quad(std::make_shared<Quad>(quad)), callback(callback), bg_shader(bg_shader), bg_texture(bg_texture), empty_text(m_DefaultEmptyText),
-		m_EmptyColor(empty_color), m_TypedColor(typed_color), m_Offset(offset), m_UserParams(userParams)
+		: quad(std::make_shared<Quad>(quad)), callback(callback), bg_shader(bg_shader), bg_texture(bg_texture), m_HintText(m_DefaultHintText),
+		m_HintColor(empty_color), m_TypedColor(typed_color), m_Offset(offset), m_UserParams(userParams)
 	{
 		m_Construct();
 	}
@@ -271,7 +273,7 @@ namespace Vivium {
 
 	bool TextInput::GetIsTyping()
 	{
-		return isTyping;
+		return m_IsTyping;
 	}
 
 	Vector2<float> TextInput::GetPos() const

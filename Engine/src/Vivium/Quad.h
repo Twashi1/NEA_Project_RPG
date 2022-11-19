@@ -19,7 +19,7 @@ namespace Vivium {
 		// TODO: names
 		static IndexBuffer* ib;
 		static BufferLayout* layout;
-		static bool s_shouldCreateVB;
+		static bool s_ShouldSuppressVB;
 
 		// Buffers
 		// TODO: name, unique?
@@ -51,7 +51,7 @@ namespace Vivium {
 		const std::shared_ptr<VertexBuffer> GetVertexBuffer() const;
 		static const IndexBuffer* GetIndexBuffer();
 
-		static void SetVBCreation(bool value);
+		static void SetVBSuppression(bool value);
 
 		Quad();
 		Quad(float x, float y, float width, float height, float angle = 0.0f);
