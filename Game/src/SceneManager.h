@@ -62,7 +62,7 @@ namespace Game {
 		
 		std::shared_ptr<Vivium::Button> m_BackButton; // Takes back to start screen
 
-		// TODO: what is this
+		// Void array for data to be passed to game scene
 		void* params;
 
 		// World seed
@@ -89,9 +89,11 @@ namespace Game {
 	private:
 		SceneManager* m_Manager;
 
+		// Callback for fps and volume sliders
 		static void s_FPSCallback(Vivium::Slider* slider, void* user_params);
 		static void s_VolumeCallback(Vivium::Slider* slider, void* user_params);
 
+		// Min/Max fps for the FPS slider
 		static constexpr int FPS_MIN = 60;
 		static constexpr int FPS_MAX = 240;
 
@@ -135,6 +137,10 @@ namespace Game {
 
 		// For the load world scene, it should display all the worlds you have available as small rectangles with the world name, maybe file size, date of creation, etc.
 		// TODO: size, and creation data
+		/// <summary>
+		/// A button that displays the world name, clicking on a button loads a specific world, this struct holds the information
+		/// required for display and loading the relevant world
+		/// </summary>
 		struct VisualWorldSelectable {
 			// TODO: unique?
 			std::shared_ptr<Vivium::Button> select_button;

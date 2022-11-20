@@ -63,6 +63,9 @@ namespace Game {
 		static std::shared_ptr<HandEquipable> CreateInstance(const Item::ID& id);
 	};
 	
+	/// <summary>
+	/// HandEquipable specialisation for tools. No extra data, just a rendering thing
+	/// </summary>
 	class ToolEquipable : public HandEquipable {
 	protected:
 		static std::unique_ptr<Vivium::Shader> m_ShaderDefault;
@@ -76,7 +79,7 @@ namespace Game {
 	};
 
 	/// <summary>
-	/// Weapon specialisation of HandEquipable, weapons shoot a projectile which does damage on contact
+	/// Handequipable specialisation, weapons shoot a projectile which does damage on contact
 	/// Weapons have a set fire rate, damage, and knockback, and the projectile has a maximum range
 	/// </summary>
 	class Weapon : public HandEquipable {

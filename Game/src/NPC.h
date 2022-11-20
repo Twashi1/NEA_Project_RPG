@@ -6,11 +6,11 @@ namespace Game {
 	class World;
 
 	// TODO: move
+	/// <summary>
+	/// Controls health of an NPC, regenerates over time, and has brief invincibility period after taking
+	/// damage
+	/// </summary>
 	struct Health {
-		/// <summary>
-		/// Controls health of an NPC, regenerates over time, and has brief invincibility period after taking
-		/// damage
-		/// </summary>
 		static constexpr float INVINCIBILITY_TIME = 0.5f;
 		Vivium::Timer timer;
 

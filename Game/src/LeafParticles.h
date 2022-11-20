@@ -4,11 +4,11 @@
 #include "TextureManager.h"
 
 namespace Game {
+	/// <summary>
+	/// Specialisation of particle for particle system
+	/// Stores a leaf_type which determines what texture to use for the particle
+	/// </summary>
 	struct LeafParticle : public virtual Vivium::Particle {
-		/// <summary>
-		/// Specialisation of particle for particle system
-		/// Stores a leaf_type which determines what texture to use for the particle
-		/// </summary>
 		uint8_t leaf_type = 0;
 
 		using Particle::IsAlive;
@@ -22,11 +22,11 @@ namespace Game {
 		LeafParticle& operator=(LeafParticle&& other) noexcept;
 	};
 
-	class LeavesParticleSystem : public virtual Vivium::ParticleSystem {
 	/// <summary>
 	/// Specialisation of particle system for leaves, generating them with random textures,
 	/// and controlling motion
 	/// </summary>
+	class LeavesParticleSystem : public virtual Vivium::ParticleSystem {
 	private:
 		static const Vivium::BufferLayout m_Layout;
 

@@ -225,15 +225,6 @@ namespace Game {
 		m_Timer.Start();
 	}
 
-	bool FloorItem::CheckDespawned()
-	{
-		return false;
-	}
-
-	// Leave everything uninitialised
-	// TODO: default this
-	FloorItem::FloorItem() {}
-
 	void FloorItem::Write(Vivium::Serialiser& s) const
 	{
 		s.Write(m_ItemData);

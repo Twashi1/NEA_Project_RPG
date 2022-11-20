@@ -15,6 +15,10 @@ namespace Game {
 
 	// TODO: God class
 	// TODO: make singleton?
+	/// <summary>
+	/// Stores regions, floor items, information about the currently mined tile, particle systems, obstacle map, etc.
+	/// Controls world loading/unloading as well
+	/// </summary>
 	class World {
 	private:
 		Vivium::Serialiser* m_Serialiser; // TODO unique ptr

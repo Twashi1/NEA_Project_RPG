@@ -5,7 +5,7 @@
     - [ ] Use integer ID to differentiate between events
 - [ ] Update and Render methods could have a virtual behind them, also splitting them is inconvenient for a lot of classes 
 - [ ] Vivium Printable? would make some things bigger though
-- Consistent style when overriding function
+- Consistent style when overriding function (virtual x override? or x override)
 - Prefer animator to animation
 
 ## Application
@@ -48,9 +48,9 @@
 - [x] Ambient particles/Particle system
 - [ ] Sound API
     - [x] Sound library
-- [ ] Physics system
+- [x] Physics system
     - [x] Implement broad phase
-    - [ ] Impulse resolution
+    - [x] Impulse resolution
 - [x] Input system
     - [ ] Probably needs an API rework
     - [ ] Fix bad function names
@@ -98,7 +98,7 @@
 
 ## Gameplay
 - [ ] Play block breaking sound in sync with block breaking "animation"
-- [ ] Visual display for health
+- [x] Visual display for health
 - [x] Crafting
     - [x] Recipes system
         - [x] Speed up by precomputing some values in Inventory (item counts)
@@ -110,14 +110,17 @@
     - [ ] Keyboard shortcuts
     - [x] Selected item slot
     - [ ] Sync up better with crafting inventory?
-- [ ] Weapons
+- [x] Weapons
     - [x] Weapon rendering
     - [x] Weapons fire projectiles
-    - [ ] Weapons damage enemies
+    - [x] Weapons damage enemies
 - [ ] Spell system? Buff system? maybe this is useless but i really wanna use those magic circle sprites
 
 ## NPCs
-- [ ] Random spawning even after world load 
+- [ ] Random spawning even after world load
+- [ ] Generalise melee attack behaviour
+- [ ] Flash red when taking damage
+- Spawn slimes in river biome
 
 ## Enemies
 - [x] Enemy AI

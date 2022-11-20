@@ -156,7 +156,6 @@ namespace Game {
 		bool m_InitialMotionEnded = false;
 
 	public:
-		static constexpr float DESPAWN_TIME = 600.0f; // TODO: implement despawning
 		static constexpr float PICKUP_RANGE = 100.0f;
 		static constexpr float MAGNET_RANGE = 230.0f;
 		static constexpr float MAGNET_SPEED = 50000.0f;
@@ -183,12 +182,10 @@ namespace Game {
 		/// </summary>
 		void Update();
 		
-		FloorItem();
+		// Constructor that leaves everything uninitialised for reading
+		FloorItem() = default;
 		FloorItem(const FloorItem& other);
 		FloorItem(const Item& item_data, const Vivium::Vector2<float>& pos, const Vivium::Vector2<float> dim);
-
-		// TODO: implement
-		bool CheckDespawned();
 
 		// Serialiser method
 		void Write(Vivium::Serialiser& s) const override;
@@ -206,7 +203,7 @@ namespace Game {
 }
 
 namespace std {
-	// For printing
+	// For printing/debug
 	template <>
 	struct formatter<Game::Item::ID> : formatter<string> {
 		auto format(Game::Item::ID id, format_context& ctx) {

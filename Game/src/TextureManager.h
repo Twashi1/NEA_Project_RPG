@@ -3,6 +3,9 @@
 #include "Core.h"
 
 namespace Game {
+	/// <summary>
+	/// Stores game and particle texture atlases, and has initialise function for creating them
+	/// </summary>
 	class TextureManager {
 	public:
 		static constexpr int PARTICLE_SIZE = 8;
