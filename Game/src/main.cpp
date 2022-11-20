@@ -1,6 +1,6 @@
 #include "World.h"
 #include "Player.h"
-#include "MainMenu.h"
+#include "SceneManager.h"
 #include "LeafParticles.h"
 
 const int WIDTH = 1080;
@@ -120,7 +120,7 @@ int game(void)
 
     Application::SetBGColor(RGBColor::BLACK);
 
-    MainMenu main_menu{};
+    SceneManager main_menu{};
 
     // Loop until window is closed by user
     while (Application::IsRunning())

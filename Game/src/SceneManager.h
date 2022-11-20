@@ -5,20 +5,18 @@
 #include "Player.h"
 #include "WorldMap.h"
 
-// TODO: check if world already has name when creating new world
-
 namespace Game {
-	class MainMenu;
+	class SceneManager;
 
-	// TODO better sharing of data between scenes
+	// TODO: better sharing of data between scenes
 
-	class StartScene : public Vivium::IScene {
 	/// <summary>
 	/// The title screen displaying a background and the buttons for creating world,
 	/// loading world, and changing options
 	/// </summary>
+	class StartScene : public Vivium::IScene {
 	private:
-		MainMenu* m_Manager = nullptr;
+		SceneManager* m_Manager = nullptr;
 
 		// Sprite for the title
 		std::shared_ptr<Vivium::Sprite> m_TitleSprite;
@@ -33,18 +31,18 @@ namespace Game {
 		std::shared_ptr<Vivium::Shader>  m_BackgroundShader;
 
 	public:
-		StartScene(MainMenu* menu);
+		StartScene(SceneManager* menu);
 		virtual ~StartScene();
 
 		virtual void Render() override;
 		virtual void Update() override;
 	};
 
-	class CreateWorldScene : public Vivium::IScene {
 	/// <summary>
 	/// Creating world screen, displaying boxes to enter information about the world,
 	/// error text if the user typed a world that already exists, and a confirmation box
 	/// </summary>
+	class CreateWorldScene : public Vivium::IScene {
 	private:
 		// Entry boxes for name and seed
 		std::shared_ptr<Vivium::TextInput> m_NameInputBox;
@@ -77,19 +75,19 @@ namespace Game {
 		void m_ConfirmCallback(Vivium::Button* button, void* user_params);
 
 	public:
-		CreateWorldScene(MainMenu* menu);
+		CreateWorldScene(SceneManager* menu);
 		virtual ~CreateWorldScene();
 
 		virtual void Render() override;
 		virtual void Update() override;
 	};
 
-	class OptionsScene : public Vivium::IScene {
 	/// <summary>
 	/// Displays various options the player can change before getting into game
 	/// </summary>
+	class OptionsScene : public Vivium::IScene {
 	private:
-		MainMenu* m_Manager;
+		SceneManager* m_Manager;
 
 		static void s_FPSCallback(Vivium::Slider* slider, void* user_params);
 		static void s_VolumeCallback(Vivium::Slider* slider, void* user_params);
@@ -112,17 +110,17 @@ namespace Game {
 		std::shared_ptr<Vivium::Button> m_BackButton;
 
 	public:
-		OptionsScene(MainMenu* manager);
+		OptionsScene(SceneManager* manager);
 		virtual ~OptionsScene() = default;
 		
 		virtual void Render() override;
 		virtual void Update() override;
 	};
 
-	class LoadWorldScene : public Vivium::IScene {
 	/// <summary>
 	/// Displays list of existing worlds to select from
 	/// </summary>
+	class LoadWorldScene : public Vivium::IScene {
 	private:
 		// user_params: LoadWorldScene*, VisualWorldSelectable*
 		static void s_SelectedWorldCallback(Vivium::Button* button, void* user_params);
@@ -149,7 +147,7 @@ namespace Game {
 			~VisualWorldSelectable();
 		};
 
-		MainMenu* m_Manager = nullptr;
+		SceneManager* m_Manager = nullptr;
 
 		// List of possible worlds to select from
 		std::vector<VisualWorldSelectable> m_Worlds;
@@ -158,17 +156,17 @@ namespace Game {
 		std::shared_ptr<Vivium::Button> m_BackButton; // Takes back to start screen
 
 	public:
-		LoadWorldScene(MainMenu* menu);
+		LoadWorldScene(SceneManager* menu);
 		virtual ~LoadWorldScene();
 
 		virtual void Render() override;
 		virtual void Update() override;
 	};
 
-	class GameScene : public Vivium::IScene {
 	/// <summary>
 	/// The actual game itself, with the player, world, etc.
 	/// </summary>
+	class GameScene : public Vivium::IScene {
 	private:
 		World* m_World = nullptr;
 		Player* m_Player = nullptr;
@@ -181,10 +179,10 @@ namespace Game {
 		virtual void Update() override;
 	};
 
-	class MainMenu {
 	/// <summary>
 	/// Managing the scene that should be displayed, also storing the scene
 	/// </summary>
+	class SceneManager {
 	public:
 		enum class SceneID : int {
 			START =			0x0062BF01,
@@ -195,14 +193,14 @@ namespace Game {
 		};
 
 	private:
-		template <MainMenu::SceneID id>
+		template <SceneManager::SceneID id>
 		struct SceneType { using type = Vivium::IScene; };
 
-		template <> struct SceneType<MainMenu::SceneID::START>			{ using type = StartScene; };
-		template <> struct SceneType<MainMenu::SceneID::CREATE_WORLD>	{ using type = CreateWorldScene; };
-		template <> struct SceneType<MainMenu::SceneID::LOAD_WORLD>		{ using type = LoadWorldScene; };
-		template <> struct SceneType<MainMenu::SceneID::GAME>			{ using type = GameScene; };
-		template <> struct SceneType<MainMenu::SceneID::OPTIONS>		{ using type = OptionsScene; };
+		template <> struct SceneType<SceneManager::SceneID::START>			{ using type = StartScene; };
+		template <> struct SceneType<SceneManager::SceneID::CREATE_WORLD>	{ using type = CreateWorldScene; };
+		template <> struct SceneType<SceneManager::SceneID::LOAD_WORLD>		{ using type = LoadWorldScene; };
+		template <> struct SceneType<SceneManager::SceneID::GAME>			{ using type = GameScene; };
+		template <> struct SceneType<SceneManager::SceneID::OPTIONS>		{ using type = OptionsScene; };
 
 		std::unordered_map<SceneID, Vivium::IScene*> m_Scenes;
 		SceneID m_CurrentSceneID;
@@ -225,8 +223,8 @@ namespace Game {
 		void m_DeallocateUnusedScenes();
 
 	public:
-		MainMenu();
-		~MainMenu();
+		SceneManager();
+		~SceneManager();
 
 		void Update();
 		void Render();
@@ -242,15 +240,15 @@ namespace Game {
 namespace std {
 	// Formatter debug
 	template <>
-	struct formatter<Game::MainMenu::SceneID> : formatter<string> {
-		auto format(Game::MainMenu::SceneID id, format_context& ctx) {
+	struct formatter<Game::SceneManager::SceneID> : formatter<string> {
+		auto format(Game::SceneManager::SceneID id, format_context& ctx) {
 			std::string id_string;
 
 			switch (id) {
-			case Game::MainMenu::SceneID::START:		id_string = "Start";		break;
-			case Game::MainMenu::SceneID::CREATE_WORLD:	id_string = "Create World";	break;
-			case Game::MainMenu::SceneID::LOAD_WORLD:	id_string = "Load World";	break;
-			case Game::MainMenu::SceneID::GAME:			id_string = "Game";			break;
+			case Game::SceneManager::SceneID::START:		id_string = "Start";		break;
+			case Game::SceneManager::SceneID::CREATE_WORLD:	id_string = "Create World";	break;
+			case Game::SceneManager::SceneID::LOAD_WORLD:	id_string = "Load World";	break;
+			case Game::SceneManager::SceneID::GAME:			id_string = "Game";			break;
 			default:									id_string = "InvalidID";	break;
 			}
 

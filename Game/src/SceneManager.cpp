@@ -1,53 +1,53 @@
-#include "MainMenu.h"
+#include "SceneManager.h"
 
 namespace Game {
-	void MainMenu::s_BackButtonCallback(Vivium::Button* button, void* params)
+	void SceneManager::s_BackButtonCallback(Vivium::Button* button, void* params)
 	{
-		MainMenu* main_menu_instance = (MainMenu*)params;
+		SceneManager* main_menu_instance = (SceneManager*)params;
 		main_menu_instance->m_BackButtonCallback(button);
 	}
 
-	void MainMenu::m_BackButtonCallback(Vivium::Button* button)
+	void SceneManager::m_BackButtonCallback(Vivium::Button* button)
 	{
 		m_LoadScene(SceneID::START);
 	}
 
-	void MainMenu::s_CreateWorldCallback(Vivium::Button* button, void* params)
+	void SceneManager::s_CreateWorldCallback(Vivium::Button* button, void* params)
 	{
 		// Params contains a pointer to an instance of the title screen class
-		MainMenu* title_screen_instance = (MainMenu*)params;
+		SceneManager* title_screen_instance = (SceneManager*)params;
 		// Use instance to call start game
 		title_screen_instance->m_CreateWorldCallback(button);
 	}
 
-	void MainMenu::m_CreateWorldCallback(Vivium::Button* button)
+	void SceneManager::m_CreateWorldCallback(Vivium::Button* button)
 	{
 		m_LoadScene(SceneID::CREATE_WORLD);
 	}
 
-	void MainMenu::s_LoadWorldCallback(Vivium::Button* button, void* params)
+	void SceneManager::s_LoadWorldCallback(Vivium::Button* button, void* params)
 	{
-		MainMenu* main_menu = (MainMenu*)params;
+		SceneManager* main_menu = (SceneManager*)params;
 		main_menu->m_LoadWorldCallback(button);
 	}
 
-	void MainMenu::m_LoadWorldCallback(Vivium::Button* button)
+	void SceneManager::m_LoadWorldCallback(Vivium::Button* button)
 	{
 		m_LoadScene(SceneID::LOAD_WORLD);
 	}
 
-	void MainMenu::s_OptionsCallback(Vivium::Button* button, void* params)
+	void SceneManager::s_OptionsCallback(Vivium::Button* button, void* params)
 	{
-		MainMenu* main_menu = (MainMenu*)params;
+		SceneManager* main_menu = (SceneManager*)params;
 		main_menu->m_OptionsCallback(button);
 	}
 
-	void MainMenu::m_OptionsCallback(Vivium::Button* button)
+	void SceneManager::m_OptionsCallback(Vivium::Button* button)
 	{
 		m_LoadScene(SceneID::OPTIONS);
 	}
 
-	void MainMenu::m_LoadScene(const SceneID& id)
+	void SceneManager::m_LoadScene(const SceneID& id)
 	{
 		Vivium::IScene*& scene_ptr = m_Scenes.at(id);
 
@@ -56,11 +56,11 @@ namespace Game {
 		}
 		else {
 			switch (id) {
-			case SceneID::START:		scene_ptr = new SceneType<MainMenu::SceneID::START>::type(this);		break;
-			case SceneID::CREATE_WORLD: scene_ptr = new SceneType<MainMenu::SceneID::CREATE_WORLD>::type(this);	break;
-			case SceneID::LOAD_WORLD:	scene_ptr = new SceneType<MainMenu::SceneID::LOAD_WORLD>::type(this);	break;
-			case SceneID::GAME:			scene_ptr = new SceneType<MainMenu::SceneID::GAME>::type(0, "", true);	break;
-			case SceneID::OPTIONS:		scene_ptr = new SceneType<MainMenu::SceneID::OPTIONS>::type(this);		break;
+			case SceneID::START:		scene_ptr = new SceneType<SceneManager::SceneID::START>::type(this);		break;
+			case SceneID::CREATE_WORLD: scene_ptr = new SceneType<SceneManager::SceneID::CREATE_WORLD>::type(this);	break;
+			case SceneID::LOAD_WORLD:	scene_ptr = new SceneType<SceneManager::SceneID::LOAD_WORLD>::type(this);	break;
+			case SceneID::GAME:			scene_ptr = new SceneType<SceneManager::SceneID::GAME>::type(0, "", true);	break;
+			case SceneID::OPTIONS:		scene_ptr = new SceneType<SceneManager::SceneID::OPTIONS>::type(this);		break;
 			default: LogWarn("Invalid scene ID"); break;
 			}
 		}
@@ -68,7 +68,7 @@ namespace Game {
 		m_CurrentSceneID = id;
 	}
 
-	void MainMenu::m_LoadScene(const SceneID& id, Vivium::IScene* scene)
+	void SceneManager::m_LoadScene(const SceneID& id, Vivium::IScene* scene)
 	{
 		Vivium::IScene*& scene_ptr = m_Scenes.at(id);
 
@@ -82,7 +82,7 @@ namespace Game {
 		m_CurrentSceneID = id;
 	}
 
-	void MainMenu::m_DeallocateUnusedScenes()
+	void SceneManager::m_DeallocateUnusedScenes()
 	{
 		for (auto& [scene_id, scene_ptr] : m_Scenes) {
 			if (scene_id != m_CurrentSceneID && scene_ptr != nullptr) {
@@ -93,7 +93,7 @@ namespace Game {
 		}
 	}
 
-	MainMenu::MainMenu()
+	SceneManager::SceneManager()
 		: m_CurrentSceneID(SceneID::START),
 		m_Scenes({
 			{ SceneID::START,			nullptr },
@@ -106,7 +106,7 @@ namespace Game {
 		m_LoadScene(SceneID::START);
 	}
 
-	MainMenu::~MainMenu()
+	SceneManager::~SceneManager()
 	{
 		for (auto& [scene_id, scene_ptr] : m_Scenes) {
 			if (scene_ptr != nullptr) {
@@ -115,7 +115,7 @@ namespace Game {
 		}
 	}
 
-	void MainMenu::Update()
+	void SceneManager::Update()
 	{
 		Vivium::IScene*& scene_ptr = m_Scenes.at(m_CurrentSceneID);
 
@@ -128,7 +128,7 @@ namespace Game {
 		m_DeallocateUnusedScenes();
 	}
 
-	void MainMenu::Render()
+	void SceneManager::Render()
 	{
 		Vivium::IScene*& scene_ptr = m_Scenes.at(m_CurrentSceneID);
 
@@ -139,7 +139,7 @@ namespace Game {
 		scene_ptr->Render();
 	}
 
-	StartScene::StartScene(MainMenu* menu)
+	StartScene::StartScene(SceneManager* menu)
 		: m_Manager(menu)
 	{
 		Vivium::Vector2<float> bg_sprite_dim = { 1024.0f, 576.0f };
@@ -154,21 +154,21 @@ namespace Game {
 
 		m_CreateWorldButton = std::make_shared<Vivium::Button>(
 			Vivium::Quad(0.0f, -50.0f, 400.0f, 100.0f),
-			&MainMenu::s_CreateWorldCallback,
+			&SceneManager::s_CreateWorldCallback,
 			std::string("New World"),
 			(void*)menu
 		);
 
 		m_LoadWorldButton = std::make_shared<Vivium::Button>(
 			Vivium::Quad(0.0f, -180.0f, 400.0f, 100.0f),
-			&MainMenu::s_LoadWorldCallback,
+			&SceneManager::s_LoadWorldCallback,
 			std::string("Load World"),
 			(void*)menu
 		);
 
 		m_OptionsButton = std::make_shared<Vivium::Button>(
 			Vivium::Quad(0.0f, -310.0f, 400.0f, 100.0f),
-			&MainMenu::s_OptionsCallback,
+			&SceneManager::s_OptionsCallback,
 			std::string("Options"),
 			(void*)menu
 		);
@@ -247,22 +247,22 @@ namespace Game {
 			m_Seed = std::hash<std::string>()(seed_text);
 		}
 
-		// Get MainMenu instance from params
-		MainMenu* main_menu = (MainMenu*)(*(uintptr_t*)user_params);
+		// Get SceneManager instance from params
+		SceneManager* main_menu = (SceneManager*)(*(uintptr_t*)user_params);
 
 		// Create instance of game scene
 		// NOTE: main menu will take care of freeing this
 		GameScene* game_scene = new GameScene(m_Seed, m_Name, true);
 
 		// Start game
-		main_menu->m_LoadScene(MainMenu::SceneID::GAME, game_scene);
+		main_menu->m_LoadScene(SceneManager::SceneID::GAME, game_scene);
 	}
 
-	CreateWorldScene::CreateWorldScene(MainMenu* menu)
+	CreateWorldScene::CreateWorldScene(SceneManager* menu)
 	{
 		m_BackButton = std::make_shared<Vivium::Button>(
 			Vivium::Quad(-200.0f, 100.0f, 200.0f, 100.0f),
-			&MainMenu::s_BackButtonCallback,
+			&SceneManager::s_BackButtonCallback,
 			"Go Back",
 			menu
 		);
@@ -433,15 +433,15 @@ namespace Game {
 		// TODO: world seed needs to be stored
 		GameScene* game = new GameScene(0U, world_name, false);
 
-		m_Manager->m_LoadScene(MainMenu::SceneID::GAME, game);
+		m_Manager->m_LoadScene(SceneManager::SceneID::GAME, game);
 	}
 
-	LoadWorldScene::LoadWorldScene(MainMenu* menu)
+	LoadWorldScene::LoadWorldScene(SceneManager* menu)
 		: m_Manager(menu)
 	{
 		m_BackButton = std::make_shared<Vivium::Button>(
 			Vivium::Quad(-200.0f, 100.0f, 200.0f, 100.0f),
-			&MainMenu::s_BackButtonCallback,
+			&SceneManager::s_BackButtonCallback,
 			"Go Back",
 			menu
 		);
@@ -518,12 +518,12 @@ namespace Game {
 		Vivium::Application::SetVolume(slider->GetValue());
 	}
 
-	OptionsScene::OptionsScene(MainMenu* manager)
+	OptionsScene::OptionsScene(SceneManager* manager)
 		: m_Manager(manager)
 	{
 		m_BackButton = std::make_shared<Vivium::Button>(
 			Vivium::Quad(-200.0f, 100.0f, 200.0f, 100.0f),
-			&MainMenu::s_BackButtonCallback,
+			&SceneManager::s_BackButtonCallback,
 			"Go Back",
 			manager
 		);

@@ -34,7 +34,7 @@
     <ClCompile Include="src\TerrainGenerator.cpp" />
     <ClCompile Include="src\TextureManager.cpp" />
     <ClCompile Include="src\Tile.cpp" />
-    <ClCompile Include="src\MainMenu.cpp" />
+    <ClCompile Include="src\SceneManager.cpp" />
     <ClCompile Include="src\ToolData.cpp" />
     <ClCompile Include="src\World.cpp" />
     <ClCompile Include="src\WorldMap.cpp" />
@@ -59,7 +59,7 @@
     <ClInclude Include="src\TerrainGenerator.h" />
     <ClInclude Include="src\TextureManager.h" />
     <ClInclude Include="src\Tile.h" />
-    <ClInclude Include="src\MainMenu.h" />
+    <ClInclude Include="src\SceneManager.h" />
     <ClInclude Include="src\Equipable.h" />
     <ClInclude Include="src\ToolData.h" />
     <ClInclude Include="src\World.h" />
