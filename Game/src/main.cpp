@@ -53,10 +53,6 @@ int sandbox(void)
         vertex_data[cindex++] = mask[i * 2 + 1];
     }
 
-    for (int i = 0; i < 32; i++) {
-        LogTrace("Val {}: {}", i, vertex_data[i]);
-    }
-
     VertexBuffer vb(vertex_data, 32, layout);
 
     delete[] vertex_data;
@@ -102,9 +98,11 @@ int game(void)
     CraftingInventory::Init();
     LeavesParticleSystem::Init();
     Weapon::Init();
+    ToolEquipable::Init();
     ProjectileSystem::Init();
-    Game::NPC::Init();
+    NPC::Init();
 
+    // TODO: really bad
     Vivium::Animator::Data slime_data = Vivium::Animator::Data(
         {
             {0.5f, {0, 5}},
@@ -117,8 +115,8 @@ int game(void)
         }, TextureManager::game_atlas
     );
 
-    // TODO: really need something better than this
-    dynamic_pointer_cast<Game::Behaviours::SlimeAttack>(Game::NPC::m_Properties.at((uint8_t)Game::NPC::ID::SLIME).behaviours.at(0))->global.anim_data = slime_data;
+    // TODO: even worse
+    dynamic_pointer_cast<Behaviours::SlimeAttack>(NPC::m_Properties.at((uint8_t)NPC::ID::SLIME).behaviours.at(0))->global.anim_data = slime_data;
 
     Application::SetBGColor(RGBColor::BLACK);
 
@@ -134,8 +132,6 @@ int game(void)
 
         Application::EndFrame();
     }
-
-    
 
     LogInfo("Window closed");
 
@@ -154,7 +150,7 @@ int game(void)
 }
 
 int main(int argc, char** argv) {
-    sandbox();
+    game();
 
     LogTrace("Game finished");
 }

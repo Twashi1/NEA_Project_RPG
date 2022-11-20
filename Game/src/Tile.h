@@ -41,9 +41,10 @@ namespace Game {
 			float mining_time;						// Amount of time it takes to mine this tile
 			Vivium::Vector2<int> atlas_index;		// Coordinate of sprite in atlas
 			float scale;							// Scale of tile when drawn
+			Tool::Type tool_type;					// Tool type for this item
 			Item::DropTable drop_data;				// Drop table for item
 
-			Properties(std::string name, bool isPhysical, bool isMineable, bool isPlaceable, float mining_time, Vivium::Vector2<int> atlas_data, float scale, Item::DropTable drop_data);
+			Properties(std::string name, bool isPhysical, bool isMineable, bool isPlaceable, float mining_time, Vivium::Vector2<int> atlas_data, float scale, Tool::Type type, Item::DropTable drop_data);
 
 			void Write(Vivium::Serialiser& s) const override;
 			void Read(Vivium::Serialiser& s) override;
@@ -54,8 +55,10 @@ namespace Game {
 		static bool GetIsPhysical(const Tile::ID& id);
 		static bool GetIsMineable(const Tile::ID& id);
 		static float GetMiningTime(const Tile::ID& id);
+		static float GetMiningTime(const Tile::ID& id, const Item::ID& tool);
 		static Vivium::Vector2<int> GetAtlasIndex(const Tile::ID& id);
 		static float GetScale(const Tile::ID& id);
+		static Tool::Type GetToolType(const Tile::ID& id);
 		static Item::DropTable GetDropData(const Tile::ID& id);
 
 		// TODO: I think only bot/top is needed

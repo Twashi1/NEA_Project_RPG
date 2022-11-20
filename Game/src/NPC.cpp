@@ -49,6 +49,7 @@ namespace Game {
 	{
 		m_Shader = std::make_shared<Vivium::Shader>("texture_vertex", "npc_frag");
 		m_HealthbarShader = std::make_unique<Vivium::Shader>("healthbar_vertex", "healthbar_frag");
+		m_HealthbarShader->SetUniform1f("u_WaveOffset", 0.0f);
 	}
 
 	NPC::NPC(const NPC::ID& id, std::shared_ptr<Vivium::Body> body, const BehaviourDataMap& data)
@@ -63,6 +64,9 @@ namespace Game {
 
 	void NPC::Update()
 	{
+		// Update health value
+		health.Update();
+
 		// TODO: lots of indexing here, no way to speed this up by storing some ptrs?
 		const std::vector<std::shared_ptr<Behaviours::Behaviour>>& behaviours = GetBehaviours(id);
 
@@ -101,45 +105,65 @@ namespace Game {
 
 		// Submit npc healthbar
 		// If we're not at 100% health
-		if (health.GetNormalised() == 1.0f) {
-			// TODO
+		if (health.GetNormalised() < 1.0f) {
+			// TODO: precompute tex coords
+			static const std::array<float, 8> default_tex = {
+				0.0f, 0.0f,
+				1.0f, 0.0f,
+				1.0f, 1.0f,
+				0.0f, 1.0f
+			};
+
+			std::array<float, 8> healthbar_tex = TextureManager::game_atlas->GetCoordsArray({ 7, 9 }, { 9, 9 });
+			std::array<float, 8> mask_tex	   = TextureManager::game_atlas->GetCoordsArray({ 7, 8 }, { 9, 8 });
+
+			// TODO: shouldn't be filling this up ourselves
+			// TODO: shouldn't be calculating this ourselves as well
+			std::size_t size = (2 + 2 + 2 + 2 + 1) * 4;
+			float* vertex_data = new float[size];
+
+			// TODO: bad place for these variables as well
+			const float healthbar_width  = 96.0f;
+			const float healthbar_height = 32.0f;
+			const float healthbar_scale  = 2.0f;
+
+			Vivium::Vector2<float> pos = body->quad->GetCenter();
+			pos.y += 100.0f; // Display a bit above
+
+			float halfwidth = healthbar_width * 0.5f * healthbar_scale;
+			float halfheight = healthbar_height * 0.5f * healthbar_scale;
+
+			float left = pos.x - halfwidth;
+			float right = pos.x + halfwidth;
+			float bottom = pos.y - halfheight;
+			float top = pos.y + halfheight;
+
+			float vertices[8] = {
+				left, bottom,
+				right, bottom,
+				right, top,
+				left, top
+			};
+
+			int cindex = 0;
+			for (int i = 0; i < 4; i++) {
+				vertex_data[cindex++] = vertices[i * 2];
+				vertex_data[cindex++] = vertices[i * 2 + 1];
+
+				vertex_data[cindex++] = default_tex[i * 2];
+				vertex_data[cindex++] = default_tex[i * 2 + 1];
+
+				vertex_data[cindex++] = healthbar_tex[i * 2];
+				vertex_data[cindex++] = healthbar_tex[i * 2 + 1];
+
+				vertex_data[cindex++] = mask_tex[i * 2];
+				vertex_data[cindex++] = mask_tex[i * 2 + 1];
+
+				vertex_data[cindex++] = health.GetNormalised();
+			}
+
+			healthbar_batch->Submit(vertex_data, size);
 		}
-	}
-
-	void NPC::AddVertices(std::vector<float>& vertices)
-	{
-		// TODO: precompute tex coords
-		std::array<float, 8> tex_coords = TextureManager::game_atlas->GetCoordsArray(current_texture_index);
-
-		Vivium::Vector2<float> center = body->quad->GetCenter();
-		Vivium::Vector2<float> halfdim = body->quad->GetDim() * 0.5f;
-
-		// Calculate bounds
-		float left = center.x - halfdim.x;
-		float right = center.x + halfdim.x;
-		float bottom = center.y - halfdim.y;
-		float top = center.y + halfdim.y;
-
-		// Add to vertices
-		vertices.emplace_back(left);
-		vertices.emplace_back(bottom);
-		vertices.emplace_back(tex_coords[0]);
-		vertices.emplace_back(tex_coords[1]);
-
-		vertices.emplace_back(right);
-		vertices.emplace_back(bottom);
-		vertices.emplace_back(tex_coords[2]);
-		vertices.emplace_back(tex_coords[3]);
-
-		vertices.emplace_back(right);
-		vertices.emplace_back(top);
-		vertices.emplace_back(tex_coords[4]);
-		vertices.emplace_back(tex_coords[5]);
-
-		vertices.emplace_back(left);
-		vertices.emplace_back(top);
-		vertices.emplace_back(tex_coords[6]);
-		vertices.emplace_back(tex_coords[7]);
 	}
 
 	void NPC::CheckProjectileCollision(Weapon::Projectile** projectiles, std::size_t size)
@@ -697,6 +721,10 @@ new_data_ptr = dynamic_pointer_cast<Behaviours::Behaviour::Client>(data_ptr);
 	void Health::Update()
 	{
 		float elapsed = timer.GetElapsed();
+
+		if (value <= 0.0f) {
+			hasDied = true;
+		}
 
 		Heal(regen_rate * elapsed);
 

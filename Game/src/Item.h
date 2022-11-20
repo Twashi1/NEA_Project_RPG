@@ -1,6 +1,7 @@
 #pragma once
 
 #include "TextureManager.h"
+#include "ToolData.h"
 
 namespace Game {
 	class Item : Vivium::StreamablePOD {
@@ -50,8 +51,9 @@ namespace Game {
 			bool displayMultiple;				// Should an item display multiple copies of itself if there are >1 of it
 			bool isHandEquipable;				// Is an item equipable in the player's hand
 			Vivium::Vector2<int> atlas_index;   // Atlas index for the item's sprite
+			Tool::Properties tool_props;		// Tool properties (if applicable)
 
-			Properties(std::string name, bool isStackable, bool displayMultiple, bool isHandEquipable, Vivium::Vector2<int> atlas_index);
+			Properties(std::string name, bool isStackable, bool displayMultiple, bool isHandEquipable, Vivium::Vector2<int> atlas_index, Tool::Properties tool_props);
 
 			// Serialiser methods
 			void Write(Vivium::Serialiser& s) const override;
@@ -103,6 +105,7 @@ namespace Game {
 		static bool GetIsStackable(const Item::ID& id);
 		static bool GetDisplayMultiple(const Item::ID& id);
 		static bool GetIsHandEquipable(const Item::ID& id);
+		static Tool::Properties GetToolProperties(const Item::ID& id);
 		static Vivium::Vector2<int> GetAtlasIndex(const Item::ID& id);
 
 		static constexpr uint16_t STACK_LIMIT = 999;

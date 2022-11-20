@@ -424,8 +424,15 @@ namespace Game {
 				mined_tile_id = Tile::ID::VOID;
 			}
 
-			// Mining time should depend on tool as well
-			if (mined_tile_time > Tile::GetMiningTime(player->selected_tile.foreground)) {
+			// Grab tool id for player equipped item, if no item, use default
+			Item::ID tool_id = Item::ID::VOID;
+
+			if (m_Player->m_HandEquipable != nullptr) {
+				tool_id = m_Player->m_HandEquipable->id;
+			}
+
+			// If we've been mining for as long as required
+			if (mined_tile_time > Tile::GetMiningTime(player->selected_tile.foreground, tool_id)) {
 				Tile& tile = GetTile(mined_tile_pos);
 				// Create floor item
 				std::vector<Item> item_drops = Tile::GetDropData(tile.foreground).GetRandomDrop();
@@ -725,11 +732,11 @@ namespace Game {
 		};
 
 		static const Vivium::BufferLayout healthbar_layout = {
-			Vivium::GLSLDataType::VEC2,
-			Vivium::GLSLDataType::VEC2,
-			Vivium::GLSLDataType::VEC2,
-			Vivium::GLSLDataType::VEC2,
-			Vivium::GLSLDataType::FLOAT
+			Vivium::GLSLDataType::VEC2, // position
+			Vivium::GLSLDataType::VEC2, // default
+			Vivium::GLSLDataType::VEC2, // healthbar
+			Vivium::GLSLDataType::VEC2, // mask
+			Vivium::GLSLDataType::FLOAT // value
 		};
 
 		std::size_t projectile_count = 0;
@@ -761,11 +768,20 @@ namespace Game {
 
 				if (region.npcs.empty()) continue;
 
-				for (NPC& npc : region.npcs) {
-					npc.Update();
-					npc.CheckProjectileCollision(proj_array, projectile_count);
+				auto it = region.npcs.begin();
 
-					npc.Submit(&npc_batch, &healthbar_batch);
+				while ((!region.npcs.empty()) && (it != region.npcs.end())) {
+					if (it->health.hasDied) {
+						it = region.npcs.erase(it);
+					}
+					else {
+						it->Update();
+						it->CheckProjectileCollision(proj_array, projectile_count);
+
+						it->Submit(&npc_batch, &healthbar_batch);
+
+						++it;
+					}
 				}
 			}
 		}
@@ -799,9 +815,16 @@ namespace Game {
 	{
 		static constexpr float SCALE_RANGE = 8.0f;
 
+		// Grab tool id for player equipped item, if no item, use default
+		Item::ID tool_id = Item::ID::VOID;
+
+		if (m_Player->m_HandEquipable != nullptr) {
+			tool_id = m_Player->m_HandEquipable->id;
+		}
+
 		// TODO: cleanup
 		// Get time spent mining as percentage (0 -> 1)
-		float time_ratio = mined_tile_time / Tile::GetMiningTime(id);
+		float time_ratio = mined_tile_time / Tile::GetMiningTime(id, tool_id);
 		// Multiply by amount of cycles of growth/shrinking
 		time_ratio *= 9.0f;
 		// Fix to 0 -> 1 range

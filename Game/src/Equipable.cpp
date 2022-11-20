@@ -14,11 +14,18 @@ namespace Game {
 			CONSTRUCT_EQUIPABLE_FROM_ID(Item::ID::RUBY_SWORD);
 			CONSTRUCT_EQUIPABLE_FROM_ID(Item::ID::SAPPHIRE_SWORD);
 			CONSTRUCT_EQUIPABLE_FROM_ID(Item::ID::TOPAZ_SWORD);
+
 			CONSTRUCT_EQUIPABLE_FROM_ID(Item::ID::AMETHYST_WAND);
 			CONSTRUCT_EQUIPABLE_FROM_ID(Item::ID::EMERALD_WAND);
 			CONSTRUCT_EQUIPABLE_FROM_ID(Item::ID::RUBY_WAND);
 			CONSTRUCT_EQUIPABLE_FROM_ID(Item::ID::SAPPHIRE_WAND);
 			CONSTRUCT_EQUIPABLE_FROM_ID(Item::ID::TOPAZ_WAND);
+
+			CONSTRUCT_EQUIPABLE_FROM_ID(Item::ID::AMETHYST_PICKAXE);
+			CONSTRUCT_EQUIPABLE_FROM_ID(Item::ID::EMERALD_PICKAXE);
+			CONSTRUCT_EQUIPABLE_FROM_ID(Item::ID::RUBY_PICKAXE);
+			CONSTRUCT_EQUIPABLE_FROM_ID(Item::ID::SAPPHIRE_PICKAXE);
+			CONSTRUCT_EQUIPABLE_FROM_ID(Item::ID::TOPAZ_PICKAXE);
 		default:
 			return nullptr;
 		}
@@ -56,7 +63,26 @@ namespace Game {
 		m_UpdateQuad(world, player->quad->GetCenter());
 	}
 
+	void ToolEquipable::Init()
+	{
+		m_ShaderDefault = std::make_unique<Vivium::Shader>("texture_vertex", "texture_frag");
+	}
+
+	ToolEquipable::ToolEquipable(const Item::ID& id)
+		: HandEquipable(id)
+	{}
+
+	void ToolEquipable::Render()
+	{
+		Vivium::Vector2<int> atlas_index = Item::GetAtlasIndex(id);
+		
+		TextureManager::game_atlas->Set(m_Quad.get(), atlas_index);
+
+		Vivium::Renderer::Submit(m_Quad.get(), m_ShaderDefault.get(), TextureManager::game_atlas->GetAtlas().get());
+	}
+
 	std::shared_ptr<Vivium::Shader> Weapon::m_ShaderDefault = nullptr;
+	std::unique_ptr<Vivium::Shader> ToolEquipable::m_ShaderDefault = nullptr;
 	std::shared_ptr<Weapon::Projectile::HitHandler> Weapon::m_HitHandler = nullptr;
 	World* Weapon::Projectile::m_World = nullptr;
 	ProjectileSystem* Weapon::m_ProjectileSystem = nullptr;
@@ -95,14 +121,14 @@ namespace Game {
 	{
 		// TODO: No clear indication that neither projectile ptr nor npc ptr have expired
 		std::shared_ptr<Weapon::Projectile::Hit> hit_event = dynamic_pointer_cast<Weapon::Projectile::Hit>(event);
-		LogTrace("Hit event was detected, damage: {}!", hit_event->damage);
-
 		// TODO: provide impulse based on knockback
 		// Damage npc by amount of damage projectile should do
 		hit_event->npc->health.Damage(hit_event->projectile->GetDamage());
 		// NOTE: If projectile is piercing, this should be omitted
 		// Delete projectile
 		hit_event->projectile->Kill();
+
+		LogTrace("Hit event was detected, damage: {}, new health: {}%!", hit_event->damage, hit_event->npc->health.GetNormalised() * 100.0f);
 	}
 
 	Weapon::Projectile::Projectile(const ID& id, float damage, float knockback)

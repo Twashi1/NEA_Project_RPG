@@ -6,17 +6,18 @@
 
 namespace Game {
 	class Weapon;
+	class ToolEquipable;
 	class Player;
 	class World;
 	class ProjectileSystem;
 
 	class NPC;
 
-	class HandEquipable : public Item {
 	/// <summary>
 	/// An item that when selected, will display on screen as the player holding it
 	/// Abstract class
 	/// </summary>
+	class HandEquipable : public Item {
 	protected:
 		std::shared_ptr<Vivium::Quad> m_Quad;
 
@@ -41,11 +42,18 @@ namespace Game {
 		template <> struct GetEquipType<Item::ID::RUBY_SWORD>		{ using type = Weapon; };
 		template <> struct GetEquipType<Item::ID::SAPPHIRE_SWORD>	{ using type = Weapon; };
 		template <> struct GetEquipType<Item::ID::TOPAZ_SWORD>		{ using type = Weapon; };
+
 		template <> struct GetEquipType<Item::ID::AMETHYST_WAND>	{ using type = Weapon; };
 		template <> struct GetEquipType<Item::ID::EMERALD_WAND>		{ using type = Weapon; };
 		template <> struct GetEquipType<Item::ID::RUBY_WAND>		{ using type = Weapon; };
 		template <> struct GetEquipType<Item::ID::SAPPHIRE_WAND>	{ using type = Weapon; };
 		template <> struct GetEquipType<Item::ID::TOPAZ_WAND>		{ using type = Weapon; };
+
+		template <> struct GetEquipType<Item::ID::AMETHYST_PICKAXE> { using type = ToolEquipable; };
+		template <> struct GetEquipType<Item::ID::EMERALD_PICKAXE>	{ using type = ToolEquipable; };
+		template <> struct GetEquipType<Item::ID::RUBY_PICKAXE>		{ using type = ToolEquipable; };
+		template <> struct GetEquipType<Item::ID::SAPPHIRE_PICKAXE> { using type = ToolEquipable; };
+		template <> struct GetEquipType<Item::ID::TOPAZ_PICKAXE>	{ using type = ToolEquipable; };
 
 		/// <summary>
 		/// Create the relevant specialisation of HandEquipable based on the item id passed
@@ -54,12 +62,24 @@ namespace Game {
 		/// <returns></returns>
 		static std::shared_ptr<HandEquipable> CreateInstance(const Item::ID& id);
 	};
+	
+	class ToolEquipable : public HandEquipable {
+	protected:
+		static std::unique_ptr<Vivium::Shader> m_ShaderDefault;
+		
+	public:
+		static void Init();
+		
+		ToolEquipable(const Item::ID& id);
 
-	class Weapon : public HandEquipable {
+		void Render() override;
+	};
+
 	/// <summary>
 	/// Weapon specialisation of HandEquipable, weapons shoot a projectile which does damage on contact
 	/// Weapons have a set fire rate, damage, and knockback, and the projectile has a maximum range
 	/// </summary>
+	class Weapon : public HandEquipable {
 	protected:
 		static std::shared_ptr<Vivium::Shader> m_ShaderDefault;
 		// Particle system "hack" for projectiles
@@ -82,11 +102,11 @@ namespace Game {
 
 		struct Properties;
 
-		struct Projectile : Vivium::Particle {
 		/// <summary>
 		/// Projectile specialisation of particle for particle system
 		/// Models a moving projectile, storing damage, knockback, and the id of the projectile launched
 		/// </summary>
+		struct Projectile : Vivium::Particle {
 		public:
 			enum class ID : uint8_t {
 				// TODO: fill in the rest of these
@@ -115,10 +135,10 @@ namespace Game {
 			virtual void m_Update(const Vivium::Vector2<float>& accel) override;
 
 		public:
-			class Hit : public virtual Vivium::Event {
 			/// <summary>
 			/// A hit event created when a projectile collides (or is within a given range) of an npc
 			/// </summary>
+			class Hit : public virtual Vivium::Event {
 			private:
 				static constexpr const char* s_TYPE = "WeaponProjectileHit";
 
@@ -164,10 +184,10 @@ namespace Game {
 		};
 
 		// TODO: maybe projectile system stored here? need an init function then but still
-		struct Properties {
 		/// <summary>
 		/// Properties for each weapon
 		/// </summary>
+		struct Properties {
 		public:
 			std::string name;				// Pretty name
 			float damage;
@@ -215,10 +235,10 @@ namespace Game {
 
 	// TODO: generalise a particle system with textured particles?
 	// TODO: or separate rendering process from the simulation for particle system
-	class ProjectileSystem : public Vivium::ParticleSystem {
 	/// <summary>
 	/// Particle system that stores projectiles moving around screen and updating their positions
 	/// </summary>
+	class ProjectileSystem : public Vivium::ParticleSystem {
 	private:
 		// Buffer layout for rendering the projectile
 		static const Vivium::BufferLayout m_Layout;

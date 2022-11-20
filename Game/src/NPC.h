@@ -15,6 +15,8 @@ namespace Game {
 		float regen_rate = 0.1f;
 		float invincibilty_time = 0.0f;
 
+		bool hasDied = false;
+
 		Health() = default;
 		
 		void Damage(float amount);
@@ -250,10 +252,9 @@ namespace Game {
 		NPC(NPC&& other) noexcept;
 		~NPC() = default;
 
+		NPC& operator=(const NPC& other) = default;
+
 		void Update();
-		// TODO: Pretty ugly function, bad name and should be somewhere else
-		// Adds rendering information to vertices, assuming layout: position, texcoords
-		void AddVertices(std::vector<float>& vertices);
 
 		void Submit(Vivium::Batch* npc_batch, Vivium::Batch* healthbar_batch) const;
 

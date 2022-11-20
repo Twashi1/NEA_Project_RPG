@@ -35,6 +35,7 @@
     <ClCompile Include="src\TextureManager.cpp" />
     <ClCompile Include="src\Tile.cpp" />
     <ClCompile Include="src\MainMenu.cpp" />
+    <ClCompile Include="src\ToolData.cpp" />
     <ClCompile Include="src\World.cpp" />
     <ClCompile Include="src\WorldMap.cpp" />
   </ItemGroup>
@@ -60,6 +61,7 @@
     <ClInclude Include="src\Tile.h" />
     <ClInclude Include="src\MainMenu.h" />
     <ClInclude Include="src\Equipable.h" />
+    <ClInclude Include="src\ToolData.h" />
     <ClInclude Include="src\World.h" />
     <ClInclude Include="src\WorldMap.h" />
   </ItemGroup>

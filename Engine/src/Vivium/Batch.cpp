@@ -177,9 +177,15 @@ namespace Vivium {
 	{
 		VIVIUM_SCOPE;
 
+#ifdef BATCH_USE_MEMCPY
 		std::memcpy(m_Vertices + m_VerticesIndex * sizeof(float), data, count * sizeof(float));
 
 		m_VerticesIndex += count;
+#else
+		for (int i = 0; i < count; i++) {
+			m_Vertices[m_VerticesIndex++] = data[i];
+		}
+#endif
 
 		std::size_t indices_offset = m_Count * 4; // 4 vertices per shape
 		m_Indices[m_IndicesIndex++] = 0 + indices_offset;

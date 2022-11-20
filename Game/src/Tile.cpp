@@ -3,29 +3,29 @@
 namespace Game {
 	// TODO: load object data from file (text)
 	std::array<Tile::Properties, (uint16_t)Tile::ID::MAX> Tile::m_Properties = {
-		//				 NAME                 isPhysical   isMineable  isPlaceable  mining_time  atlas_index   scale   drop data
-		Tile::Properties("void",				false,		false,		false,		0.0f,		 {0,  0},		1.0f, {}),
-		Tile::Properties("ground",				false,		false,		false,		0.0f,		 {1,  0},		1.0f, {}),
-		Tile::Properties("grass",				false,		false,		false,		0.0f,		 {2,  0},		1.0f, {}),
-		Tile::Properties("tree_0",				true,		true,		false,		2.0f,		 {3,  1},		1.0f, Item::DropTable({{1.0f, {Item::DropData(Item::ID::LOG, 2)}}})),
-		Tile::Properties("tree_1",				false,		true,		false,		2.0f,		 {3,  0},		1.0f, Item::DropTable({{1.0f, {Item::DropData(Item::ID::LOG, 2)}}})),
-		Tile::Properties("sand",				false,		false,		false,		0.0f,		 {4,  0},		1.0f, {}),
-		Tile::Properties("water",				false,		false,		false,		0.0f,		 {5,  0},		1.0f, {}),
-		Tile::Properties("bush",				false,		true,		false,		1.0f,		 {6,  0},		0.8f, {}),
-		Tile::Properties("bush_fruit",			false,		true,		false,		0.5f,		 {7,  0},		0.8f, Item::DropTable({{1.0f, {Item::DropData(Item::ID::BERRIES, 5, 10)}}})),
-		Tile::Properties("amethyst_node",		true,		true,		false,		1.0f,		 {8,  0},		0.8f, Item::DropTable({{1.0f, {Item::DropData(Item::ID::AMETHYST_CRYSTAL, 10, 15)}}})),
-		Tile::Properties("emerald_node",		true,		true,		false,		1.0f,		 {9,  0},		0.8f, Item::DropTable({{1.0f, {Item::DropData(Item::ID::EMERALD_CRYSTAL, 100, 300)}}})),
-		Tile::Properties("ruby_node",			true,		true,		false,		1.0f,		 {10, 0},		0.8f, Item::DropTable({{1.0f, {Item::DropData(Item::ID::RUBY_CRYSTAL, 1, 3)}}})),
-		Tile::Properties("sapphire_node",		true,		true,		false,		1.0f,		 {11, 0},		0.8f, Item::DropTable({{1.0f, {Item::DropData(Item::ID::SAPPHIRE_CRYSTAL, 1, 3)}}})),
-		Tile::Properties("topaz_node",			true,		true,		false,		1.0f,		 {12, 0},		0.8f, Item::DropTable({{1.0f, {Item::DropData(Item::ID::TOPAZ_CRYSTAL, 1, 3)}}})),
-		Tile::Properties("cactus_small",		true,		true,		false,		1.0f,		 {13, 0},		1.0f, {}),
-		Tile::Properties("cactus_tall_0",		true,		true,		false,		1.0f,		 {14, 1},		1.0f, {}),
-		Tile::Properties("cactus_tall_1",		true,		true,		false,		1.0f,		 {14, 0},		1.0f, {}),
-		Tile::Properties("cactus_fruit",		false,		true,		false,		0.5f,		 {15, 0},		0.8f, {}),
-		Tile::Properties("mossy_debris",		false,		true,		false,		0.5f,		 {0,  1},		0.8f, {}),
-		Tile::Properties("rocky_debris",		false,		true,		false,		0.5f,		 {0,  2},		0.8f, {}),
-		Tile::Properties("pink_flower",			false,		true,		false,		0.5f,		 {1,  1},		0.5f, {}),
-		Tile::Properties("blue_flower",			false,		true,		false,		0.5f,		 {1,  2},		0.5f, {})
+		//				 NAME                 isPhysical   isMineable  isPlaceable  mining_time  atlas_index  scale     tool_type		 drop data
+		Tile::Properties("void",				false,		false,		false,		0.0f,		 {0,  0},	  1.0f,   Tool::Type::VOID,		{}),
+		Tile::Properties("ground",				false,		false,		false,		0.0f,		 {1,  0},	  1.0f,   Tool::Type::VOID,		{}),
+		Tile::Properties("grass",				false,		false,		false,		0.0f,		 {2,  0},	  1.0f,   Tool::Type::VOID,		{}),
+		Tile::Properties("tree_0",				true,		true,		false,		2.0f,		 {3,  1},	  1.0f,   Tool::Type::VOID,		Item::DropTable({{1.0f, {Item::DropData(Item::ID::LOG, 2)}}})),
+		Tile::Properties("tree_1",				false,		true,		false,		2.0f,		 {3,  0},	  1.0f,   Tool::Type::VOID,		Item::DropTable({{1.0f, {Item::DropData(Item::ID::LOG, 2)}}})),
+		Tile::Properties("sand",				false,		false,		false,		0.0f,		 {4,  0},	  1.0f,   Tool::Type::VOID,		{}),
+		Tile::Properties("water",				false,		false,		false,		0.0f,		 {5,  0},	  1.0f,   Tool::Type::VOID,		{}),
+		Tile::Properties("bush",				false,		true,		false,		1.0f,		 {6,  0},	  0.8f,   Tool::Type::VOID,		{}),
+		Tile::Properties("bush_fruit",			false,		true,		false,		0.5f,		 {7,  0},	  0.8f,   Tool::Type::VOID,		Item::DropTable({{1.0f, {Item::DropData(Item::ID::BERRIES, 5, 10)}}})),
+		Tile::Properties("amethyst_node",		true,		true,		false,		1.0f,		 {8,  0},	  0.8f,   Tool::Type::PICKAXE,	Item::DropTable({{1.0f, {Item::DropData(Item::ID::AMETHYST_CRYSTAL, 10, 15)}}})),
+		Tile::Properties("emerald_node",		true,		true,		false,		1.0f,		 {9,  0},	  0.8f,   Tool::Type::PICKAXE,	Item::DropTable({{1.0f, {Item::DropData(Item::ID::EMERALD_CRYSTAL, 100, 300)}}})),
+		Tile::Properties("ruby_node",			true,		true,		false,		1.0f,		 {10, 0},	  0.8f,   Tool::Type::PICKAXE,	Item::DropTable({{1.0f, {Item::DropData(Item::ID::RUBY_CRYSTAL, 1, 3)}}})),
+		Tile::Properties("sapphire_node",		true,		true,		false,		1.0f,		 {11, 0},	  0.8f,   Tool::Type::PICKAXE,	Item::DropTable({{1.0f, {Item::DropData(Item::ID::SAPPHIRE_CRYSTAL, 1, 3)}}})),
+		Tile::Properties("topaz_node",			true,		true,		false,		1.0f,		 {12, 0},	  0.8f,   Tool::Type::PICKAXE,	Item::DropTable({{1.0f, {Item::DropData(Item::ID::TOPAZ_CRYSTAL, 1, 3)}}})),
+		Tile::Properties("cactus_small",		true,		true,		false,		1.0f,		 {13, 0},	  1.0f,   Tool::Type::VOID,		{}),
+		Tile::Properties("cactus_tall_0",		true,		true,		false,		1.0f,		 {14, 1},	  1.0f,   Tool::Type::VOID,		{}),
+		Tile::Properties("cactus_tall_1",		true,		true,		false,		1.0f,		 {14, 0},	  1.0f,   Tool::Type::VOID,		{}),
+		Tile::Properties("cactus_fruit",		false,		true,		false,		0.5f,		 {15, 0},	  0.8f,   Tool::Type::VOID,		{}),
+		Tile::Properties("mossy_debris",		false,		true,		false,		0.5f,		 {0,  1},	  0.8f,   Tool::Type::VOID,		{}),
+		Tile::Properties("rocky_debris",		false,		true,		false,		0.5f,		 {0,  2},	  0.8f,   Tool::Type::VOID,		{}),
+		Tile::Properties("pink_flower",			false,		true,		false,		0.5f,		 {1,  1},	  0.5f,   Tool::Type::VOID,		{}),
+		Tile::Properties("blue_flower",			false,		true,		false,		0.5f,		 {1,  2},	  0.5f,   Tool::Type::VOID,		{})
 	};
 
 	Tile::Properties Tile::GetProperties(const Tile::ID& id)
@@ -53,6 +53,21 @@ namespace Game {
 		return Tile::m_Properties[uint16_t(id)].mining_time;
 	}
 
+	float Tile::GetMiningTime(const Tile::ID& id, const Item::ID& tool)
+	{
+		Tile::Properties tile_props = GetProperties(id);
+		Tool::Properties tool_props = Item::GetToolProperties(tool);
+
+		// If matching tool
+		if (tile_props.tool_type == tool_props.type) {
+			// Reduce mining time by the scale given
+			return tile_props.mining_time / tool_props.scale;
+		}
+		
+		// Otherwise return default mining time
+		return tile_props.mining_time;
+	}
+
 	Vivium::Vector2<int> Tile::GetAtlasIndex(const Tile::ID& id)
 	{
 		return Tile::m_Properties[uint16_t(id)].atlas_index;
@@ -61,6 +76,11 @@ namespace Game {
 	float Tile::GetScale(const Tile::ID& id)
 	{
 		return Tile::m_Properties[uint16_t(id)].scale;
+	}
+
+	Tool::Type Tile::GetToolType(const Tile::ID& id)
+	{
+		return Tile::m_Properties[(uint16_t)id].tool_type;
 	}
 
 	Item::DropTable Tile::GetDropData(const Tile::ID& id)
@@ -117,9 +137,10 @@ namespace Game {
 		float mining_time,
 		Vivium::Vector2<int> atlas_index,
 		float scale,
+		Tool::Type tool_type,
 		Item::DropTable drop_data
 	)
-		: name(name), isPhysical(isPhysical), isMineable(isMineable), isPlaceable(isPlaceable), mining_time(mining_time), atlas_index(atlas_index), scale(scale), drop_data(drop_data) {}
+		: name(name), isPhysical(isPhysical), isMineable(isMineable), isPlaceable(isPlaceable), mining_time(mining_time), atlas_index(atlas_index), scale(scale), tool_type(tool_type), drop_data(drop_data) {}
 
 	void Tile::Properties::Write(Vivium::Serialiser& s) const
 	{
