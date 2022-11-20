@@ -5,7 +5,12 @@
 namespace Game {
 	class World;
 
+	// TODO: move
 	struct Health {
+		/// <summary>
+		/// Controls health of an NPC, regenerates over time, and has brief invincibility period after taking
+		/// damage
+		/// </summary>
 		static constexpr float INVINCIBILITY_TIME = 0.5f;
 		Vivium::Timer timer;
 
@@ -29,7 +34,14 @@ namespace Game {
 
 	class NPC;
 
+	/// <summary>
+	/// Namespace for NPC behaviours, each NPC exhibits one behaviour at a time, and transfers to the next behaviour
+	/// in a set loop after the previous behaviour ends
+	/// </summary>
 	namespace Behaviours {
+		/// <summary>
+		/// Base class for a behaviour
+		/// </summary>
 		class Behaviour : public Vivium::Streamable {
 		public:
 			enum class ID : uint8_t {
@@ -40,6 +52,9 @@ namespace Game {
 				MAX
 			};
 
+			/// <summary>
+			/// Client behaviour is stored per instance of NPC
+			/// </summary>
 			struct Client : public Vivium::Streamable {
 				virtual void Write(Vivium::Serialiser& s) const override;
 				virtual void Read(Vivium::Serialiser& s) override;
@@ -53,12 +68,31 @@ namespace Game {
 			virtual void Read(Vivium::Serialiser& s) override;
 			
 			virtual Behaviour::ID GetID() const = 0;
+			/// <summary>
+			/// Called when behaviour is switched to
+			/// </summary>
+			/// <param name="npc"></param>
+			/// <param name="client"></param>
 			virtual void Begin(NPC* npc, std::shared_ptr<Client> client) const = 0;
 			virtual void ExecuteOn(NPC* npc) const = 0;
+			/// <summary>
+			/// Called every update while this behaviour is being exhibited
+			/// </summary>
+			/// <param name="npc"></param>
+			/// <param name="client"></param>
 			virtual void Update(NPC* npc, std::shared_ptr<Client> client) const = 0;
+			/// <summary>
+			/// Checks if the behaviour is over
+			/// </summary>
+			/// <param name="npc"></param>
+			/// <param name="client"></param>
+			/// <returns></returns>
 			virtual bool IsOver(NPC* npc, std::shared_ptr<Client> client) const = 0;
 		};
 
+		/// <summary>
+		/// Behaviour specialisation: the NPC stays still for a set amount of time
+		/// </summary>
 		class Idle : virtual public Behaviour {
 		public:
 			struct Global : public Vivium::StreamablePOD {
@@ -90,6 +124,9 @@ namespace Game {
 			virtual bool IsOver(NPC* npc, std::shared_ptr<Behaviour::Client> client) const override;
 		};
 
+		/// <summary>
+		/// NPC paths to a random location nearby, not too far from their "home" (spawn-point)
+		/// </summary>
 		class Wandering : virtual public Behaviour, public Vivium::Streamable {
 		public:
 			struct Global : public Vivium::StreamablePOD {
@@ -126,6 +163,9 @@ namespace Game {
 			virtual bool IsOver(NPC* npc, std::shared_ptr<Behaviour::Client> client) const override;
 		};
 
+		/// <summary>
+		/// NPC paths towards the player if close enough, or wanders randomly
+		/// </summary>
 		class Hunting : virtual public Behaviour, public Vivium::Streamable {
 		public:
 			struct Global : public Vivium::Streamable {
@@ -166,6 +206,9 @@ namespace Game {
 			bool IsOver(NPC* npc, std::shared_ptr<Behaviour::Client> client) const override;
 		};
 
+		/// <summary>
+		/// Slime attacks a player, by moving on top of them (with an animation)
+		/// </summary>
 		class SlimeAttack : virtual public Behaviour, public Vivium::Streamable {
 		public:
 			struct Global : public Vivium::Streamable {
@@ -206,6 +249,10 @@ namespace Game {
 		};
 	}
 
+	/// <summary>
+	/// Any animal/enemy/character is an NPC (non-playing character)
+	/// NPCs have a list of behaviours which they cycle between, health
+	/// </summary>
 	class NPC : public Vivium::Streamable {
 	private:
 		static constexpr float PATHFINDING_EPSILON = 1.0f / 10.0f; // 1/10th of a tile
