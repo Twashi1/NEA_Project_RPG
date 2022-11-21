@@ -108,15 +108,16 @@ namespace Game {
 		m_AnimalNoise.m_Seed = seed;
 
 		// Set wavelengths
-		m_AnimalNoise.wavelength = 6; // TODO: decide wavelength
+		m_AnimalNoise.wavelength = 6;
 		m_HeightNoise.wavelength = 6;
 	}
 
 	void Biome::Forest::SpawnNPCs(int x, int y, Region& region, World* world) const
 	{
-		// Spawning animals
+		// Get noise value for animals
 		float noise = m_AnimalNoise.Get(x, y);
 
+		// If value above a threshold, spawn an animal
 		if (noise > 0.9f) {
 			// TODO: disgusting constructor
 #define GENERATE_NPC
@@ -141,31 +142,38 @@ namespace Game {
 
 	void Biome::Forest::GenerateAt(int x, int y, Tile& tile, World* world, std::unordered_map<Vivium::Vector2<int>, Structure::ID>& structures) const
 	{
+		// Get height noise
 		float noise = m_HeightNoise.Get(x, y);
+		// Select background tile based on height noise and height map
 		tile.background = m_GetTileFromHeightMap(m_HeightToTileMap, noise);
 
 		// NOTE: When worley noise is implemented, this will make sense (i think)
 		// TODO: in future add some tag to a tile to determine if it can have vegitation above it
 		if (m_TreeNoise.Get(x, y) > 0.5f && tile.background == Tile::ID::GRASS) {
+			// Get a random structure (either tree or none)
 			Structure::ID chosen_structure = m_GetRandomWeightedChoice(m_TreeWeights, Vivium::Noise::Hashf(m_Seed, x, y));
-
+			
+			// Generate that structure
 			if (chosen_structure != Structure::ID::VOID) {
 				structures[{x, y}] = chosen_structure;
 			}
 		}
 
+		// If vegitation noise sufficient and the background tile is grass
 		if (m_VegitationNoise.Get(x, y) > 0.5f && tile.background == Tile::ID::GRASS) {
 			Tile::ID selected_tile = m_GetRandomWeightedChoice(m_VegitationWeights, Vivium::Noise::Hashf(m_Seed, x, y));
 
 			if (selected_tile != Tile::ID::VOID) tile.foreground = selected_tile;
 		}
 
+		// If ore noise sufficient and the background tile isn't water
 		if (m_OreNoise.Get(x, y) > 0.5f && tile.background != Tile::ID::WATER) {
 			Tile::ID selected_tile = m_GetRandomWeightedChoice(m_OreWeights, Vivium::Noise::Hashf(m_Seed, x, y));
 
 			if (selected_tile != Tile::ID::VOID) tile.foreground = selected_tile;
 		}
 
+		// If debris noise sufficient and the background tile isn't water
 		if (m_DebrisNoise.Get(x, y) > 0.5f && tile.background != Tile::ID::WATER) {
 			Tile::ID selected_tile = m_GetRandomWeightedChoice(m_DebrisWeights, Vivium::Noise::Hashf(m_Seed, x, y));
 
@@ -190,7 +198,9 @@ namespace Game {
 
 	Tile::ID Biome::m_GetTileFromHeightMap(const std::map<float, Tile::ID>& height_map, float height)
 	{
+		// Iterate height map
 		for (auto& [max_height, tile_id] : height_map) {
+			// If the height is less than the height in the tile map select that tile id
 			if (height <= max_height) { return tile_id; }
 		}
 
@@ -202,21 +212,22 @@ namespace Game {
 	void Biome::Init(unsigned int seed)
 	{
 		m_Biomes = {
-			nullptr,							// VOID
-			(Generator*)new Forest(seed),	// PLAIN TODO: plains biome
+			nullptr,						// VOID
+			(Generator*)new Forest(seed),	// PLAIN (TODO: plains biome)
 			(Generator*)new Forest(seed),	// FOREST
 			(Generator*)new Desert(seed),	// DESERT
 			(Generator*)new Lake(seed)		// RIVER
 		};
 	}
 
-#define DELETE_BIOME_PTR(id) if (m_Biomes[(uint8_t)id] != nullptr) { delete (BiomeType<Biome::ID::FOREST>::type*)m_Biomes[(uint8_t)id]; }
-
 	void Biome::Terminate()
 	{
+		// Iterate biome generators
 		for (int i = 1; i < (int)Biome::ID::MAX; i++) {
+			// Get the biome generator
 			Generator* biome_gen = m_Biomes[i];
 
+			// If the biome generator has been initialised
 			if (biome_gen != nullptr) {
 				delete biome_gen;
 			}

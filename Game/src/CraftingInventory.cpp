@@ -7,11 +7,13 @@ namespace Game {
 	{
 		// Get calculate y spacing between elements
 		float delta_spacing = delta * s_YSpacing;
+		// Return position with the y spacing
 		return Vivium::Vector2<float>(inventory_pos->x, inventory_pos->y + delta_spacing);
 	}
 
 	void CraftingInventory::m_UpdateCraftables(Inventory* player_inv)
 	{
+		// Get craftables for the new player inventory
 		m_Craftables = Recipe::GetCraftableRecipes(player_inv);
 	}
 

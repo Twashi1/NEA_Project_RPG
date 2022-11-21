@@ -47,14 +47,17 @@ namespace Game {
 
 	void NPC::Init()
 	{
+		// Initialise shaders
 		m_Shader = std::make_shared<Vivium::Shader>("texture_vertex", "npc_frag");
 		m_HealthbarShader = std::make_unique<Vivium::Shader>("healthbar_vertex", "healthbar_frag");
+		m_HealthbarShader->Bind();
 		m_HealthbarShader->SetUniform1f("u_WaveOffset", 0.0f);
 	}
 
 	NPC::NPC(const NPC::ID& id, std::shared_ptr<Vivium::Body> body, const BehaviourDataMap& data)
 		: id(id), body(body), behaviour_data(data)
 	{
+		// Get texture index for this npc's default state
 		current_texture_index = NPC::GetAtlasIndex(id);
 	}
 
@@ -70,18 +73,25 @@ namespace Game {
 		// TODO: lots of indexing here, no way to speed this up by storing some ptrs?
 		const std::vector<std::shared_ptr<Behaviours::Behaviour>>& behaviours = GetBehaviours(id);
 
+		// Get current behaviour ptr
 		const std::shared_ptr<Behaviours::Behaviour>& m_CurrentBehaviour = behaviours.at(m_CurrentBehaviourIndex);
+		// Get ID of current behaviour
 		m_CurrentBehaviourID = m_CurrentBehaviour->GetID();
+		// Use ID to get the behaviour data for that id
 		std::shared_ptr<Behaviours::Behaviour::Client>& current_behaviour_data = behaviour_data.at(m_CurrentBehaviourID);
 
+		// If this is the first frame of the behaviour, start it
 		if (m_BeginBehaviour) {
 			m_CurrentBehaviour->Begin(this, current_behaviour_data);
 			m_BeginBehaviour = false;
 		}
 
+		// Update NPC pathing
 		m_UpdatePathing();
 
+		// Update body physics
 		body->Update();
+		// Update animator
 		animator.Update();
 
 		// TODO: Update and IsOver may cause two dynamic casts, might be pretty slow
@@ -89,7 +99,9 @@ namespace Game {
 		m_CurrentBehaviour->Update(this, current_behaviour_data);
 		m_CurrentBehaviour->ExecuteOn(this);
 
+		// If current behaviour has ended, switch to next
 		if (m_CurrentBehaviour->IsOver(this, current_behaviour_data)) {
+			// Roll over
 			m_CurrentBehaviourIndex = (m_CurrentBehaviourIndex + 1) % behaviours.size();
 			m_BeginBehaviour = true;
 		}
@@ -114,6 +126,7 @@ namespace Game {
 				0.0f, 1.0f
 			};
 
+			// Get texture coordinates for healthbar and mask
 			std::array<float, 8> healthbar_tex = TextureManager::game_atlas->GetCoordsArray({ 7, 9 }, { 9, 9 });
 			std::array<float, 8> mask_tex	   = TextureManager::game_atlas->GetCoordsArray({ 7, 8 }, { 9, 8 });
 
@@ -133,11 +146,13 @@ namespace Game {
 			float halfwidth = healthbar_width * 0.5f * healthbar_scale;
 			float halfheight = healthbar_height * 0.5f * healthbar_scale;
 
+			// Calculate bounds of healthbar
 			float left = pos.x - halfwidth;
 			float right = pos.x + halfwidth;
 			float bottom = pos.y - halfheight;
 			float top = pos.y + halfheight;
 
+			// Position vertices for healtbar
 			float vertices[8] = {
 				left, bottom,
 				right, bottom,
@@ -145,6 +160,7 @@ namespace Game {
 				left, top
 			};
 
+			// Fill vertex data according to buffer layout
 			int cindex = 0;
 			for (int i = 0; i < 4; i++) {
 				vertex_data[cindex++] = vertices[i * 2];
@@ -162,6 +178,7 @@ namespace Game {
 				vertex_data[cindex++] = health.GetNormalised();
 			}
 
+			// Submit to batch
 			healthbar_batch->Submit(vertex_data, size);
 		}
 	}
@@ -172,18 +189,23 @@ namespace Game {
 		static constexpr float MAX_DIST = 100.0f;
 		static constexpr float MAX_DIST_SQR = MAX_DIST * MAX_DIST;
 
+		// Get NPC position
 		Vivium::Vector2<float> my_pos = body->quad->GetCenter();
 
+		// Iterate all projectiles
 		for (std::size_t i = 0; i < size; i++) {
 			Weapon::Projectile* proj = projectiles[i];
 
 			// Here, there is a guarantee the proj is not out of scope/reallocated, since this is between the projectile system updates
 			if (proj->IsAlive()) {
+				// Get distance from ourselves to projectile
 				float dist = Vivium::Vector2<float>::SqrDistance(my_pos, proj->position);
 
 				// They have collided (or are close enough to consider that they have)
 				if (dist < MAX_DIST_SQR) {
+					// Create hit event
 					std::shared_ptr<Weapon::Projectile::Hit> hit = std::make_shared<Weapon::Projectile::Hit>(proj->GetDamage(), proj->GetKnockback(), this, proj);
+					// Send to event system
 					Vivium::EventSystem::AddEvent(hit);
 
 					// TODO: normally projectile would be killed here, but should be killed in the handler instead
@@ -207,6 +229,7 @@ namespace Game {
 
 		s.Write(behaviour_data.size());
 
+		// Iterate all behaviour data and write
 		for (auto& [id, client] : behaviour_data) {
 			s.Write((std::underlying_type<Behaviours::Behaviour::ID>::type)id);
 			client->Write(s);
@@ -220,6 +243,7 @@ namespace Game {
 		Vivium::Vector2<float> pos;
 		s.Read(&pos);
 
+		// Create a default body from position
 		body = std::make_shared<Vivium::Body>(
 			std::make_shared<Vivium::Quad>(
 				pos, World::PIXEL_SCALE
@@ -228,6 +252,7 @@ namespace Game {
 
 		current_texture_index = GetProperties(id).atlas_index;
 
+		// Reading behaviour data
 		std::size_t size;
 		s.Read(&size);
 
@@ -242,6 +267,7 @@ std::shared_ptr<T> data_ptr = std::make_shared<T>(); \
 data_ptr->Read(s); \
 new_data_ptr = dynamic_pointer_cast<Behaviours::Behaviour::Client>(data_ptr);
 
+			// Switch ID to get correct method to read different types of client data
 			switch (id) {
 			case Behaviours::Behaviour::ID::IDLE:
 			{
@@ -316,8 +342,10 @@ new_data_ptr = dynamic_pointer_cast<Behaviours::Behaviour::Client>(data_ptr);
 
 		bool Idle::IsOver(NPC* npc, std::shared_ptr<Behaviour::Client> client) const
 		{
+			// Simple wait for some time
 			std::shared_ptr<Idle::Client> my_client = dynamic_pointer_cast<Idle::Client>(client);
 
+			// If elapsed time more than thinking time, we have ended
 			bool isOver = my_client->thinking_timer.GetElapsedNoReset() > global.thinking_time;
 			
 			if (isOver) {
@@ -363,6 +391,7 @@ new_data_ptr = dynamic_pointer_cast<Behaviours::Behaviour::Client>(data_ptr);
 				Vivium::Vector2<int> rel_dest = NPC::world->GetObstacleMapIndex(dest_tile);
 				Vivium::Vector2<int> rel_start = NPC::world->GetObstacleMapIndex(pos / World::PIXEL_SCALE);
 
+				// Calculate path
 				Vivium::Pathfinding::Path path = Vivium::Pathfinding::Calculate(rel_start, rel_dest, *NPC::world->GetObstacleMap());
 			
 				// Iterate nodes and push destinations to our npc
@@ -376,10 +405,14 @@ new_data_ptr = dynamic_pointer_cast<Behaviours::Behaviour::Client>(data_ptr);
 		{
 			// Update direction
 			if (!npc->path_destinations.empty()) {
+				// Get destination
 				Vivium::Vector2<float> dest = npc->path_destinations.front();
+				// Get current position
 				Vivium::Vector2<float> current = npc->body->quad->GetCenter() / World::PIXEL_SCALE;
+				// Calculate direction
 				Vivium::Vector2<float> direction = Vivium::Vector2<float>::Normalise(dest - current);
 
+				// Set our velocity to that direction
 				npc->body->vel = direction * global.wander_speed;
 			}
 		}
@@ -722,12 +755,15 @@ new_data_ptr = dynamic_pointer_cast<Behaviours::Behaviour::Client>(data_ptr);
 	{
 		float elapsed = timer.GetElapsed();
 
+		// If health equal to or below 0 we have died
 		if (value <= 0.0f) {
 			hasDied = true;
 		}
 
+		// Heal by the regeneration rate, taking into account elapsed time
 		Heal(regen_rate * elapsed);
 
+		// If we are invincible right now, remove elapsed time from invincibility time remaining
 		if (invincibilty_time > 0.0f) {
 			invincibilty_time -= elapsed;
 		}

@@ -190,12 +190,17 @@ namespace Game {
 	{
 		float elapsed = m_Timer.GetElapsed();
 
+		// Add acceleration * elapsed time
 		velocity += acceleration * elapsed;
+		// Add displacement
 		m_Quad->SetCenter(m_Quad->GetCenter() + velocity * elapsed);
 
+		// If we haven't ended the initial moment
 		if (!m_InitialMotionEnded) {
+			// Subtract elapsed time
 			m_RemainingMovingTime -= elapsed;
 
+			// If we have time remaining
 			if (m_RemainingMovingTime <= 0.0f) {
 				// Reset acceleration and velocity
 				acceleration = 0.0f;
@@ -218,8 +223,13 @@ namespace Game {
 		: m_ItemData(item_data)
 	{
 		m_Quad = std::make_shared<Vivium::Quad>(pos, dim, Vivium::Random::GetFloat(0.0f, 2.0f * Vivium::Math::PI));
+
+		// Generate random velocity with speed 100
 		velocity = Vivium::Random::GetVector2f(100.0f);
+		// Generate random time to move for within range
 		m_RemainingMovingTime = Vivium::Random::GetFloat(0.50f, 0.70f);
+
+		// Acceleration set as friction
 		acceleration = -velocity / m_RemainingMovingTime;
 
 		m_Timer.Start();

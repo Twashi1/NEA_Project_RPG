@@ -96,16 +96,16 @@ namespace Game {
 				{Slot::CRAFT_7,  {7.0f, 7.0f * 7}},
 				{Slot::CRAFT_8,  {7.0f, 7.0f * 8}}
 			}
-		)
+		) // CRAFTING ^^^
 	};
 
 	const Vivium::Vector2<float> Inventory::s_ItemCountOffsets[3] = {
 		// Center
-			Vivium::Vector2<float>(0.0f, 0.0f) * World::PIXEL_SCALE * 0.5f * s_ItemScale * m_InventorySpriteScale * 0.25f,
+		Vivium::Vector2<float>(0.0f, 0.0f) * World::PIXEL_SCALE * 0.5f * s_ItemScale * m_InventorySpriteScale * 0.25f,
 		// Left
-			Vivium::Vector2<float>(-0.3f, 0.3f) * World::PIXEL_SCALE * 0.5f * s_ItemScale * m_InventorySpriteScale * 0.25f,
+		Vivium::Vector2<float>(-0.3f, 0.3f) * World::PIXEL_SCALE * 0.5f * s_ItemScale * m_InventorySpriteScale * 0.25f,
 		// Right
-			Vivium::Vector2<float>(0.3f, 0.3f) * World::PIXEL_SCALE * 0.5f * s_ItemScale * m_InventorySpriteScale * 0.25f
+		Vivium::Vector2<float>(0.3f, 0.3f) * World::PIXEL_SCALE * 0.5f * s_ItemScale * m_InventorySpriteScale * 0.25f
 	};
 
 	// Max offsets used for bounds of each item (used when picking up/re-organising items)
@@ -505,6 +505,7 @@ namespace Game {
 
 	Inventory::Properties Inventory::GetProperties(const Inventory::ID& id)
 	{
+		// Cast id to integer and index properties
 		return m_Properties[(id_base_t)id];
 	}
 
@@ -517,8 +518,10 @@ namespace Game {
 	{
 		m_InventoryShader = new Vivium::Shader("static_texture_vertex", "texture_frag");
 		
+		// Create text shader
 		m_TextShader = new Vivium::Shader("text_vertex", "text_frag");
 		m_TextShader->Bind();
+		// Change colour
 		m_TextShader->SetUniform3f("u_TextColor", Vivium::RGBColor::WHITE);
 
 		m_ItemShader = new Vivium::Shader("static_texture_vertex", "texture_frag");
@@ -628,7 +631,9 @@ namespace Game {
 	{
 		std::vector<Item> items(length);
 
+		// Iterate inventory
 		for (slot_base_t i = 0; i < length; i++) {
+			// Add to items list
 			items[i] = m_InventoryData.at((slot_base_t)start_slot + i);
 		}
 
@@ -692,7 +697,9 @@ namespace Game {
 
 	void Inventory::SetItems(const std::vector<Item>& items, const Slot& slot)
 	{
+		// Iterate items
 		for (uint8_t i = 0; i < items.size(); i++) {
+			// **Replace** items in inventory with items in list given
 			m_InventoryData.at((uint8_t)slot + i) = items.at(i);
 		}
 
@@ -733,17 +740,21 @@ namespace Game {
 		if (items.empty()) return {};
 
 		std::size_t items_size = items.size();
+		// Allocate space for items that couldn't be added
 		std::vector<int> return_values(items_size);
 
+		// Iterate items and add each
 		for (std::size_t i = 0; i < items_size; i++) {
 			return_values[i] = AddItem(items[i]);
 		}
 
+		// Return un-added items
 		return return_values;
 	}
 
 	void Inventory::Write(Vivium::Serialiser& s) const
 	{
+		// TODO: this was implemented, change
 		// TODO: serialiser could check if type is an enum class?
 		typedef std::unordered_map<std::underlying_type<Item::ID>::type, int> counts_streamable_t;
 

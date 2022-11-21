@@ -70,6 +70,7 @@ int sandbox(void)
 int game(void)
 {
     // TODO: use application path
+    // Creating saves directory
     std::filesystem::create_directory("../Resources/saves/");
 
     Vivium::Flag::Set(VIVIUM_FLAG_FUNCTION_SIGNATURE_LOGGING, 1);
@@ -85,6 +86,7 @@ int game(void)
     Shader static_texture("static_texture_vertex", "texture_frag");
 #endif
 
+    // Initialisers
     TextureManager::Init();
     World::Init();
     WorldMap::Init();
@@ -115,21 +117,26 @@ int game(void)
 
     Application::SetBGColor(RGBColor::BLACK);
 
+    // Create instance of scene manager
     SceneManager main_menu{};
 
     // Loop until window is closed by user
     while (Application::IsRunning())
     {
+        // Start of frame operations
         Application::BeginFrame();
 
+        // Update and render current scene
         main_menu.Update();
         main_menu.Render();
 
+        // End of frame operations
         Application::EndFrame();
     }
 
     LogInfo("Window closed");
 
+    // Cleanup
     Weapon::Terminate();
     CraftingInventory::Terminate();
     Biome::Terminate();

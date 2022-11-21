@@ -52,9 +52,12 @@ namespace Game {
 	void LeavesParticleSystem::m_LoadTextureCoords()
 	{
 		int i = 0;
+		// Iterate indices in our atlas
 		for (const auto& index : m_AtlasIndices) {
+			// Get texture coordinates for that index
 			std::array<float, 8> coords = TextureManager::particle_atlas->GetCoordsArray(index);
 			
+			// Copy texture coordinates into our array
 			std::memcpy(m_TextureCoords[i], &coords[0], sizeof(float) * 8);
 
 			++i;
@@ -69,10 +72,13 @@ namespace Game {
 
 	void LeavesParticleSystem::Emit(std::size_t count, float lifespan, const Vivium::Vector2<float>& pos, const Vivium::Vector2<float>& vel, const Vivium::Vector2<float>& var, float angle, float angular_vel, float angular_var)
 	{
+		// Iterate amount of particles to emit
 		for (std::size_t i = 0; i < count; i++) {
+			// Submit the particle and increase buffer index
 			m_EmitParticle(lifespan, pos, vel, var, angle, angular_vel, angular_var);
 			++m_Index;
 
+			// Rollover if index too large
 			if (m_Index >= m_MaxSize) { m_Index -= m_MaxSize; }
 		}
 	}
@@ -81,19 +87,24 @@ namespace Game {
 	LeavesParticleSystem::~LeavesParticleSystem() {}
 
 	void LeavesParticleSystem::Render() {
+		// Create batch for particles
 		Vivium::Batch batch(m_MaxSize, &m_Layout);
 
 		for (std::size_t i = 0; i < m_MaxSize; i++) {
 			Vivium::Particle* particle = m_Particles[i];
 
+			// If particle uninitialised skip
 			if (particle == nullptr) { continue; }
 
+			// If particle dead skip
 			if (particle->IsAlive()) {
+				// Otherwise update and submit particle to batch
 				m_UpdateParticle(particle);
 				m_RenderParticle(&batch, particle);
 			}
 		}
 
+		// Render batch
 		m_RenderBatch(&batch);
 	}
 
@@ -102,24 +113,30 @@ namespace Game {
 		LeafParticle* my_particle = new LeafParticle();
 
 		my_particle->position = pos;
+		// Velocity with random offset
 		my_particle->velocity = vel + Vivium::Vector2<float>(
 			Vivium::Random::GetFloat(-var.x, var.x),
 			Vivium::Random::GetFloat(-var.y, var.y)
 		);
+		// Anulgar velocity with random offset
 		my_particle->angular_velocity = angular_vel + Vivium::Random::GetFloat(-angular_var, angular_var);
 		my_particle->angle = angle;
 
 		// TODO: lifespan variation
 		my_particle->lifespan = lifespan * Vivium::Random::GetFloat(0.8f, 1.2f);
 
+		// Random leaf type (texture index)
 		my_particle->leaf_type = Vivium::Random::GetInt(0, 3);
 
+		// Get the particle we'll replace
 		Vivium::Particle* replacement = m_Particles[m_Index];
 
+		// If particle was initialised, delete
 		if (replacement != nullptr) {
 			delete replacement;
 		}
 
+		// Set particle to our new created particle
 		m_Particles[m_Index] = dynamic_cast<Vivium::Particle*>(my_particle);
 	}
 
@@ -127,13 +144,18 @@ namespace Game {
 	{
 		const LeafParticle* leaf = dynamic_cast<const LeafParticle*>(particle);
 
+		// If the particle is alive (unnecessary?)
 		if (leaf->IsAlive()) {
+			// Get texture coordinates
 			float* coords = m_TextureCoords[leaf->leaf_type];
 
+			// Calculate alpha
 			float alpha = std::min((1.0f - leaf->time_alive / leaf->lifespan) / s_FadeoutStartPercent, 1.0f);
 
+			// Create data that is per shape
 			float per_vertex_data[4] = { alpha, leaf->angle, leaf->position.x, leaf->position.y };
 
+			// Submit to batch
 			batch->Submit(leaf->position, s_ParticleSize, coords[0], coords[2], coords[1], coords[5], per_vertex_data, 4);
 		}
 	}

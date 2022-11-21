@@ -6,16 +6,19 @@ namespace Game {
 
     void Player::s_ContinueButtonCallback(Vivium::Button* button, void* user_params)
     {
+        // Cast user params to player to call callback function on correct object
         Player* player = (Player*)user_params;
         player->m_ContinueButtonCallback(button);
     }
 
     void Player::m_ContinueButtonCallback(Vivium::Button* button)
     {
+        // Reset various values
         health.value = 100.0f;
         health.hasDied = false;
         m_isDeathScreenVisible = false;
 
+        // Teleport player some distance away
         float displacement = 8000.0f;
         Vivium::Vector2<int> move_vector = Vivium::Random::GetVector2f(displacement);
 
@@ -39,13 +42,17 @@ namespace Game {
     {
         Vivium::Vector2<float> screen_dim = Vivium::Application::GetScreenDim();
 
+        // Slightly offset from top left corner
         *m_MainInventory.inventory_pos = { 50.0f, -50.0f };
 
+        // If the entire inventory is open
         if (m_isMainInventoryOpened) {
+            // Render both the entire inventory and crafting inventory
             m_MainInventory.Render();
             m_CraftingInventory.Render();
         }
         else {
+            // Otherwise render the first 9 slots of the main inventory (hotbar)
             m_MainInventory.Render(Inventory::Slot::INV_0, 9);
         }
     }
@@ -324,9 +331,11 @@ namespace Game {
         TextureManager::game_atlas->Set(quad.get(), s_HEAD_WALK_0, s_FEET_WALK_0);
 
         m_HealthbarShader = std::make_unique<Vivium::Shader>("healthbar_vertex", "healthbar_frag");
+        m_HealthbarShader->Bind();
         m_HealthbarShader->SetUniform1f("u_WaveOffset", 0.0f);
 
         m_YouHaveDiedText = std::make_shared<Vivium::Text>("You have died!", 0.0f, Vivium::Text::Alignment::CENTER, 0.75f);
+        m_YouHaveDiedText->shader->Bind();
         m_YouHaveDiedText->shader->SetUniform3f("u_TextColor", Vivium::RGBColor::RED);
 
         // Hope to god this isn't reallocated somewhere

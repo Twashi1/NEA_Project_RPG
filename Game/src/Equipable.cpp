@@ -74,10 +74,13 @@ namespace Game {
 
 	void ToolEquipable::Render()
 	{
+		// Grab texture index for the given tool
 		Vivium::Vector2<int> atlas_index = Item::GetAtlasIndex(id);
 		
+		// Set the quad's texture coordinates to that index
 		TextureManager::game_atlas->Set(m_Quad.get(), atlas_index);
 
+		// Send to renderer
 		Vivium::Renderer::Submit(m_Quad.get(), m_ShaderDefault.get(), TextureManager::game_atlas->GetAtlas().get());
 	}
 
@@ -96,12 +99,15 @@ namespace Game {
 	{
 		m_ShaderDefault = std::make_shared<Vivium::Shader>("texture_vertex", "texture_frag");
 		
+		// Create EventHandler for hit events
 		m_HitHandler = std::make_shared<Weapon::Projectile::HitHandler>();
 
+		// Register with Vivium event system
 		Vivium::EventSystem::RegisterHandler(
 			dynamic_pointer_cast<Vivium::EventHandler>(m_HitHandler)
 		);
 
+		// Construct projectile system with max of 100 projectiles concurrent
 		m_ProjectileSystem = new ProjectileSystem(100);
 	}
 
@@ -388,8 +394,10 @@ namespace Game {
 
 	void ProjectileSystem::m_RenderBatch(Vivium::Batch* batch)
 	{
+		// Get result rendering data
 		Vivium::Batch::RenderData result = batch->End();
 
+		// If result is valid, submit to renderer
 		if (result) {
 			Vivium::Renderer::Submit(result.vertex_buffer.get(), result.index_buffer.get(), m_Shader.get(), TextureManager::game_atlas->GetAtlas().get());
 		}
