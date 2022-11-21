@@ -16,56 +16,51 @@ int sandbox(void)
 
     Application::SetBGColor(RGBColor::BLUE);
 
-    Shader water_shader("healthbar_vertex", "healthbar_frag");
+    WeightMap<char> map({
+        {1.0f, 'a'},
+        {1.0f, 'b'},
+        {1.0f, 'c'},
+        {1.0f, 'd'},
+        {1.0f, 'e'},
+        {1.0f, 'f'},
+        {1.0f, 'g'},
+        {1.0f, 'h'},
+        {1.0f, 'i'},
+        {1.0f, 'j'},
+        {1.0f, 'k'},
+        {1.0f, 'l'}
+    });
 
-    Quad quad(200.0f, 100.0f, 300.0f, 100.0f);
-    TextureManager::Init();
-    auto healthbar = TextureManager::game_atlas->GetCoordsArray({ 7, 9 }, { 9, 9 });
-    auto mask = TextureManager::game_atlas->GetCoordsArray({ 7, 8 }, { 9, 8 });
-
-    BufferLayout layout = {
-        GLSLDataType::VEC2, // pos
-        GLSLDataType::VEC2, // tex coord
-        GLSLDataType::VEC2, // healthbar
-        GLSLDataType::VEC2  // mask
+    std::map<char, int> frequency = {
+        {'a', 0},
+        {'b', 0},
+        {'c', 0},
+        {'d', 0},
+        {'e', 0},
+        {'f', 0},
+        {'g', 0},
+        {'h', 0},
+        {'i', 0},
+        {'j', 0},
+        {'k', 0},
+        {'l', 0}
     };
 
-    auto quad_tex = *quad.GetTexCoords();
+    Timer timer;
+    
+    float elapsed = 0.0f;
 
-    float* vertex_data = new float[32];
+    timer.Start();
 
-    auto vertices = quad.GetVertices();
-
-    // bl, br, tr, tl
-
-    int cindex = 0;
-    for (int i = 0; i < 4; i++) {
-        vertex_data[cindex++] = vertices[i].x;
-        vertex_data[cindex++] = vertices[i].y;
-
-        vertex_data[cindex++] = (quad_tex)[i * 2];
-        vertex_data[cindex++] = (quad_tex)[i * 2 + 1];
-
-        vertex_data[cindex++] = healthbar[i * 2];
-        vertex_data[cindex++] = healthbar[i * 2 + 1];
-
-        vertex_data[cindex++] = mask[i * 2];
-        vertex_data[cindex++] = mask[i * 2 + 1];
+    // Million iterations
+    for (int i = 0; i < 1000000; i++) {
+        char result = map.Get();
+        ++frequency[result];
     }
 
-    VertexBuffer vb(vertex_data, 32, layout);
+    elapsed = timer.GetElapsed();
 
-    delete[] vertex_data;
-
-    while (Application::IsRunning())
-    {
-        Application::BeginFrame();
-
-        //Vivium::Renderer::Submit(&quad, &water_shader, TextureManager::game_atlas->GetAtlas().get());
-        Vivium::Renderer::Submit(&vb, Quad::GetIndexBuffer(), &water_shader, TextureManager::game_atlas->GetAtlas().get());
-
-        Application::EndFrame();
-    }
+    LogTrace("Linear took {}s, Results: {}", elapsed, Logger::PrettyPrint(frequency));
 
     Application::Terminate();
 
@@ -150,7 +145,7 @@ int game(void)
 }
 
 int main(int argc, char** argv) {
-    game();
+    sandbox();
 
     LogTrace("Game finished");
 }
