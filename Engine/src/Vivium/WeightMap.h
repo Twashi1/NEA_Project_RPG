@@ -8,7 +8,7 @@
 namespace Vivium {
 	// NOTE: binary algorithm is more performant when n > 12 (roughly)
 	template <typename T>
-	class VIVIUM_API WeightMap /* : public Streamable */ {
+	class VIVIUM_API WeightMap : public Streamable {
 	private:
 		// If we have more than 12 values, use a binary search which has lower time complexity
 		static const std::size_t s_AlgorithmSwitchThreshold = 12;
@@ -127,9 +127,18 @@ namespace Vivium {
 			return m_UseLinear ? m_LinearSearch(point) : m_BinarySearch(point);
 		}
 
-		/*
-		void Write(Vivium::Serialiser& s) const override;
-		void Read(Vivium::Serialiser& s) override;
-		*/
+		void Write(Vivium::Serialiser& s) const override
+		{
+			s.Write(m_WeightedSum);
+			s.Write(m_Values);
+			s.Write(m_UseLinear);
+		}
+
+		void Read(Vivium::Serialiser& s) override
+		{
+			s.Read(&m_WeightedSum);
+			s.Read(&m_Values);
+			s.Read(&m_UseLinear);
+		}
 	};
 }
