@@ -127,8 +127,6 @@ namespace Game {
 		// NOTE: If projectile is piercing, this should be omitted
 		// Delete projectile
 		hit_event->projectile->Kill();
-
-		LogTrace("Hit event was detected, damage: {}, new health: {}%!", hit_event->damage, hit_event->npc->health.GetNormalised() * 100.0f);
 	}
 
 	Weapon::Projectile::Projectile(const ID& id, float damage, float knockback)
