@@ -248,6 +248,9 @@ namespace Vivium {
         // Initialise text input class
         TextInput::m_Init(engine_icons);
 
+        // Initialise seed for random class
+        Random::m_Init();
+
         // TODO Panel::Init(width, height)
         // Construct window panel
         std::shared_ptr<Quad> panel_quad = std::make_shared<Quad>(width * 0.5f, height * 0.5f, (float)width, (float)height);
