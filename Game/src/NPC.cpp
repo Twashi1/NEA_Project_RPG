@@ -533,7 +533,7 @@ new_data_ptr = dynamic_pointer_cast<Behaviours::Behaviour::Client>(data_ptr);
 			// TODO: change from current implementation which just checks distance
 			if (npc->animator.HasEnded()) {
 				// TODO: damage numbers should be in slime attack globals
-				NPC::world->GetPlayer()->health.Damage(0.5f);
+				NPC::world->GetPlayer()->health.Damage(global.damage);
 
 				LogTrace("Dealt damage to player, health is now: {}%", NPC::world->GetPlayer()->health.GetNormalised() * 100.0f);
 			}

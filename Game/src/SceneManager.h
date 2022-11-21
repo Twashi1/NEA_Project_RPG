@@ -176,6 +176,7 @@ namespace Game {
 	private:
 		World* m_World = nullptr;
 		Player* m_Player = nullptr;
+		bool m_PassingToGameOver = false;
 
 	public:
 		GameScene(uint32_t world_seed, const std::string& world_name, bool new_world);

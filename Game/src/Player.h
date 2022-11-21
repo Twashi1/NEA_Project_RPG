@@ -20,7 +20,16 @@ namespace Game {
         static const Vivium::Vector2<int> s_FEET_WALK_0;
 
         std::unique_ptr<Vivium::Shader> m_PlayerShader;
+        std::unique_ptr<Vivium::Shader> m_HealthbarShader;
         std::array<float, 8> m_WALK_0_TEXCOORDS;
+
+        bool m_isDeathScreenVisible = false;
+        std::shared_ptr<Vivium::Text> m_YouHaveDiedText;
+        std::shared_ptr<Vivium::Button> m_ContinueButton;
+
+        // TODO:
+        static void s_ContinueButtonCallback(Vivium::Button* button, void* user_params);
+        void m_ContinueButtonCallback(Vivium::Button* button);
 
         /// <summary>
         /// Render player sprite
@@ -34,6 +43,14 @@ namespace Game {
         /// Render inventory (hotbar or large view + crafting gui)
         /// </summary>
         void m_RenderInventory();
+        /// <summary>
+        /// Render healthbar
+        /// </summary>
+        void m_RenderHealthbar();
+        /// <summary>
+        /// Render the death scene
+        /// </summary>
+        void m_RenderDeathScene();
 
         /// <summary>
         /// Update acceleration according to user input
@@ -53,6 +70,10 @@ namespace Game {
         /// </summary>
         /// <param name="world"></param>
         void m_UpdateSelectedTile(World& world);
+        /// <summary>
+        /// Checks if dead, and updates death scene
+        /// </summary>
+        void m_UpdateDeathScene();
 
         // Quad and shader for the selected tile
         Vivium::Quad* m_SelectedTileQuad;

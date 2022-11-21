@@ -115,9 +115,12 @@ namespace Game {
 		/// Biome of mostly water
 		/// </summary>
 		class Lake : Generator {
+		private:
 			using Generator::m_HeightNoise;
 
 			static const std::map<float, Tile::ID> m_HeightToTileMap;
+
+			static Vivium::Noise::Cellular m_AnimalNoise;
 
 		public:
 			Lake(unsigned int seed);
