@@ -38,6 +38,7 @@ namespace Game {
 		Vivium::Timer m_UpdateTimer;
 		float m_TimeAlive = 0.0f;
 
+		// TODO: struct
 		Vivium::Vector2<int> mined_tile_pos = Vivium::Vector2<int>(INT_MAX, INT_MAX);
 		Tile::ID mined_tile_id;
 		float mined_tile_time; // Time we've been mining tile for
@@ -51,6 +52,7 @@ namespace Game {
 		Vivium::Physics::Layer* m_TileLayer = nullptr;
 		static constexpr uint32_t TILE_PHYSICS_LAYER = 1;
 
+		// TODO: is this really still used?
 		std::vector<std::shared_ptr<Vivium::Body>> m_TileBodies;
 
 		static constexpr int OBSTACLE_MAP_REGION_PADDING = 1;
