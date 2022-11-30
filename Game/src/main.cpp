@@ -152,7 +152,7 @@ int game(void)
 }
 
 int main(int argc, char** argv) {
-    sandbox();
+    game();
 
     LogTrace("Game finished");
 }
