@@ -6,7 +6,7 @@ namespace Game {
 	class World;
 
 	/// <summary>
-	/// A world structure, a multi-block naturally generated building/thing
+	/// A world structure, a multi-tile naturally generated building/thing
 	/// </summary>
 	class Structure {
 	public:
