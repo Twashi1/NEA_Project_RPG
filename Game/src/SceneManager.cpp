@@ -223,6 +223,13 @@ namespace Game {
 	{
 		m_Name = m_NameInputBox->GetText()->GetText();
 
+		if (m_Name.size() == 0 || m_Name == "Enter world name...") {
+			m_WorldAlreadyExistsText->SetText("World name can't be nothing!");
+			m_WorldAlreadyExistsLifespan = s_WorldAlreadyExistsMaxLifespan; // Display for 3 seconds
+			m_WorldAlreadyExistsTimer.Start();
+			return;
+		}
+
 		// Get names of worlds that already exist
 		std::string path = Vivium::Application::resources_path + "saves/";
 
@@ -231,6 +238,7 @@ namespace Game {
 				std::string world_name = it.path().stem().string(); // stem gives us the last part only
 
 				if (m_Name == world_name) {
+					m_WorldAlreadyExistsText->SetText("World already exists!");
 					m_WorldAlreadyExistsLifespan = s_WorldAlreadyExistsMaxLifespan; // Display for 3 seconds
 					m_WorldAlreadyExistsTimer.Start();
 					return;

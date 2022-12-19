@@ -162,7 +162,9 @@ namespace Vivium {
 			// Pressed enter
 			if (keypress.key == GLFW_KEY_ENTER) {
 				// Submit the text
-				callback(this, m_UserParams);
+				if (callback != nullptr) {
+					callback(this, m_UserParams);
+				}
 				// No longer typing (make subroutine probably so other events that need to happen, happen
 				m_IsTyping = false;
 				// TODO: move to next text input box
