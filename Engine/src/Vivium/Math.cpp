@@ -102,7 +102,7 @@ namespace Vivium {
 
 		float DegreesToRadians(float degrees)
 		{
-			const float conversion = PI / 180.0f;
+			constexpr float conversion = PI / 180.0f;
 			return degrees * conversion;
 		}
 

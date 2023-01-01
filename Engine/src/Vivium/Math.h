@@ -7,8 +7,8 @@ namespace Vivium {
 	struct Vector2;
 
 	namespace Math {
-		const float PI = 3.14159265f;
-		const float ROOT2 = 1.41421356f;
+		constexpr float PI = 3.14159265f;
+		constexpr float ROOT2 = 1.41421356f;
 
 		VIVIUM_API Vector2<float> Rotate(const Vector2<float>& point, float angle);
 		VIVIUM_API Vector2<float> Rotate(const Vector2<float>& point, float cos_angle, float sin_angle);
