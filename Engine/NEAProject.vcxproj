@@ -178,7 +178,7 @@
       <PreprocessorDefinitions>__VIVIUM_BUILD_DLL;WIN32;GLEW_STATIC;_DEBUG;_CONSOLE;%(PreprocessorDefinitions)</PreprocessorDefinitions>
       <ConformanceMode>true</ConformanceMode>
       <LanguageStandard>stdcpplatest</LanguageStandard>
-      <AdditionalIncludeDirectories>$(SolutionDir)vendor\glew\include;$(SolutionDir)vendor\freetype\include;$(SolutionDir)vendor\glfw\include;$(SolutionDir)vendor\glm\glm;$(SolutionDir)vendor\stb_image;$(SolutionDir)vendor\entt;$(SolutionDir)vendor\irrKlang\include;%(AdditionalIncludeDirectories)</AdditionalIncludeDirectories>
+      <AdditionalIncludeDirectories>$(SolutionDir)vendor\glew\include;$(SolutionDir)vendor\freetype\include;$(SolutionDir)vendor\glfw\include;$(SolutionDir)vendor\glm\glm;$(SolutionDir)vendor\stb_image;$(SolutionDir)vendor\irrKlang\include;%(AdditionalIncludeDirectories)</AdditionalIncludeDirectories>
     </ClCompile>
     <Link>
       <SubSystem>Console</SubSystem>

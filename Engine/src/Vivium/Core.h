@@ -35,7 +35,6 @@
 #include <Windows.h>
 
 // Extern libraries
-#include <entt.hpp>
 #include <GL/glew.h>
 #include <glm.hpp>
 #include <gtc/matrix_transform.hpp>
