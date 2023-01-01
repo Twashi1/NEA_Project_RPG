@@ -1,0 +1,2 @@
+-> Go to binaries
+-> Run Game.exe
